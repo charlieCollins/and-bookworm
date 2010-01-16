@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BookWorm</string>
+    <string name="by"><b>By Charlie Collins</b>\n</string>
+    <string name="help">    
+    <i>Use BookWorm to keep track of books you have read, and you intend to read. 
+    Maintain a log of text books, audio books, online articles, any reading you do - 
+    all in one place for later reference and sharing.</i>\n
+    \n
+    <li>Select a list to work with: Books I\'ve Read or Books I Want to Read</li>\n
+    <li>Add books to a list with the menu - either by scanning the UPC, searching, or typing in directly</li>\n
+    <li>Books are stored with title, author, rating, and blurb (anything you want)</li>\n
+    <li>View books by scrolling your lists and selecting them</li>\n
+    <li>TODO make lists sortable by each metric (title, author, rating)</li>\n
+    <li>TODO backup lists to SDCard, and Import/Export</li>\n
+    <li>TODO incorporate with online book listing services</li>\n
+    </string>
+</resources>

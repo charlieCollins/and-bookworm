@@ -1,0 +1,20 @@
+<resources>
+    <style name="titletext">
+        <item name="android:textSize">40sp</item>
+        <item name="android:textColor">#698c2d</item> 
+        <item name="android:textStyle">bold</item> 
+        <item name="android:shadowColor">#214a06</item> 
+        <item name="android:shadowDx">1.5</item> 
+        <item name="android:shadowDy">1.5</item> 
+        <item name="android:shadowRadius">0.5</item>
+    </style>
+    <style name="textbold">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#698c2d</item> 
+        <item name="android:textStyle">bold</item>        
+    </style>
+     <style name="text">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#698c2d</item> 
+    </style>
+</resources>

@@ -1,0 +1,10 @@
+<resources>
+        <color name="red2">#910500</color>
+        <color name="red1">#a82c28</color>
+        <color name="gray2">#CCCCCC</color>
+        <color name="gray1">#333333</color>
+        <color name="green4">#1f2a1f</color>
+        <color name="green3">#284d28</color>
+        <color name="green2">#427441</color>
+        <color name="green1">#6c8e6d</color>
+</resources>

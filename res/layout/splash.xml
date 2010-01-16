@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<TextView android:id="@+id/blurb" style="@style/titletext"
+		android:layout_width="fill_parent" android:gravity="center_horizontal"
+		android:layout_height="wrap_content" android:layout_marginTop="25px"
+		android:text="@string/app_name" />
+	<ImageView android:id="@+id/logo" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_centerVertical="true"
+		android:layout_centerHorizontal="true" android:layout_marginBottom="10px"
+		android:layout_marginTop="25px" android:layout_below="@id/blurb"
+		android:src="@drawable/books200" />
+	<TextView android:id="@+id/tap" style="@style/text"
+		android:layout_width="fill_parent" android:gravity="center_horizontal"
+		android:layout_height="wrap_content" android:layout_marginTop="25px"
+		android:layout_below="@id/logo" android:text="Tap to begin" />
+</RelativeLayout>
