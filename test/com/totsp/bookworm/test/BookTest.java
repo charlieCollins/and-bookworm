@@ -1,4 +1,5 @@
-package com.totsp.bookworm.model;
+package com.totsp.bookworm.test;
+
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 
