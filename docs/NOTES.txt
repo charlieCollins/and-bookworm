@@ -1,0 +1,11 @@
+Create parallel "Android Test" project to use instrumentation/etc. 
+
+adb -e shell
+# cd data/data 
+
+sqlite3 [path to db]
+select * from sqlite_master;
+.tables
+.schema
+.header
+etc

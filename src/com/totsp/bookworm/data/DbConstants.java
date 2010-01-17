@@ -2,8 +2,8 @@ package com.totsp.bookworm.data;
 
 public class DbConstants {  
    public static final String BOOKID = "bookid";
-   public static final String BOOKDATAID = "bookid";
-   public static final String BOOKLISTID = "bookid";
+   public static final String BOOKDATAID = "bookdataid";
+   public static final String BOOKLISTID = "booklistid";
    public static final String AUTHORID = "authorid";
    public static final String ISBN = "isbn";
    public static final String TITLE = "title";
