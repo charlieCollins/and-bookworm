@@ -1,4 +1,7 @@
 package com.totsp.bookworm.model;
+import com.totsp.bookworm.model.Author;
+import com.totsp.bookworm.model.Book;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
