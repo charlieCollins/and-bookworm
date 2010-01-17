@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<library>
+  <url>http://books.google.com/books?uid=5328255196448500543</url>
+  <books>
+    <book>
+      <id>ZicUataX4G0C</id>
+      <url>http://books.google.com/books?id=ZicUataX4G0C</url>
+      <title>The Ancestor&apos;s Tale: A Pilgrimage to the Dawn of Evolution</title>
+      <contributor>Richard Dawkins, Yan Wong</contributor>
+      <identifier>
+        <type>ISBN</type>
+        <value>061861916X</value>
+      </identifier>
+      <labels />
+    </book>
+    <book>
+      <id>7o2jNwAACAAJ</id>
+      <url>http://books.google.com/books?id=7o2jNwAACAAJ</url>
+      <title>Unlocking Android: A Developer&apos;s Guide</title>
+      <contributor>Frank Ableson, Charlie Collins, Robi Sen</contributor>
+      <identifier>
+        <type>ISBN</type>
+        <value>1933988673</value>
+      </identifier>
+      <labels>
+        <label>tech</label>
+      </labels>
+    </book>
+    <book>
+      <id>mYeiGQAACAAJ</id>
+      <url>http://books.google.com/books?id=mYeiGQAACAAJ</url>
+      <title>GWT in Practice</title>
+      <contributor>Robert Cooper, Charlie Collins</contributor>
+      <identifier>
+        <type>ISBN</type>
+        <value>1933988290</value>
+      </identifier>
+      <labels>
+        <label>tech</label>
+      </labels>
+    </book>
+    <book>
+      <id>q_Fp3tjPnkwC</id>
+      <url>http://books.google.com/books?id=q_Fp3tjPnkwC</url>
+      <title>The demon-haunted world: science as a candle in the dark</title>
+      <contributor>Carl Sagan</contributor>
+      <identifier>
+        <type>ISBN</type>
+        <value>0345409469</value>
+      </identifier>
+      <labels />
+    </book>
+    <book>
+      <id>5IbANRNF1UIC</id>
+      <url>http://books.google.com/books?id=5IbANRNF1UIC</url>
+      <title>Rickles&apos; Book: A Memoir</title>
+      <contributor>Don Rickles, David Ritz</contributor>
+      <identifier>
+        <type>ISBN</type>
+        <value>0743293061</value>
+      </identifier>
+      <labels />
+    </book>
+  </books>
+  <add_token>ACfU3U25ktCOj1KJ2I-HYQ8s-O9CAAQLeA</add_token>
+  <remove_token>ACfU3U3UNbKNLSkuyKYe1RuqatZoFfQ7Wg</remove_token>
+  <ack_token>ACfU3U3CbLQtwUihdHg95SEAhZ-S0aoKJg</ack_token>
+</library>

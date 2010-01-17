@@ -50,7 +50,9 @@ public class Splash extends Activity {
    @Override
    public boolean onTouchEvent(MotionEvent e) {
       // any touch, move along
-      this.startActivity(new Intent(Splash.this, Main.class));
+      if (e.getAction() == MotionEvent.ACTION_DOWN) {
+         this.startActivity(new Intent(Splash.this, Main.class));
+      }
       return true;
    }
 }

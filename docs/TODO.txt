@@ -1,0 +1,2 @@
+Use local db for speed, but allow import/export to Google Books
+MyLibrary - sync and diff, etc. 

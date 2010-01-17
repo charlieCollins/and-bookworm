@@ -7,15 +7,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.totsp.bookworm.data.DataHelper;
+
 public class Main extends Activity {
     
    private static final int MENU_HELP = 0;
+   
+   // TODO allow user to create lists, dynamically add buttons here
+   // (default lists to "Books I've Read" and "Books I Want to Read" (but allow user to delete/create)
    private Button bReadList;
-   private Button bToReadList;   
+   private Button bToReadList; 
+   
+   private DataHelper dataHelper;
    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        this.dataHelper = new DataHelper(this);
+        
         setContentView(R.layout.main);
         
         this.bReadList = (Button) findViewById(R.id.button_read_list);
