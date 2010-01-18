@@ -2,35 +2,35 @@ package com.totsp.bookworm.model;
 
 public final class BookData {
    
-   private int id;
-   private int bookId;
-   private int rating;
+   private long id;
+   private long bookId;
+   private long rating;
    private String blurb;
    
    public BookData() {      
    }
 
-   public int getId() {
+   public long getId() {
       return this.id;
    }
 
-   public void setId(int id) {
+   public void setId(long id) {
       this.id = id;
    }
 
-   public int getBookId() {
+   public long getBookId() {
       return this.bookId;
    }
 
-   public void setBookId(int bookId) {
+   public void setBookId(long bookId) {
       this.bookId = bookId;
    }
 
-   public int getRating() {
+   public long getRating() {
       return this.rating;
    }
 
-   public void setRating(int rating) {
+   public void setRating(long rating) {
       this.rating = rating;
    }
 

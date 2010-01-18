@@ -4,16 +4,16 @@ import java.util.Date;
 
 public final class Book {  
    
-   private int id;
+   private long id;
    private String isbn;
    private String title;
-   private int authorId;
+   private long authorId;
    private Date datePub;
    
    public Book() {
    }
    
-   public Book(int id, String isbn, String title, int authorId, Date datePub) {
+   public Book(long id, String isbn, String title, long authorId, Date datePub) {
       this.id = id;
       this.isbn = isbn;
       this.title = title;
@@ -32,11 +32,11 @@ public final class Book {
       return sb.toString();
    }
 
-   public int getId() {
+   public long getId() {
       return this.id;
    }
 
-   public void setId(int id) {
+   public void setId(long id) {
       this.id = id;
    }
 
@@ -56,11 +56,11 @@ public final class Book {
       this.title = title;
    }
 
-   public int getAuthorId() {
+   public long getAuthorId() {
       return this.authorId;
    }
 
-   public void setAuthorId(int authorId) {
+   public void setAuthorId(long authorId) {
       this.authorId = authorId;
    }
 

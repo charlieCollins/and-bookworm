@@ -14,8 +14,4 @@
 		<activity android:name="Main" />
 		<activity android:name="Help" />		
 	</application>
-	
-	<instrumentation android:name="android.test.InstrumentationTestRunner"
-            android:targetPackage="com.totsp.bookworm.androidtest" android:label="BookWorm Tests" />
-        <uses-library android:name="android.test.runner" />
 </manifest> 
