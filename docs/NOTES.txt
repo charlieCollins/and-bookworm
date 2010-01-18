@@ -18,4 +18,6 @@ android update project
   android update project -p PATH 
   android update test-project -p PATH -m TEST_PROJ_PATH
   
+  after doing so if build.properties tested.project.dir is set - tests can't compile, install fails?
+  
   

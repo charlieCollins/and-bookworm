@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 
 public class Splash extends Activity {
 
-   protected static final String APP_NAME = "BookWorm";  
+   public static final String APP_NAME = "BookWorm";  
 
    /*
    private final Handler handler = new Handler() {

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import com.totsp.bookworm.Splash;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 
@@ -24,7 +25,14 @@ public class DataHelper {
 
    private Context context;
    private SQLiteDatabase db;
-
+   
+   private SQLiteStatement bookListInsertStmt;
+   private static final String BOOKLIST_INSERT =
+            "insert into " + BOOKLIST_TABLE + "(" + DbConstants.NAME + ") values (?)";
+   private SQLiteStatement bookListJoinInsertStmt;
+   private static final String BOOKLISTJOIN_INSERT =
+            "insert into " + BOOKLISTJOIN_TABLE + "(" + DbConstants.BOOKLISTID + "," + DbConstants.BOOKID
+                     + ") values (?, ?)";
    private SQLiteStatement bookInsertStmt;
    private static final String BOOK_INSERT =
             "insert into " + BOOK_TABLE + "(" + DbConstants.ISBN + "," + DbConstants.AUTHORID + "," + DbConstants.TITLE
@@ -37,7 +45,26 @@ public class DataHelper {
       OpenHelper openHelper = new OpenHelper(this.context);
       this.db = openHelper.getWritableDatabase();
 
+      this.bookListInsertStmt = this.db.compileStatement(BOOKLIST_INSERT);
+      this.bookListJoinInsertStmt = this.db.compileStatement(BOOKLISTJOIN_INSERT);      
       this.bookInsertStmt = this.db.compileStatement(BOOK_INSERT);
+      this.authorInsertStmt = this.db.compileStatement(AUTHOR_INSERT);
+      
+      if (openHelper.isDbCreated()) {
+         Log.d(Splash.APP_NAME, "isDbCreated TRUE - insert default data");
+         // TODO - also note wipe-data requires emu restart
+      }
+      
+      ///this.insertBookList("LIST1");
+   }
+
+   public long insertBookList(String name) {
+      this.bookListInsertStmt.bindString(1, name);
+      return this.bookListInsertStmt.executeInsert();
+   }
+
+   public void addBookToList(String listName, Book b) {
+      // TODO
    }
 
    public long insertBook(Book b) {
@@ -91,16 +118,21 @@ public class DataHelper {
 
    private static class OpenHelper extends SQLiteOpenHelper {
 
+      private boolean dbCreated;
+      
       OpenHelper(Context context) {
          super(context, DATABASE_NAME, null, DATABASE_VERSION);
+         Log.d(Splash.APP_NAME, "SQLiteOpenHelper");
       }
 
       @Override
       public void onCreate(SQLiteDatabase db) {
 
-         // (select count(*) from sqlite_master where name="foo"
+         Log.d(Splash.APP_NAME, "SQLiteOpenHelper onCreate");
 
-         ///db.execSQL("select count(*) from 
+         ///Cursor c = db.rawQuery("select count(*) from sqlite_master where name = ?", new String[] { BOOK_TABLE });
+         ///int count = c.getCount();
+         ///Log.d(Splash.APP_NAME, "count - " + count);
 
          // book table
          db.execSQL("CREATE TABLE " + BOOK_TABLE + " (" + DbConstants.BOOKID + " INTEGER PRIMARY KEY,"
@@ -123,6 +155,15 @@ public class DataHelper {
          // booklistjoin table 
          db.execSQL("CREATE TABLE " + BOOKLISTJOIN_TABLE + " (" + DbConstants.BOOKID + " INTEGER,"
                   + DbConstants.BOOKLISTID + " INTEGER" + ");");
+
+         // constraints
+         db.execSQL("CREATE UNIQUE INDEX uidxBookIsbn ON " + BOOK_TABLE + "(" + DbConstants.ISBN + " COLLATE NOCASE)");
+         db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON " + AUTHOR_TABLE + "(" + DbConstants.NAME
+                  + " COLLATE NOCASE)");
+         db.execSQL("CREATE UNIQUE INDEX uidxBookListName ON " + BOOKLIST_TABLE + "(" + DbConstants.NAME
+                  + " COLLATE NOCASE)");
+         
+         this.dbCreated = true;
       }
 
       @Override
@@ -131,6 +172,10 @@ public class DataHelper {
          // export old data first, then upgrade, then import
          //db.execSQL("DROP TABLE IF EXISTS " + BOOK_TABLE);
          //onCreate(db);
+      }
+      
+      public boolean isDbCreated() {
+         return this.dbCreated;
       }
    }
 

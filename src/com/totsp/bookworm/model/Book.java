@@ -13,8 +13,8 @@ public final class Book {
    public Book() {
    }
    
-   public Book(long id, String isbn, String title, long authorId, Date datePub) {
-      this.id = id;
+   public Book(String isbn, String title, long authorId, Date datePub) {
+      this.id = 0L;
       this.isbn = isbn;
       this.title = title;
       this.authorId = authorId;
