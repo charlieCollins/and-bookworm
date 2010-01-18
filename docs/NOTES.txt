@@ -9,3 +9,13 @@ select * from sqlite_master;
 .schema
 .header
 etc
+
+android update project
+  change build.xml project name if different than Main activity
+  ant install
+  ant coverage (see group, it's there now, but still unsupported)
+  
+  android update project -p PATH 
+  android update test-project -p PATH -m TEST_PROJ_PATH
+  
+  
