@@ -9,14 +9,8 @@
 		<FrameLayout android:id="@android:id/tabcontent"
 			android:layout_width="fill_parent" android:layout_height="fill_parent">
 			<!--  TAB 1 -->
-			<LinearLayout android:id="@+id/tab1"
-				android:layout_width="fill_parent" android:layout_height="fill_parent">
-				<TextView android:id="@+id/booklisttext"
-					android:layout_width="fill_parent" android:layout_height="fill_parent"
-					android:text="textview" />
-				<ListView android:id="@+id/booklist" android:layout_width="fill_parent"
+			<ListView android:id="@+id/tab1" android:layout_width="fill_parent"
 					android:layout_height="fill_parent" />
-			</LinearLayout>
 			<!--  TAB 2 -->
 			<TextView android:id="@+id/tab2" android:layout_width="fill_parent"
 				android:layout_height="fill_parent" android:text="Book Gallery" />

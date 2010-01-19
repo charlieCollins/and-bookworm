@@ -3,11 +3,15 @@ package com.totsp.bookworm;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataHelper;
 
@@ -30,18 +34,26 @@ public class Main extends TabActivity {
 
       setContentView(R.layout.main);        
 
+      this.bookList = (ListView) this.findViewById(R.id.tab1);
+      final ArrayList<String> bookNames = new ArrayList<String>();
+      bookNames.addAll(this.dh.selectAllBookNames());
+      Log.d(Splash.APP_NAME, "bookNames size - " + bookNames.size());      
+      ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, bookNames);      
+      this.bookList.setAdapter(adapter); 
+      
+      this.bookList.setOnItemClickListener(new OnItemClickListener() {
+         public void onItemClick(AdapterView parent, View v, int index, long id) {
+            Log.d(Splash.APP_NAME, "onItemClick - " + bookNames.get(index));
+         }
+      });
+      
       this.tabHost = this.getTabHost();      
       tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Book List").setContent(R.id.tab1));
       tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Book Gallery").setContent(R.id.tab2));
       tabHost.addTab(tabHost.newTabSpec("tab3").setIndicator("Add a Book").setContent(R.id.tab3));      
       this.tabHost.setCurrentTab(0);
       
-      this.bookList = (ListView) this.findViewById(R.id.booklist);
-      ArrayList<String> bookNames = new ArrayList<String>();
-      bookNames.addAll(this.dh.selectAllBookNames());
-      ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.id.booklist, android.R.layout.simple_list_item_1, bookNames);
-      
-      this.bookList.setAdapter(adapter);    
+       
    }
 
    @Override
