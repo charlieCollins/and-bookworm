@@ -9,8 +9,8 @@ public final class Author {
    public Author() {
    }
    
-   public Author(long id, String name) {
-      this.id = id;
+   public Author(String name) {
+      this.id = 0L;
       this.name = name;      
    }
 

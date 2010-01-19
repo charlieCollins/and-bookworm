@@ -1,22 +1,24 @@
 package com.totsp.bookworm;
 
-import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TabHost;
 
 import com.totsp.bookworm.data.DataHelper;
 
-public class Main extends Activity {
+import java.util.ArrayList;
+
+public class Main extends TabActivity {
 
    private static final int MENU_HELP = 0;
 
-   // TODO allow user to create lists, dynamically add buttons here
-   // (default lists to "Books I've Read" and "Books I Want to Read" (but allow user to delete/create)
-   private Button bReadList;
-   private Button bToReadList;
+   private TabHost tabHost;
+   private ListView bookList;
 
    private DataHelper dh;
 
@@ -26,14 +28,24 @@ public class Main extends Activity {
 
       this.dh = new DataHelper(this);
 
-      setContentView(R.layout.main);
+      setContentView(R.layout.main);        
 
-      this.bReadList = (Button) findViewById(R.id.button_read_list);
-      this.bToReadList = (Button) findViewById(R.id.button_toread_list);
+      this.tabHost = this.getTabHost();      
+      tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Book List").setContent(R.id.tab1));
+      tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Book Gallery").setContent(R.id.tab2));
+      tabHost.addTab(tabHost.newTabSpec("tab3").setIndicator("Add a Book").setContent(R.id.tab3));      
+      this.tabHost.setCurrentTab(0);
+      
+      this.bookList = (ListView) this.findViewById(R.id.booklist);
+      ArrayList<String> bookNames = new ArrayList<String>();
+      bookNames.addAll(this.dh.selectAllBookNames());
+      ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.id.booklist, android.R.layout.simple_list_item_1, bookNames);
+      
+      this.bookList.setAdapter(adapter);    
    }
-   
+
    @Override
-   public void onPause() {      
+   public void onPause() {
       this.dh.cleanup();
       super.onPause();
    }
@@ -49,7 +61,7 @@ public class Main extends Activity {
       switch (item.getItemId()) {
       case MENU_HELP:
          this.startActivity(new Intent(Main.this, Help.class));
-         return true; 
+         return true;
       }
       return super.onOptionsItemSelected(item);
    }

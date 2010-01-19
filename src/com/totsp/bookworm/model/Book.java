@@ -1,23 +1,24 @@
 package com.totsp.bookworm.model;
 
 import java.util.Date;
+import java.util.Set;
 
 public final class Book {  
    
    private long id;
    private String isbn;
    private String title;
-   private long authorId;
+   private Set<Author> authors;
    private Date datePub;
    
    public Book() {
    }
    
-   public Book(String isbn, String title, long authorId, Date datePub) {
+   public Book(String isbn, String title, Set<Author> authors, Date datePub) {
       this.id = 0L;
       this.isbn = isbn;
       this.title = title;
-      this.authorId = authorId;
+      this.authors = authors;
       this.datePub = datePub;
    }
    
@@ -27,7 +28,7 @@ public final class Book {
       sb.append("id:" + this.getId() + " ");
       sb.append("title:" + this.getTitle() + " ");
       sb.append("isbn:" + this.getIsbn() + " ");
-      sb.append("authorid:" + this.getAuthorId() + " ");
+      sb.append("authors:" + this.getAuthors() + " ");
       sb.append("datepub:" + this.getDatePub() + " ");   
       return sb.toString();
    }
@@ -56,12 +57,12 @@ public final class Book {
       this.title = title;
    }
 
-   public long getAuthorId() {
-      return this.authorId;
+   public Set<Author> getAuthors() {
+      return this.authors;
    }
 
-   public void setAuthorId(long authorId) {
-      this.authorId = authorId;
+   public void setAuthors(Set<Author> authors) {
+      this.authors = authors;
    }
 
    public Date getDatePub() {      

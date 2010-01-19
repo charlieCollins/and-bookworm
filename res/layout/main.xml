@@ -1,22 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@android:id/tabhost" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<TextView android:id="@+id/blurb" android:layout_width="fill_parent"
-		android:gravity="center_horizontal" android:layout_height="wrap_content"
-		android:layout_marginTop="25px" android:text="@string/app_name" style="@style/titletext" />
-	<ImageView android:id="@+id/logo" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_centerVertical="true"
-		android:layout_centerHorizontal="true" android:layout_marginBottom="20px"
-		android:layout_marginTop="10px" android:layout_below="@id/blurb"
-		android:src="@drawable/books48" />
-	<Button android:id="@+id/button_read_list" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:gravity="center_horizontal"
-		android:layout_marginTop="10px" android:layout_below="@id/logo"
-		android:text="Books I've Read" />
-	<Button android:id="@+id/button_toread_list"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent">
+		<TabWidget android:id="@android:id/tabs"
+			android:layout_width="fill_parent" android:layout_height="wrap_content" />
+		<FrameLayout android:id="@android:id/tabcontent"
+			android:layout_width="fill_parent" android:layout_height="fill_parent">
+			<!--  TAB 1 -->
+			<LinearLayout android:id="@+id/tab1"
+				android:layout_width="fill_parent" android:layout_height="fill_parent">
+				<TextView android:id="@+id/booklisttext"
+					android:layout_width="fill_parent" android:layout_height="fill_parent"
+					android:text="textview" />
+				<ListView android:id="@+id/booklist" android:layout_width="fill_parent"
+					android:layout_height="fill_parent" />
+			</LinearLayout>
+			<!--  TAB 2 -->
+			<TextView android:id="@+id/tab2" android:layout_width="fill_parent"
+				android:layout_height="fill_parent" android:text="Book Gallery" />
+			<!--  TAB 3 -->
+			<TextView android:id="@+id/tab3" android:layout_width="fill_parent"
+				android:layout_height="fill_parent" android:text="Add Book" />
+		</FrameLayout>
+	</LinearLayout>
+</TabHost>
+
+	<!--
+		<?xml version="1.0" encoding="utf-8"?> <RelativeLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_height="fill_parent"> <TextView android:id="@+id/blurb"
+		android:layout_width="fill_parent" android:gravity="center_horizontal"
+		android:layout_height="wrap_content" android:layout_marginTop="25px"
+		android:text="@string/app_name" style="@style/titletext" /> <ImageView
+		android:id="@+id/logo" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerVertical="true"
+		android:layout_centerHorizontal="true"
+		android:layout_marginBottom="20px" android:layout_marginTop="10px"
+		android:layout_below="@id/blurb" android:src="@drawable/books48" />
+		<Button android:id="@+id/button_read_list"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
 		android:gravity="center_horizontal" android:layout_marginTop="10px"
-		android:layout_marginBottom="10px" android:layout_below="@id/button_read_list"
-		android:text="Books I Want to Read" />
-</RelativeLayout>
+		android:layout_below="@id/logo" android:text="Books I've Read" />
+		<Button android:id="@+id/button_toread_list"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal" android:layout_marginTop="10px"
+		android:layout_marginBottom="10px"
+		android:layout_below="@id/button_read_list" android:text="Books I Want
+		to Read" /> </RelativeLayout>
+	-->
