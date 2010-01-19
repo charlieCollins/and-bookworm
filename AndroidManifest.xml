@@ -12,6 +12,7 @@
 			</intent-filter>
 		</activity>
 		<activity android:name="Main" />
-		<activity android:name="Help" />		
+		<activity android:name="Help" />      
+		<activity android:name="BookDetail" />      
 	</application>
 </manifest> 

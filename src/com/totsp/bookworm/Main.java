@@ -14,6 +14,7 @@ import android.widget.TabHost;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataHelper;
+import com.totsp.bookworm.data.DbConstants;
 
 import java.util.ArrayList;
 
@@ -32,7 +33,9 @@ public class Main extends TabActivity {
 
       this.dh = new DataHelper(this);
 
-      setContentView(R.layout.main);        
+      setContentView(R.layout.main); 
+      
+      // TODO a lot of cleanup here
 
       this.bookList = (ListView) this.findViewById(R.id.tab1);
       final ArrayList<String> bookNames = new ArrayList<String>();
@@ -44,6 +47,9 @@ public class Main extends TabActivity {
       this.bookList.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(AdapterView parent, View v, int index, long id) {
             Log.d(Splash.APP_NAME, "onItemClick - " + bookNames.get(index));
+            Intent intent = new Intent(Main.this, BookDetail.class);
+            intent.putExtra(DbConstants.TITLE, bookNames.get(index));
+            Main.this.startActivity(intent);
          }
       });
       
