@@ -25,5 +25,7 @@ can't do the market:// intent search thing from emulator (no market app)
 some hacks to install market app there
 
 also have to install zxing manually for emulator, of course
+
+for standard junit tests in eclipse - edit run config, remove android api library, add jdk and junit 3
   
   
