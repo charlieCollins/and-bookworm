@@ -13,6 +13,13 @@ public final class Author {
       this.id = 0L;
       this.name = name;      
    }
+   
+   public String toString() {
+      StringBuilder sb = new StringBuilder() ;
+      sb.append("Author-");
+      sb.append(" name:" + this.getName());
+      return sb.toString();
+   }
 
    public long getId() {
       return this.id;

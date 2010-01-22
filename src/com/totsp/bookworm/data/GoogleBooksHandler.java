@@ -10,9 +10,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 public class GoogleBooksHandler extends DefaultHandler {
 
    private static final String ENTRY = "entry";
@@ -28,68 +25,61 @@ public class GoogleBooksHandler extends DefaultHandler {
 
    public GoogleBooksHandler() {
       this.books = new ArrayList<Book>();
-   }   
+   }
 
    @Override
    public void startDocument() throws SAXException {
-      System.out.println("startDocument");
    }
 
    @Override
    public void endDocument() throws SAXException {
-      System.out.println("endDocument");
    }
 
    @Override
    public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
-      
-      System.out.println("startElement - " + localName);
-      
-      if (localName.equals(GoogleBooksHandler.ENTRY)) {
+
+      if (qName.equals(GoogleBooksHandler.ENTRY)) {
          this.inEntry = true;
          this.book = new Book();
       }
 
-      if (this.inEntry && localName.equals("title")) {
+      if (this.inEntry && qName.equals("title")) {
          this.inTitle = true;
-      } else if (this.inEntry && localName.equals("date")) {
+      } else if (this.inEntry && qName.equals("dc:date")) {
          this.inDate = true;
-      } else if (this.inEntry && localName.equals("create")) {
+      } else if (this.inEntry && qName.equals("dc:creator")) {
          this.inCreator = true;
       }
    }
 
    @Override
    public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-      
-      System.out.println("endElement - " + localName);
-      
-      if (localName.equals(GoogleBooksHandler.ENTRY)) {
+
+      if (qName.equals(GoogleBooksHandler.ENTRY)) {
          if (this.inEntry) {
             this.inEntry = false;
+            books.add(this.book);
          }
+      }
 
-         if (this.inEntry && localName.equals("title")) {
-            this.inTitle = false;
-         } else if (this.inEntry && localName.equals("date")) {
-            this.inDate = false;
-         } else if (this.inEntry && localName.equals("create")) {
-            this.inCreator = false;
-         }
+      if (this.inEntry && qName.equals("title")) {
+         this.inTitle = false;
+      } else if (this.inEntry && qName.equals("dc:date")) {
+         this.inDate = false;
+      } else if (this.inEntry && qName.equals("dc:creator")) {
+         this.inCreator = false;
       }
    }
 
    @Override
    public void characters(char ch[], int start, int length) {
 
-      ///System.out.println("characters - " + new String(ch));
-      
       if (this.inEntry && this.inTitle) {
-         book.setTitle(new String(ch));
+         this.book.setTitle(new String(ch, start, length));
       } else if (this.inEntry && this.inDate) {
          // parse date
       } else if (this.inEntry && this.inCreator) {
-         book.getAuthors().add(new Author(new String(ch)));
+         this.book.getAuthors().add(new Author(new String(ch, start, length)));
       }
 
    }

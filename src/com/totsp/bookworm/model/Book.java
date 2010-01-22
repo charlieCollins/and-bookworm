@@ -1,6 +1,7 @@
 package com.totsp.bookworm.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 public final class Book {  
@@ -12,6 +13,7 @@ public final class Book {
    private Date datePub;
    
    public Book() {
+      this.authors = new HashSet<Author>();
    }
    
    public Book(String isbn, String title, Set<Author> authors, Date datePub) {
@@ -24,12 +26,12 @@ public final class Book {
    
    public String toString() {
       StringBuilder sb = new StringBuilder() ;
-      sb.append("Book - ");
-      sb.append("id:" + this.getId() + " ");
-      sb.append("title:" + this.getTitle() + " ");
-      sb.append("isbn:" + this.getIsbn() + " ");
-      sb.append("authors:" + this.getAuthors() + " ");
-      sb.append("datepub:" + this.getDatePub() + " ");   
+      sb.append("Book-");
+      sb.append(" id:" + this.getId());
+      sb.append(" title:" + this.getTitle());
+      sb.append(" isbn:" + this.getIsbn());
+      sb.append(" authors:" + this.getAuthors());
+      sb.append(" datepub:" + this.getDatePub());   
       return sb.toString();
    }
 
