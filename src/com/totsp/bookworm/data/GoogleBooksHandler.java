@@ -29,16 +29,6 @@ public class GoogleBooksHandler extends DefaultHandler {
    public GoogleBooksHandler() {
       this.books = new ArrayList<Book>();
    }   
-   
-   /*
-   public static void main(String[] args) throws Exception {
-      DefaultHandler handler = new DefaultHandler();
-
-      SAXParserFactory factory = SAXParserFactory.newInstance();
-      SAXParser p = factory.newSAXParser();
-      p.parse(GoogleBooksHandler.class.getResourceAsStream("./docs/book_search_response.xml"), handler);
-   }
-   */
 
    @Override
    public void startDocument() throws SAXException {
@@ -92,7 +82,7 @@ public class GoogleBooksHandler extends DefaultHandler {
    @Override
    public void characters(char ch[], int start, int length) {
 
-      System.out.println("characters - " + new String(ch));
+      ///System.out.println("characters - " + new String(ch));
       
       if (this.inEntry && this.inTitle) {
          book.setTitle(new String(ch));
