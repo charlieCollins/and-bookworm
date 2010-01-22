@@ -25,8 +25,6 @@ public class BookTest extends TestCase {
       books1.add(b2);
       books1.add(b3);     
       
-      System.out.println("b1 - " + b1);
-      
-   }
-   
+      System.out.println("b1 - " + b1);      
+   }   
 }
