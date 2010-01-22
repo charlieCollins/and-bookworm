@@ -15,11 +15,11 @@ public class BookTest extends TestCase {
 
    public void testBookList() {
       
-      Author a1 = new Author(0, "author1");      
+      Author a1 = new Author("author1");      
       
-      Book b1 = new Book(0, "1231", "title1", a1.getId(), new Date());
-      Book b2 = new Book(1, "1232", "title2", a1.getId(), new Date());      
-      Book b3 = new Book(2, "1233", "title3", a1.getId(), new Date());
+      Book b1 = new Book("1231", "title1", null, new Date());
+      Book b2 = new Book("1232", "title2", null, new Date());      
+      Book b3 = new Book("1233", "title3", null, new Date());
       List<Book> books1 = new ArrayList<Book>();
       books1.add(b1);
       books1.add(b2);
