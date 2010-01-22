@@ -1,4 +1,4 @@
-package com.totsp.bookworm;
+package com.totsp.bookworm.zxing;
 
 /*
  * Copyright 2009 ZXing authors

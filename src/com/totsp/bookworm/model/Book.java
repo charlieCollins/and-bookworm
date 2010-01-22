@@ -7,7 +7,7 @@ public final class Book {
    
    private long id;
    private String isbn;
-   private String title;
+   private String title;   
    private Set<Author> authors;
    private Date datePub;
    

@@ -19,7 +19,10 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.data.DbConstants;
+import com.totsp.bookworm.data.HTTPRequestHelper;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
+import com.totsp.bookworm.zxing.ZXingIntentResult;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,11 +122,15 @@ public class Main extends TabActivity {
 
       Handler handler = new Handler() {
          public void handleMessage(final Message msg) {
+            String response = msg.getData().getString("RESPONSE");
             Log.d(Splash.APP_NAME, "HANDLER returned with msg - " + msg);
+            Log.d(Splash.APP_NAME, " response - " + response);
          }
       };
-
-      String url = "http://books.google.com/books?isbn=" + isbn;
+      
+      // TODO Parser for google books      
+      String url = "http://books.google.com/books/feeds/volumes?q=isbn:" + isbn;
+      // web url http://books.google.com/books?isbn=
       
       HTTPRequestHelper http = new HTTPRequestHelper(handler);
       http.performGet(url);
