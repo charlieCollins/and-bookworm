@@ -33,3 +33,6 @@ http://hc.apache.org/httpcomponents-client/index.html
   
 HttpClient constants:
 http://hc.apache.org/httpcomponents-core/httpcore/apidocs/constant-values.html#org.apache.http.params.CoreProtocolPNames.HTTP_CONTENT_CHARSET
+
+Use XMLReader over SaxParser direct - also see XmlPullParser.
+Also android shortcut - Xml.parse

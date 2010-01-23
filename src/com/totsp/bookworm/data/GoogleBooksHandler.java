@@ -1,8 +1,5 @@
 package com.totsp.bookworm.data;
 
-import android.util.Log;
-
-import com.totsp.bookworm.Splash;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 

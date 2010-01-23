@@ -22,13 +22,15 @@ public class BookScanResult extends Activity {
 
    private Handler httpHandler = new Handler() {
       public void handleMessage(final Message msg) {
-         String response = msg.getData().getString("RESPONSE");
+         String responseError = msg.getData().getString(HTTPRequestHelper.HTTP_RESPONSE_ERROR);
+         if (responseError != null) {
+            // HANDLE HTTP ERROR HERE
+         }         
+         String response = msg.getData().getString(HTTPRequestHelper.HTTP_RESPONSE);
          Log.d(Splash.APP_NAME, "HANDLER returned with msg - " + msg);
          Log.d(Splash.APP_NAME, " response - " + response);
          if (response != null) {
             BookScanResult.this.parseResponse(response);
-         } else {
-            // TODO display error!
          }
       }
    };
@@ -62,12 +64,7 @@ public class BookScanResult extends Activity {
       // network call on separate thread
       // TODO put this in AsyncTask - flesh out example/template for doing this in general
       // TODO progress dialog
-      new Thread() {
-         @Override
-         public void run() {
-            BookScanResult.this.httpHelper.performGet(url);
-         }
-      }.start();
+      this.httpHelper.performGet(url);
    }
 
    private void parseResponse(String response) {
