@@ -20,7 +20,7 @@ public class BookDetail extends Activity {
       
       this.bookTitle = this.getIntent().getStringExtra(DbConstants.TITLE);
       
-      this.output = (TextView) this.findViewById(R.id.output);
+      this.output = (TextView) this.findViewById(R.id.detailOutput);
       this.output.setText("selected book - " + this.bookTitle);
       
    }   

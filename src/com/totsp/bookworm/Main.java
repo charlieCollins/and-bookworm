@@ -1,10 +1,11 @@
 package com.totsp.bookworm;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +20,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.data.DbConstants;
-import com.totsp.bookworm.data.HTTPRequestHelper;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
@@ -50,13 +50,24 @@ public class Main extends TabActivity {
 
       setContentView(R.layout.main);
 
+      // TODO maybe move all this stuff to a "createViews" type method?      
       this.tabHost = this.getTabHost();
       tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Book List").setContent(R.id.booklist));
       tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Book Gallery").setContent(R.id.bookgallery));
       tabHost.addTab(tabHost.newTabSpec("tab3").setIndicator("Add a Book").setContent(R.id.bookadd));
       this.tabHost.setCurrentTab(0);
 
-      // TODO clean up this mess
+      this.scanButton = (Button) this.findViewById(R.id.bookaddscanbutton);
+      this.scanButton.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            ZXingIntentIntegrator.initiateScan(Main.this, "Scan Book", "message", "Yes", "No");
+         }
+      });
+
+      this.bindBookList();
+   }
+
+   private void bindBookList() {
       this.bookList = (ListView) this.findViewById(R.id.booklist);
       final ArrayList<String> bookNames = new ArrayList<String>();
       bookNames.addAll(this.dh.selectAllBookNames());
@@ -64,21 +75,13 @@ public class Main extends TabActivity {
       ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, bookNames);
       this.bookList.setAdapter(adapter);
       this.bookList.setOnItemClickListener(new OnItemClickListener() {
-         public void onItemClick(AdapterView parent, View v, int index, long id) {
+         public void onItemClick(AdapterView<?> parent, View v, int index, long id) {
             Log.d(Splash.APP_NAME, "onItemClick - " + bookNames.get(index));
             Intent intent = new Intent(Main.this, BookDetail.class);
             intent.putExtra(DbConstants.TITLE, bookNames.get(index));
             Main.this.startActivity(intent);
          }
       });
-
-      this.scanButton = (Button) this.findViewById(R.id.scan_button);
-      this.scanButton.setOnClickListener(new OnClickListener() {
-         public void onClick(View v) {
-            ZXingIntentIntegrator.initiateScan(Main.this, "Scan Book", "message", "Yes", "No");
-         }
-      });
-
    }
 
    @Override
@@ -104,36 +107,65 @@ public class Main extends TabActivity {
    }
 
    @Override
+   protected void onRestoreInstanceState(Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+   }
+
+   @Override
+   protected void onSaveInstanceState(Bundle saveState) {
+      super.onSaveInstanceState(saveState);
+   }
+
+   @Override
+   protected Dialog onCreateDialog(int id) {
+      switch (id) {
+      case 1:
+         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+         builder.setTitle("title");
+         builder.setIcon(android.R.drawable.ic_dialog_alert);
+         builder.setMessage("message");
+         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+               // onclick
+            }
+         });
+         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+               // onclick
+            }
+         });
+         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+               // onclick
+            }
+         });
+         builder.setCancelable(true);
+         return builder.create();
+      }
+      return super.onCreateDialog(id);
+   }
+
+   @Override
+   protected void onPrepareDialog(int id, Dialog dialog) {
+      super.onPrepareDialog(id, dialog);
+      switch (id) {
+      case 1:
+         dialog.setTitle("first dialog");
+         break;
+      }
+   }   
+
+   @Override
    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
       ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
       if (scanResult != null) {
          // handle scan result
-         Log.d(Splash.APP_NAME, "************** scanResult - " + scanResult.getContents());
-
-         // TODO validate that result looks like an ISBN? 
-
-         this.getBookDataFromGoogleBooks(scanResult.getContents());
-
+         Intent scanIntent = new Intent(this, BookScanResult.class);
+         scanIntent.putExtra("SCAN_RESULT_CONTENTS", scanResult.getContents());
+         this.startActivity(scanIntent);
+      } else {
+         // TODO report scan problem?
       }
-      // else continue with any other code you need in the method
-   }
-
-   private void getBookDataFromGoogleBooks(String isbn) {
-
-      Handler handler = new Handler() {
-         public void handleMessage(final Message msg) {
-            String response = msg.getData().getString("RESPONSE");
-            Log.d(Splash.APP_NAME, "HANDLER returned with msg - " + msg);
-            Log.d(Splash.APP_NAME, " response - " + response);
-         }
-      };
-      
-      // TODO Parser for google books      
-      String url = "http://books.google.com/books/feeds/volumes?q=isbn:" + isbn;
-      // web url http://books.google.com/books?isbn=
-      
-      HTTPRequestHelper http = new HTTPRequestHelper(handler);
-      http.performGet(url);
    }
 
    private void insertTestData() {

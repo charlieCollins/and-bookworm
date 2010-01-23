@@ -9,14 +9,6 @@ public class Splash extends Activity {
 
    public static final String APP_NAME = "BookWorm";  
 
-   /*
-   private final Handler handler = new Handler() {
-      public void handleMessage(final Message msg) {
-         startActivity(new Intent(Splash.this, Main.class));
-      }
-   };
-   */
-
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -26,15 +18,6 @@ public class Splash extends Activity {
    @Override
    public void onStart() {
       super.onStart();
-      
-      /*
-      new Thread() {
-         @Override
-         public void run() {
-            handler.sendMessageDelayed(handler.obtainMessage(), 2000);
-         };
-      }.start();
-      */
    }
 
    @Override
@@ -49,7 +32,6 @@ public class Splash extends Activity {
    
    @Override
    public boolean onTouchEvent(MotionEvent e) {
-      // any touch, move along
       if (e.getAction() == MotionEvent.ACTION_DOWN) {
          this.startActivity(new Intent(Splash.this, Main.class));
       }

@@ -28,4 +28,8 @@ also have to install zxing manually for emulator, of course
 
 for standard junit tests in eclipse - edit run config, remove android api library, add jdk and junit 3
   
+Very hard to find HttpClient 4 site, part of new HttpComponents:
+http://hc.apache.org/httpcomponents-client/index.html 
   
+HttpClient constants:
+http://hc.apache.org/httpcomponents-core/httpcore/apidocs/constant-values.html#org.apache.http.params.CoreProtocolPNames.HTTP_CONTENT_CHARSET

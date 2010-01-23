@@ -10,6 +10,7 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
@@ -21,9 +22,18 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 
@@ -42,6 +52,7 @@ import java.util.Map;
  * 
  * TODO clean up and simplify
  * TODO cookies TODO multi-part binary data
+ * TODO shutdown connection mgr - client.getConnectionManager().shutdown();
  * TODO tests
  * 
  * @author charliecollins
@@ -54,8 +65,30 @@ public class HTTPRequestHelper {
    private static final int POST_TYPE = 1;
    private static final int GET_TYPE = 2;
    private static final String CONTENT_TYPE = "Content-Type";
-   public static final String MIME_FORM_ENCODED = "application/x-www-form-urlencoded";
-   public static final String MIME_TEXT_PLAIN = "text/plain";
+   private static final String MIME_FORM_ENCODED = "application/x-www-form-urlencoded";
+   private static final String MIME_TEXT_PLAIN = "text/plain";
+
+   // establish client as static
+   // (best practice in 
+   private static final DefaultHttpClient client;
+   static {      
+      HttpParams params = new BasicHttpParams();      
+      params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+      params.setParameter(CoreProtocolPNames.HTTP_CONTENT_CHARSET, HTTP.UTF_8);
+      ///params.setParameter(CoreProtocolPNames.USER_AGENT, "Android-x");      
+      params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 15000);
+      params.setParameter(CoreConnectionPNames.STALE_CONNECTION_CHECK, false);
+      
+      SchemeRegistry schemeRegistry = new SchemeRegistry();
+      schemeRegistry.register(
+               new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+      schemeRegistry.register(
+               new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+
+      ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+      
+      client = new DefaultHttpClient(cm, params);      
+   }
 
    private final ResponseHandler<String> responseHandler;
 
@@ -63,10 +96,10 @@ public class HTTPRequestHelper {
    public HTTPRequestHelper(final ResponseHandler<String> responseHandler) {
       this.responseHandler = responseHandler;
    }
-   
+
    // ctor that automatically uses String based ResponseHandler
    public HTTPRequestHelper(final Handler handler) {
-      this(HTTPRequestHelper.getResponseHandlerInstance(handler));      
+      this(HTTPRequestHelper.getResponseHandlerInstance(handler));
    }
 
    /**
@@ -74,9 +107,9 @@ public class HTTPRequestHelper {
     * 
     */
    public void performGet(final String url) {
-      performRequest(null, url,null, null, null, null, HTTPRequestHelper.GET_TYPE);
+      performRequest(null, url, null, null, null, null, HTTPRequestHelper.GET_TYPE);
    }
-   
+
    /**
     * Perform an HTTP GET operation with user/pass and headers.
     * 
@@ -122,9 +155,6 @@ public class HTTPRequestHelper {
             final Map<String, String> headers, final Map<String, String> params, final int requestType) {
 
       Log.d(CLASSTAG, " " + HTTPRequestHelper.CLASSTAG + " making HTTP request to url - " + url);
-
-      // establish HttpClient
-      DefaultHttpClient client = new DefaultHttpClient();
 
       // add user and pass to client credentials if present
       if ((user != null) && (pass != null)) {
@@ -209,7 +239,7 @@ public class HTTPRequestHelper {
          }
       }
    }
-  
+
    /**
     * Static utility method to create a default ResponseHandler that sends a Message to the passed
     * in Handler with the response as a String, after the request completes.
@@ -251,7 +281,7 @@ public class HTTPRequestHelper {
       };
       return responseHandler;
    }
-   
+
    private static String inputStreamToString(final InputStream stream) throws IOException {
       BufferedReader br = new BufferedReader(new InputStreamReader(stream));
       StringBuilder sb = new StringBuilder();

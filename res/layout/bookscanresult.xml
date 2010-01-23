@@ -4,22 +4,18 @@
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
-		<TextView android:id="@+id/helpTitle" android:layout_width="fill_parent"
+		<TextView android:id="@+id/scanTitle" android:layout_width="fill_parent"
 			android:gravity="center_horizontal" android:layout_height="wrap_content"
 			android:layout_marginTop="25px" android:layout_marginBottom="10px"
 			android:text="@string/app_name" style="@style/titletext" />
-		<ImageView android:id="@+id/helpLogo" android:layout_width="wrap_content"
+		<ImageView android:id="@+id/scanCover" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:layout_centerVertical="true"
 			android:gravity="center_horizontal" android:layout_marginLeft="10px"
-			android:layout_marginTop="10px" android:layout_below="@id/helpTitle"
+			android:layout_marginTop="10px" android:layout_below="@id/scanTitle"
 			android:src="@drawable/books24" />
-		<TextView android:id="@+id/helpBy" android:layout_width="fill_parent"
+		<TextView android:id="@+id/scanOutput" android:layout_width="fill_parent"
 			android:gravity="center_horizontal" android:layout_height="wrap_content"
 			android:layout_marginTop="10px" android:text="@string/by" style="@style/text"
-			android:layout_toRightOf="@id/helpLogo" android:layout_below="@id/helpTitle" />
-		<TextView android:id="@+id/helpContent" android:layout_width="fill_parent"
-			android:gravity="center_horizontal" android:layout_height="wrap_content"
-			android:layout_marginTop="10px" android:text="@string/help" style="@style/text"
-			android:layout_below="@id/helpLogo" />
+			android:layout_below="@id/scanCover" />
 	</RelativeLayout>
 </ScrollView>

@@ -14,20 +14,21 @@
 			<!--  TAB 2 -->
 			<RelativeLayout android:id="@+id/bookgallery"
 				android:layout_width="fill_parent" android:layout_height="fill_parent">
-				<TextView android:id="@+id/gallery_intro" android:layout_width="fill_parent"
-					android:layout_height="fill_parent" android:text="Book Gallery" />
+				<TextView android:id="@+id/gallery_intro"
+					android:layout_width="fill_parent" android:layout_height="fill_parent"
+					android:text="Book Gallery" />
 			</RelativeLayout>
 			<!--  TAB 3 -->
 			<RelativeLayout android:id="@+id/bookadd"
 				android:layout_width="fill_parent" android:layout_height="fill_parent">
-				<TextView android:id="@+id/add_intro" style="@style/text"
+				<TextView android:id="@+id/bookaddintro" style="@style/text"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
-					android:layout_below="@id/logo" android:text="Tap to begin" />
-				<Button android:id="@+id/scan_button" style="@style/text"
+					android:text="Choose entry method" />
+				<Button android:id="@+id/bookaddscanbutton" style="@style/text"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
-					android:layout_below="@id/logo" android:text="Scan bar code" />
+					android:layout_below="@id/bookaddintro" android:text="Scan bar code" />
 			</RelativeLayout>
 		</FrameLayout>
 	</LinearLayout>

@@ -14,6 +14,7 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.TestCase;
 
 // gotta use Junit3 and extend TestCase - to run this in Eclipse without extra config
+// remove android lib and add JRE and junit to run config
 
 public class GoogleBooksHandlerTest extends TestCase {
 

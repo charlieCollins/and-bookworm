@@ -15,5 +15,6 @@
 		<activity android:name="Main" />
 		<activity android:name="Help" />      
 		<activity android:name="BookDetail" />      
+		<activity android:name="BookScanResult" />      
 	</application>
 </manifest> 
