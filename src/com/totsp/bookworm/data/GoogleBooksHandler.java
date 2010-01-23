@@ -1,5 +1,8 @@
 package com.totsp.bookworm.data;
 
+import android.util.Log;
+
+import com.totsp.bookworm.Splash;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 
@@ -8,7 +11,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * SAX DefaultHandler impl for Google Books feed.
@@ -22,7 +24,7 @@ public class GoogleBooksHandler extends DefaultHandler {
 
    private static final String ENTRY = "entry";
 
-   private List<Book> books;
+   private ArrayList<Book> books;
 
    private Book book;
 
@@ -44,37 +46,35 @@ public class GoogleBooksHandler extends DefaultHandler {
    }
 
    @Override
-   public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
-
-      if (qName.equals(GoogleBooksHandler.ENTRY)) {
+   public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {      
+      if (localName.equals(GoogleBooksHandler.ENTRY)) {
          this.inEntry = true;
          this.book = new Book();
       }
 
-      if (this.inEntry && qName.equals("title")) {
+      if (this.inEntry && localName.equals("title")) {
          this.inTitle = true;
-      } else if (this.inEntry && qName.equals("dc:date")) {
+      } else if (this.inEntry && localName.equals("dc:date")) {
          this.inDate = true;
-      } else if (this.inEntry && qName.equals("dc:creator")) {
+      } else if (this.inEntry && localName.equals("dc:creator")) {
          this.inCreator = true;
       }
    }
 
    @Override
    public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-
-      if (qName.equals(GoogleBooksHandler.ENTRY)) {
+      if (localName.equals(GoogleBooksHandler.ENTRY)) {
          if (this.inEntry) {
+            this.books.add(this.book);
             this.inEntry = false;
-            books.add(this.book);
          }
       }
 
-      if (this.inEntry && qName.equals("title")) {
+      if (this.inEntry && localName.equals("title")) {
          this.inTitle = false;
-      } else if (this.inEntry && qName.equals("dc:date")) {
+      } else if (this.inEntry && localName.equals("dc:date")) {
          this.inDate = false;
-      } else if (this.inEntry && qName.equals("dc:creator")) {
+      } else if (this.inEntry && localName.equals("dc:creator")) {
          this.inCreator = false;
       }
    }
@@ -104,7 +104,7 @@ public class GoogleBooksHandler extends DefaultHandler {
       return result;
    }
 
-   public List<Book> getBooks() {
+   public ArrayList<Book> getBooks() {
       return this.books;
    }
 }
