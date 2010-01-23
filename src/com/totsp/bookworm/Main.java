@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -41,6 +42,8 @@ public class Main extends TabActivity {
 
    // tab3 - add book
    private Button scanButton;
+   private Button searchButton;
+   private Button formButton;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,20 @@ public class Main extends TabActivity {
       this.scanButton.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
             ZXingIntentIntegrator.initiateScan(Main.this, "Scan Book", "message", "Yes", "No");
+         }
+      });
+
+      this.searchButton = (Button) this.findViewById(R.id.bookaddsearchbutton);
+      this.searchButton.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            new AlertDialog.Builder(Main.this).setTitle("Click!").setMessage("Clicked search button").show();
+         }
+      });
+
+      this.formButton = (Button) this.findViewById(R.id.bookaddformbutton);
+      this.formButton.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            new AlertDialog.Builder(Main.this).setTitle("Click!").setMessage("Clicked form button").show();
          }
       });
 
@@ -153,7 +170,7 @@ public class Main extends TabActivity {
          dialog.setTitle("first dialog");
          break;
       }
-   }   
+   }
 
    @Override
    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
