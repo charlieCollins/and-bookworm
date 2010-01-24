@@ -5,16 +5,30 @@
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
 		<TextView android:id="@+id/scanTitle" android:layout_width="fill_parent"
-			android:gravity="center_horizontal" android:layout_height="wrap_content"
-			android:layout_marginTop="25px" android:layout_marginBottom="10px"
-			android:text="@string/app_name" style="@style/titletext" />
-		<ImageView android:id="@+id/scanCover" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" 
-			android:gravity="center_horizontal" android:layout_marginLeft="50px"
-			android:layout_marginTop="10px" android:layout_below="@id/scanTitle" />
-		<TextView android:id="@+id/scanOutput" android:layout_width="fill_parent"
-			android:gravity="center_horizontal" android:layout_height="wrap_content"
-			android:layout_marginTop="10px" android:text="@string/by" style="@style/text"
-			android:layout_below="@id/scanCover" />
+            android:gravity="center_horizontal" android:layout_height="wrap_content"
+            android:layout_marginTop="25px" android:layout_marginBottom="10px"
+            android:text="Book Scan Results" style="@style/subtitletext" />
+		
+		<TextView android:id="@+id/scanBookTitle" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:gravity="center_horizontal" 
+			android:layout_marginTop="10px" android:layout_marginBottom="10px"
+			style="@style/text" />
+		<ImageView android:id="@+id/scanBookCover" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center_horizontal" 
+			android:layout_marginLeft="50px" android:layout_marginTop="10px" 
+			android:layout_below="@id/scanTitle" />			
+		<TextView android:id="@+id/scanBookAuthor" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:gravity="center_horizontal" 
+			android:layout_marginTop="10px" style="@style/text"
+			android:layout_below="@id/scanBookCover" />		
+		<TextView android:id="@+id/scanBookDate" android:layout_width="fill_parent"
+           android:layout_height="wrap_content"  android:gravity="center_horizontal" 
+            android:layout_marginTop="10px" style="@style/text"
+            android:layout_below="@id/scanBookAuthor" />
+            
+		<Button android:id="@+id/scanbookaddbutton" android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:gravity="center_horizontal" 
+            android:layout_marginTop="25px" android:text="Add book" style="@style/textbutton"
+            android:layout_below="@id/scanBookDate" />
 	</RelativeLayout>
 </ScrollView>

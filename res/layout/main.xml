@@ -25,15 +25,15 @@
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
 					android:text="Choose entry method" />
-				<Button android:id="@+id/bookaddscanbutton" style="@style/text"
+				<Button android:id="@+id/bookaddscanbutton" style="@style/textbutton"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
 					android:layout_below="@id/bookaddintro" android:text="Scan product code" />
-				<Button android:id="@+id/bookaddsearchbutton" style="@style/text"
+				<Button android:id="@+id/bookaddsearchbutton" style="@style/textbutton"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
 					android:layout_below="@id/bookaddscanbutton" android:text="Search the web" />
-				<Button android:id="@+id/bookaddformbutton" style="@style/text"
+				<Button android:id="@+id/bookaddformbutton" style="@style/textbutton"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
 					android:layout_below="@id/bookaddsearchbutton" android:text="Use form (type)" />

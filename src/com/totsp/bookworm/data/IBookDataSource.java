@@ -4,6 +4,6 @@ import com.totsp.bookworm.model.Book;
 
 public interface IBookDataSource {
 
-   void getBook(String isbn, IAsyncCallback<Book> callback);   
+   Book getBook(String isbn);   
    
 }

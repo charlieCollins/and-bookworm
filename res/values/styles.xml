@@ -8,13 +8,26 @@
         <item name="android:shadowDy">1.5</item> 
         <item name="android:shadowRadius">0.5</item>
     </style>
+    <style name="subtitletext">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">#fff</item> 
+        <item name="android:textStyle">bold</item> 
+        <item name="android:shadowColor">#214a06</item> 
+        <item name="android:shadowDx">1.5</item> 
+        <item name="android:shadowDy">1.5</item> 
+        <item name="android:shadowRadius">0.5</item>
+    </style>
     <style name="textbold">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#fff</item> 
         <item name="android:textStyle">bold</item>        
     </style>
-     <style name="text">
+    <style name="text">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#fff</item> 
+    </style>    
+    <style name="textbutton">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#000</item> 
     </style>
 </resources>

@@ -36,12 +36,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Apache HttpClient helper class for use in conjunction with HttpHelperAndroiud.
+ * Apache HttpClient helper class for performing HTTP requests.
  * 
  * This class is intentionally *not* bound to any Android classes so that it is easier 
- * to develop and test. The HttpHelperAndroid class can be used within Android
- * applications to bind Apache ResponseHandler objects with Android Handler objects
- * and therefore make easy HTTP requests in an asynchronous manner. 
+ * to develop and test. Use calls to this class inside Android AsyncTask implementations
+ * to make HTTP requests asynchronous and not block the UI Thread.
  * 
  * TODO cookies 
  * TODO multi-part binary data

@@ -1,18 +1,19 @@
 package com.totsp.bookworm;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
-import com.totsp.bookworm.data.IAsyncCallback;
 import com.totsp.bookworm.data.IBookDataSource;
+import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.BookImageUtil;
 
@@ -23,109 +24,96 @@ import java.net.URLConnection;
 
 public class BookScanResult extends Activity {
 
-   // TODO use AsyncTasks
-   
-   private Handler bookDataHandler = new Handler() {
-      @Override
-      public void handleMessage(Message msg) {
-         if (bookData != null) {
-            output.setText(bookData);
-            scanTitle.setText(bookTitle);
-         } else {
-            output.setText("missing book data");
-         }
-      }
-   };
-   
-   private Handler bookCoverHandler = new Handler() {
-      @Override
-      public void handleMessage(Message msg) {
-         if (imageBitmap != null) {
-            scanCover.setImageBitmap(imageBitmap);
-         } else {
-            // TODO need missing cover image
-            scanCover.setImageResource(R.drawable.books48);
-         }
-      }
-   };
-
    private IBookDataSource bookDataSource;
-   
-   private String bookData;
-   private String bookTitle;
-   
-   private Bitmap imageBitmap;
-   
-   private ImageView scanCover;
-   private TextView scanTitle;
-   private TextView output;   
 
+   private Button scanBookAddButton;
+   private TextView scanBookTitle;
+   private ImageView scanBookCover;
+   private TextView scanBookAuthor;
+   private TextView scanBookDate;
+   
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
+      this.bookDataSource = new GoogleBookDataSource();
+      
       setContentView(R.layout.bookscanresult);
-
-      this.scanCover = (ImageView) this.findViewById(R.id.scanCover);
-      this.scanTitle = (TextView) this.findViewById(R.id.scanTitle);
-      this.output = (TextView) this.findViewById(R.id.scanOutput);
+      
+      this.scanBookTitle = (TextView) this.findViewById(R.id.scanBookTitle);
+      this.scanBookCover = (ImageView) this.findViewById(R.id.scanBookCover);
+      this.scanBookAuthor = (TextView) this.findViewById(R.id.scanBookAuthor);
+      this.scanBookDate = (TextView) this.findViewById(R.id.scanBookDate);
+      
+      this.scanBookAddButton = (Button) this.findViewById(R.id.scanbookaddbutton);
 
       String scanResultContents = this.getIntent().getStringExtra("SCAN_RESULT_CONTENTS");
-      this.output.setText("book UPC: " + scanResultContents);
-
-      // get cover image
-      this.getBookCoverImage(scanResultContents);
+      if (scanResultContents == null || scanResultContents.length() < 10 || scanResultContents.length() > 13) {
+         this.scanBookCover.setImageResource(R.drawable.book_invalid_isbn);
+         this.scanBookTitle.setText("Whoops, that scan didn't work, make sure the item is a book, and try again.");
+      } else {         
+         // launch Task
+         new GetBookDataTask().execute(scanResultContents);
+      }      
+   }
+   
+   private class GetBookDataTask extends AsyncTask<String, Void, Void> { 
+      private ProgressDialog dialog = new ProgressDialog(BookScanResult.this);  
+        
+      private Book book;
+      private Bitmap bookCoverBitmap;
       
-      // get book data
-      // inject? - allow user to pick source (we have ISBN, now need to get rest of data)?
-      this.bookDataSource = new GoogleBookDataSource();
-      this.getBookDataFromSource(scanResultContents);      
-   }  
-   
-   private void getBookDataFromSource(final String isbn) {
-      new Thread() {
-         public void run() {
-            bookDataSource.getBook(isbn, new IAsyncCallback<Book>() {
-               public void onSuccess(Book b) {
-                  bookData = b.toString();
-                  bookTitle = b.getTitle();            
-               }
-               public void onFailure(Throwable t) {
-                  // TODO
-                  Log.e(Splash.APP_NAME, "Error getting book", t);
-                  bookData = t.getMessage();
-               }
-            });
-            bookDataHandler.sendEmptyMessage(1);
-         }
-      }.start();
-   }
-   
-   // TODO cleanup getCover stuff
-   // TODO need to make this an AsyncTask (or add some stuff to HTTPRequestHelper to return binary?)
-   private void getBookCoverImage(final String isbn) {
-      // TODO before going to network, check if we have image locally
-      // TODO store images filesys/db, something
-      new Thread() {
-         public void run() { 
-            String imageUrl = BookImageUtil.getCoverUrlMedium(isbn);
-            Log.d(Splash.APP_NAME, "book cover imageUrl - " + imageUrl);
-            if ((imageUrl != null) && !imageUrl.equals("")) {
-               try {
-                  URL url = new URL(imageUrl);
-                  URLConnection conn = url.openConnection();
-                  conn.connect();
-                  BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-                  imageBitmap = BitmapFactory.decodeStream(bis);                  
-               } catch (IOException e) {
-                  Log.e(Splash.APP_NAME, " ", e);
-               }
-            }
-            bookCoverHandler.sendEmptyMessage(1);
-         }
-      }.start();
-   }
+      // can use UI thread here
+      protected void onPreExecute() {  
+          dialog.setMessage("Retrieving book data..");  
+          dialog.show();  
+      }  
 
+      // automatically done on worker thread (separate from UI thread)
+      protected Void doInBackground(String... isbns) {  
+          book = bookDataSource.getBook(isbns[0]);          
+          // TODO better book cover get stuff (HttpHelper binary)
+          String imageUrl = BookImageUtil.getCoverUrlMedium(isbns[0]);
+          Log.d(Splash.APP_NAME, "book cover imageUrl - " + imageUrl);
+          if ((imageUrl != null) && !imageUrl.equals("")) {
+             try {
+                URL url = new URL(imageUrl);
+                URLConnection conn = url.openConnection();
+                conn.connect();
+                BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                bookCoverBitmap = BitmapFactory.decodeStream(bis);
+             } catch (IOException e) {
+                Log.e(Splash.APP_NAME, " ", e);
+             }
+          }
+          return null;
+      }  
+        
+      // can use UI thread here
+      protected void onPostExecute(Void unused) {  
+          dialog.dismiss();      
+          
+          if (book != null) {
+             scanBookTitle.setText(book.getTitle());
+             String authors = "";
+             for (Author a : book.getAuthors()) {
+                authors += a.getName() + " ";
+             }
+             scanBookAuthor.setText(authors);
+             scanBookDate.setText(book.getDatePub().toString()); 
+             
+             if (bookCoverBitmap != null) {
+                scanBookCover.setImageBitmap(bookCoverBitmap);
+             } else {
+                scanBookCover.setImageResource(R.drawable.book_cover_missing);
+             }
+             
+          } else {
+             // TODO handle if book data is null
+          }          
+      }        
+  }  
+ 
    @Override
    public void onStart() {
       super.onStart();
