@@ -19,9 +19,9 @@ import java.util.Set;
 public class DataHelper {
 
    private static final String DATABASE_NAME = "bookworm.db";
-   private static final int DATABASE_VERSION = 1;
+   private static final int DATABASE_VERSION = 2;
    private static final String BOOK_TABLE = "book";
-   private static final String BOOKDATA_TABLE = "bookdata";
+   private static final String BOOKUSERDATA_TABLE = "bookuserdata";
    private static final String BOOKAUTHOR_TABLE = "bookauthor";
    private static final String AUTHOR_TABLE = "author";
 
@@ -289,7 +289,14 @@ public class DataHelper {
 
          // book table
          db.execSQL("CREATE TABLE " + BOOK_TABLE + " (" + DbConstants.BOOKID + " INTEGER PRIMARY KEY,"
-                  + DbConstants.ISBN + " TEXT," + DbConstants.TITLE + " TEXT," + DbConstants.DATEPUB + " INTEGER"
+                  + DbConstants.ISBN + " TEXT," + DbConstants.TITLE + " TEXT,"                   
+                  + DbConstants.PUBLISHER + " TEXT,"
+                  + DbConstants.IMAGEURL + " TEXT,"
+                  + DbConstants.OVERVIEWURL + " TEXT,"
+                  + DbConstants.DESCRIPTION + " TEXT,"
+                  + DbConstants.SUBJECT + " TEXT,"
+                  + DbConstants.FORMAT + " TEXT,"                  
+                  + DbConstants.DATEPUB + " INTEGER"
                   + ");");
 
          // author table
@@ -301,7 +308,7 @@ public class DataHelper {
                   + DbConstants.BOOKID + " INTEGER," + DbConstants.AUTHORID + " INTEGER)");
 
          // bookdata table (users book data, ratings, reviews, etc)
-         db.execSQL("CREATE TABLE " + BOOKDATA_TABLE + " (" + DbConstants.BOOKDATAID + " INTEGER PRIMARY KEY,"
+         db.execSQL("CREATE TABLE " + BOOKUSERDATA_TABLE + " (" + DbConstants.BOOKUSERDATAID + " INTEGER PRIMARY KEY,"
                   + DbConstants.BOOKID + " INTEGER," + DbConstants.READSTATUS + " INTEGER," + DbConstants.RATING
                   + " INTEGER," + DbConstants.BLURB + " TEXT" + ");");
 
@@ -317,8 +324,11 @@ public class DataHelper {
       public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
          Log.w("BookWorm", "Upgrading database not yet implemented");
          // export old data first, then upgrade, then import
-         //db.execSQL("DROP TABLE IF EXISTS " + BOOK_TABLE);
-         //onCreate(db);
+         db.execSQL("DROP TABLE IF EXISTS " + BOOK_TABLE);
+         db.execSQL("DROP TABLE IF EXISTS " + AUTHOR_TABLE);
+         db.execSQL("DROP TABLE IF EXISTS " + BOOKUSERDATA_TABLE);
+         db.execSQL("DROP TABLE IF EXISTS " + BOOKAUTHOR_TABLE);
+         onCreate(db);
       }
 
       public boolean isDbCreated() {

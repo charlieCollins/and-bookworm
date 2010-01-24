@@ -17,7 +17,7 @@ public final class Author {
    public String toString() {
       StringBuilder sb = new StringBuilder() ;
       sb.append("Author-");
-      sb.append(" name:" + this.getName());
+      sb.append(" name:" + this.name);
       return sb.toString();
    }
 
