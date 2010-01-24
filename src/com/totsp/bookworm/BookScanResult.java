@@ -23,7 +23,21 @@ import java.net.URLConnection;
 
 public class BookScanResult extends Activity {
 
-   private Handler setImageHandler = new Handler() {
+   // TODO use AsyncTasks
+   
+   private Handler bookDataHandler = new Handler() {
+      @Override
+      public void handleMessage(Message msg) {
+         if (bookData != null) {
+            output.setText(bookData);
+            scanTitle.setText(bookTitle);
+         } else {
+            output.setText("missing book data");
+         }
+      }
+   };
+   
+   private Handler bookCoverHandler = new Handler() {
       @Override
       public void handleMessage(Message msg) {
          if (imageBitmap != null) {
@@ -36,6 +50,9 @@ public class BookScanResult extends Activity {
    };
 
    private IBookDataSource bookDataSource;
+   
+   private String bookData;
+   private String bookTitle;
    
    private Bitmap imageBitmap;
    
@@ -70,15 +87,16 @@ public class BookScanResult extends Activity {
          public void run() {
             bookDataSource.getBook(isbn, new IAsyncCallback<Book>() {
                public void onSuccess(Book b) {
-                  output.setText(b.toString());
-                  scanTitle.setText(b.getTitle());            
+                  bookData = b.toString();
+                  bookTitle = b.getTitle();            
                }
                public void onFailure(Throwable t) {
                   // TODO
                   Log.e(Splash.APP_NAME, "Error getting book", t);
-                  output.setText(t.getMessage());
+                  bookData = t.getMessage();
                }
             });
+            bookDataHandler.sendEmptyMessage(1);
          }
       }.start();
    }
@@ -103,7 +121,7 @@ public class BookScanResult extends Activity {
                   Log.e(Splash.APP_NAME, " ", e);
                }
             }
-            setImageHandler.sendEmptyMessage(1);
+            bookCoverHandler.sendEmptyMessage(1);
          }
       }.start();
    }
