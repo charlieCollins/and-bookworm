@@ -7,41 +7,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.util.Xml;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.totsp.bookworm.data.GoogleBooksHandler;
-import com.totsp.bookworm.data.HTTPRequestHelper;
+import com.totsp.bookworm.data.GoogleBookDataSource;
+import com.totsp.bookworm.data.IAsyncCallback;
+import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.model.BookImageUtil;
+import com.totsp.bookworm.util.BookImageUtil;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 
 public class BookScanResult extends Activity {
 
-   private HTTPRequestHelper httpHelper;
-
-   private Handler httpHandler = new Handler() {
-      public void handleMessage(final Message msg) {
-         String responseError = msg.getData().getString(HTTPRequestHelper.HTTP_RESPONSE_ERROR);
-         if (responseError != null) {
-            // HANDLE HTTP ERROR HERE
-         }         
-         String response = msg.getData().getString(HTTPRequestHelper.HTTP_RESPONSE);
-         Log.d(Splash.APP_NAME, "HANDLER returned with msg - " + msg);
-         Log.d(Splash.APP_NAME, " response - " + response);
-         if (response != null) {
-            BookScanResult.this.parseResponse(response);
-         }
-      }
-   };
-   
    private Handler setImageHandler = new Handler() {
       @Override
       public void handleMessage(Message msg) {
@@ -54,6 +35,8 @@ public class BookScanResult extends Activity {
       }
    };
 
+   private IBookDataSource bookDataSource;
+   
    private Bitmap imageBitmap;
    
    private ImageView scanCover;
@@ -64,8 +47,6 @@ public class BookScanResult extends Activity {
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      this.httpHelper = new HTTPRequestHelper(this.httpHandler);
-
       setContentView(R.layout.bookscanresult);
 
       this.scanCover = (ImageView) this.findViewById(R.id.scanCover);
@@ -75,43 +56,36 @@ public class BookScanResult extends Activity {
       String scanResultContents = this.getIntent().getStringExtra("SCAN_RESULT_CONTENTS");
       this.output.setText("book UPC: " + scanResultContents);
 
-      this.getBookData(scanResultContents);
-   }   
-   
-   private void getBookData(String isbn) {
-      final String url = "http://books.google.com/books/feeds/volumes?q=isbn:" + isbn;
-      // web url http://books.google.com/books?isbn=
-      // network call on separate thread
-      // TODO put this in AsyncTask - flesh out example/template for doing this in general
-      // TODO progress dialog
-      this.httpHelper.performGet(url);
-   }   
-
-   private void parseResponse(String response) {
-      GoogleBooksHandler gBooksHandler = new GoogleBooksHandler();
-      // TODO validate response quickly?
-      // TODO do parsing async too?
-      // TODO progress dialog
-      try {
-         Xml.parse(new ByteArrayInputStream(response.getBytes("UTF-8")), Xml.Encoding.UTF_8, gBooksHandler);
-      } catch (Exception e) {
-         throw new RuntimeException(e);
-      }
-
-      ArrayList<Book> books = gBooksHandler.getBooks();
-      if (books != null && !books.isEmpty()) {
-         this.output.setText(books.get(0).toString());
-         this.scanTitle.setText(books.get(0).getTitle());
-         this.getCoverImage(books.get(0).getIsbn());
-      } else {
-         this.output.setText("unable to parse HTTP response into book, or no results - check log");
-      } 
+      // get cover image
+      this.getBookCoverImage(scanResultContents);
       
-      // TODO call method to validate and save to DB here, etc
+      // get book data
+      // inject? - allow user to pick source (we have ISBN, now need to get rest of data)?
+      this.bookDataSource = new GoogleBookDataSource();
+      this.getBookDataFromSource(scanResultContents);      
+   }  
+   
+   private void getBookDataFromSource(final String isbn) {
+      new Thread() {
+         public void run() {
+            bookDataSource.getBook(isbn, new IAsyncCallback<Book>() {
+               public void onSuccess(Book b) {
+                  output.setText(b.toString());
+                  scanTitle.setText(b.getTitle());            
+               }
+               public void onFailure(Throwable t) {
+                  // TODO
+                  Log.e(Splash.APP_NAME, "Error getting book", t);
+                  output.setText(t.getMessage());
+               }
+            });
+         }
+      }.start();
    }
    
+   // TODO cleanup getCover stuff
    // TODO need to make this an AsyncTask (or add some stuff to HTTPRequestHelper to return binary?)
-   private void getCoverImage(final String isbn) {
+   private void getBookCoverImage(final String isbn) {
       // TODO before going to network, check if we have image locally
       // TODO store images filesys/db, something
       new Thread() {

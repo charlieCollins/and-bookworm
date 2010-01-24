@@ -104,6 +104,8 @@ public class DataHelper {
       return bookId;
    }
 
+   // TODO all these queries need to be redone - have added many fields to Book
+   
    public Book selectBook(long id) {
       Book b = null;
       Cursor c =
