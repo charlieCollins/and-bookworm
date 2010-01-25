@@ -57,7 +57,7 @@ public class BookScanResult extends Activity {
       this.scanBookAddButton = (Button) this.findViewById(R.id.scanbookaddbutton);
       this.scanBookAddButton.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            // TODO create method for this
+            // TODO create method for this (And db operations in AsyncTask)
             if (book != null && book.getIsbn() != null) {
                Log.d(Splash.APP_NAME, "Book object created, and ADD pressed");               
                // TODO don't even let users get here if book exists, remove add button prev              
@@ -97,8 +97,11 @@ public class BookScanResult extends Activity {
 
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(String... isbns) {
+         // book data itself
          bookTask = bookDataSource.getBook(isbns[0]);
+         
          // TODO better book cover get stuff (HttpHelper binary)
+         // book cover image
          String imageUrl = BookImageUtil.getCoverUrlMedium(isbns[0]);
          Log.d(Splash.APP_NAME, "book cover imageUrl - " + imageUrl);
          if ((imageUrl != null) && !imageUrl.equals("")) {
@@ -106,8 +109,11 @@ public class BookScanResult extends Activity {
                URL url = new URL(imageUrl);
                URLConnection conn = url.openConnection();
                conn.connect();
-               BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+               BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
                bookCoverBitmap = BitmapFactory.decodeStream(bis);
+               if (bookCoverBitmap.getWidth() < 10) {
+                  bookCoverBitmap = null;
+               }
             } catch (IOException e) {
                Log.e(Splash.APP_NAME, " ", e);
             }
@@ -133,8 +139,10 @@ public class BookScanResult extends Activity {
             scanBookDate.setText(DateUtil.format(bookTask.getDatePub()));
 
             if (bookCoverBitmap != null) {
+               Log.d(Splash.APP_NAME, "book cover bitmap present, set cover");
                scanBookCover.setImageBitmap(bookCoverBitmap);
             } else {
+               Log.d(Splash.APP_NAME, "book cover not found");
                scanBookCover.setImageResource(R.drawable.book_cover_missing);
             }
             
