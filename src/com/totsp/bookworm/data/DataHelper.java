@@ -83,7 +83,9 @@ public class DataHelper {
          this.bookInsertStmt.clearBindings();
          this.bookInsertStmt.bindString(1, b.getIsbn());
          this.bookInsertStmt.bindString(2, b.getTitle());
-         this.bookInsertStmt.bindLong(3, b.getDatePub().getTime());
+         if (b.getDatePub() != null) {
+            this.bookInsertStmt.bindLong(3, b.getDatePub().getTime());
+         }
          bookId = this.bookInsertStmt.executeInsert();
 
          // insert bookauthors

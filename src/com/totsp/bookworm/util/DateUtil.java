@@ -21,7 +21,9 @@ public final class DateUtil {
 
    public static final String format(Date d) {
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      if (d != null) {
       return dateFormat.format(d);
+      } return null;
    }
 
 }
