@@ -121,6 +121,9 @@ public class DataHelper {
          b.setDatePub(new Date(c.getLong(2)));
          // TODO add authors to book
       }
+      if (c != null && !c.isClosed()) {
+         c.close();
+      }
       return b;
    }
 
@@ -136,6 +139,9 @@ public class DataHelper {
          b.setTitle(c.getString(1));
          b.setDatePub(new Date(c.getLong(2)));
          // TODO add authors to book
+      }
+      if (c != null && !c.isClosed()) {
+         c.close();
       }
       return b;
    }
@@ -156,6 +162,9 @@ public class DataHelper {
             set.add(b);
          } while (c.moveToNext());
       }
+      if (c != null && !c.isClosed()) {
+         c.close();
+      }
       return set;
    }
    
@@ -167,6 +176,9 @@ public class DataHelper {
          do {            
             set.add(c.getString(0));
          } while (c.moveToNext());
+      }
+      if (c != null && !c.isClosed()) {
+         c.close();
       }
       return set;
    }
@@ -206,6 +218,9 @@ public class DataHelper {
          a.setId(id);
          a.setName(c.getString(0));
       }
+      if (c != null && !c.isClosed()) {
+         c.close();
+      }
       return a;
    }
 
@@ -218,6 +233,9 @@ public class DataHelper {
          a = new Author();
          a.setId(c.getLong(0));
          a.setName(name);
+      }
+      if (c != null && !c.isClosed()) {
+         c.close();
       }
       return a;
    }
@@ -234,6 +252,9 @@ public class DataHelper {
             a.setName(c.getString(1));
             set.add(a);
          } while (c.moveToNext());
+      }
+      if (c != null && !c.isClosed()) {
+         c.close();
       }
       return set;
    }
