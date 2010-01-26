@@ -57,6 +57,17 @@ public class DataHelper {
    // book
    public long insertBook(Book b) {
       long bookId = 0L;
+      
+      // TODO simplify this with ContentValues?
+      /*
+      final ContentValues values = new ContentValues();
+      values.put(COLUMN_USERNAME, userName);
+      values.put(COLUMN_REALNAME, realName);
+      values.put(COLUMN_NSID, nsid);
+      values.put(COLUMN_LAST_UPDATE, System.currentTimeMillis());
+
+      db.insert(TABLE_USERS, COLUMN_LAST_UPDATE, values);
+      */
 
       Book bookExists = this.selectBook(b.getIsbn());
       if (bookExists != null) {

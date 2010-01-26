@@ -7,6 +7,8 @@ import java.util.Set;
 public final class Book {
 
    private long id;
+   private long coverImageId;  // not in DB
+   private long coverImageThumbId;  // not in DB
    private String isbn;
    private String title;
    private Set<Author> authors;
@@ -14,7 +16,6 @@ public final class Book {
    private String description; // not in DB
    private String format; // not in DB
    private String subject; // not in DB
-   private String imageUrl; // nit in DB
    private String overviewUrl; // not in DB
    private Date datePub;
 
@@ -41,7 +42,8 @@ public final class Book {
       sb.append("\n description:" + this.description);
       sb.append("\n format:" + this.format);
       sb.append("\n subject:" + this.subject);
-      sb.append("\n imageUrl:" + this.imageUrl);
+      sb.append("\n coverImageId:" + this.coverImageId);
+      sb.append("\n coverImageThumbId:" + this.coverImageThumbId);
       sb.append("\n overviewUrl:" + this.overviewUrl);
       sb.append("\n datepub:" + this.datePub);
       return sb.toString();
@@ -119,14 +121,6 @@ public final class Book {
       this.subject = subject;
    }
 
-   public String getImageUrl() {
-      return this.imageUrl;
-   }
-
-   public void setImageUrl(String imageUrl) {
-      this.imageUrl = imageUrl;
-   }
-
    public String getOverviewUrl() {
       return this.overviewUrl;
    }
@@ -134,4 +128,20 @@ public final class Book {
    public void setOverviewUrl(String overviewUrl) {
       this.overviewUrl = overviewUrl;
    }
+
+   public long getCoverImageId() {
+      return this.coverImageId;
+   }
+
+   public void setCoverImageId(long coverImageId) {
+      this.coverImageId = coverImageId;
+   }
+
+   public long getCoverImageThumbId() {
+      return this.coverImageThumbId;
+   }
+
+   public void setCoverImageThumbId(long coverImageThumbId) {
+      this.coverImageThumbId = coverImageThumbId;
+   }   
 }
