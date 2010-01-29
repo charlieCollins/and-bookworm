@@ -150,7 +150,6 @@ public class Main extends TabActivity {
                      }
                   }).setNegativeButton("No, Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface d, int i) {
-               Main.this.startActivity(getIntent());
             }
          }).show();
          return true;
