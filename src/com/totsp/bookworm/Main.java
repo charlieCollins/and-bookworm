@@ -1,41 +1,43 @@
 package com.totsp.bookworm;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.TabActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.totsp.bookworm.data.DataHelper;
-import com.totsp.bookworm.data.DbConstants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Main extends TabActivity {
 
    private static final int MENU_HELP = 0;
-
-   private DataHelper dh;
+   private static final int MENU_CONTEXT_EDIT = 0;
+   private static final int MENU_CONTEXT_DELETE = 1;
+   
+   private BookWormApplication application;
+   
    private TabHost tabHost;
 
    // tab1 - book list
-   private ListView bookList;
+   private ArrayList<Book> bookList;
+   private ListView bookListView;
 
    // tab2 - book gallery
 
@@ -48,13 +50,13 @@ public class Main extends TabActivity {
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      this.dh = new DataHelper(this);
+      this.application = (BookWormApplication) this.getApplication();
 
       setContentView(R.layout.main);
 
       // TODO maybe move all this stuff to a "createViews" type method?      
       this.tabHost = this.getTabHost();
-      tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Book List").setContent(R.id.booklist));
+      tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Book List").setContent(R.id.bookListView));
       tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Book Gallery").setContent(R.id.bookgallery));
       tabHost.addTab(tabHost.newTabSpec("tab3").setIndicator("Add a Book").setContent(R.id.bookadd));
       this.tabHost.setCurrentTab(0);
@@ -84,25 +86,25 @@ public class Main extends TabActivity {
    }
 
    private void bindBookList() {
-      this.bookList = (ListView) this.findViewById(R.id.booklist);
-      final ArrayList<String> bookNames = new ArrayList<String>();
-      bookNames.addAll(this.dh.selectAllBookNames());
-      Log.d(Splash.APP_NAME, "bookNames size - " + bookNames.size());
-      ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, bookNames);
-      this.bookList.setAdapter(adapter);
-      this.bookList.setOnItemClickListener(new OnItemClickListener() {
+      this.bookListView = (ListView) this.findViewById(R.id.bookListView);
+      this.bookList = new ArrayList<Book>();
+      // TODO select only id/title, or cache/page - this could get slow with a lot of books?
+      this.bookList.addAll(this.application.getDataHelper().selectAllBooks());
+      Log.d(Splash.APP_NAME, "bookList size - " + this.bookList.size());
+      ArrayAdapter<Book> adapter = new ArrayAdapter<Book>(this, android.R.layout.simple_list_item_1, this.bookList);
+      this.bookListView.setAdapter(adapter);
+      this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(AdapterView<?> parent, View v, int index, long id) {
-            Log.d(Splash.APP_NAME, "onItemClick - " + bookNames.get(index));
-            Intent intent = new Intent(Main.this, BookDetail.class);
-            intent.putExtra(DbConstants.TITLE, bookNames.get(index));
-            Main.this.startActivity(intent);
+            Log.d(Splash.APP_NAME, "onItemClick - " + bookList.get(index));
+            Main.this.application.setSelectedBook(bookList.get(index));
+            Main.this.startActivity(new Intent(Main.this, BookDetail.class));
          }
       });
+      registerForContextMenu(this.bookListView);
    }
 
    @Override
    public void onPause() {
-      this.dh.cleanup();
       super.onPause();
    }
 
@@ -118,8 +120,33 @@ public class Main extends TabActivity {
       case MENU_HELP:
          this.startActivity(new Intent(Main.this, Help.class));
          return true;
+      default:
+         return super.onOptionsItemSelected(item);
       }
-      return super.onOptionsItemSelected(item);
+   }
+
+   public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+      super.onCreateContextMenu(menu, v, menuInfo);
+      menu.add(0, MENU_CONTEXT_EDIT, 0, "Edit Book");
+      menu.add(1, MENU_CONTEXT_DELETE, 0, "Delete Book");
+   }
+
+   public boolean onContextItemSelected(MenuItem item) {
+      AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+      long listIndex = info.id;
+      Book b = this.bookList.get((int) listIndex);
+      switch (item.getItemId()) {
+      case MENU_CONTEXT_EDIT:         
+         new AlertDialog.Builder(Main.this).setTitle("Click! EDIT" + b.getTitle()).setMessage(b.getTitle()).show();
+         return true;
+      case MENU_CONTEXT_DELETE:        
+         this.application.getDataHelper().deleteBook(b.getId());
+         // TODO put buttons here - sure/cancel
+         new AlertDialog.Builder(Main.this).setTitle("Deleted book").setMessage(b.getTitle()).show();
+         return true;
+      default:
+         return super.onContextItemSelected(item);
+      }
    }
 
    @Override
@@ -130,45 +157,6 @@ public class Main extends TabActivity {
    @Override
    protected void onSaveInstanceState(Bundle saveState) {
       super.onSaveInstanceState(saveState);
-   }
-
-   @Override
-   protected Dialog onCreateDialog(int id) {
-      switch (id) {
-      case 1:
-         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-         builder.setTitle("title");
-         builder.setIcon(android.R.drawable.ic_dialog_alert);
-         builder.setMessage("message");
-         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-               // onclick
-            }
-         });
-         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-               // onclick
-            }
-         });
-         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
-               // onclick
-            }
-         });
-         builder.setCancelable(true);
-         return builder.create();
-      }
-      return super.onCreateDialog(id);
-   }
-
-   @Override
-   protected void onPrepareDialog(int id, Dialog dialog) {
-      super.onPrepareDialog(id, dialog);
-      switch (id) {
-      case 1:
-         dialog.setTitle("first dialog");
-         break;
-      }
    }
 
    @Override
@@ -184,6 +172,7 @@ public class Main extends TabActivity {
       }
    }
 
+   /*
    private void insertTestData() {
       // temp
       try {
@@ -198,4 +187,5 @@ public class Main extends TabActivity {
       }
       // end temp
    }
+   */
 }

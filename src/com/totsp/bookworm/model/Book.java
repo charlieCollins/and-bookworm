@@ -33,7 +33,13 @@ public final class Book {
       this.title = title;
    }
 
+   @Override
    public String toString() {
+      // this is the default display in a ListView, etc, so make it short/sweet
+      return this.title;
+   }
+   
+   public String toStringFull() {
       StringBuilder sb = new StringBuilder();
       sb.append("Book-");
       sb.append("\n id:" + this.id);

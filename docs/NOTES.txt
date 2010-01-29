@@ -40,3 +40,5 @@ Also android shortcut - Xml.parse
 Need to document/describe 3 separate projects, Android, Android Test, Plain Test
 
 Instrumentation is required, even if don't want to use monitor? 
+
+look carefully at orientation changes and how they affect things - use android:configChanges="keyboardHidden|orientation"

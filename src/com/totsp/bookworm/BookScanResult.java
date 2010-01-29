@@ -14,8 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.totsp.bookworm.data.DataHelper;
-import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
@@ -30,9 +28,10 @@ import java.util.Date;
 
 public class BookScanResult extends Activity {
 
+   private BookWormApplication application;
+   
+   // TODO allow different sources
    private GoogleBookDataSource bookDataSource;
-   private DataHelper dataHelper;
-   private DataImageHelper dataImageHelper;
 
    private Button scanBookAddButton;
    private TextView scanBookTitle;
@@ -47,9 +46,9 @@ public class BookScanResult extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
+      this.application = (BookWormApplication) this.getApplication();
+      
       this.bookDataSource = new GoogleBookDataSource();
-      this.dataHelper = new DataHelper(this);
-      this.dataImageHelper = new DataImageHelper(this, "BookWorm", "BookWorm Cover Images", true);
 
       this.setContentView(R.layout.bookscanresult);
 
@@ -79,16 +78,16 @@ public class BookScanResult extends Activity {
       if ((this.book != null) && (this.book.getIsbn() != null)) {
          Log.d(Splash.APP_NAME, "Book object created, and ADD pressed");
          // TODO don't even let users get here if book exists, remove add button prev              
-         Book retrieve = this.dataHelper.selectBook(this.book.getIsbn());
+         Book retrieve = this.application.getDataHelper().selectBook(this.book.getIsbn());
          if (retrieve == null) {
             Log.d(Splash.APP_NAME, "Book does not already exist in DB, attempt to insert");
             // save image to ContentProvider
             if (this.bookCoverBitmap != null) {
-               int imageId = this.dataImageHelper.saveImage(this.book.getTitle(), this.bookCoverBitmap);
+               int imageId = this.application.getDataImageHelper().saveImage(this.book.getTitle(), this.bookCoverBitmap);
                this.book.setCoverImageId(imageId);
             }
             // save book to database
-            this.dataHelper.insertBook(this.book);
+            this.application.getDataHelper().insertBook(this.book);
          } else {
             Log.d(Splash.APP_NAME, "Book already exists in DB, ignore");
          }

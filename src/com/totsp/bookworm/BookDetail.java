@@ -4,21 +4,23 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.totsp.bookworm.data.DbConstants;
-
 public class BookDetail extends Activity {
 
+   private BookWormApplication application;
+   
    private TextView output;
    private String bookTitle;
-   
-   // TODO got here
    
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      
+      this.application = (BookWormApplication) this.getApplication();
+      
       setContentView(R.layout.bookdetail); 
       
-      this.bookTitle = this.getIntent().getStringExtra(DbConstants.TITLE);
+      // TODO check if selectedBook present?
+      this.bookTitle = this.application.getSelectedBook().getTitle();
       
       this.output = (TextView) this.findViewById(R.id.detailOutput);
       this.output.setText("selected book - " + this.bookTitle);
