@@ -15,39 +15,43 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.totsp.bookworm.data.DataHelper;
+import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.data.GoogleBookDataSource;
-import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.BookImageUtil;
 import com.totsp.bookworm.util.DateUtil;
+import com.totsp.bookworm.util.OpenLibraryUtil;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 
 public class BookScanResult extends Activity {
 
-   private IBookDataSource bookDataSource;
+   private GoogleBookDataSource bookDataSource;
    private DataHelper dataHelper;
+   private DataImageHelper dataImageHelper;
 
    private Button scanBookAddButton;
    private TextView scanBookTitle;
    private ImageView scanBookCover;
    private TextView scanBookAuthor;
    private TextView scanBookDate;
-   
+
+   private Bitmap bookCoverBitmap;
    private Book book;
 
    @Override
-   public void onCreate(Bundle savedInstanceState) {
+   public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
       this.bookDataSource = new GoogleBookDataSource();
       this.dataHelper = new DataHelper(this);
+      this.dataImageHelper = new DataImageHelper(this, "BookWorm", "BookWorm Cover Images", true);
 
-      setContentView(R.layout.bookscanresult);
+      this.setContentView(R.layout.bookscanresult);
 
       this.scanBookTitle = (TextView) this.findViewById(R.id.scanBookTitle);
       this.scanBookCover = (ImageView) this.findViewById(R.id.scanBookCover);
@@ -56,104 +60,42 @@ public class BookScanResult extends Activity {
 
       this.scanBookAddButton = (Button) this.findViewById(R.id.scanbookaddbutton);
       this.scanBookAddButton.setOnClickListener(new OnClickListener() {
-         public void onClick(View v) {
-            // TODO create method for this (And db operations in AsyncTask)
-            if (book != null && book.getIsbn() != null) {
-               Log.d(Splash.APP_NAME, "Book object created, and ADD pressed");               
-               // TODO don't even let users get here if book exists, remove add button prev              
-               Book retrieve = dataHelper.selectBook(book.getIsbn());
-               if (retrieve == null) {
-                  Log.d(Splash.APP_NAME, "Book does not already exist in DB, attempt to insert");               
-                  dataHelper.insertBook(book);
-               } else {
-                  Log.d(Splash.APP_NAME, "Book already exists in DB, ignore");               
-               }
-            }
-            startActivity(new Intent(BookScanResult.this, Main.class));
+         public void onClick(final View v) {
+            BookScanResult.this.scanBookAddClick();
          }
       });
 
       String isbn = this.getIntent().getStringExtra("SCAN_RESULT_CONTENTS");
       Log.d(Splash.APP_NAME, "ISBN after scan - " + isbn);
-      if (isbn == null || isbn.length() < 10 || isbn.length() > 13) {
+      if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          this.setViewsForInvalidScan();
       } else {
-         // launch Task
          new GetBookDataTask().execute(isbn);
       }
    }
-   
-   private class GetBookDataTask extends AsyncTask<String, Void, Void> {
-      private ProgressDialog dialog = new ProgressDialog(BookScanResult.this);
 
-      private Book bookTask;
-      private Bitmap bookCoverBitmap;
-
-      // can use UI thread here
-      protected void onPreExecute() {
-         dialog.setMessage("Retrieving book data..");
-         dialog.show();
-      }
-
-      // automatically done on worker thread (separate from UI thread)
-      protected Void doInBackground(String... isbns) {
-         // book data itself
-         bookTask = bookDataSource.getBook(isbns[0]);
-         
-         // TODO better book cover get stuff (HttpHelper binary)
-         // book cover image
-         String imageUrl = BookImageUtil.getCoverUrlSmall(isbns[0]);
-         Log.d(Splash.APP_NAME, "book cover imageUrl - " + imageUrl);
-         if ((imageUrl != null) && !imageUrl.equals("")) {
-            try {
-               URL url = new URL(imageUrl);
-               URLConnection conn = url.openConnection();
-               conn.connect();
-               BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
-               bookCoverBitmap = BitmapFactory.decodeStream(bis);
-               if (bookCoverBitmap.getWidth() < 10) {
-                  bookCoverBitmap = null;
-               }
-            } catch (IOException e) {
-               Log.e(Splash.APP_NAME, " ", e);
+   private void scanBookAddClick() {
+      // TODO make this another AsyncTask (db operations, etc)
+      if ((this.book != null) && (this.book.getIsbn() != null)) {
+         Log.d(Splash.APP_NAME, "Book object created, and ADD pressed");
+         // TODO don't even let users get here if book exists, remove add button prev              
+         Book retrieve = this.dataHelper.selectBook(this.book.getIsbn());
+         if (retrieve == null) {
+            Log.d(Splash.APP_NAME, "Book does not already exist in DB, attempt to insert");
+            // save image to ContentProvider
+            if (this.bookCoverBitmap != null) {
+               int imageId = this.dataImageHelper.saveImage(this.book.getTitle(), this.bookCoverBitmap);
+               this.book.setCoverImageId(imageId);
             }
-         }
-         return null;
-      }
-
-      // can use UI thread here
-      protected void onPostExecute(Void unused) {
-         dialog.dismiss();
-
-         if (bookTask != null) {
-            scanBookTitle.setText(bookTask.getTitle());
-            String authors = null;
-            for (Author a : bookTask.getAuthors()) {
-               if (authors == null) {
-                  authors = a.getName();
-               } else {
-                  authors += ", " + a.getName();
-               }               
-            }
-            scanBookAuthor.setText(authors);
-            scanBookDate.setText(DateUtil.format(bookTask.getDatePub()));
-
-            if (bookCoverBitmap != null) {
-               Log.d(Splash.APP_NAME, "book cover bitmap present, set cover");
-               scanBookCover.setImageBitmap(bookCoverBitmap);
-            } else {
-               Log.d(Splash.APP_NAME, "book cover not found");
-               scanBookCover.setImageResource(R.drawable.book_cover_missing);
-            }
-            
-            book = bookTask;
-            scanBookAddButton.setVisibility(View.VISIBLE);
+            // save book to database
+            this.dataHelper.insertBook(this.book);
          } else {
-          setViewsForInvalidScan();
+            Log.d(Splash.APP_NAME, "Book already exists in DB, ignore");
          }
       }
+      this.startActivity(new Intent(BookScanResult.this, Main.class));
    }
-   
+
    private void setViewsForInvalidScan() {
       this.scanBookCover.setImageResource(R.drawable.book_invalid_isbn);
       this.scanBookTitle.setText("Whoops, that scan worked but the number doesn't seem to be an ISBN,"
@@ -173,5 +115,77 @@ public class BookScanResult extends Activity {
    @Override
    protected void onStop() {
       super.onStop();
+   }
+
+   private class GetBookDataTask extends AsyncTask<String, Void, Void> {
+      private final ProgressDialog dialog = new ProgressDialog(BookScanResult.this);
+
+      private Book bookTask;
+      private Bitmap bookCoverBitmapTask;
+
+      // can use UI thread here
+      protected void onPreExecute() {
+         this.dialog.setMessage("Retrieving book data..");
+         this.dialog.show();
+      }
+
+      // automatically done on worker thread (separate from UI thread)
+      protected Void doInBackground(final String... isbns) {
+         // book data itself
+         this.bookTask = BookScanResult.this.bookDataSource.getBook(isbns[0]);
+
+         // TODO better book cover get stuff (HttpHelper binary)
+         // book cover image
+         String imageUrl = OpenLibraryUtil.getCoverUrlSmall(isbns[0]);
+         Log.d(Splash.APP_NAME, "book cover imageUrl - " + imageUrl);
+         if ((imageUrl != null) && !imageUrl.equals("")) {
+            try {
+               URL url = new URL(imageUrl);
+               URLConnection conn = url.openConnection();
+               conn.connect();
+               BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
+               this.bookCoverBitmapTask = BitmapFactory.decodeStream(bis);
+               if (this.bookCoverBitmapTask.getWidth() < 10) {
+                  this.bookCoverBitmapTask = null;
+               }
+            } catch (IOException e) {
+               Log.e(Splash.APP_NAME, " ", e);
+            }
+         }
+         return null;
+      }
+
+      // can use UI thread here
+      protected void onPostExecute(final Void unused) {
+         this.dialog.dismiss();
+
+         if (this.bookTask != null) {
+            BookScanResult.this.scanBookTitle.setText(this.bookTask.getTitle());
+            String authors = null;
+            for (Author a : this.bookTask.getAuthors()) {
+               if (authors == null) {
+                  authors = a.getName();
+               } else {
+                  authors += ", " + a.getName();
+               }
+            }
+            BookScanResult.this.scanBookAuthor.setText(authors);
+            BookScanResult.this.scanBookDate.setText(DateUtil.format(new Date(this.bookTask.getDatePubStamp())));
+
+            if (this.bookCoverBitmapTask != null) {
+               Log.d(Splash.APP_NAME, "book cover bitmap present, set cover");
+               BookScanResult.this.scanBookCover.setImageBitmap(this.bookCoverBitmapTask);
+               BookScanResult.this.bookCoverBitmap = bookCoverBitmapTask;
+            } else {
+               Log.d(Splash.APP_NAME, "book cover not found");
+               BookScanResult.this.scanBookCover.setImageResource(R.drawable.book_cover_missing);
+            }
+
+            BookScanResult.this.book = this.bookTask;
+            BookScanResult.this.scanBookAddButton.setVisibility(View.VISIBLE);
+         } else {
+            BookScanResult.this.setViewsForInvalidScan();
+         }
+      }
    }
 }

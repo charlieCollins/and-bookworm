@@ -36,3 +36,7 @@ http://hc.apache.org/httpcomponents-core/httpcore/apidocs/constant-values.html#o
 
 Use XMLReader over SaxParser direct - also see XmlPullParser.
 Also android shortcut - Xml.parse
+
+Need to document/describe 3 separate projects, Android, Android Test, Plain Test
+
+Instrumentation is required, even if don't want to use monitor? 

@@ -187,9 +187,9 @@ public class Main extends TabActivity {
    private void insertTestData() {
       // temp
       try {
-         Book b1 = new Book("1231", "book1", null, new Date());
-         Book b2 = new Book("1232", "book2", null, new Date());
-         Book b3 = new Book("1233", "book3", null, new Date());
+         Book b1 = new Book("1231", "book1");
+         Book b2 = new Book("1232", "book2");
+         Book b3 = new Book("1233", "book3");
          this.dh.insertBook(b1);
          this.dh.insertBook(b2);
          this.dh.insertBook(b3);

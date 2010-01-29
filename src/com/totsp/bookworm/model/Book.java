@@ -1,34 +1,36 @@
 package com.totsp.bookworm.model;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public final class Book {
 
-   private long id;
-   private long coverImageId;  // not in DB
-   private long coverImageThumbId;  // not in DB
-   private String isbn;
-   private String title;
+   // give things explicit defaults, easier than null checks later for SQLite
+   private long id = 0L;
+   private String isbn = "";
+   private String title = "";
+   private long coverImageId = 0L;   
+   private String publisher = ""; 
+   private String description = ""; 
+   private String format = ""; 
+   private String subject = ""; 
+   private String overviewUrl = "";    
+   private long datePubStamp = 0L;
    private Set<Author> authors;
-   private String publisher; // not in DB
-   private String description; // not in DB
-   private String format; // not in DB
-   private String subject; // not in DB
-   private String overviewUrl; // not in DB
-   private Date datePub;
 
    public Book() {
       this.authors = new HashSet<Author>();
    }
 
-   public Book(String isbn, String title, Set<Author> authors, Date datePub) {
-      this.id = 0L;
+   public Book(String isbn, String title) {
+      if (isbn == null || isbn.length() < 4) {
+         throw new IllegalArgumentException("Error, book must have an ISBN (minimum size 4)");
+      } 
+      if (title == null || title.length() < 1) {
+         throw new IllegalArgumentException("Error, book must have a title (minimum size 1)");
+      }
       this.isbn = isbn;
       this.title = title;
-      this.authors = authors;
-      this.datePub = datePub;
    }
 
    public String toString() {
@@ -43,9 +45,8 @@ public final class Book {
       sb.append("\n format:" + this.format);
       sb.append("\n subject:" + this.subject);
       sb.append("\n coverImageId:" + this.coverImageId);
-      sb.append("\n coverImageThumbId:" + this.coverImageThumbId);
       sb.append("\n overviewUrl:" + this.overviewUrl);
-      sb.append("\n datepub:" + this.datePub);
+      sb.append("\n datePubStamp:" + this.datePubStamp);
       return sb.toString();
    }
 
@@ -81,12 +82,12 @@ public final class Book {
       this.authors = authors;
    }
 
-   public Date getDatePub() {
-      return this.datePub;
+   public long getDatePubStamp() {
+      return this.datePubStamp;
    }
 
-   public void setDatePub(Date datePub) {
-      this.datePub = datePub;
+   public void setDatePubStamp(long datePub) {
+      this.datePubStamp = datePub;
    }
 
    public String getPublisher() {
@@ -136,12 +137,4 @@ public final class Book {
    public void setCoverImageId(long coverImageId) {
       this.coverImageId = coverImageId;
    }
-
-   public long getCoverImageThumbId() {
-      return this.coverImageThumbId;
-   }
-
-   public void setCoverImageThumbId(long coverImageThumbId) {
-      this.coverImageThumbId = coverImageThumbId;
-   }   
 }

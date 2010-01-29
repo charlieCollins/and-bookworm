@@ -1,6 +1,6 @@
 package com.totsp.bookworm.util;
 
-public class BookImageUtil {
+public class OpenLibraryUtil {
 
    private static final String URL_PREFIX = "http://covers.openlibrary.org/b/isbn/"; 
    private static final String URL_SUFFIX = ".jpg";

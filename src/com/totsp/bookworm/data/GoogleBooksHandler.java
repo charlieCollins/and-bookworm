@@ -130,7 +130,7 @@ public class GoogleBooksHandler extends DefaultHandler {
       } else if (this.inEntry && this.inDate) {
          try {
             Date d = this.dateFormat.parse(new String(ch, start, length));
-            book.setDatePub(d);
+            book.setDatePubStamp(d.getTime());
          } catch (ParseException e) {
          }
       } else if (this.inEntry && this.inCreator) {

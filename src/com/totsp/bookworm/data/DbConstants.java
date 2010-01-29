@@ -13,7 +13,7 @@ public class DbConstants {
    public static final String RATING = "rat";
    public static final String READSTATUS = "rstat";
    public static final String BLURB = "blurb";   
-   public static final String IMAGEURL = "imgurl";
+   public static final String COVERIMAGEID = "covimgid";
    public static final String OVERVIEWURL = "ovurl";
    public static final String DESCRIPTION = "desc";
    public static final String PUBLISHER = "pub";

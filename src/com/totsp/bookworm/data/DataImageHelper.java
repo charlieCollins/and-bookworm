@@ -18,7 +18,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * 
+ * Util class to use Android built in ContentProvider to
+ * store and retrieve images.
  * 
  * @author ccollins
  *
@@ -30,13 +31,17 @@ public class DataImageHelper {
    private static final Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
    private final Context context;
+   private String bucketId;
+   private String bucketDisplayName;
+   private boolean privateStore;
 
-   public DataImageHelper(final Context context) {
+   public DataImageHelper(Context context, String bucketId, String bucketDisplayName, boolean privateStore) {
       this.context = context;
+      this.bucketId = bucketId;
+      this.bucketDisplayName = bucketDisplayName;
+      this.privateStore = privateStore;
    }
-   
-   // TODO clean all this up - make sure it's private, etc
-   
+
    public Bitmap getImage(final int id) {
       String[] projection = { MediaStore.MediaColumns.DATA };
       String selection = MediaStore.Images.Media._ID + "=" + id;
@@ -56,7 +61,7 @@ public class DataImageHelper {
       }
 
       Bitmap bitmap = null;
-      if (filePath != null) {         
+      if (filePath != null) {
          try {
             FileInputStream fis = new FileInputStream(filePath);
             bitmap = BitmapFactory.decodeStream(fis);
@@ -68,14 +73,19 @@ public class DataImageHelper {
    }
 
    public int saveImage(final String title, final Bitmap bitmap) {
+      // save full size bitmap 
+      // TODO resize?
 
-      // save full size bitmap
       ContentValues values = new ContentValues();
       values.put(MediaColumns.TITLE, title);
-      values.put(ImageColumns.BUCKET_DISPLAY_NAME, "BookWorm-" + "ID");
-      values.put(ImageColumns.BUCKET_ID, "BookWorm");
-      values.put(ImageColumns.IS_PRIVATE, 0);
-      values.put(MediaColumns.MIME_TYPE, "image/jpeg");
+      values.put(ImageColumns.BUCKET_DISPLAY_NAME, this.bucketDisplayName);
+      values.put(ImageColumns.BUCKET_ID, this.bucketId);
+      if (this.privateStore == true) {
+         values.put(ImageColumns.IS_PRIVATE, 0);
+      } else {
+         values.put(ImageColumns.IS_PRIVATE, 1);
+      }
+      ///values.put(MediaColumns.MIME_TYPE, "image/jpeg");
       Uri uri = this.context.getContentResolver().insert(DataImageHelper.IMAGES_URI, values);
       int imageId = Integer.parseInt(uri.toString().substring(Media.EXTERNAL_CONTENT_URI.toString().length() + 1));
 
