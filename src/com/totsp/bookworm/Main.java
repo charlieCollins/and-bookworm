@@ -2,6 +2,7 @@ package com.totsp.bookworm;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,9 +31,9 @@ public class Main extends TabActivity {
    private static final int MENU_HELP = 0;
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
-   
+
    private BookWormApplication application;
-   
+
    private TabHost tabHost;
 
    // tab1 - book list
@@ -134,15 +135,24 @@ public class Main extends TabActivity {
    public boolean onContextItemSelected(MenuItem item) {
       AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
       long listIndex = info.id;
-      Book b = this.bookList.get((int) listIndex);
+      final Book b = this.bookList.get((int) listIndex);
       switch (item.getItemId()) {
-      case MENU_CONTEXT_EDIT:         
-         new AlertDialog.Builder(Main.this).setTitle("Click! EDIT" + b.getTitle()).setMessage(b.getTitle()).show();
+      case MENU_CONTEXT_EDIT:
+         new AlertDialog.Builder(Main.this).setTitle("Click! EDIT - TODO").setMessage(b.getTitle()).show();
          return true;
-      case MENU_CONTEXT_DELETE:        
-         this.application.getDataHelper().deleteBook(b.getId());
-         // TODO put buttons here - sure/cancel
-         new AlertDialog.Builder(Main.this).setTitle("Deleted book").setMessage(b.getTitle()).show();
+      case MENU_CONTEXT_DELETE:
+         new AlertDialog.Builder(Main.this).setTitle("Delete book?").setMessage(b.getTitle()).setPositiveButton(
+                  "Yes, I'm Sure", new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface d, int i) {
+                        Main.this.application.getDataHelper().deleteBook(b.getId());
+                        Main.this.startActivity(getIntent());
+                        Main.this.finish();
+                     }
+                  }).setNegativeButton("No, Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface d, int i) {
+               Main.this.startActivity(getIntent());
+            }
+         }).show();
          return true;
       default:
          return super.onContextItemSelected(item);
