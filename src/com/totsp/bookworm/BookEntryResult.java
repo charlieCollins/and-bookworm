@@ -27,16 +27,16 @@ import java.net.URLConnection;
 
 public class BookEntryResult extends Activity {
 
-   private BookWormApplication application;   
+   private BookWormApplication application;
 
    // package scope for use in inner class (Android optimization)    
    Button bookAddButton;
    TextView bookTitle;
    ImageView bookCover;
    TextView bookAuthors;
-   
+
    Bitmap bookCoverBitmap;
-   Book book;   
+   Book book;
 
    // TODO allow different sources (put sources in file, then Class.forName based on user choice?)
    IBookDataSource bookDataSource;
@@ -46,7 +46,7 @@ public class BookEntryResult extends Activity {
       super.onCreate(savedInstanceState);
 
       this.application = (BookWormApplication) this.getApplication();
-      
+
       this.bookDataSource = new GoogleBookDataSource();
 
       this.setContentView(R.layout.bookentryresult);
@@ -81,7 +81,8 @@ public class BookEntryResult extends Activity {
             Log.d(Constants.LOG_TAG, "Book does not already exist in DB, attempt to insert");
             // save image to ContentProvider
             if (this.bookCoverBitmap != null) {
-               int imageId = this.application.getDataImageHelper().saveImage(this.book.getTitle(), this.bookCoverBitmap);
+               int imageId =
+                        this.application.getDataImageHelper().saveImage(this.book.getTitle(), this.bookCoverBitmap);
                this.book.setCoverImageId(imageId);
             }
             // save book to database
@@ -95,8 +96,8 @@ public class BookEntryResult extends Activity {
 
    private void setViewsForInvalidEntry() {
       this.bookCover.setImageResource(R.drawable.book_invalid_isbn);
-      this.bookAuthors.setText("Whoops, that entry (or scan) worked but the number doesn't seem to be an ISBN,"
-               + " make sure the item is a book and try again.");
+      this.bookAuthors
+               .setText("Whoops, that entry didn't work. Please try again (and if one method fails, such as scanning, try a search or direct entry).");
    }
 
    @Override

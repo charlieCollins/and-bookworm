@@ -1,6 +1,6 @@
 package com.totsp.bookworm.model;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 // TODO save isbn 10 and isbn 13?
@@ -20,7 +20,7 @@ public final class Book {
    private Set<Author> authors;
 
    public Book() {
-      this.authors = new HashSet<Author>();
+      this.authors = new LinkedHashSet<Author>();
    }
 
    public Book(String isbn, String title) {
@@ -30,7 +30,7 @@ public final class Book {
       if (title == null || title.length() < 1) {
          throw new IllegalArgumentException("Error, book must have a title (minimum size 1)");
       }
-      this.authors = new HashSet<Author>();
+      this.authors = new LinkedHashSet<Author>();
       this.isbn = isbn;
       this.title = title;
    }

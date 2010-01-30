@@ -1,5 +1,8 @@
 package com.totsp.bookworm.data;
 
+import android.util.Log;
+
+import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 
@@ -126,7 +129,16 @@ public class GoogleBooksHandler extends DefaultHandler {
    @Override
    public void characters(char ch[], int start, int length) {
       if (this.inEntry && this.inTitle) {
-         this.book.setTitle(new String(ch, start, length));
+         String title = new String(ch, start, length);
+         Log.d(Constants.LOG_TAG, " IN TITLE *** " + title);
+         if (title == null || title.equals("")) {
+            this.book.setTitle(title);
+         } else {
+           if (!this.book.getTitle().contains(title)) {
+              title = this.book.getTitle() + " " + title;
+              this.book.setTitle(title.trim());
+           }            
+         }         
       } else if (this.inEntry && this.inDate) {
          try {
             Date d = this.dateFormat.parse(new String(ch, start, length));

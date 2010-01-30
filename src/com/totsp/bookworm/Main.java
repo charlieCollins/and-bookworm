@@ -68,7 +68,7 @@ public class Main extends TabActivity {
       this.tabHost = this.getTabHost();
       tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Book List",
                getResources().getDrawable(android.R.drawable.ic_menu_agenda)).setContent(R.id.booklistview));
-      tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Add a Book",
+      tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Add Book",
                getResources().getDrawable(android.R.drawable.ic_menu_add)).setContent(R.id.bookadd));
       this.tabHost.setCurrentTab(0);
 

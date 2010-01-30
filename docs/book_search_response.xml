@@ -3,14 +3,14 @@
 	xmlns:gbs='http://schemas.google.com/books/2008' xmlns:dc='http://purl.org/dc/terms'
 	xmlns:gd='http://schemas.google.com/g/2005'>
 	<id>http://www.google.com/books/feeds/volumes</id>
-	<updated>2010-01-23T17:25:37.000Z</updated>
+	<updated>2010-01-30T21:08:35.000Z</updated>
 	<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/books/2008#volume' />
-	<title type='text'>Search results for isbn:9781933988290</title>
+	<title type='text'>Search results for isbn:9781933988672</title>
 	<link rel='alternate' type='text/html' href='http://www.google.com' />
 	<link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml'
 		href='http://www.google.com/books/feeds/volumes' />
 	<link rel='self' type='application/atom+xml'
-		href='http://www.google.com/books/feeds/volumes?q=isbn%3A9781933988290' />
+		href='http://www.google.com/books/feeds/volumes?q=isbn%3A9781933988672' />
 	<author>
 		<name>Google Books Search</name>
 		<uri>http://www.google.com</uri>
@@ -20,41 +20,43 @@
 	<openSearch:startIndex>1</openSearch:startIndex>
 	<openSearch:itemsPerPage>1</openSearch:itemsPerPage>
 	<entry>
-		<id>http://www.google.com/books/feeds/volumes/mYeiGQAACAAJ</id>
-		<updated>2010-01-23T17:25:37.000Z</updated>
+		<id>http://www.google.com/books/feeds/volumes/7o2jNwAACAAJ</id>
+		<updated>2010-01-30T21:08:35.000Z</updated>
 		<category scheme='http://schemas.google.com/g/2005#kind'
 			term='http://schemas.google.com/books/2008#volume' />
-		<title type='text'>GWT in Practice</title>
+		<title type='text'>Unlocking Android</title>
 		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
-			href='http://bks8.books.google.com/books?id=mYeiGQAACAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;sig=ACfU3U0IEwv7GzrHFy-_CBQjp0atPPSgcg&amp;source=gbs_gdata' />
+			href='http://bks8.books.google.com/books?id=7o2jNwAACAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;sig=ACfU3U3vqIp-p9Xxb5Wx8xZeINbalJpVkg&amp;source=gbs_gdata' />
 		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
-			href='http://books.google.com/books?id=mYeiGQAACAAJ&amp;dq=isbn:9781933988290&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+			href='http://books.google.com/books?id=7o2jNwAACAAJ&amp;dq=isbn:9781933988672&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
 		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
-			href='http://books.google.com/books?id=mYeiGQAACAAJ&amp;dq=isbn:9781933988290&amp;ie=ISO-8859-1&amp;cd=1&amp;source=gbs_gdata' />
+			href='http://books.google.com/books?id=7o2jNwAACAAJ&amp;dq=isbn:9781933988672&amp;ie=ISO-8859-1&amp;cd=1&amp;source=gbs_gdata' />
 		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
 			href='http://www.google.com/books/feeds/users/me/volumes' />
 		<link rel='alternate' type='text/html'
-			href='http://books.google.com/books?id=mYeiGQAACAAJ&amp;dq=isbn:9781933988290&amp;ie=ISO-8859-1' />
+			href='http://books.google.com/books?id=7o2jNwAACAAJ&amp;dq=isbn:9781933988672&amp;ie=ISO-8859-1' />
 		<link rel='self' type='application/atom+xml'
-			href='http://www.google.com/books/feeds/volumes/mYeiGQAACAAJ' />
+			href='http://www.google.com/books/feeds/volumes/7o2jNwAACAAJ' />
 		<gbs:embeddability
 			value='http://schemas.google.com/books/2008#not_embeddable' />
 		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
 		<gbs:viewability value='http://schemas.google.com/books/2008#view_no_pages' />
-		<dc:creator>Robert Cooper</dc:creator>
+		<dc:creator>Frank Ableson</dc:creator>
 		<dc:creator>Charlie Collins</dc:creator>
-		<dc:date>2008-05-01</dc:date>
-		<dc:description>If you&amp;#39;re a web developer, you know that you
-			can use Ajax to add rich, user-
-			D/BookWorm(12953): friendly, dynamic features to your applications. With the Google Web
-			Toolkit ...</dc:description>
-		<dc:format>357 pages</dc:format>
+		<dc:creator>Robi Sen</dc:creator>
+		<dc:date>2009-04-01</dc:date>
+		<dc:description>Android is a free, open source, Java-based mobile
+			platform developed by Google.
+			D/BookWorm(18558): Unlocking Android prepares the reader to embrace the Android mobile
+			platform ...</dc:description>
+		<dc:format>392 pages</dc:format>
 		<dc:format>book</dc:format>
-		<dc:identifier>mYeiGQAACAAJ</dc:identifier>
-		<dc:identifier>ISBN:1933988290</dc:identifier>
-		<dc:identifier>ISBN:9781933988290</dc:identifier>
-		<dc:publisher>Manning Publications</dc:publisher>
+		<dc:identifier>7o2jNwAACAAJ</dc:identifier>
+		<dc:identifier>ISBN:1933988673</dc:identifier>
+		<dc:identifier>ISBN:9781933988672</dc:identifier>
+		<dc:publisher>Manning Pubns Co</dc:publisher>
 		<dc:subject>Computers</dc:subject>
-		<dc:title>GWT in Practice</dc:title>
+		<dc:title>Unlocking Android</dc:title>
+		<dc:title>A Developer's Guide</dc:title>
 	</entry>
 </feed>

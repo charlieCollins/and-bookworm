@@ -2,29 +2,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<ImageView android:id="@+id/bookcover" android:layout_width="120dp"
-		android:layout_height="120dp" android:layout_marginTop="20dp"
+	<ImageView android:id="@+id/bookcover" android:layout_width="fill_parent"
+		android:layout_height="140dp" android:layout_marginTop="20dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:gravity="center_horizontal" android:src="@drawable/books24" />
-	<RatingBar android:id="@+id/bookrating" android:layout_width="280dip"
-		android:layout_height="wrap_content" android:layout_marginTop="10dp"
-		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/bookcover" android:gravity="center_horizontal"
-		android:isIndicator="true" android:numStars="5" android:rating="3" /> 
+	
 	<TextView android:id="@+id/booktitle" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="10dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/bookrating" android:gravity="center_horizontal"
+		android:layout_below="@id/bookcover" android:gravity="center_horizontal"
 		style="@style/subtitletext" />
 	<TextView android:id="@+id/bookauthors" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="5dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booktitle" android:gravity="center_horizontal"
 		style="@style/whitetext" />
+		
+	<RatingBar android:id="@+id/bookrating" android:layout_width="280dip"
+        android:layout_height="wrap_content" android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp" android:layout_marginRight="10dp"
+        android:layout_below="@id/bookauthors" android:gravity="center_horizontal"
+        android:isIndicator="true" android:numStars="5" android:rating="3" /> 
+		
 	<TextView android:id="@+id/booksubject" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_marginTop="5dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="15dp"
-		android:layout_below="@id/bookauthors" />
+		android:layout_below="@id/bookrating" />
 	<TextView android:id="@+id/bookpublisher"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_marginTop="5dp" android:layout_marginBottom="10dp"
