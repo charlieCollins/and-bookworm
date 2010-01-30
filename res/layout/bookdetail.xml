@@ -10,10 +10,32 @@
 		android:layout_height="80dp" android:layout_marginTop="5dp"
 		android:layout_below="@id/bookcover" android:gravity="center_horizontal"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:layout_marginBottom="10dp" style="@style/subtitletext" />
+		android:layout_marginBottom="5dp" style="@style/subtitletext" />
 	<TextView android:id="@+id/bookauthors" android:layout_width="wrap_content"
 		android:layout_height="80dp" android:layout_marginTop="5dp"
 		android:layout_below="@id/booktitle" android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp" android:layout_marginBottom="5dp"
+		style="@style/whitetext" />
+	<TextView android:id="@+id/booksubject" android:layout_width="wrap_content"
+		android:layout_height="80dp" android:layout_marginTop="5dp"
+		android:layout_below="@id/bookauthors" android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp" android:layout_marginBottom="5dp"
+		style="@style/whitetext" />
+	<TextView android:id="@+id/bookdescription"
+		android:layout_width="wrap_content" android:layout_height="80dp"
+		android:layout_marginTop="5dp" android:layout_below="@id/booksubject"
+		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+		android:layout_marginBottom="20dp" style="@style/whitetext" />
+	<TextView android:id="@+id/bookdatepub" android:layout_width="wrap_content"
+		android:layout_height="80dp" android:layout_marginTop="5dp"
+		android:layout_below="@id/bookdescription" android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp" android:layout_marginBottom="5dp"
+		style="@style/whitetext" />
+	<TextView android:id="@+id/bookpublisher"
+		android:layout_width="wrap_content" android:layout_height="80dp"
+		android:layout_marginTop="5dp" android:layout_below="@id/booksubject"
+		android:layout_toRightOf="@id/bookdatepub" android:layout_marginLeft="3dp"
 		android:layout_marginRight="10dp" android:layout_marginBottom="20dp"
-		style="@style/blacktext" />
+		style="@style/whitetext" />
+
 </RelativeLayout>

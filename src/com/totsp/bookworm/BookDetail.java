@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.DateUtil;
+
+import java.util.Date;
 
 public class BookDetail extends Activity {
 
@@ -16,6 +19,10 @@ public class BookDetail extends Activity {
    private ImageView bookCover;
    private TextView bookTitle;   
    private TextView bookAuthors;
+   private TextView bookSubject;
+   private TextView bookDescription;
+   private TextView bookDatePub;
+   private TextView bookPublisher;
    
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,10 @@ public class BookDetail extends Activity {
       this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
       this.bookTitle = (TextView) this.findViewById(R.id.booktitle);
       this.bookAuthors = (TextView) this.findViewById(R.id.bookauthors);
+      this.bookSubject = (TextView) this.findViewById(R.id.booksubject);
+      this.bookDescription = (TextView) this.findViewById(R.id.bookdescription);
+      this.bookDatePub = (TextView) this.findViewById(R.id.bookdatepub);
+      this.bookPublisher = (TextView) this.findViewById(R.id.bookpublisher);
       
       Book book = this.application.getSelectedBook();
       
@@ -53,6 +64,10 @@ public class BookDetail extends Activity {
       }
       
       this.bookAuthors.setText(authors);      
+      this.bookSubject.setText(book.getSubject());      
+      this.bookDescription.setText(book.getDescription());      
+      this.bookDatePub.setText(DateUtil.format(new Date(book.getDatePubStamp())));      
+      this.bookPublisher.setText(book.getPublisher());      
    }   
 
    @Override
