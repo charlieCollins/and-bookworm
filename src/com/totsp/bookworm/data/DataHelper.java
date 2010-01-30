@@ -251,8 +251,7 @@ public class DataHelper {
    public void deleteBook(long id) {
       Book b = this.selectBook(id);
       if (b != null) {
-         HashSet<Author> authors = this.selectAuthorsByBookId(id);
-
+         HashSet<Author> authors = this.selectAuthorsByBookId(id);         
          this.db.delete(BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(b.getId()) });
          this.db.delete(BOOK_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) });
 
@@ -326,7 +325,10 @@ public class DataHelper {
       }
       if (!authorIds.isEmpty()) {
          for (Long authorId : authorIds) {
-            authors.add(this.selectAuthor(authorId));
+            Author a = this.selectAuthor(authorId);
+            if (a != null) {
+               authors.add(a);
+            }
          }
       }
       return authors;
