@@ -4,15 +4,11 @@
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
-		<TextView android:id="@+id/scanTitle" android:layout_width="fill_parent"
-			android:gravity="center_horizontal" android:layout_height="wrap_content"
-			android:layout_marginTop="25px" android:layout_marginBottom="10px"
-			android:text="Book Scan Results" style="@style/whitetext" />
 			
 		<TextView android:id="@+id/scanBookTitle"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="center_horizontal" android:layout_marginTop="10px" android:layout_marginBottom="10px"
-			style="@style/subtitletext" android:layout_below="@id/scanTitle"  />
+			style="@style/whitetextbold" />
 		<ImageView android:id="@+id/scanBookCover"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="center_horizontal" android:layout_marginTop="10px"
