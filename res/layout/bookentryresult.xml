@@ -5,27 +5,27 @@
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 			
-		<TextView android:id="@+id/scanBookTitle"
+		<TextView android:id="@+id/bookentrytitle"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="center_horizontal" android:layout_marginTop="10px" android:layout_marginBottom="10px"
 			style="@style/whitetextbold" />
-		<ImageView android:id="@+id/scanBookCover"
+		<ImageView android:id="@+id/bookentrycover"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="center_horizontal" android:layout_marginTop="10px"
-			android:layout_below="@id/scanBookTitle" />
-		<TextView android:id="@+id/scanBookAuthor"
+			android:layout_below="@id/bookentrytitle" />
+		<TextView android:id="@+id/bookentryauthors"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="center_horizontal" android:layout_marginTop="10px" style="@style/whitetext"
-			android:layout_below="@id/scanBookCover" />
-		<TextView android:id="@+id/scanBookDate"
+			android:layout_below="@id/bookentrycover" />
+		<TextView android:id="@+id/bookentrydate"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="center_horizontal" android:layout_marginTop="10px" style="@style/whitetext"
-			android:layout_below="@id/scanBookAuthor" />
+			android:layout_below="@id/bookentryauthors" />
 
-		<Button android:id="@+id/scanbookaddbutton"
+		<Button android:id="@+id/bookentryaddbutton"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="center_horizontal" android:layout_marginTop="25px" android:text="Add book"
-			style="@style/blacktext" android:layout_below="@id/scanBookDate"
+			style="@style/blacktext" android:layout_below="@id/bookentrydate"
 			android:visibility="invisible" />
 	</RelativeLayout>
 </ScrollView>

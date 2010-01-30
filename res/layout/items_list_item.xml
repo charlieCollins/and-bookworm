@@ -1,30 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="?android:attr/listPreferredItemHeight"
 	android:padding="6dip">
-	<ImageView android:id="@+id/items_list_item_image"
+	<ImageView android:id="@+id/itemslistitemimage"
 		android:layout_width="80dip" android:layout_height="80dip"
 		android:layout_alignParentTop="true" android:layout_alignParentBottom="true"
 		android:layout_marginRight="15dip" />
-	<TextView android:id="@+id/items_list_item_text_line1"
+	<TextView android:id="@+id/itemslistitemtext"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:layout_toRightOf="@id/items_list_item_image" android:layout_alignParentBottom="true"
+		android:layout_toRightOf="@id/itemslistitemimage" android:layout_alignParentBottom="true"
 		android:ellipsize="marquee" style="@style/whitetext" />	
 </RelativeLayout>
 
 	<!--
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true"
-	-->
-
-	<!--
-		<?xml version="1.0" encoding="UTF-8"?> <LinearLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:id="@+id/items_list_item " android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"> <ImageView
-		android:id="@+id/items_list_item_image"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		/> <TextView android:id="@+id/items_list_item_text"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:layout_marginTop="5px" /> </LinearLayout>
 	-->

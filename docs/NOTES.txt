@@ -28,7 +28,7 @@ also have to install zxing manually for emulator, of course
 
 for standard junit tests in eclipse - edit run config, remove android api library, add jdk and junit 3
   
-Very hard to find HttpClient 4 site, part of new HttpComponents:
+Hard to find HttpClient 4 site, part of new HttpComponents:
 http://hc.apache.org/httpcomponents-client/index.html 
   
 HttpClient constants:
@@ -41,4 +41,9 @@ Need to document/describe 3 separate projects, Android, Android Test, Plain Test
 
 Instrumentation is required, even if don't want to use monitor? 
 
-look carefully at orientation changes and how they affect things - use android:configChanges="keyboardHidden|orientation"
+look carefully at orientation changes and how they affect things - 
+use android:configChanges="keyboardHidden|orientation" to react
+
+@+id/foo is the namespace of current application 
+@android:id/foo is the android namespace
+a? refers back to same config file, rather than another already defined resource

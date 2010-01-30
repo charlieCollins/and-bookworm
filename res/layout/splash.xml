@@ -2,17 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:background="@drawable/splash_bgrnd">
-	<TextView android:id="@+id/splashTitle" style="@style/titletext"
+	<TextView android:id="@+id/splashtitle" style="@style/titletext"
 		android:layout_width="fill_parent" android:gravity="center_horizontal"
 		android:layout_height="wrap_content" android:layout_marginTop="25px"
 		android:text="@string/app_name" />
-	<ImageView android:id="@+id/splashLogo" android:layout_width="wrap_content"
+	<ImageView android:id="@+id/splashlogo" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_centerVertical="true"
 		android:layout_centerHorizontal="true" android:layout_marginBottom="10px"
-		android:layout_marginTop="25px" android:layout_below="@id/splashTitle"
+		android:layout_marginTop="25px" android:layout_below="@id/splashtitle"
 		android:src="@drawable/books200" />
-	<TextView android:id="@+id/splashTap" android:layout_width="fill_parent"
+	<TextView android:id="@+id/splashtap" android:layout_width="fill_parent"
 		android:gravity="center_horizontal" android:layout_height="wrap_content"
-		android:layout_marginTop="25px" android:layout_below="@id/splashLogo"
+		android:layout_marginTop="25px" android:layout_below="@id/splashlogo"
 		style="@style/blacktextbold" android:text="Tap to begin" />
 </RelativeLayout>

@@ -1,2 +1,4 @@
-Use local db for speed, but allow import/export to Google Books
-MyLibrary - sync and diff, etc. 
+1. Allow import/export to Google Books MyLibrary - sync and diff, etc. 
+2. Come up some kind of book source that is agnostic/runtime determined (not hard coded). 
+3. Menu on Main that includes sort and search/filter.
+4. Tags

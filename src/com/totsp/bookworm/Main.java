@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -35,6 +36,9 @@ import java.util.ArrayList;
 public class Main extends TabActivity {
 
    private static final int MENU_HELP = 0;
+   private static final int MENU_SEARCH = 1;
+   private static final int MENU_SORT_SIZE = 2;
+   private static final int MENU_SORT_ALPHA = 3;   
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
 
@@ -63,9 +67,10 @@ public class Main extends TabActivity {
 
       // TODO maybe move all this stuff to a "createViews" type method?      
       this.tabHost = this.getTabHost();
-      tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Book List").setContent(R.id.bookListView));
-      tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Book Gallery").setContent(R.id.bookgallery));
-      tabHost.addTab(tabHost.newTabSpec("tab3").setIndicator("Add a Book").setContent(R.id.bookadd));
+      tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator("Book List",
+               getResources().getDrawable(android.R.drawable.ic_menu_agenda)).setContent(R.id.booklistview));
+      tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator("Add a Book",
+               getResources().getDrawable(android.R.drawable.ic_menu_add)).setContent(R.id.bookadd));
       this.tabHost.setCurrentTab(0);
 
       this.scanButton = (Button) this.findViewById(R.id.bookaddscanbutton);
@@ -93,7 +98,7 @@ public class Main extends TabActivity {
    }
 
    private void bindBookList() {
-      this.bookListView = (ListView) this.findViewById(R.id.bookListView);
+      this.bookListView = (ListView) this.findViewById(R.id.booklistview);
       this.bookList = new ArrayList<Book>();
       // TODO select only id/title, or cache/page - this could get slow with a lot of books?
       this.bookList.addAll(this.application.getDataHelper().selectAllBooks());
@@ -117,7 +122,10 @@ public class Main extends TabActivity {
 
    @Override
    public boolean onCreateOptionsMenu(Menu menu) {
-      menu.add(0, MENU_HELP, 0, "Help").setIcon(android.R.drawable.ic_menu_help);
+      menu.add(0, MENU_HELP, 2, "Help").setIcon(android.R.drawable.ic_menu_help);
+      menu.add(0, MENU_SEARCH, 1, "Search").setIcon(android.R.drawable.ic_menu_search);
+      menu.add(0, MENU_SORT_SIZE, 0, "Sort size").setIcon(android.R.drawable.ic_menu_sort_by_size);
+      menu.add(0, MENU_SORT_ALPHA, 0, "Sort alpha").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -126,6 +134,15 @@ public class Main extends TabActivity {
       switch (item.getItemId()) {
       case MENU_HELP:
          this.startActivity(new Intent(Main.this, Help.class));
+         return true;
+      case MENU_SEARCH:
+         Toast.makeText(this, "TODO Search", Toast.LENGTH_SHORT);
+         return true;
+      case MENU_SORT_SIZE:
+         Toast.makeText(this, "TODO Sort Size", Toast.LENGTH_SHORT);
+         return true;
+      case MENU_SORT_ALPHA:
+         Toast.makeText(this, "TODO Sort Alpha", Toast.LENGTH_SHORT);
          return true;
       default:
          return super.onOptionsItemSelected(item);
@@ -180,8 +197,8 @@ public class Main extends TabActivity {
       ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
       if (scanResult != null) {
          // handle scan result
-         Intent scanIntent = new Intent(this, BookScanResult.class);
-         scanIntent.putExtra("SCAN_RESULT_CONTENTS", scanResult.getContents());
+         Intent scanIntent = new Intent(this, BookEntryResult.class);
+         scanIntent.putExtra(Constants.ISBN, scanResult.getContents());
          this.startActivity(scanIntent);
       } else {
          // TODO report scan problem?
@@ -211,16 +228,16 @@ public class Main extends TabActivity {
 
          Book book = books.get(position);
          if (book != null) {
-            ImageView iv = (ImageView) v.findViewById(R.id.items_list_item_image);
+            ImageView iv = (ImageView) v.findViewById(R.id.itemslistitemimage);
             if (book.getCoverImageId() > 0) {
                Bitmap coverImage = application.getDataImageHelper().getImage((int) book.getCoverImageId());
                if (coverImage != null && coverImage.getWidth() > 10) {
                   iv.setImageBitmap(coverImage);
                }
-            } 
+            }
 
-            TextView tv1 = (TextView) v.findViewById(R.id.items_list_item_text_line1);
-            tv1.setText(book.getTitle());           
+            TextView tv1 = (TextView) v.findViewById(R.id.itemslistitemtext);
+            tv1.setText(book.getTitle());
          }
          return v;
       }

@@ -9,16 +9,9 @@
 		<FrameLayout android:id="@android:id/tabcontent"
 			android:layout_width="fill_parent" android:layout_height="fill_parent">
 			<!--  TAB 1 -->
-			<ListView android:id="@+id/bookListView" android:layout_width="fill_parent"
+			<ListView android:id="@+id/booklistview" android:layout_width="fill_parent"
 				android:layout_height="fill_parent" />
 			<!--  TAB 2 -->
-			<RelativeLayout android:id="@+id/bookgallery"
-				android:layout_width="fill_parent" android:layout_height="fill_parent">
-				<TextView android:id="@+id/gallery_intro"
-					android:layout_width="fill_parent" android:layout_height="fill_parent"
-					android:text="Book Gallery" />
-			</RelativeLayout>
-			<!--  TAB 3 -->
 			<RelativeLayout android:id="@+id/bookadd"
 				android:layout_width="fill_parent" android:layout_height="fill_parent">
 				<TextView android:id="@+id/bookaddintro" style="@style/whitetext"
