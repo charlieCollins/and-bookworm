@@ -2,3 +2,4 @@
 2. Come up some kind of book source that is agnostic/runtime determined (not hard coded). 
 3. Menu on Main that includes sort and search/filter.
 4. Tags
+5. Speed - cache? for loading list with images
