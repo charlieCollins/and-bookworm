@@ -82,14 +82,16 @@ public class Main extends TabActivity {
       this.searchButton = (Button) this.findViewById(R.id.bookaddsearchbutton);
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            Toast.makeText(Main.this, "TODO Search Entry", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(Main.this, "TODO Search Entry", Toast.LENGTH_SHORT).show();
+            Main.this.startActivity(new Intent(Main.this, BookEntrySearch.class));
          }
       });
 
       this.formButton = (Button) this.findViewById(R.id.bookaddformbutton);
       this.formButton.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            Toast.makeText(Main.this, "TODO Form Entry", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(Main.this, "TODO Form Entry", Toast.LENGTH_SHORT).show();
+            Main.this.startActivity(new Intent(Main.this, BookEntryForm.class));
          }
       });
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+	<TextView android:id="@+id/bookentryformtitle"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_marginTop="25dp" android:layout_marginBottom="10dp"
+		style="@style/titletext" android:gravity="center_horizontal"
+		android:text="Search for a book" />
+	<TextView android:id="@+id/bookentryformoutput"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
+		android:layout_below="@id/bookentryformtitle" android:gravity="center_horizontal" />
+</RelativeLayout>
