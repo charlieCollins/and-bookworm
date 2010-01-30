@@ -18,14 +18,12 @@ import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.DateUtil;
 import com.totsp.bookworm.util.OpenLibraryUtil;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
 
 public class BookEntryResult extends Activity {
 
@@ -36,7 +34,6 @@ public class BookEntryResult extends Activity {
    TextView bookTitle;
    ImageView bookCover;
    TextView bookAuthors;
-   TextView bookDate;
    
    Bitmap bookCoverBitmap;
    Book book;   
@@ -57,7 +54,6 @@ public class BookEntryResult extends Activity {
       this.bookTitle = (TextView) this.findViewById(R.id.bookentrytitle);
       this.bookCover = (ImageView) this.findViewById(R.id.bookentrycover);
       this.bookAuthors = (TextView) this.findViewById(R.id.bookentryauthors);
-      this.bookDate = (TextView) this.findViewById(R.id.bookentrydate);
 
       this.bookAddButton = (Button) this.findViewById(R.id.bookentryaddbutton);
       this.bookAddButton.setOnClickListener(new OnClickListener() {
@@ -171,7 +167,6 @@ public class BookEntryResult extends Activity {
                }
             }
             BookEntryResult.this.bookAuthors.setText(authors);
-            BookEntryResult.this.bookDate.setText(DateUtil.format(new Date(this.bookTask.getDatePubStamp())));
 
             if (this.bookCoverBitmapTask != null) {
                Log.d(Constants.LOG_TAG, "book cover bitmap present, set cover");
