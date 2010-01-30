@@ -17,7 +17,7 @@ import java.util.HashSet;
 public class DataHelper {
 
    private static final String DATABASE_NAME = "bookworm.db";
-   private static final int DATABASE_VERSION = 3;
+   private static final int DATABASE_VERSION = 4;
    private static final String BOOK_TABLE = "book";
    private static final String BOOKUSERDATA_TABLE = "bookuserdata";
    private static final String BOOKAUTHOR_TABLE = "bookauthor";
@@ -29,15 +29,16 @@ public class DataHelper {
    private SQLiteStatement bookInsertStmt;
    private static final String BOOK_INSERT =
             "insert into " + BOOK_TABLE + "(" + DataConstants.ISBN + "," + DataConstants.TITLE + ","
-                     + DataConstants.COVERIMAGEID + "," + DataConstants.PUBLISHER + "," + DataConstants.DESCRIPTION + ","
-                     + DataConstants.FORMAT + "," + DataConstants.SUBJECT + "," + DataConstants.OVERVIEWURL + ","
+                     + DataConstants.COVERIMAGEID + "," + DataConstants.PUBLISHER + "," + DataConstants.DESCRIPTION
+                     + "," + DataConstants.FORMAT + "," + DataConstants.SUBJECT + "," + DataConstants.OVERVIEWURL + ","
                      + DataConstants.DATEPUB + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
    private SQLiteStatement bookAuthorInsertStmt;
    private static final String BOOKAUTHOR_INSERT =
             "insert into " + BOOKAUTHOR_TABLE + "(" + DataConstants.BOOKID + "," + DataConstants.AUTHORID
                      + ") values (?, ?)";
    private SQLiteStatement authorInsertStmt;
-   private static final String AUTHOR_INSERT = "insert into " + AUTHOR_TABLE + "(" + DataConstants.NAME + ") values (?)";
+   private static final String AUTHOR_INSERT =
+            "insert into " + AUTHOR_TABLE + "(" + DataConstants.NAME + ") values (?)";
 
    public DataHelper(Context context) {
       this.context = context;
@@ -141,10 +142,11 @@ public class DataHelper {
    public Book selectBook(long id) {
       Book b = null;
       Cursor c =
-               this.db.query(BOOK_TABLE, new String[] { DataConstants.ISBN, DataConstants.TITLE, DataConstants.COVERIMAGEID,
-                        DataConstants.PUBLISHER, DataConstants.DESCRIPTION, DataConstants.FORMAT, DataConstants.SUBJECT,
-                        DataConstants.OVERVIEWURL, DataConstants.DATEPUB }, DataConstants.BOOKID + " = ?",
-                        new String[] { String.valueOf(id) }, null, null, null, "1");
+               this.db.query(BOOK_TABLE,
+                        new String[] { DataConstants.ISBN, DataConstants.TITLE, DataConstants.COVERIMAGEID,
+                                 DataConstants.PUBLISHER, DataConstants.DESCRIPTION, DataConstants.FORMAT,
+                                 DataConstants.SUBJECT, DataConstants.OVERVIEWURL, DataConstants.DATEPUB },
+                        DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new Book();
          b.setId(id);
@@ -182,10 +184,11 @@ public class DataHelper {
    public HashSet<Book> selectAllBooks() {
       HashSet<Book> set = new HashSet<Book>();
       Cursor c =
-               this.db.query(BOOK_TABLE, new String[] { DataConstants.BOOKID, DataConstants.ISBN, DataConstants.TITLE,
-                        DataConstants.COVERIMAGEID, DataConstants.PUBLISHER, DataConstants.DESCRIPTION, DataConstants.FORMAT,
-                        DataConstants.SUBJECT, DataConstants.OVERVIEWURL, DataConstants.DATEPUB }, null, null, null, null,
-                        null, null);
+               this.db.query(BOOK_TABLE,
+                        new String[] { DataConstants.BOOKID, DataConstants.ISBN, DataConstants.TITLE,
+                                 DataConstants.COVERIMAGEID, DataConstants.PUBLISHER, DataConstants.DESCRIPTION,
+                                 DataConstants.FORMAT, DataConstants.SUBJECT, DataConstants.OVERVIEWURL,
+                                 DataConstants.DATEPUB }, null, null, null, null, null, null);
       if (c.moveToFirst()) {
          do {
             Book b = new Book();
@@ -209,11 +212,31 @@ public class DataHelper {
       return set;
    }
 
+   public HashSet<Book> selectAllBooksByAuthor(String name) {
+      HashSet<Book> set = new HashSet<Book>();
+      Author a = this.selectAuthor(name);
+      if (a != null) {
+         Cursor c =
+                  this.db.query(BOOKAUTHOR_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.AUTHORID
+                           + " = ?", new String[] { String.valueOf(a.getId()) }, null, null, null);
+         if (c.moveToFirst()) {
+            do {
+               Book b = this.selectBook(c.getLong(0));
+               set.add(b);
+            } while (c.moveToNext());
+         }
+         if (c != null && !c.isClosed()) {
+            c.close();
+         }
+      }
+      return set;
+   }
+
    public HashSet<String> selectAllBookNames() {
       HashSet<String> set = new HashSet<String>();
       Cursor c =
-               this.db.query(BOOK_TABLE, new String[] { DataConstants.TITLE }, null, null, null, null, DataConstants.TITLE
-                        + " desc");
+               this.db.query(BOOK_TABLE, new String[] { DataConstants.TITLE }, null, null, null, null,
+                        DataConstants.TITLE + " desc");
       if (c.moveToFirst()) {
          do {
             set.add(c.getString(0));
@@ -226,13 +249,28 @@ public class DataHelper {
    }
 
    public void deleteBook(long id) {
-      // TODO deleting a book should check authors (if no other books, delete author too)
-      this.db.delete(BOOK_TABLE, DataConstants.BOOKID + "= ?", new String[] { String.valueOf(id) });
+      Book b = this.selectBook(id);
+      if (b != null) {
+         HashSet<Author> authors = this.selectAuthorsByBookId(id);
+
+         this.db.delete(BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(b.getId()) });
+         this.db.delete(BOOK_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) });
+
+         // if no other books by same author, also delete author
+         for (Author a : authors) {
+            HashSet<Book> books = this.selectAllBooksByAuthor(a.getName());
+            if (books.isEmpty()) {
+               this.deleteAuthor(a.getId());
+            }
+         }
+      }
    }
 
    public void deleteBook(String isbn) {
-      // TODO deleting a book should check authors (if no other books, delete author too)
-      this.db.delete(BOOK_TABLE, DataConstants.ISBN + "= ?", new String[] { isbn });
+      Book b = this.selectBook(isbn);
+      if (b != null) {
+         this.deleteBook(b.getId());
+      }
    }
 
    // author
@@ -264,9 +302,7 @@ public class DataHelper {
                this.db.query(AUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.NAME + " = ?",
                         new String[] { name }, null, null, null, "1");
       if (c.moveToFirst()) {
-         a = new Author();
-         a.setId(c.getLong(0));
-         a.setName(name);
+         a = this.selectAuthor(c.getLong(0));
       }
       if (c != null && !c.isClosed()) {
          c.close();
@@ -299,8 +335,8 @@ public class DataHelper {
    public HashSet<Author> selectAllAuthors() {
       HashSet<Author> set = new HashSet<Author>();
       Cursor c =
-               this.db.query(AUTHOR_TABLE, new String[] { DataConstants.AUTHORID, DataConstants.NAME }, null, null, null,
-                        null, DataConstants.NAME + " desc");
+               this.db.query(AUTHOR_TABLE, new String[] { DataConstants.AUTHORID, DataConstants.NAME }, null, null,
+                        null, null, DataConstants.NAME + " desc");
       if (c.moveToFirst()) {
          do {
             Author a = new Author();
@@ -316,11 +352,17 @@ public class DataHelper {
    }
 
    public void deleteAuthor(long id) {
-      this.db.delete(AUTHOR_TABLE, DataConstants.AUTHORID + "= ?", new String[] { String.valueOf(id) });
+      Author a = this.selectAuthor(id);
+      if (a != null) {
+         this.db.delete(AUTHOR_TABLE, DataConstants.AUTHORID + " = ?", new String[] { String.valueOf(id) });
+      }
    }
 
    public void deleteAuthor(String name) {
-      this.db.delete(AUTHOR_TABLE, DataConstants.NAME + "= ?", new String[] { name });
+      Author a = this.selectAuthor(name);
+      if (a != null) {
+         this.db.delete(AUTHOR_TABLE, DataConstants.NAME + " = ?", new String[] { name });
+      }
    }
 
    //
@@ -345,28 +387,55 @@ public class DataHelper {
 
          Log.d(Constants.LOG_TAG, "SQLiteOpenHelper onCreate");
 
+         // TODO use sb for these, makes em easier to read (easier to work with foreign keys esp)
+         StringBuilder sb = new StringBuilder();
+         
          // book table
-         db.execSQL("CREATE TABLE " + BOOK_TABLE + " (" + DataConstants.BOOKID + " INTEGER PRIMARY KEY,"
-                  + DataConstants.ISBN + " TEXT," + DataConstants.TITLE + " TEXT," + DataConstants.COVERIMAGEID + " INTEGER,"
-                  + DataConstants.PUBLISHER + " TEXT," + DataConstants.DESCRIPTION + " TEXT," + DataConstants.FORMAT
-                  + " TEXT," + DataConstants.SUBJECT + " TEXT," + DataConstants.OVERVIEWURL + " TEXT,"
-                  + DataConstants.DATEPUB + " INTEGER" + ");");
+         sb.append("CREATE TABLE " + BOOK_TABLE + " (");
+         sb.append(DataConstants.BOOKID + " INTEGER PRIMARY KEY, ");
+         sb.append(DataConstants.ISBN + " TEXT, ");
+         sb.append(DataConstants.TITLE + " TEXT, ");
+         sb.append(DataConstants.COVERIMAGEID + " INTEGER, ");
+         sb.append(DataConstants.PUBLISHER + " TEXT, ");
+         sb.append(DataConstants.DESCRIPTION + " TEXT, ");
+         sb.append(DataConstants.FORMAT + " TEXT, ");
+         sb.append(DataConstants.SUBJECT + " TEXT, ");
+         sb.append(DataConstants.OVERVIEWURL + " TEXT, ");
+         sb.append(DataConstants.DATEPUB + " INTEGER");
+         sb.append(");");
+         db.execSQL(sb.toString());
 
          // author table
          db.execSQL("CREATE TABLE " + AUTHOR_TABLE + " (" + DataConstants.AUTHORID + " INTEGER PRIMARY KEY,"
                   + DataConstants.NAME + " TEXT" + ");");
 
          // bookauthor table
-         db.execSQL("CREATE TABLE " + BOOKAUTHOR_TABLE + " (" + DataConstants.BOOKAUTHORID + " INTEGER PRIMARY KEY,"
-                  + DataConstants.BOOKID + " INTEGER," + DataConstants.AUTHORID + " INTEGER)");
+         sb.setLength(0);
+         sb.append("CREATE TABLE " + BOOKAUTHOR_TABLE + " (");
+         sb.append(DataConstants.BOOKAUTHORID + " INTEGER PRIMARY KEY, ");
+         sb.append(DataConstants.BOOKID + " INTEGER, ");
+         sb.append(DataConstants.AUTHORID + " INTEGER, ");
+         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + BOOK_TABLE + "(" + DataConstants.BOOKID + "), ");
+         sb.append("FOREIGN KEY(" + DataConstants.AUTHORID + ") REFERENCES " + AUTHOR_TABLE + "(" + DataConstants.AUTHORID + ") ");
+         sb.append(");");         
+         db.execSQL(sb.toString());
 
          // bookdata table (users book data, ratings, reviews, etc)
-         db.execSQL("CREATE TABLE " + BOOKUSERDATA_TABLE + " (" + DataConstants.BOOKUSERDATAID + " INTEGER PRIMARY KEY,"
-                  + DataConstants.BOOKID + " INTEGER," + DataConstants.READSTATUS + " INTEGER," + DataConstants.RATING
-                  + " INTEGER," + DataConstants.BLURB + " TEXT" + ");");
+         sb.setLength(0);
+         sb.append("CREATE TABLE " + BOOKUSERDATA_TABLE + " (");
+         sb.append(DataConstants.BOOKUSERDATAID + " INTEGER PRIMARY KEY, " );
+         sb.append(DataConstants.BOOKID + " INTEGER, ");
+         sb.append(DataConstants.READSTATUS + " INTEGER, ");
+         sb.append(DataConstants.RATING + " INTEGER, ");
+         sb.append(DataConstants.BLURB + " TEXT, ");
+         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + BOOK_TABLE + "(" + DataConstants.BOOKID + ") ");
+         sb.append(");");
+         db.execSQL(sb.toString());
 
          // constraints
-         db.execSQL("CREATE UNIQUE INDEX uidxBookIsbn ON " + BOOK_TABLE + "(" + DataConstants.ISBN + " COLLATE NOCASE)");
+         db
+                  .execSQL("CREATE UNIQUE INDEX uidxBookIsbn ON " + BOOK_TABLE + "(" + DataConstants.ISBN
+                           + " COLLATE NOCASE)");
          db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON " + AUTHOR_TABLE + "(" + DataConstants.NAME
                   + " COLLATE NOCASE)");
 
