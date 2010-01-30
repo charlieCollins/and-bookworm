@@ -3,3 +3,4 @@
 3. Menu on Main that includes sort and search/filter.
 4. Tags
 5. Speed - cache? for loading list with images
+6. Organize all layout files: id, layout (top bottom left right), gravity, src - etc (some pattern)
