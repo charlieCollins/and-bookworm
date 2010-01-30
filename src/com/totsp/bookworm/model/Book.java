@@ -29,6 +29,7 @@ public final class Book {
       if (title == null || title.length() < 1) {
          throw new IllegalArgumentException("Error, book must have a title (minimum size 1)");
       }
+      this.authors = new HashSet<Author>();
       this.isbn = isbn;
       this.title = title;
    }
