@@ -67,7 +67,7 @@ public class BookEntryResult extends Activity {
       });
 
       String isbn = this.getIntent().getStringExtra(Constants.ISBN);
-      Log.d(Splash.APP_NAME, "ISBN after scan - " + isbn);
+      Log.d(Constants.LOG_TAG, "ISBN after scan - " + isbn);
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          this.setViewsForInvalidEntry();
       } else {
@@ -78,11 +78,11 @@ public class BookEntryResult extends Activity {
    private void bookAddClick() {
       // TODO make this another AsyncTask (db operations, etc)
       if ((this.book != null) && (this.book.getIsbn() != null)) {
-         Log.d(Splash.APP_NAME, "Book object created, and ADD pressed");
+         Log.d(Constants.LOG_TAG, "Book object created, and ADD pressed");
          // TODO don't even let users get here if book exists, remove add button prev              
          Book retrieve = this.application.getDataHelper().selectBook(this.book.getIsbn());
          if (retrieve == null) {
-            Log.d(Splash.APP_NAME, "Book does not already exist in DB, attempt to insert");
+            Log.d(Constants.LOG_TAG, "Book does not already exist in DB, attempt to insert");
             // save image to ContentProvider
             if (this.bookCoverBitmap != null) {
                int imageId = this.application.getDataImageHelper().saveImage(this.book.getTitle(), this.bookCoverBitmap);
@@ -91,7 +91,7 @@ public class BookEntryResult extends Activity {
             // save book to database
             this.application.getDataHelper().insertBook(this.book);
          } else {
-            Log.d(Splash.APP_NAME, "Book already exists in DB, ignore");
+            Log.d(Constants.LOG_TAG, "Book already exists in DB, ignore");
          }
       }
       this.startActivity(new Intent(BookEntryResult.this, Main.class));
@@ -138,7 +138,7 @@ public class BookEntryResult extends Activity {
          // TODO better book cover get stuff (HttpHelper binary)
          // book cover image
          String imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbns[0]);
-         Log.d(Splash.APP_NAME, "book cover imageUrl - " + imageUrl);
+         Log.d(Constants.LOG_TAG, "book cover imageUrl - " + imageUrl);
          if ((imageUrl != null) && !imageUrl.equals("")) {
             try {
                URL url = new URL(imageUrl);
@@ -150,7 +150,7 @@ public class BookEntryResult extends Activity {
                   this.bookCoverBitmapTask = null;
                }
             } catch (IOException e) {
-               Log.e(Splash.APP_NAME, " ", e);
+               Log.e(Constants.LOG_TAG, " ", e);
             }
          }
          return null;
@@ -174,11 +174,11 @@ public class BookEntryResult extends Activity {
             BookEntryResult.this.bookDate.setText(DateUtil.format(new Date(this.bookTask.getDatePubStamp())));
 
             if (this.bookCoverBitmapTask != null) {
-               Log.d(Splash.APP_NAME, "book cover bitmap present, set cover");
+               Log.d(Constants.LOG_TAG, "book cover bitmap present, set cover");
                BookEntryResult.this.bookCover.setImageBitmap(this.bookCoverBitmapTask);
                BookEntryResult.this.bookCoverBitmap = bookCoverBitmapTask;
             } else {
-               Log.d(Splash.APP_NAME, "book cover not found");
+               Log.d(Constants.LOG_TAG, "book cover not found");
                BookEntryResult.this.bookCover.setImageResource(R.drawable.book_cover_missing);
             }
 

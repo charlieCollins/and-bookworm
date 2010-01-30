@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
-import com.totsp.bookworm.Splash;
+import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 
@@ -130,7 +130,7 @@ public class DataHelper {
 
          db.setTransactionSuccessful();
       } catch (SQLException e) {
-         Log.e(Splash.APP_NAME, "Error inserting book", e);
+         Log.e(Constants.LOG_TAG, "Error inserting book", e);
       } finally {
          this.db.endTransaction();
       }
@@ -337,13 +337,13 @@ public class DataHelper {
 
       OpenHelper(Context context) {
          super(context, DATABASE_NAME, null, DATABASE_VERSION);
-         Log.d(Splash.APP_NAME, "SQLiteOpenHelper");
+         Log.d(Constants.LOG_TAG, "SQLiteOpenHelper");
       }
 
       @Override
       public void onCreate(SQLiteDatabase db) {
 
-         Log.d(Splash.APP_NAME, "SQLiteOpenHelper onCreate");
+         Log.d(Constants.LOG_TAG, "SQLiteOpenHelper onCreate");
 
          // book table
          db.execSQL("CREATE TABLE " + BOOK_TABLE + " (" + DataConstants.BOOKID + " INTEGER PRIMARY KEY,"
@@ -375,7 +375,7 @@ public class DataHelper {
 
       @Override
       public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-         Log.w("BookWorm", "Upgrading database not yet implemented");
+         Log.w(Constants.LOG_TAG, "Upgrading database not yet implemented");
          // export old data first, then upgrade, then import
          db.execSQL("DROP TABLE IF EXISTS " + BOOK_TABLE);
          db.execSQL("DROP TABLE IF EXISTS " + AUTHOR_TABLE);

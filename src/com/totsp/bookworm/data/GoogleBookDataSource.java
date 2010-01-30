@@ -1,7 +1,9 @@
 package com.totsp.bookworm.data;
 
+import android.util.Log;
 import android.util.Xml;
 
+import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Book;
 
 import java.io.ByteArrayInputStream;
@@ -28,6 +30,7 @@ public class GoogleBookDataSource implements IBookDataSource {
    private Book getBookData(String isbn) {
       String url = GDATA_BOOK_URL_PREFIX + isbn;      
       String response = this.httpHelper.performGet(url);
+      Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       if (response == null || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
          return null; // TODO better error handling
       } 

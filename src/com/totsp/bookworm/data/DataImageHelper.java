@@ -12,6 +12,8 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 
+import com.totsp.bookworm.Constants;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,8 +27,6 @@ import java.io.OutputStream;
  *
  */
 public class DataImageHelper {
-
-   public static final String TAG = "DataImageHelper";
 
    private static final Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
@@ -55,7 +55,7 @@ public class DataImageHelper {
          if (c != null) {
             c.moveToFirst();
             filePath = c.getString(0);
-            Log.d(TAG, "found image filePath - " + filePath);
+            Log.d(Constants.LOG_TAG, "found image filePath - " + filePath);
          }
       } finally {
          if (c != null && !c.isClosed()) {
@@ -69,7 +69,7 @@ public class DataImageHelper {
             FileInputStream fis = new FileInputStream(filePath);
             bitmap = BitmapFactory.decodeStream(fis);
          } catch (IOException e) {
-            Log.e("TotspTEST", "", e);
+            Log.e("Constants.LOG_TAG", "", e);
          }
       }
       return bitmap;
@@ -104,9 +104,9 @@ public class DataImageHelper {
          bitmap.compress(Bitmap.CompressFormat.JPEG, 70, os);
          os.close();
       } catch (FileNotFoundException e) {
-         Log.e(DataImageHelper.TAG, e.toString());
+         Log.e(Constants.LOG_TAG, e.toString());
       } catch (IOException e) {
-         Log.e(DataImageHelper.TAG, e.toString());
+         Log.e(Constants.LOG_TAG, e.toString());
       }
    }
 }

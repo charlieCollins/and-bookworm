@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -102,12 +101,10 @@ public class Main extends TabActivity {
       this.bookList = new ArrayList<Book>();
       // TODO select only id/title, or cache/page - this could get slow with a lot of books?
       this.bookList.addAll(this.application.getDataHelper().selectAllBooks());
-      Log.d(Splash.APP_NAME, "bookList size - " + this.bookList.size());
       BookAdapter adapter = new BookAdapter(this, android.R.layout.simple_list_item_1, this.bookList);
       this.bookListView.setAdapter(adapter);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(AdapterView<?> parent, View v, int index, long id) {
-            Log.d(Splash.APP_NAME, "onItemClick - " + bookList.get(index));
             Main.this.application.setSelectedBook(bookList.get(index));
             Main.this.startActivity(new Intent(Main.this, BookDetail.class));
          }
@@ -237,9 +234,8 @@ public class Main extends TabActivity {
                   iv.setImageDrawable(getResources().getDrawable(R.drawable.book_cover_missing));
                }
             }
-
-            TextView tv1 = (TextView) v.findViewById(R.id.itemslistitemtext);
-            tv1.setText(book.getTitle());
+            TextView tv = (TextView) v.findViewById(R.id.itemslistitemtext);
+            tv.setText(book.getTitle());
          }
          return v;
       }

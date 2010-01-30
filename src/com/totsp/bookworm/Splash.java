@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-public class Splash extends Activity {
-
-   public static final String APP_NAME = "BookWorm";  
+public class Splash extends Activity {   
 
    @Override
    public void onCreate(Bundle savedInstanceState) {

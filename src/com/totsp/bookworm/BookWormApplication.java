@@ -8,6 +8,8 @@ import com.totsp.bookworm.model.Book;
 
 public class BookWormApplication extends Application {
 
+   public static final String APP_NAME = "BookWorm";  
+   
    private DataHelper dataHelper;
    private DataImageHelper dataImageHelper;
    
