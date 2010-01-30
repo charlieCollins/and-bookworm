@@ -40,7 +40,7 @@ public class BookDetail extends Activity {
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      
+
       Log.d(Constants.LOG_TAG, "BookDetail onCreate");
 
       this.application = (BookWormApplication) this.getApplication();
@@ -60,13 +60,13 @@ public class BookDetail extends Activity {
 
       // pattern is onCreate THEN onRestoreInstanceState 
       // can't exit/give up from onCreate if data is missing, have to re-setup in onRestore
-      this.setViewData();      
+      this.setViewData();
    }
 
    @Override
    public void onStart() {
       super.onStart();
-      Log.d(Constants.LOG_TAG, "BookDetail onStart");      
+      Log.d(Constants.LOG_TAG, "BookDetail onStart");
    }
 
    @Override
@@ -79,17 +79,15 @@ public class BookDetail extends Activity {
    protected void onStop() {
       super.onStop();
    }
-   
+
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
          if (book.getCoverImageId() > 0) {
             Bitmap coverImage = application.getDataImageHelper().getImage((int) book.getCoverImageId());
-            if (coverImage != null && coverImage.getWidth() > 10) {
-               bookCover.setImageBitmap(coverImage);
-            } else {
-               bookCover.setImageDrawable(getResources().getDrawable(R.drawable.book_cover_missing));
-            }
+            bookCover.setImageBitmap(coverImage);
+         } else {
+            bookCover.setImageResource(R.drawable.book_cover_missing);
          }
 
          this.bookTitle.setText(book.getTitle());
@@ -109,7 +107,7 @@ public class BookDetail extends Activity {
          this.bookPublisher.setText(book.getPublisher());
       }
    }
-   
+
    @Override
    protected void onRestoreInstanceState(Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
@@ -117,13 +115,13 @@ public class BookDetail extends Activity {
       if (this.application.getSelectedBook() == null) {
          this.application.establishSelectedBook(savedInstanceState.getString(Constants.ISBN));
          this.setViewData();
-      }      
+      }
    }
 
    @Override
    protected void onSaveInstanceState(Bundle saveState) {
       Log.d(Constants.LOG_TAG, "BookDetail onSaveInstanceState");
-      saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn());      
+      saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn());
       super.onSaveInstanceState(saveState);
    }
 

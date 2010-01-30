@@ -228,12 +228,10 @@ public class Main extends TabActivity {
             ImageView iv = (ImageView) v.findViewById(R.id.itemslistitemimage);
             if (book.getCoverImageId() > 0) {
                Bitmap coverImage = application.getDataImageHelper().getImage((int) book.getCoverImageId());
-               if (coverImage != null && coverImage.getWidth() > 10) {
-                  iv.setImageBitmap(coverImage);
-               } else {
-                  iv.setImageDrawable(getResources().getDrawable(R.drawable.book_cover_missing));
-               }
-            }
+               iv.setImageBitmap(coverImage);
+            } else {
+               iv.setImageResource(R.drawable.book_cover_missing);
+            }            
             TextView tv = (TextView) v.findViewById(R.id.itemslistitemtext);
             tv.setText(book.getTitle());
          }
