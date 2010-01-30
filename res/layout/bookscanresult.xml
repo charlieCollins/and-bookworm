@@ -3,12 +3,12 @@
 	android:layout_width="fill_parent" android:layout_height="wrap_content">
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+		android:layout_height="wrap_content">
 		<TextView android:id="@+id/scanTitle" android:layout_width="fill_parent"
 			android:gravity="center_horizontal" android:layout_height="wrap_content"
 			android:layout_marginTop="25px" android:layout_marginBottom="10px"
-			android:text="Book Scan Results" style="@style/subsubtitletext" />
-
+			android:text="Book Scan Results" style="@style/whitetext" />
+			
 		<TextView android:id="@+id/scanBookTitle"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="center_horizontal" android:layout_marginTop="10px" android:layout_marginBottom="10px"
@@ -19,17 +19,17 @@
 			android:layout_below="@id/scanBookTitle" />
 		<TextView android:id="@+id/scanBookAuthor"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:gravity="center_horizontal" android:layout_marginTop="10px" style="@style/text"
+			android:gravity="center_horizontal" android:layout_marginTop="10px" style="@style/whitetext"
 			android:layout_below="@id/scanBookCover" />
 		<TextView android:id="@+id/scanBookDate"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:gravity="center_horizontal" android:layout_marginTop="10px" style="@style/text"
+			android:gravity="center_horizontal" android:layout_marginTop="10px" style="@style/whitetext"
 			android:layout_below="@id/scanBookAuthor" />
 
 		<Button android:id="@+id/scanbookaddbutton"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="center_horizontal" android:layout_marginTop="25px" android:text="Add book"
-			style="@style/textbutton" android:layout_below="@id/scanBookDate"
+			style="@style/blacktext" android:layout_below="@id/scanBookDate"
 			android:visibility="invisible" />
 	</RelativeLayout>
 </ScrollView>

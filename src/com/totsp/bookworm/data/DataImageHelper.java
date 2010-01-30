@@ -30,6 +30,9 @@ public class DataImageHelper {
 
    private static final Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
+   // TODO create a cache of images here, rather than going to ContentProvider each time?
+   // (not sure, maybe it caches?)
+   
    private final Context context;
    private String bucketId;
    private String bucketDisplayName;

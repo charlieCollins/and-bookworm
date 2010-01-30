@@ -2,21 +2,27 @@ package com.totsp.bookworm;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -92,7 +98,7 @@ public class Main extends TabActivity {
       // TODO select only id/title, or cache/page - this could get slow with a lot of books?
       this.bookList.addAll(this.application.getDataHelper().selectAllBooks());
       Log.d(Splash.APP_NAME, "bookList size - " + this.bookList.size());
-      ArrayAdapter<Book> adapter = new ArrayAdapter<Book>(this, android.R.layout.simple_list_item_1, this.bookList);
+      BookAdapter adapter = new BookAdapter(this, android.R.layout.simple_list_item_1, this.bookList);
       this.bookListView.setAdapter(adapter);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(AdapterView<?> parent, View v, int index, long id) {
@@ -130,6 +136,7 @@ public class Main extends TabActivity {
       super.onCreateContextMenu(menu, v, menuInfo);
       menu.add(0, MENU_CONTEXT_EDIT, 0, "Edit Book");
       menu.add(1, MENU_CONTEXT_DELETE, 0, "Delete Book");
+      menu.setHeaderTitle("Action");
    }
 
    public boolean onContextItemSelected(MenuItem item) {
@@ -181,20 +188,41 @@ public class Main extends TabActivity {
       }
    }
 
-   /*
-   private void insertTestData() {
-      // temp
-      try {
-         Book b1 = new Book("1231", "book1");
-         Book b2 = new Book("1232", "book2");
-         Book b3 = new Book("1233", "book3");
-         this.dh.insertBook(b1);
-         this.dh.insertBook(b2);
-         this.dh.insertBook(b3);
-      } catch (Exception e) {
-         Log.d(Splash.APP_NAME, "Error creating sample books", e);
+   //
+   // BookAdapter
+   //
+
+   private class BookAdapter extends ArrayAdapter<Book> {
+
+      LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      private ArrayList<Book> books;
+
+      public BookAdapter(Context context, int resId, ArrayList<Book> books) {
+         super(context, resId, books);
+         this.books = books;
       }
-      // end temp
+
+      @Override
+      public View getView(int position, View convertView, ViewGroup parent) {
+         View v = convertView;
+         if (v == null) {
+            v = vi.inflate(R.layout.items_list_item, null);
+         }
+
+         Book book = books.get(position);
+         if (book != null) {
+            ImageView iv = (ImageView) v.findViewById(R.id.items_list_item_image);
+            if (book.getCoverImageId() > 0) {
+               Bitmap coverImage = application.getDataImageHelper().getImage((int) book.getCoverImageId());
+               if (coverImage != null && coverImage.getWidth() > 10) {
+                  iv.setImageBitmap(coverImage);
+               }
+            } 
+
+            TextView tv1 = (TextView) v.findViewById(R.id.items_list_item_text_line1);
+            tv1.setText(book.getTitle());           
+         }
+         return v;
+      }
    }
-   */
 }

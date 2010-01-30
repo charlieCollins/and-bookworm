@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="wrap_content">
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
-		<TextView android:id="@+id/detailTitle" android:layout_width="fill_parent"
-			android:gravity="center_horizontal" android:layout_height="wrap_content"
-			android:layout_marginTop="25px" android:layout_marginBottom="10px"
-			android:text="@string/app_name" style="@style/titletext" />
-		<ImageView android:id="@+id/detailLogo"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_centerVertical="true" android:gravity="center_horizontal"
-			android:layout_marginLeft="10px" android:layout_marginTop="10px"
-			android:layout_below="@id/detailTitle" android:src="@drawable/books24" />
-		<TextView android:id="@+id/detailOutput"
-			android:layout_width="fill_parent" android:gravity="center_horizontal"
-			android:layout_height="wrap_content" android:layout_marginTop="10px"
-			android:text="@string/by" style="@style/text" android:layout_below="@id/detailLogo" />
-	</RelativeLayout>
-</ScrollView>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@drawable/splash_bgrnd">
+	<ImageView android:id="@+id/bookcover" android:layout_width="120dip"
+		android:layout_height="120dip" android:gravity="left"
+		android:layout_marginLeft="10px" android:layout_marginTop="10px"
+		android:src="@drawable/books24" />
+	<TextView android:id="@+id/booktitle" android:layout_width="wrap_content"
+		android:layout_height="80dip" android:layout_marginTop="20px"
+		android:layout_below="@id/bookcover" android:gravity="center_horizontal"
+		android:layout_marginLeft="10px" android:layout_marginBottom="20px"
+		style="@style/subtitletext" />
+	<TextView android:id="@+id/bookauthors" android:layout_width="wrap_content"
+		android:layout_height="80dip" android:layout_marginTop="20px"
+		android:layout_below="@id/booktitle" android:layout_marginLeft="10px"
+		android:layout_marginBottom="20px" style="@style/blacktext" />
+</RelativeLayout>

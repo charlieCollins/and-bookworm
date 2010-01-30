@@ -2,7 +2,7 @@
 <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@android:id/tabhost" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<LinearLayout android:orientation="vertical"
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
 		android:layout_width="fill_parent" android:layout_height="fill_parent">
 		<TabWidget android:id="@android:id/tabs"
 			android:layout_width="fill_parent" android:layout_height="wrap_content" />
@@ -21,19 +21,19 @@
 			<!--  TAB 3 -->
 			<RelativeLayout android:id="@+id/bookadd"
 				android:layout_width="fill_parent" android:layout_height="fill_parent">
-				<TextView android:id="@+id/bookaddintro" style="@style/text"
+				<TextView android:id="@+id/bookaddintro" style="@style/whitetext"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
 					android:text="Choose entry method" />
-				<Button android:id="@+id/bookaddscanbutton" style="@style/textbutton"
+				<Button android:id="@+id/bookaddscanbutton" style="@style/blacktext"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
 					android:layout_below="@id/bookaddintro" android:text="Scan product code" />
-				<Button android:id="@+id/bookaddsearchbutton" style="@style/textbutton"
+				<Button android:id="@+id/bookaddsearchbutton" style="@style/blacktext"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
 					android:layout_below="@id/bookaddscanbutton" android:text="Search the web" />
-				<Button android:id="@+id/bookaddformbutton" style="@style/textbutton"
+				<Button android:id="@+id/bookaddformbutton" style="@style/blacktext"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
 					android:layout_height="wrap_content" android:layout_marginTop="25px"
 					android:layout_below="@id/bookaddsearchbutton" android:text="Use form (type)" />
@@ -41,31 +41,3 @@
 		</FrameLayout>
 	</LinearLayout>
 </TabHost>
-
-	<!--
-		<?xml version="1.0" encoding="utf-8"?> <RelativeLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent"> <TextView android:id="@+id/blurb"
-		android:layout_width="fill_parent" android:gravity="center_horizontal"
-		android:layout_height="wrap_content" android:layout_marginTop="25px"
-		android:text="@string/app_name" style="@style/titletext" /> <ImageView
-		android:id="@+id/logo" android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
-		android:layout_centerHorizontal="true"
-		android:layout_marginBottom="20px" android:layout_marginTop="10px"
-		android:layout_below="@id/blurb" android:src="@drawable/books48" />
-		<Button android:id="@+id/button_read_list"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center_horizontal" android:layout_marginTop="10px"
-		android:layout_below="@id/logo" android:text="Books I've Read" />
-		<Button android:id="@+id/button_toread_list"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center_horizontal" android:layout_marginTop="10px"
-		android:layout_marginBottom="10px"
-		android:layout_below="@id/button_read_list" android:text="Books I Want
-		to Read" /> </RelativeLayout>
-	-->

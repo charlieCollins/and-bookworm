@@ -1,15 +1,21 @@
 package com.totsp.bookworm;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.totsp.bookworm.model.Author;
+import com.totsp.bookworm.model.Book;
 
 public class BookDetail extends Activity {
 
    private BookWormApplication application;
    
-   private TextView output;
-   private String bookTitle;
+   private ImageView bookCover;
+   private TextView bookTitle;   
+   private TextView bookAuthors;
    
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -20,11 +26,31 @@ public class BookDetail extends Activity {
       setContentView(R.layout.bookdetail); 
       
       // TODO check if selectedBook present?
-      this.bookTitle = this.application.getSelectedBook().getTitle();
+      this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
+      this.bookTitle = (TextView) this.findViewById(R.id.booktitle);
+      this.bookAuthors = (TextView) this.findViewById(R.id.bookauthors);
       
-      this.output = (TextView) this.findViewById(R.id.detailOutput);
-      this.output.setText("selected book - " + this.bookTitle);
+      Book book = this.application.getSelectedBook();
       
+      if (book.getCoverImageId() > 0) {
+         Bitmap coverImage = application.getDataImageHelper().getImage((int) book.getCoverImageId());
+         if (coverImage != null && coverImage.getWidth() > 10) {
+            bookCover.setImageBitmap(coverImage);
+         }
+      } 
+      
+      this.bookTitle.setText(book.getTitle());
+      
+      String authors = null;
+      for (Author a : book.getAuthors()) {
+         if (authors == null) {
+            authors = a.getName();
+         } else {
+            authors += ", " + a.getName();
+         }
+      }
+      
+      this.bookAuthors.setText(authors);      
    }   
 
    @Override

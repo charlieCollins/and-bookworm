@@ -4,14 +4,14 @@
     <string name="by"><b>By Charlie Collins</b>\n</string>
     <string name="help">    
     <i>Use BookWorm to keep track of books you have read, and you intend to read. 
-    Maintain a log of text books, audio books, online articles - 
-    all in one place for later reference and sharing.</i>\n
+    Maintain a log of books that you can quickly view, sort, share, rate, and 
+    synchronize with online book apps.</i>\n
     \n
-    <li>Create as many lists as you want, we start you with "Books I've Read" and "Books I want to Read"</li>\n
-    <li>Add books to a list by scanning, searching, or direct entry</li>\n
-    <li>Select a list and view books (sort too)</li>\n
-    <li>TODO backup and restore lists with SDCard</li>\n
-    <li>TODO import/export Google Books My Library</li>\n
-    <li>TODO incorporate other online book services?</li>\n
+    <li>Add books by scanning, searching, or direct text entry</li>\n
+    <li>Sort books any way you want</li>\n
+    <li>TODO Backup and restore data to the SDCard</li>\n
+    <li>TODO Clear all data, including images</li>\n
+    <li>TODO Sync Google Books My Library</li>\n
+    <li>TODO Sync other online book apps</li>\n
     </string>
 </resources>

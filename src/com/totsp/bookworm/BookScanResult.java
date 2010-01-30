@@ -135,7 +135,7 @@ public class BookScanResult extends Activity {
 
          // TODO better book cover get stuff (HttpHelper binary)
          // book cover image
-         String imageUrl = OpenLibraryUtil.getCoverUrlSmall(isbns[0]);
+         String imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbns[0]);
          Log.d(Splash.APP_NAME, "book cover imageUrl - " + imageUrl);
          if ((imageUrl != null) && !imageUrl.equals("")) {
             try {
