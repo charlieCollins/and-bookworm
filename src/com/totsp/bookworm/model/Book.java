@@ -3,6 +3,7 @@ package com.totsp.bookworm.model;
 import java.util.HashSet;
 import java.util.Set;
 
+// TODO save isbn 10 and isbn 13?
 public final class Book {
 
    // give things explicit defaults, easier than null checks later for SQLite

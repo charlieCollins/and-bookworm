@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -39,6 +40,8 @@ public class BookDetail extends Activity {
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      
+      Log.d(Constants.LOG_TAG, "BookDetail onCreate");
 
       this.application = (BookWormApplication) this.getApplication();
 
@@ -55,6 +58,29 @@ public class BookDetail extends Activity {
       ///this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
       ///TODO this.ratingBar.setRating(3.0f);      
 
+      // pattern is onCreate THEN onRestoreInstanceState 
+      // can't exit/give up from onCreate if data is missing, have to re-setup in onRestore
+      this.setViewData();      
+   }
+
+   @Override
+   public void onStart() {
+      super.onStart();
+      Log.d(Constants.LOG_TAG, "BookDetail onStart");      
+   }
+
+   @Override
+   public void onPause() {
+      this.bookTitle = null;
+      super.onPause();
+   }
+
+   @Override
+   protected void onStop() {
+      super.onStop();
+   }
+   
+   private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
          if (book.getCoverImageId() > 0) {
@@ -81,27 +107,24 @@ public class BookDetail extends Activity {
          this.bookSubject.setText(book.getSubject());
          this.bookDatePub.setText(DateUtil.format(new Date(book.getDatePubStamp())));
          this.bookPublisher.setText(book.getPublisher());
-      } else {
-         Toast.makeText(this, "Sorry, there is a problem re-loading a selected book, try selecting it again.",
-                  Toast.LENGTH_SHORT).show();
-         this.startActivity(new Intent(this, Main.class));
       }
    }
-
+   
    @Override
-   public void onStart() {
-      super.onStart();
+   protected void onRestoreInstanceState(Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      Log.d(Constants.LOG_TAG, "BookDetail onRestoreInstanceState");
+      if (this.application.getSelectedBook() == null) {
+         this.application.establishSelectedBook(savedInstanceState.getString(Constants.ISBN));
+         this.setViewData();
+      }      
    }
 
    @Override
-   public void onPause() {
-      this.bookTitle = null;
-      super.onPause();
-   }
-
-   @Override
-   protected void onStop() {
-      super.onStop();
+   protected void onSaveInstanceState(Bundle saveState) {
+      Log.d(Constants.LOG_TAG, "BookDetail onSaveInstanceState");
+      saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn());      
+      super.onSaveInstanceState(saveState);
    }
 
    @Override
@@ -125,7 +148,11 @@ public class BookDetail extends Activity {
          this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
          return true;
       case MENU_WEB_AMAZON:
-         uri = Uri.parse("http://amzn.com/" + this.application.getSelectedBook().getIsbn());
+         // TODO save book isbn10 for amazon - then use http://amzn.com/isbn10
+         // (right now can only get search results, which is annoying)
+         uri =
+                  Uri.parse("http://www.amazon.com/gp/search?keywords=" + this.application.getSelectedBook().getIsbn()
+                           + "&index=books");
          this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
          return true;
       case MENU_EDIT:

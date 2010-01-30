@@ -1,6 +1,7 @@
 package com.totsp.bookworm;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.data.DataImageHelper;
@@ -18,14 +19,17 @@ public class BookWormApplication extends Application {
    @Override
    public void onCreate() {
       super.onCreate();
+      Log.d(Constants.LOG_TAG, "APPLICATION onCreate");
       this.dataHelper = new DataHelper(this);
       this.dataImageHelper = new DataImageHelper(this, "BookWorm", "BookWorm Cover Images", true);
    }
    
    @Override
    public void onTerminate() {
+      Log.d(Constants.LOG_TAG, "APPLICATION onTerminate");
       // not guaranteed to be called?
-      this.dataHelper.cleanup();      
+      this.dataHelper.cleanup(); 
+      this.selectedBook = null;
       super.onTerminate();      
    }
 
@@ -52,4 +56,9 @@ public class BookWormApplication extends Application {
    public void setSelectedBook(Book selectedBook) {
       this.selectedBook = selectedBook;
    }   
+   
+   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved isbn
+   public void establishSelectedBook(String isbn) {
+      this.selectedBook = this.dataHelper.selectBook(isbn);
+   }
 }
