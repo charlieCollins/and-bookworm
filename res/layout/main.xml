@@ -16,19 +16,19 @@
 				android:layout_width="fill_parent" android:layout_height="fill_parent">
 				<TextView android:id="@+id/bookaddintro" style="@style/whitetext"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
-					android:layout_height="wrap_content" android:layout_marginTop="25px"
+					android:layout_height="wrap_content" android:layout_marginTop="25dp"
 					android:text="Choose entry method" />
 				<Button android:id="@+id/bookaddscanbutton" style="@style/blacktext"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
-					android:layout_height="wrap_content" android:layout_marginTop="25px"
+					android:layout_height="wrap_content" android:layout_marginTop="25dp"
 					android:layout_below="@id/bookaddintro" android:text="Scan product code" />
 				<Button android:id="@+id/bookaddsearchbutton" style="@style/blacktext"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
-					android:layout_height="wrap_content" android:layout_marginTop="25px"
+					android:layout_height="wrap_content" android:layout_marginTop="25dp"
 					android:layout_below="@id/bookaddscanbutton" android:text="Search the web" />
 				<Button android:id="@+id/bookaddformbutton" style="@style/blacktext"
 					android:layout_width="fill_parent" android:gravity="center_horizontal"
-					android:layout_height="wrap_content" android:layout_marginTop="25px"
+					android:layout_height="wrap_content" android:layout_marginTop="25dp"
 					android:layout_below="@id/bookaddsearchbutton" android:text="Use form (type)" />
 			</RelativeLayout>
 		</FrameLayout>

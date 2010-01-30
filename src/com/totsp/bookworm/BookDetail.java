@@ -36,6 +36,8 @@ public class BookDetail extends Activity {
          Bitmap coverImage = application.getDataImageHelper().getImage((int) book.getCoverImageId());
          if (coverImage != null && coverImage.getWidth() > 10) {
             bookCover.setImageBitmap(coverImage);
+         } else {
+            bookCover.setImageDrawable(getResources().getDrawable(R.drawable.book_cover_missing));
          }
       } 
       
