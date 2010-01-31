@@ -30,6 +30,7 @@ public class BookDetail extends Activity {
 
    private ImageView bookCover;
    private TextView bookTitle;
+   private TextView bookSubTitle;
    private TextView bookAuthors;
    private TextView bookSubject;
    private TextView bookDatePub;
@@ -47,9 +48,9 @@ public class BookDetail extends Activity {
 
       setContentView(R.layout.bookdetail);
 
-      // TODO check if selectedBook present?
       this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
       this.bookTitle = (TextView) this.findViewById(R.id.booktitle);
+      this.bookSubTitle = (TextView) this.findViewById(R.id.booksubtitle);
       this.bookAuthors = (TextView) this.findViewById(R.id.bookauthors);
       this.bookSubject = (TextView) this.findViewById(R.id.booksubject);
       this.bookDatePub = (TextView) this.findViewById(R.id.bookdatepub);
@@ -91,6 +92,7 @@ public class BookDetail extends Activity {
          }
 
          this.bookTitle.setText(book.getTitle());
+         this.bookSubTitle.setText(book.getSubTitle());
 
          String authors = null;
          for (Author a : book.getAuthors()) {

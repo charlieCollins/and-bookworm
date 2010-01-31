@@ -37,7 +37,7 @@ public class Main extends TabActivity {
    private static final int MENU_HELP = 0;
    private static final int MENU_SEARCH = 1;
    private static final int MENU_SORT_RATING = 2;
-   private static final int MENU_SORT_ALPHA = 3;   
+   private static final int MENU_SORT_ALPHA = 3;
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
 
@@ -233,9 +233,11 @@ public class Main extends TabActivity {
                iv.setImageBitmap(coverImage);
             } else {
                iv.setImageResource(R.drawable.book_cover_missing);
-            }            
-            TextView tv = (TextView) v.findViewById(R.id.itemslistitemtext);
-            tv.setText(book.getTitle());
+            }
+            TextView above = (TextView) v.findViewById(R.id.itemslistitemtextabove);
+            above.setText(book.getTitle());
+            TextView below = (TextView) v.findViewById(R.id.itemslistitemtextbelow);
+            below.setText(book.getSubTitle());
          }
          return v;
       }

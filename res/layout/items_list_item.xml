@@ -5,10 +5,17 @@
 		android:layout_width="70dp" android:layout_height="70dp"
 		android:layout_alignParentTop="true" android:layout_alignParentBottom="true"
 		android:layout_marginRight="15dp" />
-	<TextView android:id="@+id/itemslistitemtext"
+	<TextView android:id="@+id/itemslistitemtextabove"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:layout_toRightOf="@id/itemslistitemimage" android:layout_alignParentBottom="true"
-		android:ellipsize="marquee" style="@style/whitetext" />	
+		android:layout_toRightOf="@id/itemslistitemimage"
+		android:layout_alignParentBottom="true" android:ellipsize="marquee"
+		style="@style/whitetext" />
+	<TextView android:id="@+id/itemslistitemtextbelow"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:layout_toRightOf="@id/itemslistitemimage"
+		android:layout_below="@id/itemslistitemtextabove"
+		android:layout_alignParentBottom="true" android:ellipsize="marquee"
+		style="@style/whitetext" />
 </RelativeLayout>
 
 	<!--
