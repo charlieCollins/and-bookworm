@@ -4,3 +4,5 @@
 4. Tags
 5. Speed - cache? for loading list with images
 6. Organize all layout files: id, layout (top bottom left right), gravity, src - etc (some pattern)
+7. Clean up the solid leather background, and use it on ListView too 
+http://android-developers.blogspot.com/2009/01/why-is-my-list-black-android.html.
