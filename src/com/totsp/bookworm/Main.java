@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 public class Main extends TabActivity {
 
-   private static final int MENU_HELP = 0;
+   private static final int MENU_ABOUT = 0;
    private static final int MENU_SEARCH = 1;
    private static final int MENU_SORT_RATING = 2;
    private static final int MENU_SORT_ALPHA = 3;
@@ -121,7 +121,7 @@ public class Main extends TabActivity {
 
    @Override
    public boolean onCreateOptionsMenu(Menu menu) {
-      menu.add(0, MENU_HELP, 2, "Help").setIcon(android.R.drawable.ic_menu_help);
+      menu.add(0, MENU_ABOUT, 2, "About").setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, MENU_SEARCH, 1, "Search").setIcon(android.R.drawable.ic_menu_search);
       menu.add(0, MENU_SORT_RATING, 0, "Sort|Rating").setIcon(android.R.drawable.ic_menu_sort_by_size);
       menu.add(0, MENU_SORT_ALPHA, 0, "Sort|Alpha").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
@@ -131,7 +131,7 @@ public class Main extends TabActivity {
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
-      case MENU_HELP:
+      case MENU_ABOUT:
          this.startActivity(new Intent(Main.this, About.class));
          return true;
       case MENU_SEARCH:

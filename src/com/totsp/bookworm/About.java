@@ -3,6 +3,7 @@ package com.totsp.bookworm;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ public class About extends Activity {
       
       this.about = (TextView) this.findViewById(R.id.aboutcontent);
       this.about.setText(Html.fromHtml(getResources().getString(R.string.aboutcontent)), TextView.BufferType.SPANNABLE);
+      this.about.setMovementMethod(LinkMovementMethod.getInstance());
    }   
 
    @Override
