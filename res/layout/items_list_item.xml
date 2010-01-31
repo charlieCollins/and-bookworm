@@ -9,13 +9,13 @@
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:layout_toRightOf="@id/itemslistitemimage"
 		android:layout_alignParentBottom="true" android:ellipsize="marquee"
-		style="@style/whitetext" />
+		style="@style/goldtext1" />
 	<TextView android:id="@+id/itemslistitemtextbelow"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:layout_toRightOf="@id/itemslistitemimage"
 		android:layout_below="@id/itemslistitemtextabove"
 		android:layout_alignParentBottom="true" android:ellipsize="marquee"
-		style="@style/whitetext" />
+		style="@style/goldtext2" />
 </RelativeLayout>
 
 	<!--
