@@ -17,7 +17,7 @@ import java.util.HashSet;
 public class DataHelper {
 
    private static final String DATABASE_NAME = "bookworm.db";
-   private static final int DATABASE_VERSION = 4;
+   private static final int DATABASE_VERSION = 1;
    private static final String BOOK_TABLE = "book";
    private static final String BOOKUSERDATA_TABLE = "bookuserdata";
    private static final String BOOKAUTHOR_TABLE = "bookauthor";
@@ -29,13 +29,15 @@ public class DataHelper {
    private SQLiteStatement bookInsertStmt;
    private static final String BOOK_INSERT =
             "insert into " + BOOK_TABLE + "(" + DataConstants.ISBN + "," + DataConstants.TITLE + ","
-                     + DataConstants.COVERIMAGEID + "," + DataConstants.PUBLISHER + "," + DataConstants.DESCRIPTION
-                     + "," + DataConstants.FORMAT + "," + DataConstants.SUBJECT + "," + DataConstants.OVERVIEWURL + ","
+                     + DataConstants.SUBTITLE + "," + DataConstants.COVERIMAGEID + "," + DataConstants.PUBLISHER + ","
+                     + DataConstants.DESCRIPTION + "," + DataConstants.FORMAT + "," + DataConstants.SUBJECT + ","
                      + DataConstants.DATEPUB + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+   
    private SQLiteStatement bookAuthorInsertStmt;
    private static final String BOOKAUTHOR_INSERT =
             "insert into " + BOOKAUTHOR_TABLE + "(" + DataConstants.BOOKID + "," + DataConstants.AUTHORID
                      + ") values (?, ?)";
+   
    private SQLiteStatement authorInsertStmt;
    private static final String AUTHOR_INSERT =
             "insert into " + AUTHOR_TABLE + "(" + DataConstants.NAME + ") values (?)";
@@ -68,74 +70,67 @@ public class DataHelper {
    // book
    public long insertBook(Book b) {
       long bookId = 0L;
+      if (b != null && b.getTitle() != null && b.getIsbn() != null) {
+         // TODO simplify this with ContentValues?
+         // what is speed vs Statement?
+         /*
+         final ContentValues values = new ContentValues();
+         values.put(DbConstants.ISBN, b.getIsbn());
+         ...
+         db.insert(BOOK_TABLE, DbConstants.DATEPUB, values);
+         */
 
-      // TODO validate book, must have isbn and title, etc
+         Book bookExists = this.selectBook(b.getIsbn());
+         if (bookExists != null) {
+            return bookExists.getId();
+         }
 
-      // TODO simplify this with ContentValues?
-      // what is speed vs Statement?
-      /*
-      final ContentValues values = new ContentValues();
-      values.put(DbConstants.ISBN, b.getIsbn());
-      values.put(DbConstants.TITLE, b.getIsbn());
-      values.put(DbConstants.COVERIMAGEID, b.getIsbn());
-      values.put(DbConstants.PUBLISHER, b.getIsbn());
-      values.put(DbConstants.DESCRIPTION, b.getIsbn());
-      values.put(DbConstants.FORMAT, b.getIsbn());
-      values.put(DbConstants.SUBJECT, b.getIsbn());
-      values.put(DbConstants.OVERVIEWURL, b.getIsbn());
-      values.put(DbConstants.DATEPUB, b.getIsbn());
-      db.insert(BOOK_TABLE, DbConstants.DATEPUB, values);
-      */
-
-      Book bookExists = this.selectBook(b.getIsbn());
-      if (bookExists != null) {
-         return bookExists.getId();
-      }
-
-      // use transaction
-      this.db.beginTransaction();
-      try {
-         // insert authors as needed
-         HashSet<Long> authorIds = new HashSet<Long>();
-         if (b.getAuthors() != null && !b.getAuthors().isEmpty()) {
-            for (Author a : b.getAuthors()) {
-               Author authorExists = this.selectAuthor(a.getName());
-               if (authorExists == null) {
-                  authorIds.add(this.insertAuthor(a));
-               } else {
-                  authorIds.add(authorExists.getId());
+         // use transaction
+         this.db.beginTransaction();
+         try {
+            // insert authors as needed
+            HashSet<Long> authorIds = new HashSet<Long>();
+            if (b.getAuthors() != null && !b.getAuthors().isEmpty()) {
+               for (Author a : b.getAuthors()) {
+                  Author authorExists = this.selectAuthor(a.getName());
+                  if (authorExists == null) {
+                     authorIds.add(this.insertAuthor(a));
+                  } else {
+                     authorIds.add(authorExists.getId());
+                  }
                }
             }
+
+            // insert book
+            this.bookInsertStmt.clearBindings();
+            this.bookInsertStmt.bindString(1, b.getIsbn());
+            this.bookInsertStmt.bindString(2, b.getTitle());
+            this.bookInsertStmt.bindString(3, b.getSubTitle());
+            this.bookInsertStmt.bindLong(4, b.getCoverImageId());
+            this.bookInsertStmt.bindString(5, b.getPublisher());
+            this.bookInsertStmt.bindString(6, b.getDescription());
+            this.bookInsertStmt.bindString(7, b.getFormat());
+            this.bookInsertStmt.bindString(8, b.getSubject());
+            this.bookInsertStmt.bindLong(9, b.getDatePubStamp());
+            bookId = this.bookInsertStmt.executeInsert();
+
+            // insert bookauthors
+            for (Long authorId : authorIds) {
+               this.bookAuthorInsertStmt.clearBindings();
+               this.bookAuthorInsertStmt.bindLong(1, bookId);
+               this.bookAuthorInsertStmt.bindLong(2, authorId);
+               this.bookAuthorInsertStmt.executeInsert();
+            }
+
+            db.setTransactionSuccessful();
+         } catch (SQLException e) {
+            Log.e(Constants.LOG_TAG, "Error inserting book", e);
+         } finally {
+            this.db.endTransaction();
          }
-
-         // insert book
-         this.bookInsertStmt.clearBindings();
-         this.bookInsertStmt.bindString(1, b.getIsbn());
-         this.bookInsertStmt.bindString(2, b.getTitle());
-         this.bookInsertStmt.bindLong(3, b.getCoverImageId());
-         this.bookInsertStmt.bindString(4, b.getPublisher());
-         this.bookInsertStmt.bindString(5, b.getDescription());
-         this.bookInsertStmt.bindString(6, b.getFormat());
-         this.bookInsertStmt.bindString(7, b.getSubject());
-         this.bookInsertStmt.bindString(8, b.getOverviewUrl());
-         this.bookInsertStmt.bindLong(9, b.getDatePubStamp());
-         bookId = this.bookInsertStmt.executeInsert();
-
-         // insert bookauthors
-         for (Long authorId : authorIds) {
-            this.bookAuthorInsertStmt.clearBindings();
-            this.bookAuthorInsertStmt.bindLong(1, bookId);
-            this.bookAuthorInsertStmt.bindLong(2, authorId);
-            this.bookAuthorInsertStmt.executeInsert();
-         }
-
-         db.setTransactionSuccessful();
-      } catch (SQLException e) {
-         Log.e(Constants.LOG_TAG, "Error inserting book", e);
-      } finally {
-         this.db.endTransaction();
+      } else {
+         throw new IllegalArgumentException("Error, book cannot be null, and must have an ISBN and title");
       }
-
       return bookId;
    }
 
@@ -143,21 +138,21 @@ public class DataHelper {
       Book b = null;
       Cursor c =
                this.db.query(BOOK_TABLE,
-                        new String[] { DataConstants.ISBN, DataConstants.TITLE, DataConstants.COVERIMAGEID,
-                                 DataConstants.PUBLISHER, DataConstants.DESCRIPTION, DataConstants.FORMAT,
-                                 DataConstants.SUBJECT, DataConstants.OVERVIEWURL, DataConstants.DATEPUB },
+                        new String[] { DataConstants.ISBN, DataConstants.TITLE, DataConstants.SUBTITLE,
+                                 DataConstants.COVERIMAGEID, DataConstants.PUBLISHER, DataConstants.DESCRIPTION,
+                                 DataConstants.FORMAT, DataConstants.SUBJECT, DataConstants.DATEPUB },
                         DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new Book();
          b.setId(id);
          b.setIsbn(c.getString(0));
          b.setTitle(c.getString(1));
-         b.setCoverImageId(c.getLong(2));
-         b.setPublisher(c.getString(3));
-         b.setDescription(c.getString(4));
-         b.setFormat(c.getString(5));
-         b.setSubject(c.getString(6));
-         b.setOverviewUrl(c.getString(7));
+         b.setSubTitle(c.getString(2));
+         b.setCoverImageId(c.getLong(3));
+         b.setPublisher(c.getString(4));
+         b.setDescription(c.getString(5));
+         b.setFormat(c.getString(6));
+         b.setSubject(c.getString(7));
          b.setDatePubStamp(c.getLong(8));
          b.setAuthors(this.selectAuthorsByBookId(id));
       }
@@ -186,8 +181,8 @@ public class DataHelper {
       Cursor c =
                this.db.query(BOOK_TABLE,
                         new String[] { DataConstants.BOOKID, DataConstants.ISBN, DataConstants.TITLE,
-                                 DataConstants.COVERIMAGEID, DataConstants.PUBLISHER, DataConstants.DESCRIPTION,
-                                 DataConstants.FORMAT, DataConstants.SUBJECT, DataConstants.OVERVIEWURL,
+                                 DataConstants.SUBTITLE, DataConstants.COVERIMAGEID, DataConstants.PUBLISHER,
+                                 DataConstants.DESCRIPTION, DataConstants.FORMAT, DataConstants.SUBJECT,
                                  DataConstants.DATEPUB }, null, null, null, null, null, null);
       if (c.moveToFirst()) {
          do {
@@ -195,12 +190,12 @@ public class DataHelper {
             b.setId(c.getLong(0));
             b.setIsbn(c.getString(1));
             b.setTitle(c.getString(2));
-            b.setCoverImageId(c.getLong(3));
-            b.setPublisher(c.getString(4));
-            b.setDescription(c.getString(5));
-            b.setFormat(c.getString(6));
-            b.setSubject(c.getString(7));
-            b.setOverviewUrl(c.getString(8));
+            b.setSubTitle(c.getString(3));
+            b.setCoverImageId(c.getLong(4));
+            b.setPublisher(c.getString(5));
+            b.setDescription(c.getString(6));
+            b.setFormat(c.getString(7));
+            b.setSubject(c.getString(8));
             b.setDatePubStamp(c.getLong(9));
             b.setAuthors(this.selectAuthorsByBookId(b.getId()));
             set.add(b);
@@ -251,10 +246,9 @@ public class DataHelper {
    public void deleteBook(long id) {
       Book b = this.selectBook(id);
       if (b != null) {
-         HashSet<Author> authors = this.selectAuthorsByBookId(id);         
+         HashSet<Author> authors = this.selectAuthorsByBookId(id);
          this.db.delete(BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(b.getId()) });
          this.db.delete(BOOK_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) });
-
          // if no other books by same author, also delete author
          for (Author a : authors) {
             HashSet<Book> books = this.selectAllBooksByAuthor(a.getName());
@@ -389,27 +383,31 @@ public class DataHelper {
 
          Log.d(Constants.LOG_TAG, "SQLiteOpenHelper onCreate");
 
-         // TODO use sb for these, makes em easier to read (easier to work with foreign keys esp)
+         // using StringBuilder here because it is easier to read/reuse lines
          StringBuilder sb = new StringBuilder();
-         
+
          // book table
          sb.append("CREATE TABLE " + BOOK_TABLE + " (");
          sb.append(DataConstants.BOOKID + " INTEGER PRIMARY KEY, ");
          sb.append(DataConstants.ISBN + " TEXT, ");
          sb.append(DataConstants.TITLE + " TEXT, ");
+         sb.append(DataConstants.SUBTITLE + " TEXT, ");
          sb.append(DataConstants.COVERIMAGEID + " INTEGER, ");
          sb.append(DataConstants.PUBLISHER + " TEXT, ");
          sb.append(DataConstants.DESCRIPTION + " TEXT, ");
          sb.append(DataConstants.FORMAT + " TEXT, ");
          sb.append(DataConstants.SUBJECT + " TEXT, ");
-         sb.append(DataConstants.OVERVIEWURL + " TEXT, ");
          sb.append(DataConstants.DATEPUB + " INTEGER");
          sb.append(");");
          db.execSQL(sb.toString());
 
          // author table
-         db.execSQL("CREATE TABLE " + AUTHOR_TABLE + " (" + DataConstants.AUTHORID + " INTEGER PRIMARY KEY,"
-                  + DataConstants.NAME + " TEXT" + ");");
+         sb.setLength(0);
+         sb.append("CREATE TABLE " + AUTHOR_TABLE + " (");
+         sb.append(DataConstants.AUTHORID + " INTEGER PRIMARY KEY, ");
+         sb.append(DataConstants.NAME + " TEXT");
+         sb.append(");");
+         db.execSQL(sb.toString());
 
          // bookauthor table
          sb.setLength(0);
@@ -417,20 +415,23 @@ public class DataHelper {
          sb.append(DataConstants.BOOKAUTHORID + " INTEGER PRIMARY KEY, ");
          sb.append(DataConstants.BOOKID + " INTEGER, ");
          sb.append(DataConstants.AUTHORID + " INTEGER, ");
-         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + BOOK_TABLE + "(" + DataConstants.BOOKID + "), ");
-         sb.append("FOREIGN KEY(" + DataConstants.AUTHORID + ") REFERENCES " + AUTHOR_TABLE + "(" + DataConstants.AUTHORID + ") ");
-         sb.append(");");         
+         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + BOOK_TABLE + "(" + DataConstants.BOOKID
+                  + "), ");
+         sb.append("FOREIGN KEY(" + DataConstants.AUTHORID + ") REFERENCES " + AUTHOR_TABLE + "("
+                  + DataConstants.AUTHORID + ") ");
+         sb.append(");");
          db.execSQL(sb.toString());
 
          // bookdata table (users book data, ratings, reviews, etc)
          sb.setLength(0);
          sb.append("CREATE TABLE " + BOOKUSERDATA_TABLE + " (");
-         sb.append(DataConstants.BOOKUSERDATAID + " INTEGER PRIMARY KEY, " );
+         sb.append(DataConstants.BOOKUSERDATAID + " INTEGER PRIMARY KEY, ");
          sb.append(DataConstants.BOOKID + " INTEGER, ");
          sb.append(DataConstants.READSTATUS + " INTEGER, ");
          sb.append(DataConstants.RATING + " INTEGER, ");
          sb.append(DataConstants.BLURB + " TEXT, ");
-         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + BOOK_TABLE + "(" + DataConstants.BOOKID + ") ");
+         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + BOOK_TABLE + "(" + DataConstants.BOOKID
+                  + ") ");
          sb.append(");");
          db.execSQL(sb.toString());
 
@@ -446,7 +447,9 @@ public class DataHelper {
 
       @Override
       public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-         Log.w(Constants.LOG_TAG, "Upgrading database not yet implemented");
+         Log
+                  .i(Constants.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"
+                           + newVersion);
          // export old data first, then upgrade, then import
          db.execSQL("DROP TABLE IF EXISTS " + BOOK_TABLE);
          db.execSQL("DROP TABLE IF EXISTS " + AUTHOR_TABLE);

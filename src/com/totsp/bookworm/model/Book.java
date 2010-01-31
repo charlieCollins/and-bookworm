@@ -10,12 +10,12 @@ public final class Book {
    private long id = 0L;
    private String isbn = "";
    private String title = "";
+   private String subTitle = "";
    private long coverImageId = 0L;   
    private String publisher = ""; 
    private String description = ""; 
    private String format = ""; 
    private String subject = ""; 
-   private String overviewUrl = "";    
    private long datePubStamp = 0L;
    private Set<Author> authors;
 
@@ -46,6 +46,7 @@ public final class Book {
       sb.append("Book-");
       sb.append("\n id:" + this.id);
       sb.append("\n title:" + this.title);
+      sb.append("\n subTitle:" + this.subTitle);
       sb.append("\n isbn:" + this.isbn);
       sb.append("\n authors:" + this.authors);
       sb.append("\n publisher:" + this.publisher);
@@ -53,7 +54,6 @@ public final class Book {
       sb.append("\n format:" + this.format);
       sb.append("\n subject:" + this.subject);
       sb.append("\n coverImageId:" + this.coverImageId);
-      sb.append("\n overviewUrl:" + this.overviewUrl);
       sb.append("\n datePubStamp:" + this.datePubStamp);
       return sb.toString();
    }
@@ -80,6 +80,14 @@ public final class Book {
 
    public void setTitle(String title) {
       this.title = title;
+   }   
+   
+   public String getSubTitle() {
+      return this.subTitle;
+   }
+
+   public void setSubTitle(String subTitle) {
+      this.subTitle = subTitle;
    }
 
    public Set<Author> getAuthors() {
@@ -128,14 +136,6 @@ public final class Book {
 
    public void setSubject(String subject) {
       this.subject = subject;
-   }
-
-   public String getOverviewUrl() {
-      return this.overviewUrl;
-   }
-
-   public void setOverviewUrl(String overviewUrl) {
-      this.overviewUrl = overviewUrl;
    }
 
    public long getCoverImageId() {

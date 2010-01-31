@@ -1,8 +1,5 @@
 package com.totsp.bookworm.data;
 
-import android.util.Log;
-
-import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 
@@ -27,24 +24,18 @@ public class GoogleBooksHandler extends DefaultHandler {
 
    private static final String ENTRY = "entry";
 
-   private SimpleDateFormat dateFormat;
-   private ArrayList<Book> books;
+   private final SimpleDateFormat dateFormat;
+   private final ArrayList<Book> books;
    private Book book;
 
    private boolean inEntry;
-   private boolean inTitle;
-   private boolean inDate;
-   private boolean inCreator;
-   private boolean inIdentifier;
-   private boolean inSubject;
-   private boolean inPublisher;
-   private boolean inFormat;
-   private boolean inDescription;
-   private boolean inLink;
+   private int titleLevel = 0;
+   StringBuilder sb;
 
    public GoogleBooksHandler() {
       this.books = new ArrayList<Book>();
       this.dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      this.sb = new StringBuilder();
    }
 
    @Override
@@ -56,48 +47,54 @@ public class GoogleBooksHandler extends DefaultHandler {
    }
 
    @Override
-   public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
+   public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes atts)
+      throws SAXException {
+
       if (localName.equals(GoogleBooksHandler.ENTRY)) {
          this.inEntry = true;
          this.book = new Book();
       }
 
-      if (this.inEntry && localName.equals("title")) {
-         this.inTitle = true;
-      } else if (this.inEntry && localName.equals("date")) {
-         this.inDate = true;
-      } else if (this.inEntry && localName.equals("creator")) {
-         this.inCreator = true;
-      } else if (this.inEntry && localName.equals("identifier")) {
-         this.inIdentifier = true;
-      } else if (this.inEntry && localName.equals("publisher")) {
-         this.inPublisher = true;
-      } else if (this.inEntry && localName.equals("subject")) {
-         this.inSubject = true;
-      } else if (this.inEntry && localName.equals("description")) {
-         this.inDescription = true;
-      } else if (this.inEntry && localName.equals("format")) {
-         this.inFormat = true;
-      } else if (this.inEntry && localName.equals("link")) {
-         this.inLink = true;         
-         // parse/process the links (attributes), find gBooks page, find images, etc
-         // use rel attribute = "http://schemas.google.com/books/2008/thumbnail" for image
-         // use rel attribute = "http://schemas.google.com/books/2008/info" for overview web page
-         // others are available, preview, etc, but not all books have such features (have to cross check with other feed items)
-         // TODO only authenticated users can use this stuff?
-         /*
-         String rel = this.getAttributeValue("rel", atts);
-         if (rel.equalsIgnoreCase("http://schemas.google.com/books/2008/thumbnail")) {
-            book.setImageUrl(this.getAttributeValue("href", atts));
-         } else if (rel.equalsIgnoreCase("http://schemas.google.com/books/2008/info")) {
-            book.setOverviewUrl(this.getAttributeValue("href", atts));
-         } 
-         */         
+      if (qName != null && qName.startsWith("dc:")) {
+
+         if (this.inEntry && localName.equals("title")) {
+            this.titleLevel++;
+            this.sb.setLength(0);
+         } else if (this.inEntry && localName.equals("date")) {
+            this.sb.setLength(0);
+         } else if (this.inEntry && localName.equals("creator")) {
+            this.sb.setLength(0);
+         } else if (this.inEntry && localName.equals("identifier")) {
+            this.sb.setLength(0);
+         } else if (this.inEntry && localName.equals("publisher")) {
+            this.sb.setLength(0);
+         } else if (this.inEntry && localName.equals("subject")) {
+            this.sb.setLength(0);
+         } else if (this.inEntry && localName.equals("description")) {
+            this.sb.setLength(0);
+         } else if (this.inEntry && localName.equals("format")) {
+            this.sb.setLength(0);
+         } else if (this.inEntry && localName.equals("link")) {
+            this.sb.setLength(0);
+            // parse/process the links (attributes), find gBooks page, find images, etc
+            // use rel attribute = "http://schemas.google.com/books/2008/thumbnail" for image
+            // use rel attribute = "http://schemas.google.com/books/2008/info" for overview web page
+            // others are available, preview, etc, but not all books have such features (have to cross check with other feed items)
+            // TODO only authenticated users can use this stuff?
+            /*
+            String rel = this.getAttributeValue("rel", atts);
+            if (rel.equalsIgnoreCase("http://schemas.google.com/books/2008/thumbnail")) {
+               book.setImageUrl(this.getAttributeValue("href", atts));
+            } else if (rel.equalsIgnoreCase("http://schemas.google.com/books/2008/info")) {
+               book.setOverviewUrl(this.getAttributeValue("href", atts));
+            } 
+            */
+         }
       }
    }
 
    @Override
-   public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
+   public void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException {
       if (localName.equals(GoogleBooksHandler.ENTRY)) {
          if (this.inEntry) {
             this.books.add(this.book);
@@ -105,73 +102,57 @@ public class GoogleBooksHandler extends DefaultHandler {
          }
       }
 
-      if (this.inEntry && localName.equals("title")) {
-         this.inTitle = false;
-      } else if (this.inEntry && localName.equals("date")) {
-         this.inDate = false;
-      } else if (this.inEntry && localName.equals("creator")) {
-         this.inCreator = false;
-      } else if (this.inEntry && localName.equals("identifier")) {
-         this.inIdentifier = false;
-      } else if (this.inEntry && localName.equals("publisher")) {
-         this.inPublisher = false;
-      } else if (this.inEntry && localName.equals("subject")) {
-         this.inSubject = false;
-      } else if (this.inEntry && localName.equals("description")) {
-         this.inDescription = false;
-      } else if (this.inEntry && localName.equals("format")) {
-         this.inFormat = false;
-      } else if (this.inEntry && localName.equals("link")) {
-         this.inLink = false;
+      if (qName != null && qName.contains("dc:")) {
+         
+         String bufferContents = sb.toString().replaceAll("\\s+", " "); 
+         
+         if (this.inEntry && localName.equals("title")) {
+            if (this.titleLevel == 1) {
+               this.book.setTitle(bufferContents);
+            } else if (this.titleLevel == 2) {
+               this.book.setSubTitle(bufferContents);
+            }
+         } else if (this.inEntry && localName.equals("date")) {
+            try {
+               Date d = this.dateFormat.parse(bufferContents);
+               this.book.setDatePubStamp(d.getTime());
+            } catch (ParseException e) {
+               e.printStackTrace();
+            }
+         } else if (this.inEntry && localName.equals("creator")) {
+            this.book.getAuthors().add(new Author(bufferContents));
+         } else if (this.inEntry && localName.equals("identifier")) {
+            String existingId = this.book.getIsbn();
+            if ((existingId == null) || (existingId.length() < 13)) {
+               String id = bufferContents;
+               if (id.startsWith("ISBN")) {
+                  this.book.setIsbn(id.substring(5, id.length()).trim());
+               }
+            }
+         } else if (this.inEntry && localName.equals("publisher")) {
+            this.book.setPublisher(bufferContents);
+         } else if (this.inEntry && localName.equals("subject")) {
+            this.book.setSubject(bufferContents);
+         } else if (this.inEntry && localName.equals("description")) {
+            this.book.setDescription(bufferContents);
+         } else if (this.inEntry && localName.equals("format")) {
+            if (this.book.getFormat() != null) {
+               this.book.setFormat(new String(this.book.getFormat() + " " + bufferContents).trim());
+            } else {
+               this.book.setFormat(bufferContents);
+            }            
+         } else if (this.inEntry && localName.equals("link")) {
+         }
       }
    }
 
    @Override
-   public void characters(char ch[], int start, int length) {
-      if (this.inEntry && this.inTitle) {
-         String title = new String(ch, start, length);
-         Log.d(Constants.LOG_TAG, " IN TITLE *** " + title);
-         if (title == null || title.equals("")) {
-            this.book.setTitle(title);
-         } else {
-           if (!this.book.getTitle().contains(title)) {
-              title = this.book.getTitle() + " " + title;
-              this.book.setTitle(title.trim());
-           }            
-         }         
-      } else if (this.inEntry && this.inDate) {
-         try {
-            Date d = this.dateFormat.parse(new String(ch, start, length));
-            book.setDatePubStamp(d.getTime());
-         } catch (ParseException e) {
-         }
-      } else if (this.inEntry && this.inCreator) {
-         this.book.getAuthors().add(new Author(new String(ch, start, length)));
-      } else if (this.inEntry && this.inIdentifier) {
-         String existingId = book.getIsbn();
-         if (existingId == null || existingId.length() < 13) {
-            String id = new String(ch, start, length);
-            if (id.startsWith("ISBN")) {
-               book.setIsbn(id.substring(5, id.length()));
-            }
-         }
-      } else if (this.inEntry && this.inPublisher) {
-         book.setPublisher(new String(ch, start, length));
-      } else if (this.inEntry && this.inSubject) {
-         book.setSubject(new String(ch, start, length));
-      } else if (this.inEntry && this.inDescription) {
-         book.setDescription(new String(ch, start, length));
-      } else if (this.inEntry && this.inFormat) {
-         String existingFormat = book.getFormat();
-         if (existingFormat == null) {
-            book.setFormat(new String(ch, start, length));
-         } else {
-            book.setFormat(existingFormat + " " + new String(ch, start, length));
-         }
-      } 
-   }   
-   
-   private String getAttributeValue(String attName, Attributes atts) {
+   public void characters(final char ch[], final int start, final int length) {
+      this.sb.append(new String(ch, start, length));
+   }
+
+   /*
+   private String getAttributeValue(final String attName, final Attributes atts) {
       String result = null;
       for (int i = 0; i < atts.getLength(); i++) {
          String thisAtt = atts.getLocalName(i);
@@ -182,6 +163,7 @@ public class GoogleBooksHandler extends DefaultHandler {
       }
       return result;
    }
+   */
 
    public ArrayList<Book> getBooks() {
       return this.books;

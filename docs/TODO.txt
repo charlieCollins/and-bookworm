@@ -1,8 +1,33 @@
-1. Allow import/export to Google Books MyLibrary - sync and diff, etc. 
-2. Come up some kind of book source that is agnostic/runtime determined (not hard coded). 
-3. Menu on Main that includes sort and search/filter.
-4. Tags
-5. Speed - cache? for loading list with images
-6. Organize all layout files: id, layout (top bottom left right), gravity, src - etc (some pattern)
-7. Clean up the solid leather background, and use it on ListView too 
+For 1.0
+---------------
+Change book object - keep multiple ISBNs, title/subtitle
+
+Buttons (add book, etc) should look better use an image or something
+
+1. Search form parse to entry page
+2. Direct entry parse to entry page
+3. Sort lists
+4. Book edit activity
+5. Book meta/user data working - rating, readstatus, etc
+6. Sync with Google Books (will need separate activity)
+7. Export to SD card and import from
+8. Profile and performance optimize (list load is slow)
+9. Full tests - with coverage/emma
+10. Project web site/page in place at Google Code - link from help
+
+
+
+
+
+Backlog
+-------
+Tags
+
+Cache for Bitmaps?
+
+Clean up the solid leather background, and use it on ListView too 
 http://android-developers.blogspot.com/2009/01/why-is-my-list-black-android.html.
+
+Organize all layout files: id, layout (top bottom left right), gravity, src - etc (some pattern)
+
+Separate configurable (prefs) book sources, OpenLibrary, Google Books, etc
