@@ -15,7 +15,7 @@ public class BookEntryForm extends Activity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.bookentryform); 
       
-      this.titleInput = (EditText) this.findViewById(R.id.bookentrytitleinput);
+      this.titleInput = (EditText) this.findViewById(R.id.bookentryformtitleinput);
    }   
 
    @Override

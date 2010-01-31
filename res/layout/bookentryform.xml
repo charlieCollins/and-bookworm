@@ -1,21 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content" android:background="@drawable/book_bgrnd_textarea">
+	android:layout_height="wrap_content" android:background="@drawable/book_bgrnd_smallheader_textarea">
 	<TextView android:id="@+id/bookentryformtitle"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_marginTop="25dp" android:layout_marginBottom="10dp"
+		android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
 		android:layout_marginLeft="10dp" style="@style/subtitle"
 		android:gravity="center_horizontal" android:text="Enter a book" />
 
 	<TextView android:id="@+id/bookentryformtitlelabel"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_marginTop="40dp" android:layout_marginBottom="1dp"
+		android:layout_marginTop="10dp" android:layout_marginBottom="1dp"
 		android:layout_marginLeft="10dp" android:layout_below="@id/bookentryformtitle"
-		android:gravity="left" style="@style/subsubtitle" android:text="Title:" />
-	<EditText android:id="@+id/bookentrytitleinput"
+		android:gravity="left" style="@style/blackbold" android:text="Title:" />
+	<EditText android:id="@+id/bookentryformtitleinput"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_marginTop="2dp" android:layout_marginBottom="10dp"
+		android:layout_marginTop="2dp" android:layout_marginBottom="1dp"
+		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/bookentryformtitlelabel" android:gravity="left" />
 
+	<TextView android:id="@+id/bookentryformauthorlabel"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_marginTop="5dp" android:layout_marginBottom="1dp"
+		android:layout_marginLeft="10dp" android:layout_below="@id/bookentryformtitleinput"
+		android:gravity="left" style="@style/blackbold" android:text="Author(s):" />
+	<EditText android:id="@+id/bookentryformauthorinput"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_marginTop="2dp" android:layout_marginBottom="1dp"
+		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+		android:layout_below="@id/bookentryformauthorlabel" android:gravity="left" />
+
+	<TextView android:id="@+id/bookentryformcameralabel"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_marginTop="5dp" android:layout_marginBottom="1dp"
+		android:layout_marginLeft="10dp" android:layout_below="@id/bookentryformauthorinput"
+		android:gravity="left" style="@style/blacksmallbold" android:text="Cover Picture:" />
+	<SurfaceView android:id="@+id/bookentryformcamera"
+		android:layout_width="140dp" android:layout_height="140dp"
+		android:layout_marginTop="2dp" android:layout_marginBottom="10dp"
+		android:layout_marginLeft="10dp" android:layout_below="@id/bookentryformcameralabel"
+		android:gravity="left">
+	</SurfaceView>
+
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="152dp"
+		android:layout_marginTop="15dp" android:layout_marginBottom="2dp"
+		android:layout_marginLeft="25dp" android:layout_below="@id/bookentryformauthorinput"
+		android:layout_toRightOf="@id/bookentryformcamera" android:gravity="bottom" >
+		<Button android:id="@+id/bookentryformsavebutton"
+			android:layout_width="120dp" android:layout_height="wrap_content"
+			style="@style/blackbold" android:text="Save" android:gravity="right" />
+	</LinearLayout>
 </RelativeLayout>
