@@ -2,17 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd">
-	<TextView android:id="@+id/splashtitle" style="@style/titletext"
-		android:layout_width="fill_parent" android:gravity="center_horizontal"
-		android:layout_height="wrap_content" android:layout_marginTop="25dp"
-		android:text="@string/app_name" />
-	<ImageView android:id="@+id/splashlogo" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_centerVertical="true"
-		android:layout_centerHorizontal="true" android:layout_marginBottom="10dp"
-		android:layout_marginTop="25dp" android:layout_below="@id/splashtitle"
-		android:src="@drawable/books200" />
+	<TextView android:id="@+id/splashtitle" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="15dp"
+		android:gravity="center_horizontal" android:text="@string/app_name"
+		style="@style/title" />
+	<ImageView android:id="@+id/splashlogo" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginBottom="10dp"
+		android:layout_marginTop="15dp" android:layout_below="@id/splashtitle"
+		android:gravity="center" android:src="@drawable/books200" />
 	<TextView android:id="@+id/splashtap" android:layout_width="fill_parent"
-		android:gravity="center_horizontal" android:layout_height="wrap_content"
-		android:layout_marginTop="25dp" android:layout_below="@id/splashlogo"
-		style="@style/whitetextbold" android:text="Tap to begin" />
+		android:layout_height="wrap_content" android:layout_marginTop="25dp"
+		android:layout_below="@id/splashlogo" android:gravity="center"
+		android:text="Tap to begin" style="@style/whitebold" />
 </RelativeLayout>

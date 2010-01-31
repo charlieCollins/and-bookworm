@@ -2,15 +2,22 @@ package com.totsp.bookworm;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-public class Help extends Activity {
+public class About extends Activity {
 
+   TextView about;
+   
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.help);     
+      setContentView(R.layout.about);     
+      
+      this.about = (TextView) this.findViewById(R.id.aboutcontent);
+      this.about.setText(Html.fromHtml(getResources().getString(R.string.aboutcontent)), TextView.BufferType.SPANNABLE);
    }   
 
    @Override

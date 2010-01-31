@@ -132,7 +132,7 @@ public class Main extends TabActivity {
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
       case MENU_HELP:
-         this.startActivity(new Intent(Main.this, Help.class));
+         this.startActivity(new Intent(Main.this, About.class));
          return true;
       case MENU_SEARCH:
          Toast.makeText(this, "TODO Search", Toast.LENGTH_SHORT).show();

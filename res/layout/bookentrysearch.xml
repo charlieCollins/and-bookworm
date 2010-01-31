@@ -5,7 +5,7 @@
 	<TextView android:id="@+id/bookentrysearchtitle"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="25dp" android:layout_marginBottom="10dp"
-		style="@style/titletext" android:gravity="center_horizontal"
+		style="@style/title" android:gravity="center_horizontal"
 		android:text="Search for a book" />
 	<TextView android:id="@+id/bookentrysearchoutput"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"

@@ -13,7 +13,7 @@
 			</intent-filter>
 		</activity>
 		<activity android:name="Main" />
-		<activity android:name="Help" />      
+		<activity android:name="About" />      
 		<activity android:name="BookDetail" />      
 		<activity android:name="BookEntrySearch" />      
 		<activity android:name="BookEntryForm" />      

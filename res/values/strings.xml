@@ -2,16 +2,12 @@
 <resources>
     <string name="app_name">BookWorm</string>
     <string name="by"><b>By Charlie Collins</b>\n</string>
-    <string name="help">    
+    <string name="aboutcontent">    
     <i>Use BookWorm to keep track of books you have read, and you intend to read. 
     Maintain a log of books that you can quickly view, sort, share, rate, and 
     synchronize with online book apps.</i>\n
-    \n
-    <li>Add books by scanning, searching, or direct text entry</li>\n
-    <li>Sort books any way you want</li>\n
-    <li>TODO Backup and restore data to the SDCard</li>\n
-    <li>TODO Clear all data, including images</li>\n
-    <li>TODO Sync Google Books My Library</li>\n
-    <li>TODO Sync other online book apps</li>\n
+    &lt;br /&gt;&lt;br /&gt;
+    For more information, and to comment or report issues, 
+    please visit &lt;a href="http://code.google.com/p/and-bookworm/"&gt;the BookWorm project site&lt;/a&gt;.
     </string>
 </resources>

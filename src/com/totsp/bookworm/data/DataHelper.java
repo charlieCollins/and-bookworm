@@ -375,7 +375,7 @@ public class DataHelper {
 
       OpenHelper(Context context) {
          super(context, DATABASE_NAME, null, DATABASE_VERSION);
-         Log.d(Constants.LOG_TAG, "SQLiteOpenHelper");
+         Log.d(Constants.LOG_TAG, "SQLiteOpenHelper ctor");
       }
 
       @Override
