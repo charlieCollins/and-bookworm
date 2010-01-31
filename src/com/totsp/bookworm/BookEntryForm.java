@@ -4,19 +4,18 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.EditText;
 
 public class BookEntryForm extends Activity {
 
-   TextView output;
+   EditText titleInput;
    
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.bookentryform); 
       
-      this.output = (TextView) this.findViewById(R.id.bookentryformoutput);
-      this.output.setText("TODO - create form for entry");
+      this.titleInput = (EditText) this.findViewById(R.id.bookentrytitleinput);
    }   
 
    @Override
