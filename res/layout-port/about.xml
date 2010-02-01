@@ -2,21 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="wrap_content" android:background="@drawable/book_bgrnd_largeheader_textarea">
-	<TextView android:id="@+id/abouttitle" android:layout_width="fill_parent"
+	<TextView android:id="@+id/abouttitle" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_marginTop="15dp"
-		android:layout_marginBottom="5dp" android:gravity="center_horizontal"
+		android:layout_marginBottom="1dp" android:layout_marginLeft="35dp"
 		android:text="@string/app_name" style="@style/title" />
 	<ImageView android:id="@+id/aboutlogo" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_marginTop="5dp"
-		android:layout_marginLeft="35dp" android:layout_centerVertical="true"
-		android:layout_below="@id/abouttitle" android:gravity="center_horizontal"
+		android:layout_height="wrap_content" android:layout_marginTop="2dp"
+		android:layout_marginLeft="35dp" android:gravity="center"
+		android:layout_below="@id/abouttitle"
 		android:src="@drawable/books48" />
-	<TextView android:id="@+id/aboutby" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_marginTop="5dp"
+	<TextView android:id="@+id/aboutby" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="1dp"
 		android:layout_toRightOf="@id/aboutlogo" android:layout_below="@id/abouttitle"
-		android:gravity="center_horizontal" android:text="@string/by" style="@style/white" />
-	<TextView android:id="@+id/aboutcontent" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_marginTop="25dp"
+		android:gravity="right" android:text="@string/by" style="@style/white" />
+	<TextView android:id="@+id/aboutcontent" android:layout_width="300dp"
+		android:layout_height="wrap_content" android:layout_marginTop="10dp"
 		android:layout_marginRight="10dp" android:layout_marginLeft="10dp"
 		android:layout_below="@id/aboutlogo" android:gravity="left"
 		style="@style/blacksmall" />

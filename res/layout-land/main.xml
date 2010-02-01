@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@android:id/tabhost" android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:orientation="vertical" android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<TabWidget android:id="@android:id/tabs"
+				android:layout_width="fill_parent" android:layout_height="wrap_content" />
+			<FrameLayout android:id="@android:id/tabcontent"
+				android:layout_width="fill_parent" android:layout_height="fill_parent">
+				<!--  TAB 1 -->
+				<ListView android:id="@+id/booklistview"
+					android:layout_width="fill_parent" android:layout_height="fill_parent" />
+				<!--  TAB 2 -->
+				<RelativeLayout android:id="@+id/bookadd"
+					android:layout_width="fill_parent" android:layout_height="fill_parent">
+					<TextView android:id="@+id/bookaddintro" style="@style/white"
+						android:layout_width="fill_parent" android:gravity="center_horizontal"
+						android:layout_height="wrap_content" android:layout_marginTop="25dp"
+						android:text="Choose entry method" />
+					<Button android:id="@+id/bookaddscanbutton" style="@style/black"
+						android:layout_width="fill_parent" android:gravity="center_horizontal"
+						android:layout_height="wrap_content" android:layout_marginTop="25dp"
+						android:layout_below="@id/bookaddintro" android:text="Scan product code" />
+					<Button android:id="@+id/bookaddsearchbutton" style="@style/black"
+						android:layout_width="fill_parent" android:gravity="center_horizontal"
+						android:layout_height="wrap_content" android:layout_marginTop="25dp"
+						android:layout_below="@id/bookaddscanbutton" android:text="Search the web" />
+					<Button android:id="@+id/bookaddformbutton" style="@style/black"
+						android:layout_width="fill_parent" android:gravity="center_horizontal"
+						android:layout_height="wrap_content" android:layout_marginTop="25dp"
+						android:layout_below="@id/bookaddsearchbutton" android:text="Use form (type)" />
+				</RelativeLayout>
+			</FrameLayout>
+		</LinearLayout>
+	</TabHost>
+</ScrollView>

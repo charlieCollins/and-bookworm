@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd">
+	<TextView android:id="@+id/splashtitle" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="5dp"
+		android:layout_marginLeft="40dp" android:gravity="left" android:text="@string/app_name"
+		style="@style/title" />
+	<ImageView android:id="@+id/splashlogo" android:layout_width="200dp"
+		android:layout_height="wrap_content" android:layout_marginBottom="10dp"
+		android:layout_marginTop="15dp" android:layout_marginLeft="40dp"
+		android:layout_below="@id/splashtitle" android:gravity="left"
+		android:src="@drawable/books200" />
+	<TextView android:id="@+id/splashtap" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_toRightOf="@id/splashlogo"
+		android:layout_marginBottom="20dp" android:layout_marginRight="20dp"
+		android:gravity="right|bottom" android:text="Tap to begin" style="@style/whitebold" />
+</RelativeLayout>
+

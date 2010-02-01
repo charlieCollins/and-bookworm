@@ -17,7 +17,7 @@
 		<activity android:name="About" />      
 		<activity android:name="BookDetail" />      
 		<activity android:name="BookEntrySearch" />      
-		<activity android:name="BookEntryForm" />      
+		<activity android:name="BookEntryForm" android:screenOrientation="landscape" />      
 		<activity android:name="BookEntryResult" />      
 	</application>
 </manifest> 

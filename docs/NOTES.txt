@@ -49,3 +49,13 @@ use android:configChanges="keyboardHidden|orientation" to react
 a? refers back to same config file, rather than another already defined resource
 
 units: use sp for fonts, which can scale by preference, and dp for everything else
+
+easier clickHandlers 
+class MyActivity extends Activity {
+    public void myClickHandler(View target) {
+        // Do stuff
+    }
+}
+<Button android:onClick="myClickHandler" />
+
+hierarchyviewer and layoutopt
