@@ -12,7 +12,7 @@
 		android:gravity="right" android:src="@drawable/books48" />
 	<TextView android:id="@+id/aboutby" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_marginTop="25dp"
-		android:layout_marginLeft="2dp" android:layout_toRightOf="@id/aboutlogo"
+		android:layout_marginLeft="1dp" android:layout_toRightOf="@id/aboutlogo"
 		android:text="@string/by" style="@style/whitesmall" />
 	<TextView android:id="@+id/aboutcontent" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_marginTop="25dp"
