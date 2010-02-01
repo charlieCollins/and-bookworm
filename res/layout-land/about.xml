@@ -20,12 +20,3 @@
 		android:layout_below="@id/abouttitle" android:gravity="left"
 		style="@style/blacksmall" />
 </RelativeLayout>
-
-	<!--
-		<ImageView android:id="@+id/aboutlogo"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_marginTop="5dp"
-		android:layout_marginLeft="10dp"
-		android:layout_toRightOf="@id/abouttitle" android:gravity="right"
-		android:src="@drawable/books48" />
-	-->
