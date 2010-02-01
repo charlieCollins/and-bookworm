@@ -18,22 +18,22 @@
 				android:orientation="vertical">
 				<TextView android:id="@+id/bookaddintro"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:layout_marginTop="5dp" android:layout_marginLeft="120dp"
+					android:layout_marginTop="10dp" android:layout_marginLeft="120dp"
 					android:text="Choose entry method" style="@style/white" />
 				<LinearLayout android:id="@+id/bookadd"
 					android:layout_width="fill_parent" android:layout_height="fill_parent"
 					android:orientation="horizontal">
 					<Button android:id="@+id/bookaddscanbutton"
 						android:layout_width="150dp" android:layout_height="wrap_content"
-						android:layout_marginTop="5dp" android:layout_marginLeft="15dp"
+						android:layout_marginTop="10dp" android:layout_marginLeft="12dp"
 						android:text="Scan product code" style="@style/black" />
 					<Button android:id="@+id/bookaddsearchbutton"
 						android:layout_width="150dp" android:layout_height="wrap_content"
-						android:layout_marginTop="5dp" android:layout_marginLeft="5dp"
+						android:layout_marginTop="10dp" android:layout_marginLeft="5dp"
 						android:text="Search the web" style="@style/black" />
 					<Button android:id="@+id/bookaddformbutton"
 						android:layout_width="150dp" android:layout_height="wrap_content"
-						android:layout_marginTop="5dp" android:layout_marginLeft="5dp"
+						android:layout_marginTop="10dp" android:layout_marginLeft="5dp"
 						android:text="Use form (type)" style="@style/black" />
 				</LinearLayout>
 			</LinearLayout>

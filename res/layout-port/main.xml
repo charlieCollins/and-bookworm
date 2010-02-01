@@ -18,21 +18,21 @@
 				android:gravity="top">
 				<TextView android:id="@+id/bookaddintro" style="@style/white"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:layout_marginTop="10dp" android:layout_marginLeft="60dp"
+					android:layout_marginTop="15dp" android:layout_marginLeft="60dp"
 					android:text="Choose entry method" />
 				<Button android:id="@+id/bookaddscanbutton"
 					android:layout_width="150dp" android:layout_height="wrap_content"
-					android:layout_marginTop="10dp" android:layout_marginLeft="80dp"
+					android:layout_marginTop="20dp" android:layout_marginLeft="80dp"
 					android:layout_below="@id/bookaddintro" android:text="Scan product code"
 					style="@style/black" />
 				<Button android:id="@+id/bookaddsearchbutton"
 					android:layout_width="150dp" android:layout_height="wrap_content"
-					android:layout_marginTop="10dp" android:layout_marginLeft="80dp"
+					android:layout_marginTop="15dp" android:layout_marginLeft="80dp"
 					android:layout_below="@id/bookaddscanbutton" android:text="Search the web"
 					style="@style/black" />
 				<Button android:id="@+id/bookaddformbutton"
 					android:layout_width="150dp" android:layout_height="wrap_content"
-					android:layout_marginTop="10dp" android:layout_marginLeft="80dp"
+					android:layout_marginTop="15dp" android:layout_marginLeft="80dp"
 					android:layout_below="@id/bookaddsearchbutton" android:text="Use form (type)"
 					style="@style/black" />
 			</RelativeLayout>
