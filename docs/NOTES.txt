@@ -59,3 +59,6 @@ class MyActivity extends Activity {
 <Button android:onClick="myClickHandler" />
 
 hierarchyviewer and layoutopt
+
+android:gravity positions the contents of that view (i.e. what’s inside the view), 
+whereas android:layout_gravity positions the view with respect to its parent 
