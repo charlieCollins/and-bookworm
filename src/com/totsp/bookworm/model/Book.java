@@ -42,7 +42,7 @@ public final class Book {
 
    @Override
    public String toString() {
-      // this is the default display in a ListView, etc, so make it short/sweet
+      // this is the default display in a ListView, also used by Filter, etc, so make it significant/short/sweet
       return this.title;
    }
 
