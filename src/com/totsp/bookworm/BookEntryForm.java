@@ -46,7 +46,6 @@ public class BookEntryForm extends Activity {
       @Override
       public void onPictureTaken(byte[] arg0, Camera arg1) {
          picBitmap = BitmapFactory.decodeByteArray(arg0, 0, arg0.length);
-         Log.d(Constants.LOG_TAG, "picBitmap after camera jpegCallback - " + picBitmap);
          Log.d(Constants.LOG_TAG, "picBitmap size - " + picBitmap.getWidth() + " " + picBitmap.getHeight());
          new InsertBookTask().execute(titleInput.getText().toString(), authorInput.getText().toString());
       }
@@ -76,7 +75,6 @@ public class BookEntryForm extends Activity {
             String title = titleInput.getText().toString();
             String authors = authorInput.getText().toString();
             if (title.length() < 1 || authors.length() < 1) {
-               Log.d(Constants.LOG_TAG, "should show toast here?");
                Toast.makeText(BookEntryForm.this, "Title and author(s) are required", Toast.LENGTH_SHORT).show();
             } else {
                // on camera callback use local AsyncTask - see jpegCallback
@@ -213,7 +211,6 @@ public class BookEntryForm extends Activity {
          authors = new LinkedHashSet<Author>();
          String[] authorsArray = args[1].split(",\\s*");
          for (int i = 0; i < authorsArray.length; i++) {
-            Log.d(Constants.LOG_TAG, "authors i - " + authorsArray[i]);
             authors.add(new Author(authorsArray[i]));
          }
          book.setAuthors(authors);
@@ -227,7 +224,8 @@ public class BookEntryForm extends Activity {
             Log.d(Constants.LOG_TAG, "picBitmap NULL - async?");
          }
 
-         // TODO check title already exists?
+         // TODO - run search for title here, make SURE can't be looked up/resolved to ISBN   
+         
          long bookId = application.getDataHelper().insertBook(book);
          Log.d(Constants.LOG_TAG, "bookId - " + bookId);
          return null;

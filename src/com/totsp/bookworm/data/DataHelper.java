@@ -17,7 +17,7 @@ import java.util.HashSet;
 public class DataHelper {
 
    private static final String DATABASE_NAME = "bookworm.db";
-   private static final int DATABASE_VERSION = 1;
+   private static final int DATABASE_VERSION = 2;
    private static final String BOOK_TABLE = "book";
    private static final String BOOKUSERDATA_TABLE = "bookuserdata";
    private static final String BOOKAUTHOR_TABLE = "bookauthor";
@@ -70,7 +70,7 @@ public class DataHelper {
    // book
    public long insertBook(Book b) {
       long bookId = 0L;
-      if (b != null && b.getTitle() != null && b.getIsbn() != null) {
+      if (b != null && b.getTitle() != null) {
          // TODO simplify this with ContentValues?
          // what is speed vs Statement?
          /*
@@ -129,7 +129,7 @@ public class DataHelper {
             this.db.endTransaction();
          }
       } else {
-         throw new IllegalArgumentException("Error, book cannot be null, and must have an ISBN and title");
+         throw new IllegalArgumentException("Error, book cannot be null, and must have a unique title");
       }
       return bookId;
    }
@@ -162,11 +162,11 @@ public class DataHelper {
       return b;
    }
 
-   public Book selectBook(String isbn) {
+   public Book selectBook(String title) {
       Book b = null;
       Cursor c =
-               this.db.query(BOOK_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.ISBN + " = ?",
-                        new String[] { isbn }, null, null, null, "1");
+               this.db.query(BOOK_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.TITLE + " = ?",
+                        new String[] { title }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = this.selectBook(c.getLong(0));
       }
@@ -435,10 +435,10 @@ public class DataHelper {
          sb.append(");");
          db.execSQL(sb.toString());
 
-         // constraints
-         db
-                  .execSQL("CREATE UNIQUE INDEX uidxBookIsbn ON " + BOOK_TABLE + "(" + DataConstants.ISBN
-                           + " COLLATE NOCASE)");
+         // constraints 
+         // (ISBN cannot be unique - some books don't have em - use TITLE unique?)
+         db.execSQL("CREATE UNIQUE INDEX uidxBookTitle ON " + BOOK_TABLE + "(" + DataConstants.TITLE
+                  + " COLLATE NOCASE)");
          db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON " + AUTHOR_TABLE + "(" + DataConstants.NAME
                   + " COLLATE NOCASE)");
 
