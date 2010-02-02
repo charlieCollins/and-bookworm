@@ -31,3 +31,5 @@ http://android-developers.blogspot.com/2009/01/why-is-my-list-black-android.html
 Organize all layout files: id, layout (top bottom left right), gravity, src - etc (some pattern)
 
 Separate configurable (prefs) book sources, OpenLibrary, Google Books, etc
+
+Locale support? (use google.de, google.ca, etc)

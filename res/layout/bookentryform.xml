@@ -27,7 +27,7 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
 		android:layout_below="@id/bookentryformtitleinput" android:gravity="left"
-		style="@style/blackbold" android:text="Author(s):" />
+		style="@style/blackbold" android:text="Author(s) (comma sep):" />
 	<EditText android:id="@+id/bookentryformauthorinput"
 		android:layout_width="220dp" android:layout_height="wrap_content"
 		android:layout_marginTop="2dp" android:layout_marginBottom="1dp"
