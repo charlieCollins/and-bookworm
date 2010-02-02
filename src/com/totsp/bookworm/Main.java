@@ -31,6 +31,8 @@ import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Main extends TabActivity {
 
@@ -95,14 +97,15 @@ public class Main extends TabActivity {
          }
       });
 
-      this.bindBookList();
-   }
-
-   private void bindBookList() {
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
       this.bookList = new ArrayList<Book>();
       // TODO select only id/title, or cache/page - this could get slow with a lot of books?
+      // ListView already only inflates vis views (it seems) but what about pulling gen data?
       this.bookList.addAll(this.application.getDataHelper().selectAllBooks());
+      this.bindBookList(this.bookList);
+   }
+
+   private void bindBookList(ArrayList<Book> books) {      
       BookAdapter adapter = new BookAdapter(this, android.R.layout.simple_list_item_1, this.bookList);
       this.bookListView.setAdapter(adapter);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
@@ -138,10 +141,12 @@ public class Main extends TabActivity {
          Toast.makeText(this, "TODO Search", Toast.LENGTH_SHORT).show();
          return true;
       case MENU_SORT_RATING:
-         Toast.makeText(this, "TODO Sort Rating", Toast.LENGTH_SHORT).show();
+         Collections.sort(this.bookList, new RatingComparator());
+         this.bindBookList(this.bookList);
          return true;
       case MENU_SORT_ALPHA:
-         Toast.makeText(this, "TODO Sort Alpha", Toast.LENGTH_SHORT).show();
+         Collections.sort(this.bookList, new AlphaComparator());
+         this.bindBookList(this.bookList);
          return true;
       default:
          return super.onOptionsItemSelected(item);
@@ -203,6 +208,26 @@ public class Main extends TabActivity {
          // TODO report scan problem?
       }
    }
+   
+   //
+   // Sort Comparators
+   //
+   
+   private class AlphaComparator implements Comparator<Book> {
+      public int compare(Book b1, Book b2) {  
+         String title1 = b1.getTitle();
+         String title2 = b2.getTitle();
+        return title1.toLowerCase().compareTo(title2.toLowerCase());
+      }
+    }
+   
+   private class RatingComparator implements Comparator<Book> {
+      public int compare(Book b1, Book b2) {  
+         Integer rat1 = b1.getRating();
+         Integer rat2 = b2.getRating();
+        return rat1.compareTo(rat2);
+      }
+    }
 
    //
    // BookAdapter

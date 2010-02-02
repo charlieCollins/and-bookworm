@@ -44,7 +44,7 @@
 	<SurfaceView android:id="@+id/bookentryformcamera"
 		android:layout_width="180dp" android:layout_height="180dp"
 		android:layout_marginTop="2dp" android:layout_marginBottom="10dp"
-		android:layout_marginLeft="15dp" android:layout_below="@id/bookentryformcameralabel"
+		android:layout_marginLeft="30dp" android:layout_below="@id/bookentryformcameralabel"
 		android:layout_toRightOf="@id/bookentryformauthorinput"
 		android:gravity="center|top">
 	</SurfaceView>
