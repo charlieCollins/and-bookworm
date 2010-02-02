@@ -106,7 +106,7 @@ public class BookEntryForm extends Activity {
             params.setPreviewSize(480, 320); // required on G1 regardless?
             ///params.setPictureFormat(PixelFormat.YCbCr_420_SP);
             params.setPictureFormat(PixelFormat.JPEG);
-            params.setPictureSize(315, 435);
+            params.setPictureSize(480, 320);
 
             /*
             jpeg-thumbnail-width=512;
