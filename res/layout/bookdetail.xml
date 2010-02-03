@@ -21,9 +21,9 @@
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booksubtitle" android:layout_gravity="left" />
 
-	<TextView android:id="@+id/bookauthors" android:layout_width="300dp"
-		android:layout_height="300dp" android:layout_marginTop="15dp"
-		android:layout_marginLeft="10dp" android:layout_marginRight="15dp"
+	<TextView android:id="@+id/bookauthors" android:layout_width="200dp"
+		android:layout_height="140dp" android:layout_marginTop="15dp"
+		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
 		android:layout_gravity="left" android:gravity="center_horizontal"
 		style="@style/black" />
@@ -46,7 +46,7 @@
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booksubject" style="@style/black"
 		android:ellipsize="marquee" />
-	<TextView android:id="@+id/bookdatepub" android:layout_width="wrap_content"
+	<TextView android:id="@+id/bookdatepub" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="2dp"
 		android:layout_marginBottom="10dp" android:layout_marginLeft="3dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
