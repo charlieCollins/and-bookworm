@@ -90,7 +90,7 @@ public class DataHelper {
          db.insert(BOOK_TABLE, DbConstants.DATEPUB, values);
          */
 
-         Book bookExists = this.selectBook(b.getIsbn());
+         Book bookExists = this.selectBook(b.getTitle());
          if (bookExists != null) {
             return bookExists.getId();
          }
