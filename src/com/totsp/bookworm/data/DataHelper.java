@@ -319,7 +319,7 @@ public class DataHelper {
       HashSet<Long> authorIds = new HashSet<Long>();
       Cursor c =
                this.db.query(BOOKAUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.BOOKID + " = ?",
-                        new String[] { String.valueOf(bookId) }, null, null, DataConstants.NAME + " desc", null);
+                        new String[] { String.valueOf(bookId) }, null, null, null, null);
       if (c.moveToFirst()) {
          do {
             authorIds.add(c.getLong(0));
