@@ -14,8 +14,18 @@ import com.totsp.bookworm.model.Book;
 
 import java.util.HashSet;
 
+/**
+ * Android DataHelper to encapsulate SQL and DB details.
+ * Includes SQLiteOpenHelper.
+ * 
+ * @author ccollins
+ *
+ */
 public class DataHelper {
 
+   // TODO make a generic interface then impl for particular data type (IDataHelper<Book>)
+   // TODO create a cache for data type?
+   
    private static final String DATABASE_NAME = "bookworm.db";
    private static final int DATABASE_VERSION = 2;
    private static final String BOOK_TABLE = "book";

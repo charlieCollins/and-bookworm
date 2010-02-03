@@ -82,7 +82,7 @@ public class BookEntryResult extends Activity {
             // save image to ContentProvider
             if (this.bookCoverBitmap != null) {
                int imageId =
-                        this.application.getDataImageHelper().saveImage(this.book.getTitle(), this.bookCoverBitmap);
+                        this.application.getDataImageHelper().saveBitmap(this.book.getTitle(), this.bookCoverBitmap);
                this.book.setCoverImageId(imageId);
             }
             // save book to database

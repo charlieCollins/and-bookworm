@@ -1,7 +1,7 @@
 package com.totsp.bookworm;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,52 +16,40 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
-import com.totsp.bookworm.zxing.ZXingIntentResult;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Main extends TabActivity {
+public class Main extends Activity {
 
    private static final int MENU_ABOUT = 0;
-   private static final int MENU_FILTER = 1;
-   private static final int MENU_SORT_RATING = 2;
-   private static final int MENU_SORT_ALPHA = 3;
+   private static final int MENU_BOOKADD = 1;
+   private static final int MENU_FILTER = 2;
+   private static final int MENU_SORT_RATING = 3;
+   private static final int MENU_SORT_ALPHA = 4;
+   
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
 
    private BookWormApplication application;
 
-   private TabHost tabHost;
-
-   // tab1 - book list
    private boolean filterVisible;
    private EditText bookListFilter;
-   BookAdapter adapter;
-   private ArrayList<Book> bookList;
+   BookAdapter adapter;   
    private ListView bookListView;
-
-   // tab2 - book gallery
-
-   // tab3 - add book
-   private Button scanButton;
-   private Button searchButton;
-   private Button formButton;
+   
+   private ArrayList<Book> bookList = new ArrayList<Book>();   
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -69,36 +57,7 @@ public class Main extends TabActivity {
 
       this.application = (BookWormApplication) this.getApplication();
 
-      this.setContentView(R.layout.main);
-
-      // TODO maybe move all this stuff to a "createViews" type method?      
-      this.tabHost = this.getTabHost();
-      this.tabHost.addTab(this.tabHost.newTabSpec("tab1").setIndicator("Book List",
-               this.getResources().getDrawable(android.R.drawable.ic_menu_agenda)).setContent(R.id.booklistview));
-      this.tabHost.addTab(this.tabHost.newTabSpec("tab2").setIndicator("Add Book",
-               this.getResources().getDrawable(android.R.drawable.ic_menu_add)).setContent(R.id.bookadd));
-      this.tabHost.setCurrentTab(0);
-
-      this.scanButton = (Button) this.findViewById(R.id.bookaddscanbutton);
-      this.scanButton.setOnClickListener(new OnClickListener() {
-         public void onClick(final View v) {
-            ZXingIntentIntegrator.initiateScan(Main.this, "Scan Book", "message", "Yes", "No");
-         }
-      });
-
-      this.searchButton = (Button) this.findViewById(R.id.bookaddsearchbutton);
-      this.searchButton.setOnClickListener(new OnClickListener() {
-         public void onClick(final View v) {
-            Main.this.startActivity(new Intent(Main.this, BookEntrySearch.class));
-         }
-      });
-
-      this.formButton = (Button) this.findViewById(R.id.bookaddformbutton);
-      this.formButton.setOnClickListener(new OnClickListener() {
-         public void onClick(final View v) {
-            Main.this.startActivity(new Intent(Main.this, BookEntryForm.class));
-         }
-      });
+      this.setContentView(R.layout.main);     
 
       this.bookListFilter = (EditText) this.findViewById(R.id.booklistfilter);
       this.bookListFilter.addTextChangedListener(new TextWatcher() {
@@ -114,8 +73,8 @@ public class Main extends TabActivity {
       // TODO collapse/remove until needed?
       this.bookListFilter.setVisibility(View.INVISIBLE);
       
-      this.bookListView = (ListView) this.findViewById(R.id.booklistview);      
-      this.bookList = new ArrayList<Book>();
+      this.bookListView = (ListView) this.findViewById(R.id.booklistview);    
+      // TODO retrieve first X books, then rest in background (rather than all)?
       this.bookList.addAll(this.application.getDataHelper().selectAllBooks());      
       this.bindBookList();
    }
@@ -139,10 +98,11 @@ public class Main extends TabActivity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, Main.MENU_ABOUT, 2, "About").setIcon(android.R.drawable.ic_menu_help);
-      menu.add(0, Main.MENU_FILTER, 1, "Filter").setIcon(android.R.drawable.ic_menu_search);
-      menu.add(0, Main.MENU_SORT_RATING, 0, "Sort|Rating").setIcon(android.R.drawable.ic_menu_sort_by_size);
-      menu.add(0, Main.MENU_SORT_ALPHA, 0, "Sort|Alpha").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
+      menu.add(0, Main.MENU_ABOUT, 0, "About").setIcon(android.R.drawable.ic_menu_help);
+      menu.add(0, Main.MENU_BOOKADD, 1, "Add Book").setIcon(android.R.drawable.ic_menu_add);
+      menu.add(0, Main.MENU_FILTER, 2, "Filter").setIcon(android.R.drawable.ic_menu_search);
+      menu.add(0, Main.MENU_SORT_RATING, 3, "Sort|Rating").setIcon(android.R.drawable.ic_menu_sort_by_size);
+      menu.add(0, Main.MENU_SORT_ALPHA, 3, "Sort|Alpha").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -151,6 +111,9 @@ public class Main extends TabActivity {
       switch (item.getItemId()) {
       case MENU_ABOUT:
          this.startActivity(new Intent(Main.this, About.class));
+         return true;
+      case MENU_BOOKADD:
+         this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
       case MENU_FILTER:
          if (this.filterVisible) {
@@ -216,20 +179,7 @@ public class Main extends TabActivity {
    protected void onSaveInstanceState(final Bundle saveState) {
       super.onSaveInstanceState(saveState);
    }
-
-   @Override
-   public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-      ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-      if (scanResult != null) {
-         // handle scan result
-         Intent scanIntent = new Intent(this, BookEntryResult.class);
-         scanIntent.putExtra(Constants.ISBN, scanResult.getContents());
-         this.startActivity(scanIntent);
-      } else {
-         // TODO report scan problem?
-      }
-   }
-
+   
    //
    // Sort Comparators
    //
@@ -275,7 +225,7 @@ public class Main extends TabActivity {
          if (book != null) {
             ImageView iv = (ImageView) v.findViewById(R.id.itemslistitemimage);
             if (book.getCoverImageId() > 0) {
-               Bitmap coverImage = Main.this.application.getDataImageHelper().getImage((int) book.getCoverImageId());
+               Bitmap coverImage = Main.this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
                iv.setImageBitmap(coverImage);
             } else {
                iv.setImageResource(R.drawable.book_cover_missing);

@@ -85,7 +85,7 @@ public class BookDetail extends Activity {
       Book book = this.application.getSelectedBook();
       if (book != null) {
          if (book.getCoverImageId() > 0) {
-            Bitmap coverImage = application.getDataImageHelper().getImage((int) book.getCoverImageId());
+            Bitmap coverImage = application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
             bookCover.setImageBitmap(coverImage);
          } else {
             bookCover.setImageResource(R.drawable.book_cover_missing);

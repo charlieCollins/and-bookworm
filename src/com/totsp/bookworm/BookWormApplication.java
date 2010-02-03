@@ -14,7 +14,7 @@ public class BookWormApplication extends Application {
    private DataHelper dataHelper;
    private DataImageHelper dataImageHelper;
    
-   private Book selectedBook;
+   private Book selectedBook;   
    
    @Override
    public void onCreate() {

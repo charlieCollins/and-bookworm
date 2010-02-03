@@ -217,7 +217,7 @@ public class BookEntryForm extends Activity {
 
          if (picBitmap != null) {
             Log.d(Constants.LOG_TAG, "picBitmap present in task, attempt image save");
-            int imageId = application.getDataImageHelper().saveImage(title, picBitmap);
+            int imageId = application.getDataImageHelper().saveBitmap(title, picBitmap);
             Log.d(Constants.LOG_TAG, "imageId - " + imageId);
             book.setCoverImageId(imageId);
          } else {

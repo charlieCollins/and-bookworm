@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 
 /**
  * Util class to use Android built in ContentProvider to
@@ -30,8 +31,7 @@ public class DataImageHelper {
 
    private static final Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-   // TODO create a cache of images here, rather than going to ContentProvider each time?
-   // (not sure, maybe it caches?)
+   private HashMap<Integer, Bitmap> imageCache = new HashMap<Integer, Bitmap>(1000);
    
    private final Context context;
    private String bucketId;
@@ -45,7 +45,12 @@ public class DataImageHelper {
       this.privateStore = privateStore;
    }
 
-   public Bitmap getImage(final int id) {
+   public Bitmap getBitmap(final int id) {
+      
+      if (this.imageCache.containsKey(id)) {
+         return this.imageCache.get(id);
+      }
+      
       String[] projection = { MediaStore.MediaColumns.DATA };
       String selection = MediaStore.Images.Media._ID + "=" + id;
       Cursor c = null;
@@ -72,10 +77,21 @@ public class DataImageHelper {
             Log.e("Constants.LOG_TAG", "", e);
          }
       }
+      
+      this.imageCache.put(id, bitmap);
+      
       return bitmap;
    }
+   
+   public void clearCache() {
+      this.imageCache.clear();
+   }
+   
+   public void clearCache(int id) {
+      this.imageCache.remove(id);
+   }
 
-   public int saveImage(final String title, final Bitmap bitmap) {
+   public int saveBitmap(final String title, final Bitmap bitmap) {
       // save full size bitmap 
       // TODO resize?
 
