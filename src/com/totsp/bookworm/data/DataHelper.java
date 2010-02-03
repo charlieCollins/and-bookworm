@@ -193,7 +193,7 @@ public class DataHelper {
                         new String[] { DataConstants.BOOKID, DataConstants.ISBN, DataConstants.TITLE,
                                  DataConstants.SUBTITLE, DataConstants.COVERIMAGEID, DataConstants.PUBLISHER,
                                  DataConstants.DESCRIPTION, DataConstants.FORMAT, DataConstants.SUBJECT,
-                                 DataConstants.DATEPUB }, null, null, null, null, DataConstants.TITLE, null);
+                                 DataConstants.DATEPUB }, null, null, null, null, DataConstants.TITLE + " desc", null);
       if (c.moveToFirst()) {
          do {
             Book b = new Book();
@@ -223,7 +223,8 @@ public class DataHelper {
       if (a != null) {
          Cursor c =
                   this.db.query(BOOKAUTHOR_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.AUTHORID
-                           + " = ?", new String[] { String.valueOf(a.getId()) }, null, DataConstants.TITLE, null);
+                           + " = ?", new String[] { String.valueOf(a.getId()) }, null, DataConstants.TITLE + " desc",
+                           null);
          if (c.moveToFirst()) {
             do {
                Book b = this.selectBook(c.getLong(0));
@@ -318,7 +319,7 @@ public class DataHelper {
       HashSet<Long> authorIds = new HashSet<Long>();
       Cursor c =
                this.db.query(BOOKAUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.BOOKID + " = ?",
-                        new String[] { String.valueOf(bookId) }, null, null, DataConstants.NAME, null);
+                        new String[] { String.valueOf(bookId) }, null, null, DataConstants.NAME + " desc", null);
       if (c.moveToFirst()) {
          do {
             authorIds.add(c.getLong(0));
@@ -342,7 +343,7 @@ public class DataHelper {
       HashSet<Author> set = new HashSet<Author>();
       Cursor c =
                this.db.query(AUTHOR_TABLE, new String[] { DataConstants.AUTHORID, DataConstants.NAME }, null, null,
-                        null, null, DataConstants.NAME, null);
+                        null, null, DataConstants.NAME + " desc", null);
       if (c.moveToFirst()) {
          do {
             Author a = new Author();
