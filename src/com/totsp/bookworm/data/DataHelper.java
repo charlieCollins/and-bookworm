@@ -25,7 +25,7 @@ public class DataHelper {
 
    // TODO make a generic interface then impl for particular data type (IDataHelper<Book>)
    // TODO create a cache for data type?
-   
+
    private static final String DATABASE_NAME = "bookworm.db";
    private static final int DATABASE_VERSION = 2;
    private static final String BOOK_TABLE = "book";
@@ -42,12 +42,12 @@ public class DataHelper {
                      + DataConstants.SUBTITLE + "," + DataConstants.COVERIMAGEID + "," + DataConstants.PUBLISHER + ","
                      + DataConstants.DESCRIPTION + "," + DataConstants.FORMAT + "," + DataConstants.SUBJECT + ","
                      + DataConstants.DATEPUB + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-   
+
    private SQLiteStatement bookAuthorInsertStmt;
    private static final String BOOKAUTHOR_INSERT =
             "insert into " + BOOKAUTHOR_TABLE + "(" + DataConstants.BOOKID + "," + DataConstants.AUTHORID
                      + ") values (?, ?)";
-   
+
    private SQLiteStatement authorInsertStmt;
    private static final String AUTHOR_INSERT =
             "insert into " + AUTHOR_TABLE + "(" + DataConstants.NAME + ") values (?)";
@@ -193,7 +193,7 @@ public class DataHelper {
                         new String[] { DataConstants.BOOKID, DataConstants.ISBN, DataConstants.TITLE,
                                  DataConstants.SUBTITLE, DataConstants.COVERIMAGEID, DataConstants.PUBLISHER,
                                  DataConstants.DESCRIPTION, DataConstants.FORMAT, DataConstants.SUBJECT,
-                                 DataConstants.DATEPUB }, null, null, null, null, null, null);
+                                 DataConstants.DATEPUB }, null, null, null, null, DataConstants.TITLE, null);
       if (c.moveToFirst()) {
          do {
             Book b = new Book();
@@ -223,7 +223,7 @@ public class DataHelper {
       if (a != null) {
          Cursor c =
                   this.db.query(BOOKAUTHOR_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.AUTHORID
-                           + " = ?", new String[] { String.valueOf(a.getId()) }, null, null, null);
+                           + " = ?", new String[] { String.valueOf(a.getId()) }, null, DataConstants.TITLE, null);
          if (c.moveToFirst()) {
             do {
                Book b = this.selectBook(c.getLong(0));
@@ -318,7 +318,7 @@ public class DataHelper {
       HashSet<Long> authorIds = new HashSet<Long>();
       Cursor c =
                this.db.query(BOOKAUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.BOOKID + " = ?",
-                        new String[] { String.valueOf(bookId) }, null, null, null, null);
+                        new String[] { String.valueOf(bookId) }, null, null, DataConstants.NAME, null);
       if (c.moveToFirst()) {
          do {
             authorIds.add(c.getLong(0));
@@ -342,7 +342,7 @@ public class DataHelper {
       HashSet<Author> set = new HashSet<Author>();
       Cursor c =
                this.db.query(AUTHOR_TABLE, new String[] { DataConstants.AUTHORID, DataConstants.NAME }, null, null,
-                        null, null, DataConstants.NAME + " desc");
+                        null, null, DataConstants.NAME, null);
       if (c.moveToFirst()) {
          do {
             Author a = new Author();

@@ -7,8 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,7 +16,7 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,8 +42,6 @@ public class Main extends Activity {
 
    private BookWormApplication application;
 
-   private boolean filterVisible;
-   private EditText bookListFilter;
    BookAdapter adapter;   
    private ListView bookListView;
    
@@ -59,6 +55,7 @@ public class Main extends Activity {
 
       this.setContentView(R.layout.main);     
 
+      /*
       this.bookListFilter = (EditText) this.findViewById(R.id.booklistfilter);
       this.bookListFilter.addTextChangedListener(new TextWatcher() {
          public void afterTextChanged(final Editable s) {
@@ -72,19 +69,21 @@ public class Main extends Activity {
       });
       // TODO collapse/remove until needed?
       this.bookListFilter.setVisibility(View.INVISIBLE);
+      */
       
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);    
       // TODO retrieve first X books, then rest in background (rather than all)?
       this.bookList.addAll(this.application.getDataHelper().selectAllBooks());      
-      this.bindBookList();
+      this.bindBookList(this.bookList);
    }
 
-   private void bindBookList() {      
-      this.adapter = new BookAdapter(this, android.R.layout.simple_list_item_1, this.bookList);
+   private void bindBookList(final ArrayList<Book> books) {      
+      this.adapter = new BookAdapter(this, android.R.layout.simple_list_item_1, books);      
       this.bookListView.setAdapter(this.adapter);
+      this.bookListView.setTextFilterEnabled(true);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-            Main.this.application.setSelectedBook(Main.this.bookList.get(index));
+            Main.this.application.setSelectedBook(books.get(index));
             Main.this.startActivity(new Intent(Main.this, BookDetail.class));
          }
       });
@@ -115,6 +114,7 @@ public class Main extends Activity {
       case MENU_BOOKADD:
          this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
+         /*
       case MENU_FILTER:
          if (this.filterVisible) {
             this.filterVisible = false;            
@@ -126,8 +126,9 @@ public class Main extends Activity {
             // TODO animate?
          }         
          return true;
+         */
       case MENU_SORT_RATING:         
-         this.adapter.sort(new RatingComparator());
+         ///this.adapter.sort(new RatingComparator());
          return true;
       case MENU_SORT_ALPHA:
          this.adapter.sort(new AlphaComparator());
@@ -204,7 +205,7 @@ public class Main extends Activity {
    // BookAdapter
    //
 
-   private class BookAdapter extends ArrayAdapter<Book> {
+   private class BookAdapter extends ArrayAdapter<Book> implements Filterable {
 
       LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       private final ArrayList<Book> books;
@@ -237,5 +238,18 @@ public class Main extends Activity {
          }
          return v;
       }
+      
+      /*
+      public Filter getFilter() {
+         return new Filter() {
+            public Filter.FilterResults performFiltering(CharSequence constraint) {
+               
+            }
+            public void publishResults(CharSequence constraint, Filter.FilterResults results) {
+               
+            }
+         };
+      }
+      */
    }
 }
