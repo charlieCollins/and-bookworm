@@ -4,7 +4,7 @@
 	android:layout_height="fill_parent" android:paddingLeft="8dp"
 	android:paddingRight="8dp">
 	<ListView android:id="@+id/booklistview" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:layout_weight="1"
+		android:layout_height="0dp" android:layout_weight="1"
 		android:drawSelectorOnTop="false" />
 	<!--
 		TODO setting this to android:empty makes it ALWAYS show, even when not

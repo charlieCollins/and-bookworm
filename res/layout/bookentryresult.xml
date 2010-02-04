@@ -8,11 +8,11 @@
 		android:layout_marginTop="20dp" android:layout_marginBottom="10dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:gravity="center_horizontal" style="@style/subtitle"
-		android:lines="3" android:ellipsize="marquee" />
+		android:lines="2" android:ellipsize="marquee" />
 
 	<ImageView android:id="@+id/bookentrycover"
 		android:layout_width="fill_parent" android:layout_height="140dp"
-		android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+		android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/bookentrytitle"
 		android:gravity="center_vertical" />
 
@@ -21,9 +21,13 @@
 		android:layout_marginTop="10dp" android:layout_below="@id/bookentrycover"
 		android:gravity="center_horizontal" style="@style/black" />
 
-	<Button android:id="@+id/bookentryaddbutton"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_marginTop="25dp" android:layout_below="@id/bookentryauthors"
-		android:text="Add book" android:gravity="center_vertical" style="@style/black" />
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:gravity="center_vertical">
+		<Button android:id="@+id/bookentryaddbutton"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="25dp" android:layout_below="@id/bookentryauthors"
+			android:text="Add book" android:gravity="center_vertical" style="@style/black" />
+	</LinearLayout>
 </RelativeLayout>
 
