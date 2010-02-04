@@ -18,16 +18,15 @@
 
 	<TextView android:id="@+id/bookentryauthors"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_marginTop="10dp" android:layout_below="@id/bookentrycover"
+		android:layout_marginTop="20dp" android:layout_below="@id/bookentrycover"
 		android:gravity="center_horizontal" style="@style/black" />
 
 	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:gravity="center_vertical">
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_below="@id/bookentryauthors" android:gravity="center">
 		<Button android:id="@+id/bookentryaddbutton"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_marginTop="25dp" android:layout_below="@id/bookentryauthors"
-			android:text="Add book" android:gravity="center_vertical" style="@style/black" />
+			android:layout_marginTop="25dp" android:text="Add book" style="@style/black" />
 	</LinearLayout>
 </RelativeLayout>
 
