@@ -3,21 +3,20 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd_largeheader_textarea">
 
-    <!--  redo this with textview heights set to wrap content and use "lines"
-    android:lines="1" android:ellipsize="marquee" - also need lanscape vers -->
+    <!--  redo this and align things without margings, also need landscape rev-->
 
 	<TextView android:id="@+id/booktitle" android:layout_width="fill_parent"
 		android:layout_height="65dp" android:layout_marginTop="8dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:gravity="center_horizontal" style="@style/subtitle"
-		android:ellipsize="marquee" />
+		android:lines="2" android:ellipsize="marquee" />
 
 	<TextView android:id="@+id/booksubtitle" android:layout_width="fill_parent"
 		android:layout_height="30dp" android:layout_marginTop="3dp"
 		android:layout_marginBottom="10dp" android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/booktitle"
 		android:gravity="center_horizontal" style="@style/subsubtitle"
-		android:ellipsize="marquee" />
+		android:lines="1" android:ellipsize="marquee" />
 
 	<ImageView android:id="@+id/bookcover" android:layout_width="140dp"
 		android:layout_height="140dp" android:layout_marginTop="5dp"
