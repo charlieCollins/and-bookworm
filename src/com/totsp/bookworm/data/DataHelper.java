@@ -227,8 +227,8 @@ public class DataHelper {
       if (a != null) {
          Cursor c =
                   this.db.query(BOOKAUTHOR_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.AUTHORID
-                           + " = ?", new String[] { String.valueOf(a.getId()) }, null, DataConstants.TITLE + " desc",
-                           null);
+                           + " = ?", new String[] { String.valueOf(a.getId()) }, null, null, DataConstants.TITLE
+                           + " desc");
          if (c.moveToFirst()) {
             do {
                Book b = this.selectBook(c.getLong(0));
