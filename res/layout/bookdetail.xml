@@ -4,6 +4,7 @@
 	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd_largeheader_textarea">
 
     <!--  redo this and align things without margings, also need landscape rev-->
+    <!--  remove stuff that's not there, don't let if affect layout? android:layout_alignWithParentIfMissing="true" -->
 
 	<TextView android:id="@+id/booktitle" android:layout_width="fill_parent"
 		android:layout_height="65dp" android:layout_marginTop="8dp"
