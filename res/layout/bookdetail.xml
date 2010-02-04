@@ -3,6 +3,9 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd_largeheader_textarea">
 
+    <!--  redo this with textview heights set to wrap content and use "lines"
+    android:lines="1" android:ellipsize="marquee" - also need lanscape vers -->
+
 	<TextView android:id="@+id/booktitle" android:layout_width="fill_parent"
 		android:layout_height="65dp" android:layout_marginTop="8dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"

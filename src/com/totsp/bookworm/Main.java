@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,19 +34,18 @@ public class Main extends Activity {
 
    private static final int MENU_ABOUT = 0;
    private static final int MENU_BOOKADD = 1;
-   private static final int MENU_FILTER = 2;
-   private static final int MENU_SORT_RATING = 3;
-   private static final int MENU_SORT_ALPHA = 4;
-   
+   private static final int MENU_SORT_RATING = 2;
+   private static final int MENU_SORT_ALPHA = 3;
+
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
 
    private BookWormApplication application;
 
-   BookAdapter adapter;   
+   BookAdapter adapter;
    private ListView bookListView;
-   
-   private ArrayList<Book> bookList = new ArrayList<Book>();   
+
+   private final ArrayList<Book> bookList = new ArrayList<Book>();
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -53,36 +53,23 @@ public class Main extends Activity {
 
       this.application = (BookWormApplication) this.getApplication();
 
-      this.setContentView(R.layout.main);     
+      this.setContentView(R.layout.main);
 
-      /*
-      this.bookListFilter = (EditText) this.findViewById(R.id.booklistfilter);
-      this.bookListFilter.addTextChangedListener(new TextWatcher() {
-         public void afterTextChanged(final Editable s) {
-         }
-         public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
-         }
-         public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
-            // TODO the filter doesn't work, should on toString book, but doesn't (need to create own?)
-            Main.this.adapter.getFilter().filter(s);
-         }
-      });
-      // TODO collapse/remove until needed?
-      this.bookListFilter.setVisibility(View.INVISIBLE);
-      */
-      
-      this.bookListView = (ListView) this.findViewById(R.id.booklistview);    
+      this.bookListView = (ListView) this.findViewById(R.id.booklistview);
+      this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));
       // TODO retrieve first X books, then rest in background (rather than all)?
-      this.bookList.addAll(this.application.getDataHelper().selectAllBooks());      
+      this.bookList.addAll(this.application.getDataHelper().selectAllBooks());
+      Log.d(Constants.LOG_TAG, "bookList size - " + bookList.size());
       this.bindBookList(this.bookList);
    }
 
-   private void bindBookList(final ArrayList<Book> books) {      
-      this.adapter = new BookAdapter(this, android.R.layout.simple_list_item_1, books);      
+   private void bindBookList(final ArrayList<Book> books) {
+      this.adapter = new BookAdapter(this, 0, books);
       this.bookListView.setAdapter(this.adapter);
       this.bookListView.setTextFilterEnabled(true);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
+            Log.d(Constants.LOG_TAG, "book selected - " + index);
             Main.this.application.setSelectedBook(books.get(index));
             Main.this.startActivity(new Intent(Main.this, BookDetail.class));
          }
@@ -99,8 +86,7 @@ public class Main extends Activity {
    public boolean onCreateOptionsMenu(final Menu menu) {
       menu.add(0, Main.MENU_ABOUT, 0, "About").setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_BOOKADD, 1, "Add Book").setIcon(android.R.drawable.ic_menu_add);
-      menu.add(0, Main.MENU_FILTER, 2, "Filter").setIcon(android.R.drawable.ic_menu_search);
-      menu.add(0, Main.MENU_SORT_RATING, 3, "Sort|Rating").setIcon(android.R.drawable.ic_menu_sort_by_size);
+      menu.add(0, Main.MENU_SORT_RATING, 2, "Sort|Rating").setIcon(android.R.drawable.ic_menu_sort_by_size);
       menu.add(0, Main.MENU_SORT_ALPHA, 3, "Sort|Alpha").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
       return super.onCreateOptionsMenu(menu);
    }
@@ -114,20 +100,7 @@ public class Main extends Activity {
       case MENU_BOOKADD:
          this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
-         /*
-      case MENU_FILTER:
-         if (this.filterVisible) {
-            this.filterVisible = false;            
-            this.bookListFilter.setVisibility(View.INVISIBLE);  
-            // TODO animate?            
-         } else {
-            this.filterVisible = true;            
-            this.bookListFilter.setVisibility(View.VISIBLE);
-            // TODO animate?
-         }         
-         return true;
-         */
-      case MENU_SORT_RATING:         
+      case MENU_SORT_RATING:
          ///this.adapter.sort(new RatingComparator());
          return true;
       case MENU_SORT_ALPHA:
@@ -141,7 +114,7 @@ public class Main extends Activity {
    public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
       super.onCreateContextMenu(menu, v, menuInfo);
       menu.add(0, Main.MENU_CONTEXT_EDIT, 0, "Edit Book");
-      menu.add(1, Main.MENU_CONTEXT_DELETE, 0, "Delete Book");
+      menu.add(0, Main.MENU_CONTEXT_DELETE, 1, "Delete Book");
       menu.setHeaderTitle("Action");
    }
 
@@ -180,7 +153,7 @@ public class Main extends Activity {
    protected void onSaveInstanceState(final Bundle saveState) {
       super.onSaveInstanceState(saveState);
    }
-   
+
    //
    // Sort Comparators
    //
@@ -210,35 +183,41 @@ public class Main extends Activity {
       LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       private final ArrayList<Book> books;
 
+      private Bitmap coverImage;
+      private ImageView coverImageView;
+      private TextView aboveTextView;
+      private TextView belowTextView;
+
       public BookAdapter(final Context context, final int resId, final ArrayList<Book> books) {
          super(context, resId, books);
-         this.books = books;
+         this.books = books;         
       }
 
       @Override
       public View getView(final int position, final View convertView, final ViewGroup parent) {
          View v = convertView;
          if (v == null) {
-            v = this.vi.inflate(R.layout.items_list_item, null);
+            v = this.vi.inflate(R.layout.itemslistitem, null);
          }
 
          Book book = this.books.get(position);
          if (book != null) {
-            ImageView iv = (ImageView) v.findViewById(R.id.itemslistitemimage);
+            this.coverImageView = (ImageView) v.findViewById(R.id.itemslistitemimage);
             if (book.getCoverImageId() > 0) {
-               Bitmap coverImage = Main.this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
-               iv.setImageBitmap(coverImage);
+               this.coverImage = Main.this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
+               this.coverImageView.setImageBitmap(coverImage);
             } else {
-               iv.setImageResource(R.drawable.book_cover_missing);
+               this.coverImageView.setImageResource(R.drawable.book_cover_missing);
             }
-            TextView above = (TextView) v.findViewById(R.id.itemslistitemtextabove);
-            above.setText(book.getTitle());
-            TextView below = (TextView) v.findViewById(R.id.itemslistitemtextbelow);
-            below.setText(book.getSubTitle());
+            
+            this.aboveTextView = (TextView) v.findViewById(R.id.itemslistitemtextabove);
+            this.aboveTextView.setText(book.getTitle());
+            this.belowTextView = (TextView) v.findViewById(R.id.itemslistitemtextbelow);
+            this.belowTextView.setText(book.getSubTitle());
          }
          return v;
       }
-      
+
       /*
       public Filter getFilter() {
          return new Filter() {

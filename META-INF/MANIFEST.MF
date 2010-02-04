@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.0
+Created-By: 1.6.0_07 (Apple Inc.)
+Export-Package: com.google.inject.name;uses:="com.google.inject,com.go
+ ogle.inject.binder";version="1.2",com.google.inject.binder;uses:="com
+ .google.inject";version="1.2",com.google.inject.spi;uses:="com.google
+ .inject,com.google.inject.binder,com.google.inject.matcher";version="
+ 1.2",com.google.inject.matcher;version="1.2",com.google.inject.util;u
+ ses:="com.google.inject,com.google.inject.spi";version="1.2",com.goog
+ le.inject;uses:="com.google.inject.spi,com.google.inject.binder,com.g
+ oogle.inject.matcher,com.google.inject.util";version="1.2"
+Bundle-Name: guice
+Bundle-Copyright: Copyright (C) 2006 Google Inc.
+Bundle-Vendor: Google Inc.
+DynamicImport-Package: org.aopalliance.intercept
+Bundle-Version: 2.0.0.no_aop
+Bundle-ManifestVersion: 2
+Bundle-Description: Guice is a lightweight dependency injection framew
+ ork for Java 5 and above
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
+Bundle-DocURL: http://code.google.com/p/google-guice/
+Import-Package: com.google.inject;version="[1.2,2)",com.google.inject.
+ binder;version="[1.2,2)",com.google.inject.matcher;version="[1.2,2)",
+ com.google.inject.name;version="[1.2,2)",com.google.inject.spi;versio
+ n="[1.2,2)",com.google.inject.util;version="[1.2,2)"
+Bundle-SymbolicName: com.google.inject
+

@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	<!-- 
-	<EditText android:id="@+id/booklistfilter"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-		-->
+	android:layout_height="fill_parent" android:paddingLeft="8dp"
+	android:paddingRight="8dp">
 	<ListView android:id="@+id/booklistview" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" />
+		android:layout_height="fill_parent" android:layout_weight="1"
+		android:drawSelectorOnTop="false" />
+	<!--
+		TODO setting this to android:empty makes it ALWAYS show, even when not
+		empty?
+	-->
+	<TextView android:id="@+id/booklistviewempty"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:layout_marginTop="20dp" android:layout_marginLeft="20dp"
+		android:layout_marginRight="20dp" android:gravity="center"
+		android:text="You don't have any books in your list yet. Use the Menu Add feature to add books."
+		style="@style/white" />
 </LinearLayout>
+
+
 			

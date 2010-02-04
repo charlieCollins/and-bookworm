@@ -14,7 +14,11 @@ public class BookWormApplication extends Application {
    private DataHelper dataHelper;
    private DataImageHelper dataImageHelper;
    
-   private Book selectedBook;   
+   private Book selectedBook;
+   
+   // wire up Guice in onCreate of Application
+   // TODO use Guice, change things like DataHelper to use it
+   ///private Injector injector;
    
    @Override
    public void onCreate() {

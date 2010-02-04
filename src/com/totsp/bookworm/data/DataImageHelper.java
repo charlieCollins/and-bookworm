@@ -92,9 +92,6 @@ public class DataImageHelper {
    }
 
    public int saveBitmap(final String title, final Bitmap bitmap) {
-      // save full size bitmap 
-      // TODO resize?
-
       ContentValues values = new ContentValues();
       values.put(MediaColumns.TITLE, title);
       values.put(ImageColumns.BUCKET_DISPLAY_NAME, this.bucketDisplayName);
@@ -104,12 +101,10 @@ public class DataImageHelper {
       } else {
          values.put(ImageColumns.IS_PRIVATE, 1);
       }
-      ///values.put(MediaColumns.MIME_TYPE, "image/jpeg");
       Uri uri = this.context.getContentResolver().insert(DataImageHelper.IMAGES_URI, values);
       int imageId = Integer.parseInt(uri.toString().substring(Media.EXTERNAL_CONTENT_URI.toString().length() + 1));
 
       this.saveStream(this.context, uri, bitmap);
-
       return imageId;
    }
 
@@ -117,7 +112,7 @@ public class DataImageHelper {
       OutputStream os = null;
       try {
          os = context.getContentResolver().openOutputStream(uri);
-         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, os);
+         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, os);
          os.close();
       } catch (FileNotFoundException e) {
          Log.e(Constants.LOG_TAG, e.toString());

@@ -84,6 +84,12 @@ public class BookEntryResult extends Activity {
                int imageId =
                         this.application.getDataImageHelper().saveBitmap(this.book.getTitle(), this.bookCoverBitmap);
                this.book.setCoverImageId(imageId);
+
+               // also save one really small for use in ListView - rather than scaling later
+               imageId =
+                        this.application.getDataImageHelper().saveBitmap(this.book.getTitle() + "-T",
+                                 Bitmap.createScaledBitmap(this.bookCoverBitmap, 55, 70, false));
+               this.book.setCoverImageTinyId(imageId);
             }
             // save book to database
             this.application.getDataHelper().insertBook(this.book);
