@@ -272,6 +272,7 @@ public class DataHelper {
             }
          }
       }
+      // TODO delete images from ContentProvider
    }
 
    public void deleteBook(String isbn) {
