@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<RelativeLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:background="@drawable/book_bgrnd_noheader_textarea">
+
+		<TextView android:id="@+id/booktitlelabel"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginTop="20dp" android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp" android:gravity="left" style="@style/blackbold"
+			android:text="Title:" />
+		<EditText android:id="@+id/booktitle" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_marginTop="3dp"
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_below="@id/booktitlelabel" android:gravity="left" />
+
+		<RatingBar android:id="@+id/bookrating"
+			android:layout_width="285dip" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:layout_marginLeft="15dp"
+			android:layout_marginRight="10dp" android:layout_below="@id/booktitle"
+			android:gravity="center_horizontal" android:isIndicator="false"
+			android:numStars="5" />
+
+		<TextView android:id="@+id/booksubtitlelabel"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp" android:layout_below="@id/bookrating"
+			android:gravity="left" style="@style/blackbold" android:text="Subtitle:" />
+		<EditText android:id="@+id/booksubtitle"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp" android:layout_below="@id/booksubtitlelabel"
+			android:gravity="left" />
+
+		<!--
+			TODO make cover selectable, and go to page to scan in cover, upload a
+			cover, etc
+		-->
+		<ImageView android:id="@+id/bookcover" android:layout_width="140dp"
+			android:layout_height="140dp" android:layout_marginTop="5dp"
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_below="@id/booksubtitle" android:layout_gravity="center_horizontal" />
+
+
+		<TextView android:id="@+id/bookauthorslabel"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp" android:layout_below="@id/bookcover"
+			android:gravity="left" style="@style/blackbold" android:text="Authors (comma sep):" />
+		<EditText android:id="@+id/bookauthors" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_marginTop="3dp"
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_below="@id/bookauthorslabel" android:gravity="left" />
+
+		<TextView android:id="@+id/booksubjectlabel"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
+			android:gravity="left" style="@style/blackbold" android:text="Subject:" />
+		<EditText android:id="@+id/booksubject" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_marginTop="3dp"
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_below="@id/booksubjectlabel" android:gravity="left" />
+
+		<TextView android:id="@+id/bookpublisherlabel"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
+			android:gravity="left" style="@style/blackbold" android:text="Publisher:" />
+		<EditText android:id="@+id/bookpublisher"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp" android:layout_below="@id/bookpublisherlabel"
+			android:gravity="left" />
+
+		<TextView android:id="@+id/bookdatepublabel"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp" android:layout_below="@id/bookpublisher"
+			android:gravity="left" style="@style/blackbold" android:text="Date:" />
+		<EditText android:id="@+id/bookdatepub" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_marginTop="3dp"
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_below="@id/bookdatepublabel" android:gravity="left" />
+
+
+		<Button android:id="@+id/bookeditsavebutton"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="15dp" android:layout_marginBottom="30dp"
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_below="@id/bookdatepub" android:gravity="left"
+			android:text="Save" style="@style/black" />
+	</RelativeLayout>
+</ScrollView>

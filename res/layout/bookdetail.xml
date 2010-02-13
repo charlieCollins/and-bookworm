@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd_largeheader_textarea">
+	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd_noheader_textarea">
 
     <!--  redo this and align things without margings, also need landscape rev-->
     <!--  remove stuff that's not there, don't let if affect layout? android:layout_alignWithParentIfMissing="true" -->

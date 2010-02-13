@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--  -->
 	<color name="red1">#912729</color>
 	<color name="brown1">#661619</color>
 	<color name="beige1">#d5b67d</color>
+	
+<!--  -->	
+	<drawable name="solid_red">#f00</drawable>
 </resources>

@@ -21,7 +21,6 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -101,7 +100,7 @@ public class Main extends Activity {
          this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
       case MENU_SORT_RATING:
-         ///this.adapter.sort(new RatingComparator());
+         this.adapter.sort(new RatingComparator());
          return true;
       case MENU_SORT_ALPHA:
          this.adapter.sort(new AlphaComparator());
@@ -124,7 +123,8 @@ public class Main extends Activity {
       final Book b = this.bookList.get((int) listIndex);
       switch (item.getItemId()) {
       case MENU_CONTEXT_EDIT:
-         Toast.makeText(this, "TODO Edit Book", Toast.LENGTH_SHORT).show();
+         Main.this.application.setSelectedBook(b);
+         Main.this.startActivity(new Intent(Main.this, BookEdit.class));
          return true;
       case MENU_CONTEXT_DELETE:
          new AlertDialog.Builder(Main.this).setTitle("Delete book?").setMessage(b.getTitle()).setPositiveButton(
@@ -190,7 +190,7 @@ public class Main extends Activity {
 
       public BookAdapter(final Context context, final int resId, final ArrayList<Book> books) {
          super(context, resId, books);
-         this.books = books;         
+         this.books = books;
       }
 
       @Override
@@ -209,7 +209,7 @@ public class Main extends Activity {
             } else {
                this.coverImageView.setImageResource(R.drawable.book_cover_missing);
             }
-            
+
             this.aboveTextView = (TextView) v.findViewById(R.id.itemslistitemtextabove);
             this.aboveTextView.setText(book.getTitle());
             this.belowTextView = (TextView) v.findViewById(R.id.itemslistitemtextbelow);

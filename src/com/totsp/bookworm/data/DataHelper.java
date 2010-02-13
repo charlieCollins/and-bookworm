@@ -1,5 +1,6 @@
 package com.totsp.bookworm.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -43,7 +44,6 @@ public class DataHelper {
                      + "," + DataConstants.PUBLISHER + "," + DataConstants.DESCRIPTION + "," + DataConstants.FORMAT
                      + "," + DataConstants.SUBJECT + "," + DataConstants.DATEPUB
                      + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
    private SQLiteStatement bookAuthorInsertStmt;
    private static final String BOOKAUTHOR_INSERT =
             "insert into " + BOOKAUTHOR_TABLE + "(" + DataConstants.BOOKID + "," + DataConstants.AUTHORID
@@ -52,6 +52,11 @@ public class DataHelper {
    private SQLiteStatement authorInsertStmt;
    private static final String AUTHOR_INSERT =
             "insert into " + AUTHOR_TABLE + "(" + DataConstants.NAME + ") values (?)";
+
+   private SQLiteStatement bookUserDataInsertStmt;
+   private static final String BOOKUSERDATA_INSERT =
+            "insert into " + BOOKUSERDATA_TABLE + "(" + DataConstants.BOOKID + "," + DataConstants.READSTATUS + ","
+                     + DataConstants.RATING + "," + DataConstants.BLURB + ") values (?, ?, ?, ?)";
 
    public DataHelper(Context context) {
       this.context = context;
@@ -62,6 +67,7 @@ public class DataHelper {
       this.bookInsertStmt = this.db.compileStatement(BOOK_INSERT);
       this.bookAuthorInsertStmt = this.db.compileStatement(BOOKAUTHOR_INSERT);
       this.authorInsertStmt = this.db.compileStatement(AUTHOR_INSERT);
+      this.bookUserDataInsertStmt = this.db.compileStatement(BOOKUSERDATA_INSERT);
 
       if (openHelper.isDbCreated()) {
          // insert default data here if needed
@@ -78,7 +84,9 @@ public class DataHelper {
    // DB methods
    //
 
+   //
    // book
+   //
    public long insertBook(Book b) {
       long bookId = 0L;
       if (b != null && b.getTitle() != null) {
@@ -134,6 +142,10 @@ public class DataHelper {
                this.bookAuthorInsertStmt.executeInsert();
             }
 
+            // delete/insert bookuserdata
+            this.deleteBookUserData(b.getId());
+            this.insertBookUserData(b.getId(), b.isRead(), b.getRating(), b.getBlurb());
+
             db.setTransactionSuccessful();
          } catch (SQLException e) {
             Log.e(Constants.LOG_TAG, "Error inserting book", e);
@@ -144,6 +156,70 @@ public class DataHelper {
          throw new IllegalArgumentException("Error, book cannot be null, and must have a unique title");
       }
       return bookId;
+   }
+
+   public void updateBook(Book b) {
+      if (b != null && b.getId() != 0) {
+         Book bookExists = this.selectBook(b.getId());
+         if (bookExists == null) {
+            throw new IllegalArgumentException(
+                     "Cannot update book that does not already exist (for rename, delete and insert)");
+         }
+
+         // use transaction
+         this.db.beginTransaction();
+         try {
+
+            // insert authors as needed            
+            HashSet<Long> authorIds = new HashSet<Long>();
+            if (b.getAuthors() != null && !b.getAuthors().isEmpty()) {
+               for (Author a : b.getAuthors()) {
+                  Author authorExists = this.selectAuthor(a.getName());
+                  if (authorExists == null) {
+                     authorIds.add(this.insertAuthor(a));
+                  } else {
+                     authorIds.add(authorExists.getId());
+                  }
+               }
+            }
+
+            // update/insert book/author associations
+            // just delete them all for book X and re-insert - for now
+            db.delete(BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(b.getId()) });
+            for (Long authorId : authorIds) {
+               this.bookAuthorInsertStmt.clearBindings();
+               this.bookAuthorInsertStmt.bindLong(1, b.getId());
+               this.bookAuthorInsertStmt.bindLong(2, authorId);
+               this.bookAuthorInsertStmt.executeInsert();
+            }
+
+            // update book
+            final ContentValues values = new ContentValues();
+            values.put(DataConstants.ISBN, b.getIsbn());
+            values.put(DataConstants.TITLE, b.getTitle());
+            values.put(DataConstants.SUBTITLE, b.getSubTitle());
+            values.put(DataConstants.COVERIMAGEID, b.getCoverImageId());
+            values.put(DataConstants.COVERIMAGETINYID, b.getCoverImageTinyId());
+            values.put(DataConstants.PUBLISHER, b.getPublisher());
+            values.put(DataConstants.DESCRIPTION, b.getDescription());
+            values.put(DataConstants.FORMAT, b.getFormat());
+            values.put(DataConstants.SUBJECT, b.getSubject());
+            values.put(DataConstants.DATEPUB, b.getDatePubStamp());
+
+            db.update(BOOK_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(b.getId()) });
+            
+            // update/insert book user data
+            
+
+            db.setTransactionSuccessful();
+         } catch (SQLException e) {
+            Log.e(Constants.LOG_TAG, "Error inserting book", e);
+         } finally {
+            this.db.endTransaction();
+         }
+      } else {
+         throw new IllegalArgumentException("Error, book cannot be null, and must have a unique title");
+      }
    }
 
    public Book selectBook(long id) {
@@ -281,7 +357,35 @@ public class DataHelper {
       }
    }
 
+   //
+   // book-user data
+   //
+   public long insertBookUserData(long bookId, boolean readStatus, int rating, String blurb) {
+      this.bookUserDataInsertStmt.clearBindings();
+      this.bookUserDataInsertStmt.bindLong(1, bookId);
+      this.bookUserDataInsertStmt.bindLong(2, readStatus ? 1 : 0);
+      this.bookUserDataInsertStmt.bindLong(3, rating);
+      this.bookUserDataInsertStmt.bindString(4, blurb);
+      return this.bookUserDataInsertStmt.executeInsert();
+   }
+   
+   public void updateBookUserData(long bookId, boolean readStatus, int rating, String blurb) {   
+      final ContentValues values = new ContentValues();
+      values.put(DataConstants.READSTATUS,readStatus ? 1 : 0);
+      values.put(DataConstants.RATING, rating);
+      values.put(DataConstants.BLURB, blurb);
+      db.update(BOOKUSERDATA_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) });
+   }
+   
+   public void deleteBookUserData(long bookId) {
+      if (bookId > 0) {
+         this.db.delete(BOOKUSERDATA_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) });
+      }
+   }
+
+   //
    // author
+   //
    public long insertAuthor(Author a) {
       this.authorInsertStmt.clearBindings();
       this.authorInsertStmt.bindString(1, a.getName());

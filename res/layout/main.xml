@@ -5,8 +5,7 @@
 	android:paddingRight="8dp">
 	<ListView android:id="@+id/booklistview" android:layout_width="fill_parent"
 		android:layout_height="0dp" android:layout_weight="1"
-		android:drawSelectorOnTop="false" 
-		android:cacheColorHint="#00000000" />
+		android:drawSelectorOnTop="false" />
 	<!--
 		TODO setting this to android:empty makes it ALWAYS show, even when not
 		empty?
@@ -19,5 +18,6 @@
 		style="@style/white" />
 </LinearLayout>
 
+	<!--  android:cacheColorHint="#00000000" -->
 
 			

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/itemslist"
 	android:layout_width="fill_parent" android:layout_height="wrap_content" 
-	 android:choiceMode="singleChoice" android:divider="@null" android:listSelector="@drawable/selector" />
+	 android:choiceMode="singleChoice" android:divider="@color/red1" 
+         android:dividerHeight="2dp" />
+         
+         <!--  android:listSelector="@drawable/listselector" -->

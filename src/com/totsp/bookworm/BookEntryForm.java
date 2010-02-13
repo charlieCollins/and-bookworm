@@ -20,11 +20,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.AuthorsStringUtil;
 
 import java.io.IOException;
-import java.util.LinkedHashSet;
 
 // have to force landscape mode for Camera preview (see manifest)
 // http://code.google.com/p/android/issues/detail?id=1193
@@ -195,7 +194,6 @@ public class BookEntryForm extends Activity {
 
       private Book book;
       String title;
-      LinkedHashSet<Author> authors;
 
       // can use UI thread here
       protected void onPreExecute() {
@@ -206,14 +204,8 @@ public class BookEntryForm extends Activity {
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(String... args) {
          book = new Book();
-         book.setTitle(args[0]);
-
-         authors = new LinkedHashSet<Author>();
-         String[] authorsArray = args[1].split(",\\s*");
-         for (int i = 0; i < authorsArray.length; i++) {
-            authors.add(new Author(authorsArray[i]));
-         }
-         book.setAuthors(authors);
+         book.setTitle(args[0]);         
+         book.setAuthors(AuthorsStringUtil.expandAuthors(args[1]));
 
          if (picBitmap != null) {
             Log.d(Constants.LOG_TAG, "picBitmap present in task, attempt image save");

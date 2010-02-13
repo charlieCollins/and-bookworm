@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  why do some "selectors" ColorStateList? require android:drawable, others can use android:color? -->
+<!--  android:listSelector
+AbsListView Drawable used to indicate the currently selected item in the list. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+   <item android:state_focused="true" android:drawable="@color/red1"/>
+   <item android:state_pressed="true" android:drawable="@color/brown1" />
+   <item android:state_enabled="false" android:drawable="@color/beige1" />
+   <item android:state_active="true" android:drawable="@color/red1" />
+   <item android:drawable="@color/beige1"/>
+ </selector>

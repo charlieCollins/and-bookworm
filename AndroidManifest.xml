@@ -16,6 +16,7 @@
 		<activity android:name="Main" />
 		<activity android:name="About" />      
 		<activity android:name="BookAdd" />      
+		<activity android:name="BookEdit" />      
 		<activity android:name="BookDetail" />      
 		<activity android:name="BookEntryForm" android:screenOrientation="landscape" />      
 		<activity android:name="BookEntryResult" />      

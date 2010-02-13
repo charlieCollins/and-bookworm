@@ -56,9 +56,8 @@ public class BookDetail extends Activity {
       this.bookDatePub = (TextView) this.findViewById(R.id.bookdatepub);
       this.bookPublisher = (TextView) this.findViewById(R.id.bookpublisher);
 
-      ///this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
-      ///TODO this.ratingBar.setRating(3.0f);      
-
+      this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
+      
       // pattern is onCreate THEN onRestoreInstanceState 
       // can't exit/give up from onCreate if data is missing, have to re-setup in onRestore
       this.setViewData();
@@ -102,6 +101,8 @@ public class BookDetail extends Activity {
                authors += ", " + a.getName();
             }
          }
+         
+         this.ratingBar.setRating(new Float(book.getRating()));
 
          this.bookAuthors.setText(authors);
          this.bookSubject.setText(book.getSubject());
