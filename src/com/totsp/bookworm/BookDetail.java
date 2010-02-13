@@ -157,7 +157,7 @@ public class BookDetail extends Activity {
          this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
          return true;
       case MENU_EDIT:
-         Toast.makeText(this, "TODO Edit", Toast.LENGTH_SHORT).show();
+         this.startActivity(new Intent(this, BookEdit.class));
          return true;
       default:
          return super.onOptionsItemSelected(item);
