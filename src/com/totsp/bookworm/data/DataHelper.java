@@ -236,9 +236,11 @@ public class DataHelper {
          b.setAuthors(this.selectAuthorsByBookId(id));
 
          Book userData = this.selectBookUserData(id);
-         b.setRead(userData.isRead());
-         b.setRating(userData.getRating());
-         b.setBlurb(userData.getBlurb());
+         if (userData != null) {
+            b.setRead(userData.isRead());
+            b.setRating(userData.getRating());
+            b.setBlurb(userData.getBlurb());
+         }
       }
       if (c != null && !c.isClosed()) {
          c.close();
@@ -286,9 +288,11 @@ public class DataHelper {
             b.setAuthors(this.selectAuthorsByBookId(b.getId()));
 
             Book userData = this.selectBookUserData(b.getId());
-            b.setRead(userData.isRead());
-            b.setRating(userData.getRating());
-            b.setBlurb(userData.getBlurb());
+            if (userData != null) {
+               b.setRead(userData.isRead());
+               b.setRating(userData.getRating());
+               b.setBlurb(userData.getBlurb());
+            }
 
             set.add(b);
          } while (c.moveToNext());
@@ -380,17 +384,16 @@ public class DataHelper {
    //
    public Book selectBookUserData(long bookId) {
       // TODO don't use "Book" for this - create a type? (do NOT pass in and manip input param either)
-      Book passData = new Book();
+      Book passData = null;
       Cursor c =
                this.db.query(BOOKUSERDATA_TABLE, new String[] { DataConstants.READSTATUS, DataConstants.RATING,
                         DataConstants.BLURB }, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) },
-                        null, null, null);
+                        null, null, null, "1");
       if (c.moveToFirst()) {
-         do {
-            passData.setRead(c.getInt(0) == 0 ? true : false);
-            passData.setRating(c.getInt(1));
-            passData.setBlurb(c.getString(2));
-         } while (c.moveToNext());
+         passData = new Book();
+         passData.setRead(c.getInt(0) == 0 ? true : false);
+         passData.setRating(c.getInt(1));
+         passData.setBlurb(c.getString(2));
       }
       if (c != null && !c.isClosed()) {
          c.close();
@@ -403,16 +406,24 @@ public class DataHelper {
       this.bookUserDataInsertStmt.bindLong(1, bookId);
       this.bookUserDataInsertStmt.bindLong(2, readStatus ? 1 : 0);
       this.bookUserDataInsertStmt.bindLong(3, rating);
-      this.bookUserDataInsertStmt.bindString(4, blurb);
+      if (blurb != null) {
+         this.bookUserDataInsertStmt.bindString(4, blurb);
+      }
       return this.bookUserDataInsertStmt.executeInsert();
    }
 
    public void updateBookUserData(long bookId, boolean readStatus, int rating, String blurb) {
-      final ContentValues values = new ContentValues();
-      values.put(DataConstants.READSTATUS, readStatus ? 1 : 0);
-      values.put(DataConstants.RATING, rating);
-      values.put(DataConstants.BLURB, blurb);
-      db.update(BOOKUSERDATA_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) });
+      // insert in case not present - if book was added before this was avail, etc
+      Book existingData = this.selectBookUserData(bookId);
+      if (existingData == null) {
+         this.insertBookUserData(bookId, readStatus, rating, blurb);
+      } else {
+         final ContentValues values = new ContentValues();
+         values.put(DataConstants.READSTATUS, readStatus ? 1 : 0);
+         values.put(DataConstants.RATING, rating);
+         values.put(DataConstants.BLURB, blurb);
+         db.update(BOOKUSERDATA_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) });
+      }
    }
 
    public void deleteBookUserData(long bookId) {
