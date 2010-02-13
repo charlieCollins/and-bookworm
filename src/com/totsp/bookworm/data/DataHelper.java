@@ -135,16 +135,10 @@ public class DataHelper {
             bookId = this.bookInsertStmt.executeInsert();
 
             // insert bookauthors
-            for (Long authorId : authorIds) {
-               this.bookAuthorInsertStmt.clearBindings();
-               this.bookAuthorInsertStmt.bindLong(1, bookId);
-               this.bookAuthorInsertStmt.bindLong(2, authorId);
-               this.bookAuthorInsertStmt.executeInsert();
-            }
+            this.insertBookAuthorData(bookId, authorIds);
 
-            // delete/insert bookuserdata
-            this.deleteBookUserData(b.getId());
-            this.insertBookUserData(b.getId(), b.isRead(), b.getRating(), b.getBlurb());
+            // insert bookuserdata
+            this.insertBookUserData(bookId, b.isRead(), b.getRating(), b.getBlurb());
 
             db.setTransactionSuccessful();
          } catch (SQLException e) {
@@ -184,14 +178,12 @@ public class DataHelper {
             }
 
             // update/insert book/author associations
-            // just delete them all for book X and re-insert - for now
-            db.delete(BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(b.getId()) });
-            for (Long authorId : authorIds) {
-               this.bookAuthorInsertStmt.clearBindings();
-               this.bookAuthorInsertStmt.bindLong(1, b.getId());
-               this.bookAuthorInsertStmt.bindLong(2, authorId);
-               this.bookAuthorInsertStmt.executeInsert();
-            }
+            this.deleteBookAuthorData(b.getId());
+            this.insertBookAuthorData(b.getId(), authorIds);
+
+            // update/insert book user data
+            this.deleteBookUserData(b.getId());
+            this.updateBookUserData(b.getId(), b.isRead(), b.getRating(), b.getBlurb());
 
             // update book
             final ContentValues values = new ContentValues();
@@ -207,9 +199,6 @@ public class DataHelper {
             values.put(DataConstants.DATEPUB, b.getDatePubStamp());
 
             db.update(BOOK_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(b.getId()) });
-            
-            // update/insert book user data
-            
 
             db.setTransactionSuccessful();
          } catch (SQLException e) {
@@ -224,6 +213,7 @@ public class DataHelper {
 
    public Book selectBook(long id) {
       Book b = null;
+      // TODO add join to bookuserdata - rather than sep query
       Cursor c =
                this.db.query(BOOK_TABLE, new String[] { DataConstants.ISBN, DataConstants.TITLE,
                         DataConstants.SUBTITLE, DataConstants.COVERIMAGEID, DataConstants.COVERIMAGETINYID,
@@ -244,6 +234,11 @@ public class DataHelper {
          b.setSubject(c.getString(8));
          b.setDatePubStamp(c.getLong(9));
          b.setAuthors(this.selectAuthorsByBookId(id));
+
+         Book userData = this.selectBookUserData(id);
+         b.setRead(userData.isRead());
+         b.setRating(userData.getRating());
+         b.setBlurb(userData.getBlurb());
       }
       if (c != null && !c.isClosed()) {
          c.close();
@@ -267,6 +262,7 @@ public class DataHelper {
 
    public HashSet<Book> selectAllBooks() {
       HashSet<Book> set = new HashSet<Book>();
+      // TODO add join to bookuserdata - rather than sep query
       Cursor c =
                this.db.query(BOOK_TABLE, new String[] { DataConstants.BOOKID, DataConstants.ISBN, DataConstants.TITLE,
                         DataConstants.SUBTITLE, DataConstants.COVERIMAGEID, DataConstants.COVERIMAGETINYID,
@@ -288,6 +284,12 @@ public class DataHelper {
             b.setSubject(c.getString(9));
             b.setDatePubStamp(c.getLong(10));
             b.setAuthors(this.selectAuthorsByBookId(b.getId()));
+
+            Book userData = this.selectBookUserData(b.getId());
+            b.setRead(userData.isRead());
+            b.setRating(userData.getRating());
+            b.setBlurb(userData.getBlurb());
+
             set.add(b);
          } while (c.moveToNext());
       }
@@ -358,8 +360,44 @@ public class DataHelper {
    }
 
    //
+   // book-author data
+   //   
+   public void insertBookAuthorData(long bookId, HashSet<Long> authorIds) {
+      for (Long authorId : authorIds) {
+         this.bookAuthorInsertStmt.clearBindings();
+         this.bookAuthorInsertStmt.bindLong(1, bookId);
+         this.bookAuthorInsertStmt.bindLong(2, authorId);
+         this.bookAuthorInsertStmt.executeInsert();
+      }
+   }
+
+   public void deleteBookAuthorData(long bookId) {
+      db.delete(BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) });
+   }
+
+   //
    // book-user data
    //
+   public Book selectBookUserData(long bookId) {
+      // TODO don't use "Book" for this - create a type? (do NOT pass in and manip input param either)
+      Book passData = new Book();
+      Cursor c =
+               this.db.query(BOOKUSERDATA_TABLE, new String[] { DataConstants.READSTATUS, DataConstants.RATING,
+                        DataConstants.BLURB }, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) },
+                        null, null, null);
+      if (c.moveToFirst()) {
+         do {
+            passData.setRead(c.getInt(0) == 0 ? true : false);
+            passData.setRating(c.getInt(1));
+            passData.setBlurb(c.getString(2));
+         } while (c.moveToNext());
+      }
+      if (c != null && !c.isClosed()) {
+         c.close();
+      }
+      return passData;
+   }
+
    public long insertBookUserData(long bookId, boolean readStatus, int rating, String blurb) {
       this.bookUserDataInsertStmt.clearBindings();
       this.bookUserDataInsertStmt.bindLong(1, bookId);
@@ -368,15 +406,15 @@ public class DataHelper {
       this.bookUserDataInsertStmt.bindString(4, blurb);
       return this.bookUserDataInsertStmt.executeInsert();
    }
-   
-   public void updateBookUserData(long bookId, boolean readStatus, int rating, String blurb) {   
+
+   public void updateBookUserData(long bookId, boolean readStatus, int rating, String blurb) {
       final ContentValues values = new ContentValues();
-      values.put(DataConstants.READSTATUS,readStatus ? 1 : 0);
+      values.put(DataConstants.READSTATUS, readStatus ? 1 : 0);
       values.put(DataConstants.RATING, rating);
       values.put(DataConstants.BLURB, blurb);
       db.update(BOOKUSERDATA_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) });
    }
-   
+
    public void deleteBookUserData(long bookId) {
       if (bookId > 0) {
          this.db.delete(BOOKUSERDATA_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) });
