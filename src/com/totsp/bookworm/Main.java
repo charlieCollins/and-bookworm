@@ -167,7 +167,7 @@ public class Main extends Activity {
       public int compare(final Book b1, final Book b2) {
          String title1 = b1.getTitle();
          String title2 = b2.getTitle();
-         return title2.toLowerCase().compareTo(title1.toLowerCase());
+         return title1.toLowerCase().compareTo(title2.toLowerCase());
       }
    }
 
@@ -175,7 +175,7 @@ public class Main extends Activity {
       public int compare(final Book b1, final Book b2) {
          Integer rat1 = b1.getRating();
          Integer rat2 = b2.getRating();
-         return rat1.compareTo(rat2);
+         return rat2.compareTo(rat1);
       }
    }
 
