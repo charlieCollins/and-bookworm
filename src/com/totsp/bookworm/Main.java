@@ -32,9 +32,10 @@ import java.util.Comparator;
 public class Main extends Activity {
 
    private static final int MENU_ABOUT = 0;
-   private static final int MENU_BOOKADD = 1;
-   private static final int MENU_SORT_RATING = 2;
-   private static final int MENU_SORT_ALPHA = 3;
+   private static final int MENU_PREFS = 1;
+   private static final int MENU_BOOKADD = 2;
+   private static final int MENU_SORT_RATING = 3;
+   private static final int MENU_SORT_ALPHA = 4;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -82,11 +83,12 @@ public class Main extends Activity {
    }
 
    @Override
-   public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, Main.MENU_ABOUT, 0, "About").setIcon(android.R.drawable.ic_menu_help);
-      menu.add(0, Main.MENU_BOOKADD, 1, "Add Book").setIcon(android.R.drawable.ic_menu_add);
-      menu.add(0, Main.MENU_SORT_RATING, 2, "Sort|Rating").setIcon(android.R.drawable.ic_menu_sort_by_size);
-      menu.add(0, Main.MENU_SORT_ALPHA, 3, "Sort|Alpha").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
+   public boolean onCreateOptionsMenu(final Menu menu) {      
+      menu.add(0, Main.MENU_SORT_RATING, 0, "Sort|Rating").setIcon(android.R.drawable.ic_menu_sort_by_size);
+      menu.add(0, Main.MENU_SORT_ALPHA, 1, "Sort|Alpha").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
+      menu.add(0, Main.MENU_BOOKADD, 2, "Add Book").setIcon(android.R.drawable.ic_menu_add);
+      menu.add(0, Main.MENU_ABOUT, 3, "About").setIcon(android.R.drawable.ic_menu_help);
+      menu.add(0, Main.MENU_PREFS, 4, "Prefs").setIcon(android.R.drawable.ic_menu_preferences);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -95,6 +97,9 @@ public class Main extends Activity {
       switch (item.getItemId()) {
       case MENU_ABOUT:
          this.startActivity(new Intent(Main.this, About.class));
+         return true;
+      case MENU_PREFS:
+         this.startActivity(new Intent(Main.this, Preferences.class));
          return true;
       case MENU_BOOKADD:
          this.startActivity(new Intent(Main.this, BookAdd.class));
@@ -162,7 +167,7 @@ public class Main extends Activity {
       public int compare(final Book b1, final Book b2) {
          String title1 = b1.getTitle();
          String title2 = b2.getTitle();
-         return title1.toLowerCase().compareTo(title2.toLowerCase());
+         return title2.toLowerCase().compareTo(title1.toLowerCase());
       }
    }
 

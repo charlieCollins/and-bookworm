@@ -20,5 +20,6 @@
 		<activity android:name="BookDetail" />      
 		<activity android:name="BookEntryForm" android:screenOrientation="landscape" />      
 		<activity android:name="BookEntryResult" />      
+		<activity android:name="Preferences" />      
 	</application>
 </manifest> 

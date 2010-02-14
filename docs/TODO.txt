@@ -4,32 +4,15 @@ Change book object - keep multiple ISBNs, title/subtitle
 
 Buttons (add book, etc) should look better use an image or something
 
+Make sure all bg operations use AsyncTask and make sure it works right when orient change.
+
 1. Search form parse to entry page
-2. Direct entry parse to entry page
-3. Sort lists
-4. Book edit activity
-5. Book meta/user data working - rating, readstatus, etc
-6. Sync with Google Books (will need separate activity)
-7. Export to SD card and import from
-8. Profile and performance optimize (list load is slow)
-9. Full tests - with coverage/emma
-10. Project web site/page in place at Google Code - link from help
-
-
-
-
-
-Backlog
--------
-Tags
-
-Cache for Bitmaps?
-
-Clean up the solid leather background, and use it on ListView too 
-http://android-developers.blogspot.com/2009/01/why-is-my-list-black-android.html.
-
-Organize all layout files: id, layout (top bottom left right), gravity, src - etc (some pattern)
-
-Separate configurable (prefs) book sources, OpenLibrary, Google Books, etc
-
-Locale support? (use google.de, google.ca, etc)
+2. Book edit activity - make collapsible sections, add remaining data elements, include changing cover image.
+3. Finish book meta/user data working - rating, readstatus, etc
+4. Sync with Google Books (will need separate activity)
+5. Preferences screen - user accounts, sync with "providers" - allow diff providers, etc
+5. Export to SD card and import from
+6. Profile and performance optimize (list load is slow)
+7. Full tests - with coverage/emma
+8. Project web site/page in place at Google Code - link from help
+9. Locale support i18n
