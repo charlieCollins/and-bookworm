@@ -10,14 +10,14 @@
 	<TextView android:id="@+id/bookentrysearchinputlabel"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
-		style="@style/subtitle" android:gravity="center_horizontal"
+		style="@style/whitebold" android:gravity="center_horizontal"
 		android:text="Enter search term(s)" />
 
 	<EditText android:id="@+id/bookentrysearchinput"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/bookentrysearchinputlabel"
-		style="@style/subtitle" />
+	 />
 
 	<Button android:id="@+id/bookentrysearchbutton"
 		android:layout_width="120dp" android:layout_height="wrap_content"
@@ -28,8 +28,8 @@
 		
 	<TextView android:id="@+id/bookentrysearchoutputtemp"
         android:layout_width="fill_parent" android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" android:layout_marginLeft="10dp"
-        style="@style/subtitle" android:gravity="center_horizontal"
+        android:layout_marginTop="20dp" android:layout_marginLeft="10dp" android:layout_below="@id/bookentrysearchbutton"
+        style="@style/white" android:gravity="center_horizontal"
         />
 
 </RelativeLayout>

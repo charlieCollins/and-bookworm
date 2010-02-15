@@ -94,7 +94,8 @@ public class BookEntrySearch extends Activity {
    private class SearchTask extends AsyncTask<String, Void, Void> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntrySearch.this);
 
-      private HashSet<Book> books;
+      private HashSet<Book> books = new HashSet<Book>();
+      private StringBuilder sb = new StringBuilder();
 
       private final GoogleBookSearch gbs = new GoogleBookSearch();
 
@@ -107,7 +108,14 @@ public class BookEntrySearch extends Activity {
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(final String... args) {
          String searchTerm = args[0];
+         this.sb.delete(0, sb.length());
          this.books = this.gbs.getBooks(searchTerm);
+         if ((this.books != null) && !this.books.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (Book b : this.books) {
+               sb.append(b.toString() + "\n");
+            }
+         }
          return null;
       }
 
@@ -116,11 +124,7 @@ public class BookEntrySearch extends Activity {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
          }
-         if ((this.books != null) && !this.books.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            for (Book b : this.books) {
-               sb.append(b.toString() + "\n");
-            }
+         if (this.sb != null && this.sb.length() > 0) {            
             BookEntrySearch.this.searchOutput.setText(sb.toString());
          } else {
             BookEntrySearch.this.searchOutput.setText("no books found");
