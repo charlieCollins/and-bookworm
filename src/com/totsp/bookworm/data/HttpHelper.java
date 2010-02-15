@@ -51,8 +51,8 @@ import java.util.Map;
  */
 public class HttpHelper {
 
-   private static final String CLASSTAG = HttpHelper.class.getSimpleName();
-
+   private static final String CLASSTAG = HttpHelper.class.getSimpleName();   
+   
    private static final String CONTENT_TYPE = "Content-Type";
    private static final int POST_TYPE = 1;
    private static final int GET_TYPE = 2;

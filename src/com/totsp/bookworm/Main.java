@@ -2,10 +2,12 @@ package com.totsp.bookworm;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -28,6 +30,7 @@ import com.totsp.bookworm.model.Book;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 
 public class Main extends Activity {
 
@@ -57,10 +60,8 @@ public class Main extends Activity {
 
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
       this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));
-      // TODO retrieve first X books, then rest in background (rather than all)?
-      this.bookList.addAll(this.application.getDataHelper().selectAllBooks());
-      Log.d(Constants.LOG_TAG, "bookList size - " + bookList.size());
-      this.bindBookList(this.bookList);
+      
+      new SelectAllBooksTask().execute();
    }
 
    private void bindBookList(final ArrayList<Book> books) {
@@ -83,7 +84,7 @@ public class Main extends Activity {
    }
 
    @Override
-   public boolean onCreateOptionsMenu(final Menu menu) {      
+   public boolean onCreateOptionsMenu(final Menu menu) {
       menu.add(0, Main.MENU_SORT_RATING, 0, "Sort|Rating").setIcon(android.R.drawable.ic_menu_sort_by_size);
       menu.add(0, Main.MENU_SORT_ALPHA, 1, "Sort|Alpha").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
       menu.add(0, Main.MENU_BOOKADD, 2, "Add Book").setIcon(android.R.drawable.ic_menu_add);
@@ -210,7 +211,7 @@ public class Main extends Activity {
             this.coverImageView = (ImageView) v.findViewById(R.id.itemslistitemimage);
             if (book.getCoverImageId() > 0) {
                this.coverImage = Main.this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
-               this.coverImageView.setImageBitmap(coverImage);
+               this.coverImageView.setImageBitmap(this.coverImage);
             } else {
                this.coverImageView.setImageResource(R.drawable.book_cover_missing);
             }
@@ -235,5 +236,35 @@ public class Main extends Activity {
          };
       }
       */
+   }
+
+   // TODO don't select ALL - rather page data smarter (or at least leave images out and add in later?)
+   private class SelectAllBooksTask extends AsyncTask<String, Void, Void> {
+      private final ProgressDialog dialog = new ProgressDialog(Main.this);
+
+      HashSet<Book> books = new HashSet<Book>();
+
+      // can use UI thread here
+      protected void onPreExecute() {
+         this.dialog.setMessage("Retrieving book data...");
+         this.dialog.show();
+      }
+
+      // automatically done on worker thread (separate from UI thread)
+      protected Void doInBackground(final String... args) {
+         this.books = Main.this.application.getDataHelper().selectAllBooks();
+         return null;
+      }
+
+      // can use UI thread here
+      protected void onPostExecute(final Void unused) {
+         if (this.dialog.isShowing()) {
+            this.dialog.dismiss();
+         }
+         // TODO retrieve first X books, then rest in background (rather than all)?
+         Main.this.bookList.addAll(this.books);
+         Log.d(Constants.LOG_TAG, "bookList size - " + Main.this.bookList.size());
+         Main.this.bindBookList(Main.this.bookList);
+      }
    }
 }

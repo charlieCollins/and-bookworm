@@ -1,21 +1,18 @@
 package com.totsp.bookworm;
 
-import android.app.TabActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TabHost;
 
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
 
-public class BookAdd extends TabActivity {
+public class BookAdd extends Activity {
 
    ///private BookWormApplication application;
-
-   private TabHost tabHost;
 
    private Button scanButton;
    private Button searchButton;
@@ -29,16 +26,6 @@ public class BookAdd extends TabActivity {
 
       this.setContentView(R.layout.bookadd);
 
-      // TODO maybe move all this stuff to a "createViews" type method?      
-      this.tabHost = this.getTabHost();
-      this.tabHost.addTab(this.tabHost.newTabSpec("tab1").setIndicator("Scan",
-               this.getResources().getDrawable(android.R.drawable.ic_menu_add)).setContent(R.id.bookaddscantab));
-      this.tabHost.addTab(this.tabHost.newTabSpec("tab2").setIndicator("Search",
-               this.getResources().getDrawable(android.R.drawable.ic_menu_search)).setContent(R.id.bookaddsearchtab));
-      this.tabHost.addTab(this.tabHost.newTabSpec("tab3").setIndicator("Form",
-               this.getResources().getDrawable(android.R.drawable.ic_menu_camera)).setContent(R.id.bookaddformtab));
-      this.tabHost.setCurrentTab(0);
-
       this.scanButton = (Button) this.findViewById(R.id.bookaddscanbutton);
       this.scanButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
@@ -49,7 +36,7 @@ public class BookAdd extends TabActivity {
       this.searchButton = (Button) this.findViewById(R.id.bookaddsearchbutton);
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            // TODO search here
+            BookAdd.this.startActivity(new Intent(BookAdd.this, BookEntrySearch.class));
          }
       });
 

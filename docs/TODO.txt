@@ -1,10 +1,15 @@
 For 1.0
 ---------------
-Change book object - keep multiple ISBNs, title/subtitle
+Change book object - keep multiple ISBNs
 
 Buttons (add book, etc) should look better use an image or something
 
 Make sure all bg operations use AsyncTask and make sure it works right when orient change.
+
+Make sure ListView with images works with many many items, should NOT load images
+when flinging - should load other data and then get images when it can, etc. 
+
+Update ListView format/style - include more info (rating, readstatus), and make it not suck.
 
 1. Search form parse to entry page
 2. Book edit activity - make collapsible sections, add remaining data elements, include changing cover image.

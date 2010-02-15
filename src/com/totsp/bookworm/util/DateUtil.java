@@ -2,28 +2,45 @@ package com.totsp.bookworm.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public final class DateUtil {
 
    // repeat the DateFormat objects on purpose, they are not thread safe?
-   private DateUtil() {      
+   private DateUtil() {
    }
-   
+
    public static final Date parse(String s) {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      try {
-         return dateFormat.parse(s);
-      } catch (ParseException e) {
+      for (SimpleDateFormat format : DateUtil.getDateFormats()) {
+         try {
+            return format.parse(s);
+         } catch (ParseException e) {
+         }
       }
       return null;
    }
 
    public static final String format(Date d) {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       if (d != null) {
-      return dateFormat.format(d);
-      } return null;
+         for (SimpleDateFormat format : DateUtil.getDateFormats()) {
+            String dateString = format.format(d);
+            if (dateString != null && dateString.length() > 0) {
+               return dateString;
+            }
+         }
+      }
+      return null;
+   }
+
+   private static final ArrayList<SimpleDateFormat> getDateFormats() {
+      // add more formats here if needed, and yes, create every time, not thread safe
+      ArrayList<SimpleDateFormat> formats = new ArrayList<SimpleDateFormat>(2);
+      SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+      SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy");
+      formats.add(dateFormat1);
+      formats.add(dateFormat2);
+      return formats;
    }
 
 }

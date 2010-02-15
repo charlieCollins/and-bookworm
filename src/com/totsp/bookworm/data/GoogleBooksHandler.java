@@ -2,13 +2,12 @@ package com.totsp.bookworm.data;
 
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.DateUtil;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -24,7 +23,6 @@ public class GoogleBooksHandler extends DefaultHandler {
 
    private static final String ENTRY = "entry";
 
-   private final SimpleDateFormat dateFormat;
    private final ArrayList<Book> books;
    private Book book;
 
@@ -34,7 +32,6 @@ public class GoogleBooksHandler extends DefaultHandler {
 
    public GoogleBooksHandler() {
       this.books = new ArrayList<Book>();
-      this.dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       this.sb = new StringBuilder();
    }
 
@@ -109,11 +106,9 @@ public class GoogleBooksHandler extends DefaultHandler {
             this.book.setSubTitle(bufferContents);
          }
       } else if (this.inEntry && localName.equals("date")) {
-         try {
-            Date d = this.dateFormat.parse(bufferContents);
+         Date d = DateUtil.parse(bufferContents);
+         if (d != null) {
             this.book.setDatePubStamp(d.getTime());
-         } catch (ParseException e) {
-            e.printStackTrace();
          }
       } else if (this.inEntry && localName.equals("creator")) {
          this.book.getAuthors().add(new Author(bufferContents));

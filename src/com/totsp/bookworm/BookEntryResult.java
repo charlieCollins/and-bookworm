@@ -72,7 +72,6 @@ public class BookEntryResult extends Activity {
    }
 
    private void bookAddClick() {
-      // TODO make this another AsyncTask (db operations, etc)
       if ((this.book != null) && (this.book.getIsbn() != null)) {
          Log.d(Constants.LOG_TAG, "Book object created, and ADD pressed");
          // TODO don't even let users get here if book exists, remove add button prev              
