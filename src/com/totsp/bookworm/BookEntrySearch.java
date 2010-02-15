@@ -108,12 +108,11 @@ public class BookEntrySearch extends Activity {
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(final String... args) {
          String searchTerm = args[0];
-         this.sb.delete(0, sb.length());
          this.books = this.gbs.getBooks(searchTerm);
          if ((this.books != null) && !this.books.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
+            this.sb = new StringBuilder();
             for (Book b : this.books) {
-               sb.append(b.toString() + "\n");
+               this.sb.append(b.toString() + "\n");
             }
          }
          return null;
@@ -124,8 +123,8 @@ public class BookEntrySearch extends Activity {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
          }
-         if (this.sb != null && this.sb.length() > 0) {            
-            BookEntrySearch.this.searchOutput.setText(sb.toString());
+         if ((this.sb != null) && (this.sb.length() > 0)) {
+            BookEntrySearch.this.searchOutput.setText(this.sb.toString());
          } else {
             BookEntrySearch.this.searchOutput.setText("no books found");
          }

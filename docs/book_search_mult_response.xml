@@ -1,0 +1,365 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns='http://www.w3.org/2005/Atom' xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/'
+	xmlns:gbs='http://schemas.google.com/books/2008' xmlns:dc='http://purl.org/dc/terms'
+	xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005'>
+	<id>http://www.google.com/books/feeds/volumes</id>
+	<updated>2010-02-15T17:07:54.000Z</updated>
+	<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/books/2008#volume' />
+	<title type='text'>Search results for "android"</title>
+	<link rel='alternate' type='text/html' href='http://www.google.com' />
+	<link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml'
+		href='http://www.google.com/books/feeds/volumes' />
+	<link rel='self' type='application/atom+xml'
+		href='http://www.google.com/books/feeds/volumes?q=%22android%22&amp;start-index=1&amp;max-results=10' />
+	<link rel='next' type='application/atom+xml'
+		href='http://www.google.com/books/feeds/volumes?q=%22android%22&amp;start-index=11&amp;max-results=10' />
+	<author>
+		<name>Google Books Search</name>
+		<uri>http://www.google.com</uri>
+	</author>
+	<generator version='beta'>Google Book Search data API</generator>
+	<openSearch:totalResults>421</openSearch:totalResults>
+	<openSearch:startIndex>1</openSearch:startIndex>
+	<openSearch:itemsPerPage>10</openSearch:itemsPerPage>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/hoFI5pxjGesC</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>Android</title>
+		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
+			href='http://bks4.books.google.com/books?id=hoFI5pxjGesC&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;edge=curl&amp;sig=ACfU3U1TamL17blgeoEW9nNSe3QBY7oqiA&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=hoFI5pxjGesC&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=hoFI5pxjGesC&amp;printsec=frontcover&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=hoFI5pxjGesC&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/hoFI5pxjGesC' />
+		<gbs:embeddability value='http://schemas.google.com/books/2008#embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_partial' />
+		<dc:creator>Jerome DiMarzio</dc:creator>
+		<dc:date>2008</dc:date>
+		<dc:description>Master the Android mobile development platformBuild
+			compelling Java-based mobile applications using the Android SDK and
+			the Eclipse open-source software ...</dc:description>
+		<dc:format>400 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>hoFI5pxjGesC</dc:identifier>
+		<dc:identifier>ISBN:0071599886</dc:identifier>
+		<dc:identifier>ISBN:9780071599887</dc:identifier>
+		<dc:publisher>McGraw-Hill Osborne Media</dc:publisher>
+		<dc:subject>Technology &amp; Engineering</dc:subject>
+		<dc:title>Android</dc:title>
+		<dc:title>a programmer's guide</dc:title>
+	</entry>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/lrf4xxsgmd8C</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>The Busy Coder's Guide to Android Development
+		</title>
+		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
+			href='http://bks4.books.google.com/books?id=lrf4xxsgmd8C&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;edge=curl&amp;sig=ACfU3U1oICCK2FnhRTr25Z5ZOeGtkSxFPA&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=lrf4xxsgmd8C&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=lrf4xxsgmd8C&amp;printsec=frontcover&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=2&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=lrf4xxsgmd8C&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/lrf4xxsgmd8C' />
+		<gbs:embeddability value='http://schemas.google.com/books/2008#embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_partial' />
+		<dc:creator>Mark L. Murphy</dc:creator>
+		<dc:date>2009-02</dc:date>
+		<dc:description>&amp;quot;Java Programming &amp;amp; Application
+			Development for Google/Open Handset Alliance Mobile Phones &amp;amp;
+			Internet Devices.&amp;quot;</dc:description>
+		<dc:format>468 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>lrf4xxsgmd8C</dc:identifier>
+		<dc:identifier>ISBN:0981678009</dc:identifier>
+		<dc:identifier>ISBN:9780981678009</dc:identifier>
+		<dc:publisher>CommonsWare</dc:publisher>
+		<dc:subject>Computers</dc:subject>
+		<dc:title>The Busy Coder's Guide to Android Development</dc:title>
+	</entry>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/CU6rr-qkUysC</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>Android Essentials</title>
+		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
+			href='http://bks2.books.google.com/books?id=CU6rr-qkUysC&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;edge=curl&amp;sig=ACfU3U1_cXg0ow69N4qJzyY25MkJsJlTTA&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=CU6rr-qkUysC&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=CU6rr-qkUysC&amp;printsec=frontcover&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=3&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=CU6rr-qkUysC&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/CU6rr-qkUysC' />
+		<gbs:embeddability value='http://schemas.google.com/books/2008#embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_partial' />
+		<dc:creator>Chris Haseman</dc:creator>
+		<dc:date>2008-07-21</dc:date>
+		<dc:description>Android Essentials is a nofrills, nononsense,
+			codecentric run through the guts of application development on
+			Googlers&amp;quot;s Mobile OS. This book uses the ...
+		</dc:description>
+		<dc:format>100 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>CU6rr-qkUysC</dc:identifier>
+		<dc:identifier>ISBN:1430210648</dc:identifier>
+		<dc:identifier>ISBN:9781430210641</dc:identifier>
+		<dc:publisher>Springer</dc:publisher>
+		<dc:subject>Computers</dc:subject>
+		<dc:title>Android Essentials</dc:title>
+	</entry>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/wdpvPwAACAAJ</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>The Android</title>
+		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
+			href='http://bks0.books.google.com/books?id=wdpvPwAACAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;sig=ACfU3U0suU1lz5Fdm5RjqdRuhssa6QEKhA&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=wdpvPwAACAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=wdpvPwAACAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=4&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=wdpvPwAACAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/wdpvPwAACAAJ' />
+		<gbs:embeddability
+			value='http://schemas.google.com/books/2008#not_embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_no_pages' />
+		<dc:creator>Katherine Applegate</dc:creator>
+		<dc:date>1997-09</dc:date>
+		<dc:description>The Animorphs find an ally, an android named Erek
+			King, who may just be the only hopethe Animorphs have.
+		</dc:description>
+		<dc:format>170 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>wdpvPwAACAAJ</dc:identifier>
+		<dc:identifier>ISBN:060611047X</dc:identifier>
+		<dc:identifier>ISBN:9780606110471</dc:identifier>
+		<dc:publisher>Turtleback</dc:publisher>
+		<dc:subject>Juvenile Fiction</dc:subject>
+		<dc:title>The Android</dc:title>
+	</entry>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/2qvjuHseqSMC</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>Beginning Android</title>
+		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
+			href='http://bks7.books.google.com/books?id=2qvjuHseqSMC&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;edge=curl&amp;sig=ACfU3U2F3wYX4BdTkmQl61h0HwvT88UidA&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=2qvjuHseqSMC&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=2qvjuHseqSMC&amp;printsec=frontcover&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=5&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=2qvjuHseqSMC&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/2qvjuHseqSMC' />
+		<gbs:embeddability value='http://schemas.google.com/books/2008#embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_partial' />
+		<dc:creator>Mark Murphy</dc:creator>
+		<dc:date>2009-07-01</dc:date>
+		<dc:description>This book is aimed at people new to mobile
+			development, perhaps even to Java itself.</dc:description>
+		<dc:format>384 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>2qvjuHseqSMC</dc:identifier>
+		<dc:identifier>ISBN:1430224193</dc:identifier>
+		<dc:identifier>ISBN:9781430224198</dc:identifier>
+		<dc:publisher>Springer</dc:publisher>
+		<dc:subject>Computers</dc:subject>
+		<dc:title>Beginning Android</dc:title>
+	</entry>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/kIx8maS0kBwC</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>The android's dream</title>
+		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
+			href='http://bks0.books.google.com/books?id=kIx8maS0kBwC&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;edge=curl&amp;sig=ACfU3U21Km_9dfbBV9Az2CU1K4UXMjmPLw&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=kIx8maS0kBwC&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=kIx8maS0kBwC&amp;printsec=frontcover&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=6&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=kIx8maS0kBwC&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/kIx8maS0kBwC' />
+		<gbs:embeddability value='http://schemas.google.com/books/2008#embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_partial' />
+		<dc:creator>John Scalzi</dc:creator>
+		<dc:date>2006-10-31</dc:date>
+		<dc:description>That&amp;#39;s right, a sheep. And if you think
+			that&amp;#39;s the most surprising thing about this book, wait until
+			you read chapter one. Welcome to The Android&amp;#39;s Dream.
+		</dc:description>
+		<dc:format>400 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>kIx8maS0kBwC</dc:identifier>
+		<dc:identifier>ISBN:0765309416</dc:identifier>
+		<dc:identifier>ISBN:9780765309419</dc:identifier>
+		<dc:publisher>Tor Books</dc:publisher>
+		<dc:subject>Fiction</dc:subject>
+		<dc:title>The android's dream</dc:title>
+	</entry>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/M1pGAAAAYAAJ</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>Android design</title>
+		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
+			href='http://bks6.books.google.com/books?id=M1pGAAAAYAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;sig=ACfU3U2E-gzI8ZcArOisooqMna9TdmC2-g&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=M1pGAAAAYAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=M1pGAAAAYAAJ&amp;q=%22android%22&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=7&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=M1pGAAAAYAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/M1pGAAAAYAAJ' />
+		<gbs:embeddability
+			value='http://schemas.google.com/books/2008#not_embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_no_pages' />
+		<dc:creator>Martin Bradley Winston</dc:creator>
+		<dc:date>1981</dc:date>
+		<dc:format>248 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>M1pGAAAAYAAJ</dc:identifier>
+		<dc:identifier>UVA:X000835507</dc:identifier>
+		<dc:publisher>Hayden Books</dc:publisher>
+		<dc:subject>Technology &amp; Engineering</dc:subject>
+		<dc:title>Android design</dc:title>
+		<dc:title>practical approaches for robot builders</dc:title>
+	</entry>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/IeLpAAAAMAAJ</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>Android at arms</title>
+		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
+			href='http://bks8.books.google.com/books?id=IeLpAAAAMAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;sig=ACfU3U2BnIIa7sdC10swrnZEP4HR1hUJwA&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=IeLpAAAAMAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=IeLpAAAAMAAJ&amp;q=%22android%22&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=8&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=IeLpAAAAMAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/IeLpAAAAMAAJ' />
+		<gbs:embeddability
+			value='http://schemas.google.com/books/2008#not_embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_no_pages' />
+		<dc:creator>Andre Norton</dc:creator>
+		<dc:date>1971-09</dc:date>
+		<dc:description>Awaking from a mind-frozen state, Andas Kastor must
+			discover if he is the rightful human Emperor of Inyanga or an evil
+			android double.</dc:description>
+		<dc:format>253 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>IeLpAAAAMAAJ</dc:identifier>
+		<dc:identifier>PSU:000015004468</dc:identifier>
+		<dc:publisher>Houghton Mifflin Harcourt P</dc:publisher>
+		<dc:subject>Juvenile Fiction</dc:subject>
+		<dc:title>Android at arms</dc:title>
+	</entry>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/q0uvAAAAIAAJ</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>The haunted computer and the android pope</title>
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=q0uvAAAAIAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=q0uvAAAAIAAJ&amp;q=%22android%22&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=9&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=q0uvAAAAIAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/q0uvAAAAIAAJ' />
+		<gbs:embeddability
+			value='http://schemas.google.com/books/2008#not_embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#disabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_no_pages' />
+		<dc:creator>Ray Bradbury</dc:creator>
+		<dc:date>1981-07-12</dc:date>
+		<dc:format>98 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>q0uvAAAAIAAJ</dc:identifier>
+		<dc:identifier>UCSC:32106005175580</dc:identifier>
+		<dc:publisher>Alfred a Knopf Inc</dc:publisher>
+		<dc:subject>Poetry</dc:subject>
+		<dc:title>The haunted computer and the android pope</dc:title>
+	</entry>
+	<entry>
+		<id>http://www.google.com/books/feeds/volumes/spIqAAAAMAAJ</id>
+		<updated>2010-02-15T17:07:54.000Z</updated>
+		<category scheme='http://schemas.google.com/g/2005#kind'
+			term='http://schemas.google.com/books/2008#volume' />
+		<title type='text'>Three tales</title>
+		<link rel='http://schemas.google.com/books/2008/thumbnail' type='image/x-unknown'
+			href='http://bks9.books.google.com/books?id=spIqAAAAMAAJ&amp;printsec=frontcover&amp;img=1&amp;zoom=5&amp;edge=curl&amp;sig=ACfU3U3Um6JEayUISUCytQxLd-yM_Cynig&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/info' type='text/html'
+			href='http://books.google.com/books?id=spIqAAAAMAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/preview' type='text/html'
+			href='http://books.google.com/books?id=spIqAAAAMAAJ&amp;printsec=frontcover&amp;dq=%22android%22&amp;ie=ISO-8859-1&amp;cd=10&amp;source=gbs_gdata' />
+		<link rel='http://schemas.google.com/books/2008/annotation' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/users/me/volumes' />
+		<link rel='alternate' type='text/html'
+			href='http://books.google.com/books?id=spIqAAAAMAAJ&amp;dq=%22android%22&amp;ie=ISO-8859-1' />
+		<link rel='self' type='application/atom+xml'
+			href='http://www.google.com/books/feeds/volumes/spIqAAAAMAAJ' />
+		<gbs:embeddability value='http://schemas.google.com/books/2008#embeddable' />
+		<gbs:openAccess value='http://schemas.google.com/books/2008#enabled' />
+		<gbs:viewability value='http://schemas.google.com/books/2008#view_all_pages' />
+		<dc:date>1891</dc:date>
+		<dc:format>320 pages</dc:format>
+		<dc:format>book</dc:format>
+		<dc:identifier>spIqAAAAMAAJ</dc:identifier>
+		<dc:identifier>UOM:39015030708385</dc:identifier>
+		<dc:title>Three tales</dc:title>
+		<dc:title>The ghost, The brazen android, The carpenter</dc:title>
+	</entry>
+</feed>
