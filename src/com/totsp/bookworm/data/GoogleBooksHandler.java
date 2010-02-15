@@ -27,7 +27,7 @@ public class GoogleBooksHandler extends DefaultHandler {
    private Book book;
 
    private boolean inEntry;
-   private int titleLevel = 0;
+   private int titleLevel = 1;
    StringBuilder sb;
 
    public GoogleBooksHandler() {
@@ -52,25 +52,24 @@ public class GoogleBooksHandler extends DefaultHandler {
          this.book = new Book();
       }
 
-      if (this.inEntry && localName.equals("title")) {
-         this.titleLevel++;
-         this.sb.setLength(0);
+      if (this.inEntry && localName.equals("title")) {         
+         this.sb = new StringBuilder();
       } else if (this.inEntry && localName.equals("date")) {
-         this.sb.setLength(0);
+         this.sb = new StringBuilder();
       } else if (this.inEntry && localName.equals("creator")) {
-         this.sb.setLength(0);
+         this.sb = new StringBuilder();
       } else if (this.inEntry && localName.equals("identifier")) {
-         this.sb.setLength(0);
+         this.sb = new StringBuilder();
       } else if (this.inEntry && localName.equals("publisher")) {
-         this.sb.setLength(0);
+         this.sb = new StringBuilder();
       } else if (this.inEntry && localName.equals("subject")) {
-         this.sb.setLength(0);
+         this.sb = new StringBuilder();
       } else if (this.inEntry && localName.equals("description")) {
-         this.sb.setLength(0);
+         this.sb = new StringBuilder();
       } else if (this.inEntry && localName.equals("format")) {
-         this.sb.setLength(0);
+         this.sb = new StringBuilder();
       } else if (this.inEntry && localName.equals("link")) {
-         this.sb.setLength(0);
+         this.sb = new StringBuilder();
          // parse/process the links (attributes), find gBooks page, find images, etc
          // use rel attribute = "http://schemas.google.com/books/2008/thumbnail" for image
          // use rel attribute = "http://schemas.google.com/books/2008/info" for overview web page
@@ -93,18 +92,22 @@ public class GoogleBooksHandler extends DefaultHandler {
          if (this.inEntry) {
             this.books.add(this.book);
             this.inEntry = false;
+            this.titleLevel = 1;
          }
       }
 
       String bufferContents = sb.toString().replaceAll("\\s+", " ");
 
       if (this.inEntry && localName.equals("title")) {
-         // there is an unqualified title (title) and 0-n dc:title (s)
-         if (this.titleLevel == 2) {
-            this.book.setTitle(bufferContents);
-         } else if (this.titleLevel == 3) {
-            this.book.setSubTitle(bufferContents);
-         }
+         // there is an unqualified title and 0-n dc:title (s) so title is complicated         
+         if (qName.trim().equals("dc:title")){            
+            if (book.getTitle() == null || book.getTitle().equals("")) {
+               book.setTitle(bufferContents);
+            } else if (book.getSubTitle() == null || book.getSubTitle().equals("")){
+               book.setSubTitle(bufferContents);
+            }
+            // don't set pass sub
+         } 
       } else if (this.inEntry && localName.equals("date")) {
          Date d = DateUtil.parse(bufferContents);
          if (d != null) {

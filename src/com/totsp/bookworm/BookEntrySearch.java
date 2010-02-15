@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -112,6 +113,7 @@ public class BookEntrySearch extends Activity {
          if ((this.books != null) && !this.books.isEmpty()) {
             this.sb = new StringBuilder();
             for (Book b : this.books) {
+               Log.d(Constants.LOG_TAG, "found book - " + b.getTitle());
                this.sb.append(b.toString() + "\n");
             }
          }
