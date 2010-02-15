@@ -1,5 +1,8 @@
 package com.totsp.bookworm.data;
 
+import android.util.Log;
+
+import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.DateUtil;
@@ -52,7 +55,7 @@ public class GoogleBooksHandler extends DefaultHandler {
          this.book = new Book();
       }
 
-      if (this.inEntry && localName.equals("title")) {         
+      if (this.inEntry && localName.equals("title")) {
          this.sb = new StringBuilder();
       } else if (this.inEntry && localName.equals("date")) {
          this.sb = new StringBuilder();
@@ -99,15 +102,18 @@ public class GoogleBooksHandler extends DefaultHandler {
       String bufferContents = sb.toString().replaceAll("\\s+", " ");
 
       if (this.inEntry && localName.equals("title")) {
-         // there is an unqualified title and 0-n dc:title (s) so title is complicated         
-         if (qName.trim().equals("dc:title")){            
-            if (book.getTitle() == null || book.getTitle().equals("")) {
-               book.setTitle(bufferContents);
-            } else if (book.getSubTitle() == null || book.getSubTitle().equals("")){
+         // there is an unqualified title and 0-n dc:title (s) so title is complicated  
+         // and qName seems to be NULL on Android, namespace-prefixes feature may not be enabled?
+         // whatever the cause, have to rely on this to work WITHOUT qNames
+         if (book.getTitle() == null || book.getTitle().equals("")) {
+            book.setTitle(bufferContents);
+         } else if (book.getSubTitle() == null || book.getSubTitle().equals("")) {
+            if (!book.getTitle().equals(bufferContents)) {
                book.setSubTitle(bufferContents);
             }
-            // don't set pass sub
-         } 
+         }
+         // don't set pass sub
+
       } else if (this.inEntry && localName.equals("date")) {
          Date d = DateUtil.parse(bufferContents);
          if (d != null) {

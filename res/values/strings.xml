@@ -10,4 +10,5 @@
     For more information, and to comment or report issues, 
     please visit &lt;a href="http://code.google.com/p/and-bookworm/"&gt;the BookWorm project site&lt;/a&gt;.
     </string>
+    <string name="books_list_empty">You don't have any books in your list yet. Use the Menu Add feature to add books.</string>
 </resources>

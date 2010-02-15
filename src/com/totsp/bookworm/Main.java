@@ -45,8 +45,9 @@ public class Main extends Activity {
 
    private BookWormApplication application;
 
-   BookAdapter adapter;
+   private TextView bookListViewEmpty;
    private ListView bookListView;
+   BookAdapter adapter;
 
    private final ArrayList<Book> bookList = new ArrayList<Book>();
 
@@ -58,9 +59,10 @@ public class Main extends Activity {
 
       this.setContentView(R.layout.main);
 
+      this.bookListViewEmpty = (TextView) this.findViewById(R.id.booklistviewempty);
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
       this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));
-      
+
       new SelectAllBooksTask().execute();
    }
 
@@ -261,10 +263,13 @@ public class Main extends Activity {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
          }
-         // TODO retrieve first X books, then rest in background (rather than all)?
-         Main.this.bookList.addAll(this.books);
-         Log.d(Constants.LOG_TAG, "bookList size - " + Main.this.bookList.size());
-         Main.this.bindBookList(Main.this.bookList);
+         if (this.books.size() > 0) {
+            Main.this.bookList.addAll(this.books);
+            Log.d(Constants.LOG_TAG, "bookList size - " + Main.this.bookList.size());
+            Main.this.bindBookList(Main.this.bookList);
+         } else {
+            Main.this.bookListViewEmpty.setText(R.string.books_list_empty);
+         }
       }
    }
 }

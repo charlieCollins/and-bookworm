@@ -14,7 +14,7 @@
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:layout_marginTop="20dp" android:layout_marginLeft="20dp"
 		android:layout_marginRight="20dp" android:gravity="center"
-		android:text="You don't have any books in your list yet. Use the Menu Add feature to add books."
+		android:text=""
 		style="@style/white" />
 </LinearLayout>
 
