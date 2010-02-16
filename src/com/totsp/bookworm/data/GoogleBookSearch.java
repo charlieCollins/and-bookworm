@@ -16,7 +16,7 @@ public class GoogleBookSearch {
 
    // web url http://books.google.com/books?isbn=
    private static final String GDATA_BOOK_SEARCH_PREFIX = "http://books.google.com/books/feeds/volumes?q=%22";
-   private static final String GDATA_BOOK_SEARCH_SUFFIX = "%22&start-index=1&max-results=10";
+   private static final String GDATA_BOOK_SEARCH_SUFFIX = "%22&start-index=1&max-results=50";
    //http://books.google.com/books/feeds/volumes?q=%22query+term%22start-index=1&max-results=10   
 
    // google books uses X FORWARDED FOR header to determine location and what book stuff user can "see"

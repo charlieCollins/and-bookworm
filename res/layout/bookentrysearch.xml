@@ -3,9 +3,9 @@
 		This layout is ALWAYS landscape, specd in manifest - camera preview
 		requires.
 	-->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
+	android:layout_height="fill_parent">
 
 	<TextView android:id="@+id/bookentrysearchinputlabel"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -16,20 +16,17 @@
 	<EditText android:id="@+id/bookentrysearchinput"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-		android:layout_marginRight="10dp" android:layout_below="@id/bookentrysearchinputlabel"
-	 />
+		android:layout_marginRight="10dp"  />
 
 	<Button android:id="@+id/bookentrysearchbutton"
 		android:layout_width="120dp" android:layout_height="wrap_content"
-		android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
-		android:layout_marginLeft="10dp" android:layout_below="@id/bookentrysearchinput"
-		android:layout_gravity="center_horizontal" style="@style/blackbold"
-		android:text="Search" />
-		
-	<TextView android:id="@+id/bookentrysearchoutputtemp"
+		android:layout_marginTop="3dp" android:layout_marginBottom="10dp"
+		android:layout_marginLeft="10dp" 
+		android:layout_gravity="center_horizontal" style="@style/black"
+		android:text="Search" />		
+	
+    <ListView android:id="@+id/bookentrysearchresultlist"
         android:layout_width="fill_parent" android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" android:layout_marginLeft="10dp" android:layout_below="@id/bookentrysearchbutton"
-        style="@style/white" android:gravity="center_horizontal"
-        />
+        android:layout_below="@id/bookentrysearchbutton" />
 
-</RelativeLayout>
+</LinearLayout>

@@ -62,7 +62,11 @@ public class BookEntryResult extends Activity {
          }
       });
 
-      String isbn = this.getIntent().getStringExtra(Constants.ISBN);
+      // several other activites can populate this one
+      // ISBN may be present as intent extra OR entire Book may already be set
+      
+      
+      String isbn = this.getIntent().getStringExtra(Constants.ISBN);      
       Log.d(Constants.LOG_TAG, "ISBN after scan - " + isbn);
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          this.setViewsForInvalidEntry();
@@ -145,6 +149,7 @@ public class BookEntryResult extends Activity {
             try {
                URL url = new URL(imageUrl);
                URLConnection conn = url.openConnection();
+               conn.setConnectTimeout(5000);
                conn.connect();
                BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
                this.bookCoverBitmapTask = BitmapFactory.decodeStream(bis);
@@ -155,12 +160,15 @@ public class BookEntryResult extends Activity {
                Log.e(Constants.LOG_TAG, " ", e);
             }
          }
+         Log.d(Constants.LOG_TAG, "background operation complete");
          return null;
       }
 
       // can use UI thread here
       protected void onPostExecute(final Void unused) {
-         this.dialog.dismiss();
+         if (this.dialog.isShowing()) {
+            this.dialog.dismiss();
+         }
 
          if (this.bookTask != null) {
             BookEntryResult.this.bookTitle.setText(this.bookTask.getTitle());

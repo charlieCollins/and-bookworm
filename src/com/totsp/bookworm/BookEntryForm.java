@@ -189,6 +189,8 @@ public class BookEntryForm extends Activity {
       return super.onOptionsItemSelected(item);
    }
 
+   // TODO should the form just take you to the BookEntryResult page same as scan and search? 
+   // no need to do all this here?
    private class InsertBookTask extends AsyncTask<String, Void, Void> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryForm.this);
 

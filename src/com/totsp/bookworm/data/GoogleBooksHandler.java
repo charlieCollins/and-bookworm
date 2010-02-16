@@ -121,9 +121,10 @@ public class GoogleBooksHandler extends DefaultHandler {
          }
       } else if (this.inEntry && localName.equals("creator")) {
          this.book.getAuthors().add(new Author(bufferContents));
-      } else if (this.inEntry && localName.equals("identifier")) {
+      } else if (this.inEntry && localName.equals("identifier")) { 
          String existingId = this.book.getIsbn();
-         if ((existingId == null) || (existingId.length() < 13)) {
+         if ((existingId.equals("")) || (existingId.length() > 10)) {
+            // prefer the ISBN 10 for now - need to eventually store both
             String id = bufferContents;
             if (id.startsWith("ISBN")) {
                this.book.setIsbn(id.substring(5, id.length()).trim());
