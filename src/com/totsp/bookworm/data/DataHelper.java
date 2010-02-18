@@ -225,8 +225,14 @@ public class DataHelper {
       if (c.moveToFirst()) {
          b = new Book();
          b.setId(id);
-         b.setIsbn10(c.getString(0));
-         b.setIsbn13(c.getString(1));
+         try {
+            b.setIsbn10(c.getString(0));
+         } catch (IllegalArgumentException e) {
+         }
+         try {
+            b.setIsbn13(c.getString(1));
+         } catch (IllegalArgumentException e) {
+         }         
          b.setTitle(c.getString(2));
          b.setSubTitle(c.getString(3));
          b.setCoverImageId(c.getLong(4));
@@ -278,8 +284,14 @@ public class DataHelper {
          do {
             Book b = new Book();
             b.setId(c.getLong(0));
-            b.setIsbn10(c.getString(1));
-            b.setIsbn13(c.getString(2));
+            try {
+               b.setIsbn10(c.getString(1));
+            } catch (IllegalArgumentException e) {
+            }
+            try {
+               b.setIsbn13(c.getString(2));
+            } catch (IllegalArgumentException e) {
+            }    
             b.setTitle(c.getString(3));
             b.setSubTitle(c.getString(4));
             b.setCoverImageId(c.getLong(5));
