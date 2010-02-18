@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   
+    <string-array name="bookdataprovidernames">        
+        <item>Google Books</item>       
+        <item>OpenLibrary</item>
+    </string-array>
+    
+    <string-array name="bookdataproviders">
+        <item>1</item>
+        <item>2</item>        
+    </string-array>
+    
+    
+</resources>

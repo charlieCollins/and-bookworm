@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<!-- <EditTextPreference android:key="stringpref"
-		android:title="String" android:summary="string" />-->
-	<CheckBoxPreference android:key="splashcheckpref"
-		android:title="Skip splash screen?" android:summary="Skip the startup splash screen?" />
+	<PreferenceCategory android:title="Application Preferences">
+       <CheckBoxPreference android:key="splashcheckpref"
+        android:title="Skip splash screen?" android:summary="Skip the startup splash screen?" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Book Data Provider Preferences">
+         <ListPreference
+           android:title="Cover Image Provider"
+           android:summary="Select provider to use for cover images (OpenLibrary does not require a login)"
+           android:key="coverimagelistpref"
+           android:defaultValue="2"
+           android:entries="@array/bookdataprovidernames"
+           android:entryValues="@array/bookdataproviders" />                
+    </PreferenceCategory>
 
 </PreferenceScreen>

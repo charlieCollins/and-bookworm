@@ -23,7 +23,6 @@ public class BookDetail extends Activity {
    private static final int MENU_EDIT = 0;
    private static final int MENU_WEB_GOOGLE = 1;
    private static final int MENU_WEB_AMAZON = 2;
-   
 
    private BookWormApplication application;
 
@@ -56,7 +55,7 @@ public class BookDetail extends Activity {
       this.bookPublisher = (TextView) this.findViewById(R.id.bookpublisher);
 
       this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
-      
+
       // pattern is onCreate THEN onRestoreInstanceState 
       // can't exit/give up from onCreate if data is missing, have to re-setup in onRestore
       this.setViewData();
@@ -100,7 +99,7 @@ public class BookDetail extends Activity {
                authors += ", " + a.getName();
             }
          }
-         
+
          this.ratingBar.setRating(new Float(book.getRating()));
 
          this.bookAuthors.setText(authors);
@@ -115,16 +114,28 @@ public class BookDetail extends Activity {
       super.onRestoreInstanceState(savedInstanceState);
       Log.d(Constants.LOG_TAG, "BookDetail onRestoreInstanceState");
       if (this.application.getSelectedBook() == null) {
-         this.application.establishSelectedBook(savedInstanceState.getString(Constants.ISBN));
-         this.setViewData();
+         String title = savedInstanceState.getString(Constants.TITLE);
+         Log.d(Constants.LOG_TAG, "onRestore title - " + title);
+         if (title != null) {
+            this.application.establishSelectedBook(title);
+            Log.d(Constants.LOG_TAG, "onRestore app selectedBook - " + this.application.getSelectedBook());
+            if (this.application.getSelectedBook() != null) {
+               this.setViewData();
+            } else {
+               this.startActivity(new Intent(this, Main.class));
+            }
+         } else {
+            this.startActivity(new Intent(this, Main.class));
+         }
       }
    }
 
    @Override
    protected void onSaveInstanceState(Bundle saveState) {
       Log.d(Constants.LOG_TAG, "BookDetail onSaveInstanceState");
-      // TODO add fallback book isbn13 support
-      saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn10());
+      if (this.application.getSelectedBook() != null) {
+         saveState.putString(Constants.TITLE, this.application.getSelectedBook().getTitle());
+      }
       super.onSaveInstanceState(saveState);
    }
 
@@ -132,14 +143,14 @@ public class BookDetail extends Activity {
    public boolean onCreateOptionsMenu(Menu menu) {
       menu.add(0, MENU_EDIT, 0, "Edit").setIcon(android.R.drawable.ic_menu_edit);
       menu.add(0, MENU_WEB_GOOGLE, 1, "Google Books page").setIcon(android.R.drawable.ic_menu_view);
-      menu.add(0, MENU_WEB_AMAZON, 2, "Amazon page").setIcon(android.R.drawable.ic_menu_view);      
+      menu.add(0, MENU_WEB_AMAZON, 2, "Amazon page").setIcon(android.R.drawable.ic_menu_view);
       return super.onCreateOptionsMenu(menu);
    }
 
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
       Uri uri = null;
-      switch (item.getItemId()) { 
+      switch (item.getItemId()) {
       case MENU_EDIT:
          this.startActivity(new Intent(this, BookEdit.class));
          return true;
@@ -153,10 +164,10 @@ public class BookDetail extends Activity {
          // (right now can only get search results, which is annoying)
          // TODO add fallback book isbn13 support
          uri =
-                  Uri.parse("http://www.amazon.com/gp/search?keywords=" + this.application.getSelectedBook().getIsbn10()
-                           + "&index=books");
+                  Uri.parse("http://www.amazon.com/gp/search?keywords="
+                           + this.application.getSelectedBook().getIsbn10() + "&index=books");
          this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-         return true;     
+         return true;
       default:
          return super.onOptionsItemSelected(item);
       }

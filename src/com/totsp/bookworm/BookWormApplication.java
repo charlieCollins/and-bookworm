@@ -61,8 +61,8 @@ public class BookWormApplication extends Application {
       this.selectedBook = selectedBook;
    }   
    
-   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved isbn
-   public void establishSelectedBook(String isbn) {
-      this.selectedBook = this.dataHelper.selectBook(isbn);
+   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved title
+   public void establishSelectedBook(String title) {
+      this.selectedBook = this.dataHelper.selectBook(title);
    }
 }

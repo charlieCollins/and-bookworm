@@ -3,12 +3,13 @@ package com.totsp.bookworm;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -48,6 +49,7 @@ public class BookEntryResult extends Activity {
 
       this.application = (BookWormApplication) this.getApplication();
 
+      // TODO base this on preference - then do class.forName, etc
       this.bookDataSource = new GoogleBookDataSource();
 
       this.setContentView(R.layout.bookentryresult);
@@ -64,7 +66,7 @@ public class BookEntryResult extends Activity {
       });
 
       // several other activites can populate this one
-      // ISBN may be present as intent extra OR entire Book may already be set
+      // ISBN may be present as intent extra OR entire Book may already be set?
 
       String isbn = this.getIntent().getStringExtra(Constants.ISBN);
       Log.d(Constants.LOG_TAG, "ISBN after scan - " + isbn);
@@ -130,11 +132,16 @@ public class BookEntryResult extends Activity {
 
       private Book bookTask;
       private Bitmap bookCoverBitmapTask;
+      
+      private String coverImageProviderKey;
 
       // can use UI thread here
       protected void onPreExecute() {
          this.dialog.setMessage("Retrieving book data..");
          this.dialog.show();
+         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BookEntryResult.this);
+         // default to OpenLibrary(2) for cover image provider - for now (doesn't require login)
+         this.coverImageProviderKey = prefs.getString("coverimagelistpref", "2");
       }
 
       // automatically done on worker thread (separate from UI thread)
@@ -144,13 +151,16 @@ public class BookEntryResult extends Activity {
 
          // TODO better book cover get stuff (HttpHelper binary)
          // book cover image
-         // default cover image thumbnail to "coverImageURL" on Book - this is set by handler
-         // (different handlers can set this as they want - this is NOT persisted in DB [result ID after stored with ContentProvider are])
-         String imageUrl = this.bookTask.getCoverImageURL();
-         if (imageUrl == null || imageUrl.equals("")) {
-            // fall back to another image source - OpenLibrary
+         String imageUrl = null;
+         if (this.coverImageProviderKey.equals("1")) {
+            // 1 = Google Books (TODO 1 should equal "default for handler" or such - regardless of current handler)
+            // TODO if user selects Google Books, get them to login and store token
+            imageUrl = this.bookTask.getCoverImageURL();
+         } else if (this.coverImageProviderKey.equals("2")) {
+            // 2 = OpenLibrary
             imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbns[0]);
-         }
+         }            
+         
          Log.d(Constants.LOG_TAG, "book cover imageUrl - " + imageUrl);
          if ((imageUrl != null) && !imageUrl.equals("")) {
             try {
