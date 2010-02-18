@@ -23,19 +23,19 @@ public class GoogleBooksHandler extends DefaultHandler {
 
    private static final String ENTRY = "entry";
 
-   private final ArrayList<Book> books;
+   private ArrayList<Book> books;
    private Book book;
 
    private boolean inEntry;
    StringBuilder sb;
 
-   public GoogleBooksHandler() {
-      this.books = new ArrayList<Book>();
-      this.sb = new StringBuilder();
+   public GoogleBooksHandler() {      
    }
 
    @Override
    public void startDocument() throws SAXException {
+      this.books = new ArrayList<Book>();
+      this.sb = new StringBuilder();
    }
 
    @Override
@@ -103,8 +103,7 @@ public class GoogleBooksHandler extends DefaultHandler {
                book.setSubTitle(bufferContents);
             }
          }
-         // don't set pass sub
-
+         // don't set past sub
       } else if (this.inEntry && localName.equals("date")) {
          Date d = DateUtil.parse(bufferContents);
          if (d != null) {
@@ -136,7 +135,6 @@ public class GoogleBooksHandler extends DefaultHandler {
          }
       } else if (this.inEntry && localName.equals("link")) {
       }
-
    }
 
    @Override

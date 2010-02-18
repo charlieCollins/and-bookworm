@@ -1,11 +1,12 @@
 package com.totsp.bookworm;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.data.DataImageHelper;
-import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Book;
 
@@ -26,13 +27,23 @@ public class BookWormApplication extends Application {
       this.establishBookDataSourceFromProvider();
       this.dataHelper = new DataHelper(this);
       this.dataImageHelper = new DataImageHelper(this, "BookWorm", "BookWorm Cover Images", true);
-   }
-   
+   }   
 
-   private void establishBookDataSourceFromProvider() {
-      // TODO base this on preference - then do class.forName, etc
-      // for now only one pref anyway
-      this.bookDataSource = new GoogleBookDataSource();
+   private void establishBookDataSourceFromProvider() {      
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      String className = prefs.getString("dataproviderpref", "com.totsp.bookworm.data.GoogleBookDataSource");
+      Log.d(Constants.LOG_TAG, "establishing book data provider using class name - " + className);      
+      try {
+         Class<?> clazz = Class.forName(className);
+         // TODO validate that clazz is of IBookDataSource type?
+         this.bookDataSource = (IBookDataSource) clazz.newInstance();         
+     } catch (ClassNotFoundException e) {
+        Log.e(Constants.LOG_TAG, e.getMessage(), e);
+     } catch (IllegalAccessException e) {
+        Log.e(Constants.LOG_TAG, e.getMessage(), e);
+     } catch (InstantiationException e) {
+        Log.e(Constants.LOG_TAG, e.getMessage(), e);
+     }      
    }
    
    @Override
