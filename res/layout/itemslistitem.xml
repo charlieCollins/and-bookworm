@@ -3,8 +3,8 @@
 	android:layout_width="fill_parent" android:layout_height="?android:attr/listPreferredItemHeight"
 	android:padding="6dp">
 	<ImageView android:id="@+id/itemslistitemimage"
-		android:layout_width="55dp" android:layout_height="70dp"
-		android:minWidth="55dp" android:minHeight="70dp"
+		android:layout_width="54dp" android:layout_height="70dp"
+		android:minWidth="54dp" android:minHeight="70dp"
 		android:layout_alignParentTop="true" android:layout_alignParentBottom="true"
 		android:layout_marginRight="10dp" android:background="@drawable/border1" />
 	<TextView android:id="@+id/itemslistitemtextabove"

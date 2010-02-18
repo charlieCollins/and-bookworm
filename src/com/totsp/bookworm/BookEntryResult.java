@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -64,9 +65,8 @@ public class BookEntryResult extends Activity {
 
       // several other activites can populate this one
       // ISBN may be present as intent extra OR entire Book may already be set
-      
-      
-      String isbn = this.getIntent().getStringExtra(Constants.ISBN);      
+
+      String isbn = this.getIntent().getStringExtra(Constants.ISBN);
       Log.d(Constants.LOG_TAG, "ISBN after scan - " + isbn);
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          this.setViewsForInvalidEntry();
@@ -76,10 +76,11 @@ public class BookEntryResult extends Activity {
    }
 
    private void bookAddClick() {
-      if ((this.book != null) && (this.book.getIsbn() != null)) {
+      // TODO add fallback to book isbn13 support
+      if ((this.book != null) && (this.book.getIsbn10() != null)) {
          Log.d(Constants.LOG_TAG, "Book object created, and ADD pressed");
          // TODO don't even let users get here if book exists, remove add button prev              
-         Book retrieve = this.application.getDataHelper().selectBook(this.book.getIsbn());
+         Book retrieve = this.application.getDataHelper().selectBook(this.book.getIsbn10());
          if (retrieve == null) {
             Log.d(Constants.LOG_TAG, "Book does not already exist in DB, attempt to insert");
             // save image to ContentProvider
@@ -143,13 +144,19 @@ public class BookEntryResult extends Activity {
 
          // TODO better book cover get stuff (HttpHelper binary)
          // book cover image
-         String imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbns[0]);
+         // default cover image thumbnail to "coverImageURL" on Book - this is set by handler
+         // (different handlers can set this as they want - this is NOT persisted in DB [result ID after stored with ContentProvider are])
+         String imageUrl = this.bookTask.getCoverImageURL();
+         if (imageUrl == null || imageUrl.equals("")) {
+            // fall back to another image source - OpenLibrary
+            imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbns[0]);
+         }
          Log.d(Constants.LOG_TAG, "book cover imageUrl - " + imageUrl);
          if ((imageUrl != null) && !imageUrl.equals("")) {
             try {
                URL url = new URL(imageUrl);
                URLConnection conn = url.openConnection();
-               conn.setConnectTimeout(5000);
+               conn.setConnectTimeout(10000);
                conn.connect();
                BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
                this.bookCoverBitmapTask = BitmapFactory.decodeStream(bis);

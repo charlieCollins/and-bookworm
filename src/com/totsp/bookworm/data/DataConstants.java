@@ -6,7 +6,8 @@ public class DataConstants {
    public static final String BOOKAUTHORID = "baid";
    public static final String BOOKLISTID = "blid";
    public static final String AUTHORID = "aid";
-   public static final String ISBN = "isbn";
+   public static final String ISBN10 = "isbn10";
+   public static final String ISBN13 = "isbn13";
    public static final String TITLE = "tit";
    public static final String SUBTITLE = "subtit";
    public static final String DATEPUB = "datepub";

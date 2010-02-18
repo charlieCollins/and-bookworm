@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<EditTextPreference android:key="stringpref"
-		android:title="String pref" android:summary="summary" />
-	<CheckBoxPreference android:key="checkboxpref"
-		android:title="Checkbox pref" android:summary="Check it on, check it off" />
+	<!-- <EditTextPreference android:key="stringpref"
+		android:title="String" android:summary="string" />-->
+	<CheckBoxPreference android:key="splashcheckpref"
+		android:title="Skip splash screen?" android:summary="Skip the startup splash screen?" />
 
 </PreferenceScreen>

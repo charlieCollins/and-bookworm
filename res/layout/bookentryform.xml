@@ -5,7 +5,7 @@
 	-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content" android:background="@drawable/book_bgrnd_smallheader_textarea">
+	android:layout_height="wrap_content" android:background="@drawable/book_bgrnd_noheader_textarea">
 	<TextView android:id="@+id/bookentryformtitle"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="2dp" android:layout_marginLeft="10dp"

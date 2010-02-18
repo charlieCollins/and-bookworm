@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
@@ -21,10 +20,10 @@ import java.util.Date;
 
 public class BookDetail extends Activity {
 
-   private static final int MENU_WEB_OPENLIB = 0;
+   private static final int MENU_EDIT = 0;
    private static final int MENU_WEB_GOOGLE = 1;
    private static final int MENU_WEB_AMAZON = 2;
-   private static final int MENU_EDIT = 3;
+   
 
    private BookWormApplication application;
 
@@ -124,41 +123,40 @@ public class BookDetail extends Activity {
    @Override
    protected void onSaveInstanceState(Bundle saveState) {
       Log.d(Constants.LOG_TAG, "BookDetail onSaveInstanceState");
-      saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn());
+      // TODO add fallback book isbn13 support
+      saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn10());
       super.onSaveInstanceState(saveState);
    }
 
    @Override
    public boolean onCreateOptionsMenu(Menu menu) {
-      menu.add(0, MENU_WEB_OPENLIB, 0, "OpenLibrary page").setIcon(android.R.drawable.ic_menu_view);
+      menu.add(0, MENU_EDIT, 0, "Edit").setIcon(android.R.drawable.ic_menu_edit);
       menu.add(0, MENU_WEB_GOOGLE, 1, "Google Books page").setIcon(android.R.drawable.ic_menu_view);
-      menu.add(0, MENU_WEB_AMAZON, 2, "Amazon page").setIcon(android.R.drawable.ic_menu_view);
-      menu.add(0, MENU_EDIT, 3, "Edit").setIcon(android.R.drawable.ic_menu_edit);
+      menu.add(0, MENU_WEB_AMAZON, 2, "Amazon page").setIcon(android.R.drawable.ic_menu_view);      
       return super.onCreateOptionsMenu(menu);
    }
 
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
       Uri uri = null;
-      switch (item.getItemId()) {
-      case MENU_WEB_OPENLIB:
-         Toast.makeText(this, "TODO OpenLib Page", Toast.LENGTH_SHORT).show();
+      switch (item.getItemId()) { 
+      case MENU_EDIT:
+         this.startActivity(new Intent(this, BookEdit.class));
          return true;
       case MENU_WEB_GOOGLE:
-         uri = Uri.parse("http://books.google.com/books?isbn=" + this.application.getSelectedBook().getIsbn());
+         // TODO add fallback book isbn13 support
+         uri = Uri.parse("http://books.google.com/books?isbn=" + this.application.getSelectedBook().getIsbn10());
          this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
          return true;
       case MENU_WEB_AMAZON:
          // TODO save book isbn10 for amazon - then use http://amzn.com/isbn10
          // (right now can only get search results, which is annoying)
+         // TODO add fallback book isbn13 support
          uri =
-                  Uri.parse("http://www.amazon.com/gp/search?keywords=" + this.application.getSelectedBook().getIsbn()
+                  Uri.parse("http://www.amazon.com/gp/search?keywords=" + this.application.getSelectedBook().getIsbn10()
                            + "&index=books");
          this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-         return true;
-      case MENU_EDIT:
-         this.startActivity(new Intent(this, BookEdit.class));
-         return true;
+         return true;     
       default:
          return super.onOptionsItemSelected(item);
       }

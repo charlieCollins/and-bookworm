@@ -39,8 +39,8 @@
 			TODO make cover selectable, and go to page to scan in cover, upload a
 			cover, etc
 		-->
-		<ImageView android:id="@+id/bookcover" android:layout_width="140dp"
-			android:layout_height="140dp" android:layout_marginTop="5dp"
+		<ImageView android:id="@+id/bookcover" android:layout_width="64px"
+			android:layout_height="80px" android:layout_marginTop="5dp"
 			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 			android:layout_below="@id/booksubtitle" android:layout_gravity="center_horizontal" />
 

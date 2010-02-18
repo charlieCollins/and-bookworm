@@ -13,6 +13,7 @@ import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
+import com.totsp.bookworm.util.CacheMap;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,7 +32,7 @@ public class DataImageHelper {
 
    private static final Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-   private HashMap<Integer, Bitmap> imageCache = new HashMap<Integer, Bitmap>(1000);
+   private HashMap<Integer, Bitmap> imageCache = new CacheMap<Integer, Bitmap>(1000);
    
    private final Context context;
    private String bucketId;
@@ -112,7 +113,7 @@ public class DataImageHelper {
       OutputStream os = null;
       try {
          os = context.getContentResolver().openOutputStream(uri);
-         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, os);
+         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, os);
          os.close();
       } catch (FileNotFoundException e) {
          Log.e(Constants.LOG_TAG, e.toString());

@@ -106,7 +106,8 @@ public class BookEdit extends Activity {
          newBook.setBlurb(book.getBlurb());
          newBook.setDescription(book.getDescription());
          newBook.setFormat(book.getFormat());
-         newBook.setIsbn(book.getIsbn());
+         newBook.setIsbn13(book.getIsbn13());
+         newBook.setIsbn10(book.getIsbn10());
          newBook.setRead(book.isRead());
 
          newBook.setId(book.getId());
@@ -150,7 +151,8 @@ public class BookEdit extends Activity {
    @Override
    protected void onSaveInstanceState(Bundle saveState) {
       Log.d(Constants.LOG_TAG, "BookEdit onSaveInstanceState");
-      saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn());
+      // TODO add fallback to book isbn13 support
+      saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn10());
       super.onSaveInstanceState(saveState);
    }
 

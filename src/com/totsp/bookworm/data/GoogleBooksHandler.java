@@ -1,8 +1,5 @@
 package com.totsp.bookworm.data;
 
-import android.util.Log;
-
-import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.DateUtil;
@@ -30,7 +27,6 @@ public class GoogleBooksHandler extends DefaultHandler {
    private Book book;
 
    private boolean inEntry;
-   private int titleLevel = 1;
    StringBuilder sb;
 
    public GoogleBooksHandler() {
@@ -77,15 +73,11 @@ public class GoogleBooksHandler extends DefaultHandler {
          // use rel attribute = "http://schemas.google.com/books/2008/thumbnail" for image
          // use rel attribute = "http://schemas.google.com/books/2008/info" for overview web page
          // others are available, preview, etc, but not all books have such features (have to cross check with other feed items)
-         // TODO only authenticated users can use this stuff?
-         /*
+
          String rel = this.getAttributeValue("rel", atts);
          if (rel.equalsIgnoreCase("http://schemas.google.com/books/2008/thumbnail")) {
-            book.setImageUrl(this.getAttributeValue("href", atts));
-         } else if (rel.equalsIgnoreCase("http://schemas.google.com/books/2008/info")) {
-            book.setOverviewUrl(this.getAttributeValue("href", atts));
-         } 
-         */
+            book.setCoverImageURL(this.getAttributeValue("href", atts));
+         }
       }
    }
 
@@ -95,7 +87,6 @@ public class GoogleBooksHandler extends DefaultHandler {
          if (this.inEntry) {
             this.books.add(this.book);
             this.inEntry = false;
-            this.titleLevel = 1;
          }
       }
 
@@ -121,13 +112,14 @@ public class GoogleBooksHandler extends DefaultHandler {
          }
       } else if (this.inEntry && localName.equals("creator")) {
          this.book.getAuthors().add(new Author(bufferContents));
-      } else if (this.inEntry && localName.equals("identifier")) { 
-         String existingId = this.book.getIsbn();
-         if ((existingId.equals("")) || (existingId.length() > 10)) {
-            // prefer the ISBN 10 for now - need to eventually store both
-            String id = bufferContents;
-            if (id.startsWith("ISBN")) {
-               this.book.setIsbn(id.substring(5, id.length()).trim());
+      } else if (this.inEntry && localName.equals("identifier")) {
+         String id = bufferContents;
+         if (id != null && id.startsWith("ISBN")) {
+            id = id.substring(5, id.length()).trim();
+            if (id.length() == 10) {
+               book.setIsbn10(id);
+            } else if (id.length() == 13) {
+               book.setIsbn13(id);
             }
          }
       } else if (this.inEntry && localName.equals("publisher")) {
@@ -152,7 +144,6 @@ public class GoogleBooksHandler extends DefaultHandler {
       this.sb.append(new String(ch, start, length));
    }
 
-   /*
    private String getAttributeValue(final String attName, final Attributes atts) {
       String result = null;
       for (int i = 0; i < atts.getLength(); i++) {
@@ -164,7 +155,6 @@ public class GoogleBooksHandler extends DefaultHandler {
       }
       return result;
    }
-   */
 
    public ArrayList<Book> getBooks() {
       return this.books;

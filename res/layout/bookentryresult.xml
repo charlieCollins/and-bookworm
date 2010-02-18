@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content" android:background="@drawable/book_bgrnd_largeheader_textarea">
+	android:layout_height="wrap_content" android:background="@drawable/book_bgrnd_noheader_textarea">
 
 	<TextView android:id="@+id/bookentrytitle"
 		android:layout_width="fill_parent" android:layout_height="80dp"
@@ -11,7 +11,7 @@
 		android:lines="2" android:ellipsize="marquee" />
 
 	<ImageView android:id="@+id/bookentrycover"
-		android:layout_width="fill_parent" android:layout_height="140dp"
+		android:layout_width="64px" android:layout_height="80px"
 		android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/bookentrytitle"
 		android:gravity="center_vertical" />

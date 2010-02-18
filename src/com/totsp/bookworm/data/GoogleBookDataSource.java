@@ -17,11 +17,11 @@ public class GoogleBookDataSource implements IBookDataSource {
    private static final String GDATA_BOOK_URL_PREFIX = "http://books.google.com/books/feeds/volumes?q=isbn:"; 
    // web search term url
    private static final String GDATA_BOOK_SEARCH_PREFIX = "http://books.google.com/books/feeds/volumes?q=%22";
-   private static final String GDATA_BOOK_SEARCH_SUFFIX = "%22&start-index=1&max-results=50";
+   private static final String GDATA_BOOK_SEARCH_SUFFIX = "%22&start-index=1&max-results=100";
    
    // google books uses X FORWARDED FOR header to determine location and what book stuff user can "see"
    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
-
+   
    private GoogleBooksHandler saxHandler;
    private HttpHelper httpHelper;
 

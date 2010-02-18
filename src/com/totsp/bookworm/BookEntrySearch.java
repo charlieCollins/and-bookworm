@@ -18,6 +18,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class BookEntrySearch extends Activity {
@@ -74,7 +75,10 @@ public class BookEntrySearch extends Activity {
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(final String... args) {
          String searchTerm = args[0];
-         this.books = this.gbs.getBooks(searchTerm);
+         if (searchTerm != null) {
+            searchTerm = URLEncoder.encode(searchTerm);
+            this.books = this.gbs.getBooks(searchTerm);
+         }
          return null;
       }
 
@@ -95,7 +99,8 @@ public class BookEntrySearch extends Activity {
                public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
                   Book selected = SearchTask.this.books.get(index);
                   Intent scanIntent = new Intent(BookEntrySearch.this, BookEntryResult.class);
-                  scanIntent.putExtra(Constants.ISBN, selected.getIsbn());
+                  // TODO add fallback to book isbn13 support
+                  scanIntent.putExtra(Constants.ISBN, selected.getIsbn10());
                   BookEntrySearch.this.startActivity(scanIntent);
                }
             });

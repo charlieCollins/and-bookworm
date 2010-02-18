@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -162,6 +163,19 @@ public class Main extends Activity {
       super.onSaveInstanceState(saveState);
    }
 
+   /*
+   // TODO handle back to search results intention (more complicated than this)?  
+   @Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
+      // override back button to go back ONE MORE (users don't want to come back here, they want to go back to search results, etc)
+      if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+         finish();
+         return true;
+      }
+      return super.onKeyDown(keyCode, event);
+   }
+   */
+   
    //
    // Sort Comparators
    //
