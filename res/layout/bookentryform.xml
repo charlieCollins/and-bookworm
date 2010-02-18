@@ -9,7 +9,7 @@
 	<TextView android:id="@+id/bookentryformtitle"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="2dp" android:layout_marginLeft="10dp"
-		style="@style/subtitle" android:gravity="center_horizontal"
+		style="@style/subtitledkred" android:gravity="center_horizontal"
 		android:text="Enter a book" />
 
 	<TextView android:id="@+id/bookentryformtitlelabel"

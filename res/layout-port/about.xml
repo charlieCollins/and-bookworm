@@ -5,7 +5,7 @@
 	<TextView android:id="@+id/abouttitle" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_marginTop="15dp"
 		android:layout_marginBottom="1dp" android:layout_marginLeft="35dp"
-		android:text="@string/app_name" style="@style/title" />
+		android:text="@string/app_name" style="@style/titlegold" />
 	<ImageView android:id="@+id/aboutlogo" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_marginTop="2dp"
 		android:layout_marginLeft="35dp" android:gravity="center"

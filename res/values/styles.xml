@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<style name="title">
+	<style name="titlegold">
 		<item name="android:textSize">45sp</item>
 		<item name="android:textColor">#b18955</item>
 		<item name="android:textStyle">bold</item>
@@ -9,24 +9,17 @@
 		<item name="android:shadowDy">1.5</item>
 		<item name="android:shadowRadius">3.0</item>
 	</style>
-	<style name="subtitle">
-		<item name="android:textSize">25sp</item>
-		<item name="android:textColor">#b18955</item>
-		<item name="android:textStyle">bold</item>
-		<item name="android:shadowColor">#000</item>
-		<item name="android:shadowDx">1.5</item>
-		<item name="android:shadowDy">1.5</item>
-		<item name="android:shadowRadius">3.0</item>
-	</style>
-	<style name="subsubtitle">
-		<item name="android:textSize">20sp</item>
-		<item name="android:textColor">#b18955</item>
-		<item name="android:textStyle">bold</item>
-		<item name="android:shadowColor">#000</item>
-		<item name="android:shadowDx">1.5</item>
-		<item name="android:shadowDy">1.5</item>
-		<item name="android:shadowRadius">3.0</item>
-	</style>
+	
+    <style name="subtitledkred">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">#7a1819</item>
+        <item name="android:textStyle">bold</item>        
+    </style>
+    <style name="subsubtitledkred">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#7a1819</item>
+        <item name="android:textStyle">bold</item>       
+    </style>
 
 	<style name="whitebold">
 		<item name="android:textSize">20sp</item>
