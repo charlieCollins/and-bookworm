@@ -1,8 +1,9 @@
 For 1.0
 ---------------
-Change book object - keep multiple ISBNs
 
-Buttons (add book, etc) should look better use an image or something
+Book object stores multiple ISBNs now, make sure approp fallbacks are in code where one or other not present.
+
+Buttons (add book, etc) should look better use an image or something.
 
 Make sure all bg operations use AsyncTask and make sure it works right when orient change.
 
@@ -11,13 +12,24 @@ when flinging - should load other data and then get images when it can, etc.
 
 Update ListView format/style - include more info (rating, readstatus), and make it not suck.
 
-1. Search form parse to entry page
-2. Book edit activity - make collapsible sections, add remaining data elements, include changing cover image.
-3. Finish book meta/user data working - rating, readstatus, etc
-4. Sync with Google Books (will need separate activity)
-5. Preferences screen - user accounts, sync with "providers" - allow diff providers, etc
-5. Export to SD card and import from
-6. Profile and performance optimize (list load is slow)
-7. Full tests - with coverage/emma
-8. Project web site/page in place at Google Code - link from help
-9. Locale support i18n
+Clean up search form.
+
+Make sure all activities/screens work in multiple orientations.
+
+Make sure all activities/screens work in small/med/large devices.
+
+Book edit activity - make collapsible sections, add remaining data elements, include changing cover image.
+
+Finish book meta/user data working - rating, readstatus, etc.
+
+Sync with Google Books (will need separate activity).
+
+Export to SD card and import from.
+
+Profile and performance optimize.
+
+Full tests - with coverage/emma.
+
+Project web site/page in place at Google Code - link from help.
+
+Locale support i18n.
