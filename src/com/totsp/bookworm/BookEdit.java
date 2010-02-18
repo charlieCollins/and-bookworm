@@ -3,7 +3,6 @@ package com.totsp.bookworm;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -163,8 +162,7 @@ public class BookEdit extends Activity {
    }
 
    @Override
-   public boolean onOptionsItemSelected(MenuItem item) {
-      Uri uri = null;
+   public boolean onOptionsItemSelected(MenuItem item) {      
       switch (item.getItemId()) {
 
       default:

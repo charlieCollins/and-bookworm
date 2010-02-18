@@ -16,8 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.totsp.bookworm.data.GoogleBookDataSource;
-import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.OpenLibraryUtil;
@@ -40,17 +38,11 @@ public class BookEntryResult extends Activity {
    Bitmap bookCoverBitmap;
    Book book;
 
-   // TODO allow different sources (put sources in file, then Class.forName based on user choice?)
-   IBookDataSource bookDataSource;
-
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
       this.application = (BookWormApplication) this.getApplication();
-
-      // TODO base this on preference - then do class.forName, etc
-      this.bookDataSource = new GoogleBookDataSource();
 
       this.setContentView(R.layout.bookentryresult);
 
@@ -76,7 +68,7 @@ public class BookEntryResult extends Activity {
          new GetBookDataTask().execute(isbn);
       }
    }
-
+   
    private void bookAddClick() {
       // TODO add fallback to book isbn13 support
       if ((this.book != null) && (this.book.getIsbn10() != null)) {
@@ -147,7 +139,7 @@ public class BookEntryResult extends Activity {
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(final String... isbns) {
          // book data itself
-         this.bookTask = BookEntryResult.this.bookDataSource.getBook(isbns[0]);
+         this.bookTask = BookEntryResult.this.application.getBookDataSource().getBook(isbns[0]);
 
          // TODO better book cover get stuff (HttpHelper binary)
          // book cover image

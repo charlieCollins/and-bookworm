@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   
-    <string-array name="bookdataprovidernames">        
-        <item>Google Books</item>       
-        <item>OpenLibrary</item>
-    </string-array>
-    
-    <string-array name="bookdataproviders">
-        <item>1</item>
-        <item>2</item>        
-    </string-array>
-    
-    
+
+	<string-array name="bookdataprovidernames">
+		<item>Google Books</item>
+	</string-array>
+
+	<string-array name="bookdataproviderkeys">
+		<item>com.totsp.bookworm.data.GoogleBookDataSource</item>
+	</string-array>
+
+	<!--
+		cover images can come from sources OTHER than the main data providers
+	-->
+	<!--
+		classic example, google books requires client auth for cover image,
+		all else not - so can use gBooks with OpenLib for covers
+	-->
+	<string-array name="bookcoverimageprovidernames">		
+		<item>OpenLibrary</item>
+	</string-array>
+
+	<string-array name="bookcoverimageproviderkeys">
+		<item>2</item>
+	</string-array>
+
+
 </resources>

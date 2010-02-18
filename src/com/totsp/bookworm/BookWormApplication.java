@@ -5,27 +5,34 @@ import android.util.Log;
 
 import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.data.DataImageHelper;
+import com.totsp.bookworm.data.GoogleBookDataSource;
+import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Book;
 
 public class BookWormApplication extends Application {
 
    public static final String APP_NAME = "BookWorm";  
    
+   private IBookDataSource bookDataSource;
    private DataHelper dataHelper;
-   private DataImageHelper dataImageHelper;
+   private DataImageHelper dataImageHelper;   
    
    private Book selectedBook;
-   
-   // wire up Guice in onCreate of Application
-   // TODO use Guice, change things like DataHelper to use it
-   ///private Injector injector;
    
    @Override
    public void onCreate() {
       super.onCreate();
       Log.d(Constants.LOG_TAG, "APPLICATION onCreate");
+      this.establishBookDataSourceFromProvider();
       this.dataHelper = new DataHelper(this);
       this.dataImageHelper = new DataImageHelper(this, "BookWorm", "BookWorm Cover Images", true);
+   }
+   
+
+   private void establishBookDataSourceFromProvider() {
+      // TODO base this on preference - then do class.forName, etc
+      // for now only one pref anyway
+      this.bookDataSource = new GoogleBookDataSource();
    }
    
    @Override
@@ -35,6 +42,14 @@ public class BookWormApplication extends Application {
       this.dataHelper.cleanup(); 
       this.selectedBook = null;
       super.onTerminate();      
+   }   
+
+   public IBookDataSource getBookDataSource() {
+      return this.bookDataSource;
+   }
+
+   public void setBookDataSource(IBookDataSource bookDataSource) {
+      this.bookDataSource = bookDataSource;
    }
 
    public DataHelper getDataHelper() {
