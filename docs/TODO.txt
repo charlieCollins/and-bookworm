@@ -24,6 +24,8 @@ Finish book meta/user data working - rating, readstatus, etc.
 
 Sync with Google Books (will need separate activity).
 
+Make sync provider specified in a pref and not hard coded (even if just one prov to start).
+
 Export to SD card and import from.
 
 Profile and performance optimize.
