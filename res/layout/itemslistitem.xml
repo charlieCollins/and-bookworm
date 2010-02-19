@@ -11,15 +11,15 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/itemslistitemimage"
 		android:layout_alignParentBottom="true" 
-		android:lines="2" android:ellipsize="marquee"
+		android:maxLines="2" android:ellipsize="marquee"
 		style="@style/white" />
 	<TextView android:id="@+id/itemslistitemtextbelow"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/itemslistitemimage"
 		android:layout_below="@id/itemslistitemtextabove"
 		android:layout_alignParentBottom="true" 
-		android:lines="1" android:ellipsize="marquee"
-		style="@style/whitesmall" />
+		android:maxLines="1" android:ellipsize="marquee"
+		style="@style/greysmall" />
 </RelativeLayout>
 
 	<!--
