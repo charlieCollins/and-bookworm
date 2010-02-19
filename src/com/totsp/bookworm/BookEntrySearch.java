@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +24,8 @@ import java.util.ArrayList;
 
 public class BookEntrySearch extends Activity {
 
-   private static final int MENU_MORE_RESULTS = 0;
+   private static final int MENU_NEXT_PAGE = 0;
+   private static final int MENU_PREV_PAGE = 1;
    private int startIndex = 1;
 
    ///private BookWormApplication application;
@@ -66,15 +66,21 @@ public class BookEntrySearch extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, MENU_MORE_RESULTS, 0, "More search results").setIcon(android.R.drawable.ic_menu_search);
+      menu.add(0, MENU_PREV_PAGE, 0, "Next page of results").setIcon(android.R.drawable.ic_menu_search);
+      menu.add(0, MENU_NEXT_PAGE, 1, "Next page of results").setIcon(android.R.drawable.ic_menu_search);      
       return super.onCreateOptionsMenu(menu);
    }
 
    @Override
    public boolean onOptionsItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
-      case MENU_MORE_RESULTS:
+      case MENU_NEXT_PAGE:
          this.startIndex += 20;
+         new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
+                  .valueOf(BookEntrySearch.this.startIndex));
+         return true;
+      case MENU_PREV_PAGE:
+         this.startIndex -= 20;
          new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
                   .valueOf(BookEntrySearch.this.startIndex));
          return true;
