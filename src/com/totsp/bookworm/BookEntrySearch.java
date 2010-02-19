@@ -123,6 +123,7 @@ public class BookEntrySearch extends Activity {
 
          final ArrayList<Book> parsedBooks = new ArrayList<Book>();
          if ((this.books != null) && !this.books.isEmpty()) {
+            // TODO if parsedBooks ends up less than 10 (especially if zero) - make another net request?
             // try to strip out results that don't have ISBNs
             for (Book b : this.books) {
                if ((b.getIsbn10() != null && !b.getIsbn10().equals(""))
@@ -132,7 +133,7 @@ public class BookEntrySearch extends Activity {
             }
 
             ArrayAdapter<Book> adapter =
-                     new ArrayAdapter<Book>(BookEntrySearch.this, android.R.layout.simple_list_item_1, parsedBooks);
+                     new ArrayAdapter<Book>(BookEntrySearch.this, android.R.layout.simple_list_item_1, parsedBooks);            
 
             BookEntrySearch.this.searchResults.setAdapter(adapter);
             BookEntrySearch.this.searchResults.setTextFilterEnabled(true);
