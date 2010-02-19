@@ -51,6 +51,7 @@ public class BookEntryResult extends Activity {
       this.bookAuthors = (TextView) this.findViewById(R.id.bookentryauthors);
 
       this.bookAddButton = (Button) this.findViewById(R.id.bookentryaddbutton);
+      this.bookAddButton.setVisibility(View.INVISIBLE);
       this.bookAddButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookEntryResult.this.bookAddClick();
@@ -96,7 +97,6 @@ public class BookEntryResult extends Activity {
 
    private void setViewsForInvalidEntry() {
       this.bookCover.setImageResource(R.drawable.book_invalid_isbn);
-      this.bookAddButton.setVisibility(View.INVISIBLE);
       this.bookAuthors
                .setText("Whoops, that entry didn't work. Please try again (and if one method fails, such as scanning, try a search or direct entry).");
    }
