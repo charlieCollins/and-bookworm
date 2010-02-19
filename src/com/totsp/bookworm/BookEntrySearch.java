@@ -67,7 +67,7 @@ public class BookEntrySearch extends Activity {
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
       menu.add(0, MENU_PREV_PAGE, 0, "Prev page of results").setIcon(android.R.drawable.ic_menu_search);
-      menu.add(0, MENU_NEXT_PAGE, 1, "Next page of results").setIcon(android.R.drawable.ic_menu_search);      
+      menu.add(0, MENU_NEXT_PAGE, 1, "Next page of results").setIcon(android.R.drawable.ic_menu_search);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -80,9 +80,11 @@ public class BookEntrySearch extends Activity {
                   .valueOf(BookEntrySearch.this.startIndex));
          return true;
       case MENU_PREV_PAGE:
-         this.startIndex -= 20;
-         new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
-                  .valueOf(BookEntrySearch.this.startIndex));
+         if (this.startIndex > 1) {
+            this.startIndex -= 20;
+            new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
+                     .valueOf(BookEntrySearch.this.startIndex));
+         }
          return true;
       default:
          return super.onOptionsItemSelected(item);
