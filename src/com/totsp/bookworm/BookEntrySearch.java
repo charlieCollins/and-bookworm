@@ -121,18 +121,31 @@ public class BookEntrySearch extends Activity {
             this.dialog.dismiss();
          }
 
+         final ArrayList<Book> parsedBooks = new ArrayList<Book>();
          if ((this.books != null) && !this.books.isEmpty()) {
+            // try to strip out results that don't have ISBNs
+            for (Book b : this.books) {
+               if ((b.getIsbn10() != null && !b.getIsbn10().equals(""))
+                        || (b.getIsbn13() != null && !b.getIsbn13().equals(""))) {
+                  parsedBooks.add(b);
+               }
+            }
+
             ArrayAdapter<Book> adapter =
-                     new ArrayAdapter<Book>(BookEntrySearch.this, android.R.layout.simple_list_item_1, this.books);
+                     new ArrayAdapter<Book>(BookEntrySearch.this, android.R.layout.simple_list_item_1, parsedBooks);
 
             BookEntrySearch.this.searchResults.setAdapter(adapter);
             BookEntrySearch.this.searchResults.setTextFilterEnabled(true);
             BookEntrySearch.this.searchResults.setOnItemClickListener(new OnItemClickListener() {
                public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-                  Book selected = SearchTask.this.books.get(index);
+                  Book selected = parsedBooks.get(index);
                   Intent scanIntent = new Intent(BookEntrySearch.this, BookEntryResult.class);
-                  // TODO add fallback to book isbn13 support
-                  scanIntent.putExtra(Constants.ISBN, selected.getIsbn10());
+                  // favor isbn 10, but use 13 if 10 missing
+                  if (selected.getIsbn10() != null && !selected.getIsbn10().equals("")) {
+                     scanIntent.putExtra(Constants.ISBN, selected.getIsbn10());
+                  } else if (selected.getIsbn13() != null && !selected.getIsbn13().equals("")) {
+                     scanIntent.putExtra(Constants.ISBN, selected.getIsbn10());
+                  }
                   BookEntrySearch.this.startActivity(scanIntent);
                }
             });

@@ -62,7 +62,7 @@ public class BookEntryResult extends Activity {
       // ISBN may be present as intent extra OR entire Book may already be set?
 
       String isbn = this.getIntent().getStringExtra(Constants.ISBN);
-      Log.i(Constants.LOG_TAG, "ISBN after scan - " + isbn);
+      Log.i(Constants.LOG_TAG, "ISBN on entry result - " + isbn);
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          this.setViewsForInvalidEntry();
       } else {
