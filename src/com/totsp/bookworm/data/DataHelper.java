@@ -232,7 +232,7 @@ public class DataHelper {
          try {
             b.setIsbn13(c.getString(1));
          } catch (IllegalArgumentException e) {
-         }         
+         }
          b.setTitle(c.getString(2));
          b.setSubTitle(c.getString(3));
          b.setCoverImageId(c.getLong(4));
@@ -291,7 +291,7 @@ public class DataHelper {
             try {
                b.setIsbn13(c.getString(2));
             } catch (IllegalArgumentException e) {
-            }    
+            }
             b.setTitle(c.getString(3));
             b.setSubTitle(c.getString(4));
             b.setCoverImageId(c.getLong(5));
@@ -559,13 +559,10 @@ public class DataHelper {
 
       OpenHelper(Context context) {
          super(context, DATABASE_NAME, null, DATABASE_VERSION);
-         Log.d(Constants.LOG_TAG, "SQLiteOpenHelper ctor");
       }
 
       @Override
       public void onCreate(SQLiteDatabase db) {
-
-         Log.d(Constants.LOG_TAG, "SQLiteOpenHelper onCreate");
 
          // using StringBuilder here because it is easier to read/reuse lines
          StringBuilder sb = new StringBuilder();

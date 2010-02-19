@@ -23,7 +23,9 @@ public class BookWormApplication extends Application {
    @Override
    public void onCreate() {
       super.onCreate();
-      Log.d(Constants.LOG_TAG, "APPLICATION onCreate");
+      if (Constants.LOCAL_LOGV) {
+         Log.v(Constants.LOG_TAG, "APPLICATION onCreate");
+      }
       this.establishBookDataSourceFromProvider();
       this.dataHelper = new DataHelper(this);
       this.dataImageHelper = new DataImageHelper(this, "BookWorm", "BookWorm Cover Images", true);
@@ -32,7 +34,7 @@ public class BookWormApplication extends Application {
    private void establishBookDataSourceFromProvider() {      
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
       String className = prefs.getString("dataproviderpref", "com.totsp.bookworm.data.GoogleBookDataSource");
-      Log.d(Constants.LOG_TAG, "establishing book data provider using class name - " + className);      
+      Log.i(Constants.LOG_TAG, "establishing book data provider using class name - " + className);      
       try {
          Class<?> clazz = Class.forName(className);
          // TODO validate that clazz is of IBookDataSource type?
@@ -48,7 +50,6 @@ public class BookWormApplication extends Application {
    
    @Override
    public void onTerminate() {
-      Log.d(Constants.LOG_TAG, "APPLICATION onTerminate");
       // not guaranteed to be called?
       this.dataHelper.cleanup(); 
       this.selectedBook = null;

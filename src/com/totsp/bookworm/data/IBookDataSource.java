@@ -8,6 +8,6 @@ public interface IBookDataSource {
 
    Book getBook(String identifier); 
    
-   ArrayList<Book> getBooks(String searchTerm);
+   ArrayList<Book> getBooks(String searchTerm, int startIndex);
    
 }

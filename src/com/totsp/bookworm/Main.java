@@ -72,7 +72,9 @@ public class Main extends Activity {
       this.bookListView.setTextFilterEnabled(true);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-            Log.d(Constants.LOG_TAG, "book selected - " + index);
+            if (Constants.LOCAL_LOGV) {
+               Log.v(Constants.LOG_TAG, "book selected - " + index);
+            }
             Main.this.application.setSelectedBook(books.get(index));
             Main.this.startActivity(new Intent(Main.this, BookDetail.class));
          }
@@ -237,20 +239,7 @@ public class Main extends Activity {
             this.belowTextView.setText(book.getSubTitle());
          }
          return v;
-      }
-
-      /*
-      public Filter getFilter() {
-         return new Filter() {
-            public Filter.FilterResults performFiltering(CharSequence constraint) {
-               
-            }
-            public void publishResults(CharSequence constraint, Filter.FilterResults results) {
-               
-            }
-         };
-      }
-      */
+      }      
    }
 
    // TODO don't select ALL - rather page data smarter (or at least leave images out and add in later?)
@@ -278,7 +267,9 @@ public class Main extends Activity {
          }
          if (this.books.size() > 0) {
             Main.this.bookList.addAll(this.books);
-            Log.d(Constants.LOG_TAG, "bookList size - " + Main.this.bookList.size());
+            if (Constants.LOCAL_LOGV) {
+               Log.v(Constants.LOG_TAG, "bookList size - " + Main.this.bookList.size());
+            }
             Main.this.bindBookList(Main.this.bookList);
          } else {
             Main.this.bookListViewEmpty.setText(R.string.books_list_empty);

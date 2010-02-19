@@ -61,7 +61,6 @@ public class DataImageHelper {
          if (c != null) {
             c.moveToFirst();
             filePath = c.getString(0);
-            Log.d(Constants.LOG_TAG, "found image filePath - " + filePath);
          }
       } finally {
          if (c != null && !c.isClosed()) {

@@ -40,8 +40,6 @@ public class BookEdit extends Activity {
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      Log.d(Constants.LOG_TAG, "BookEdit onCreate");
-
       this.application = (BookWormApplication) this.getApplication();
 
       setContentView(R.layout.bookedit);
@@ -70,7 +68,6 @@ public class BookEdit extends Activity {
    @Override
    public void onStart() {
       super.onStart();
-      Log.d(Constants.LOG_TAG, "BookEdit onStart");
    }
 
    @Override
@@ -140,7 +137,6 @@ public class BookEdit extends Activity {
    @Override
    protected void onRestoreInstanceState(Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
-      Log.d(Constants.LOG_TAG, "BookEdit onRestoreInstanceState");
       if (this.application.getSelectedBook() == null) {
          this.application.establishSelectedBook(savedInstanceState.getString(Constants.ISBN));
          this.setViewData();
@@ -149,7 +145,6 @@ public class BookEdit extends Activity {
 
    @Override
    protected void onSaveInstanceState(Bundle saveState) {
-      Log.d(Constants.LOG_TAG, "BookEdit onSaveInstanceState");
       // TODO add fallback to book isbn13 support
       saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn10());
       super.onSaveInstanceState(saveState);

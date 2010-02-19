@@ -40,8 +40,6 @@ public class BookDetail extends Activity {
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      Log.d(Constants.LOG_TAG, "BookDetail onCreate");
-
       this.application = (BookWormApplication) this.getApplication();
 
       setContentView(R.layout.bookdetail);
@@ -64,7 +62,6 @@ public class BookDetail extends Activity {
    @Override
    public void onStart() {
       super.onStart();
-      Log.d(Constants.LOG_TAG, "BookDetail onStart");
    }
 
    @Override
@@ -112,13 +109,10 @@ public class BookDetail extends Activity {
    @Override
    protected void onRestoreInstanceState(Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
-      Log.d(Constants.LOG_TAG, "BookDetail onRestoreInstanceState");
       if (this.application.getSelectedBook() == null) {
          String title = savedInstanceState.getString(Constants.TITLE);
-         Log.d(Constants.LOG_TAG, "onRestore title - " + title);
          if (title != null) {
             this.application.establishSelectedBook(title);
-            Log.d(Constants.LOG_TAG, "onRestore app selectedBook - " + this.application.getSelectedBook());
             if (this.application.getSelectedBook() != null) {
                this.setViewData();
             } else {
@@ -132,7 +126,6 @@ public class BookDetail extends Activity {
 
    @Override
    protected void onSaveInstanceState(Bundle saveState) {
-      Log.d(Constants.LOG_TAG, "BookDetail onSaveInstanceState");
       if (this.application.getSelectedBook() != null) {
          saveState.putString(Constants.TITLE, this.application.getSelectedBook().getTitle());
       }

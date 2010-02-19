@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -22,6 +24,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class BookEntrySearch extends Activity {
+
+   private static final int MENU_MORE_RESULTS = 0;
+   private int startIndex = 1;
 
    ///private BookWormApplication application;
 
@@ -44,7 +49,7 @@ public class BookEntrySearch extends Activity {
 
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString());
+            new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), "1");
          }
       });
    }
@@ -57,6 +62,25 @@ public class BookEntrySearch extends Activity {
    @Override
    protected void onSaveInstanceState(final Bundle saveState) {
       super.onSaveInstanceState(saveState);
+   }
+
+   @Override
+   public boolean onCreateOptionsMenu(final Menu menu) {
+      menu.add(0, MENU_MORE_RESULTS, 0, "More search results").setIcon(android.R.drawable.ic_menu_search);
+      return super.onCreateOptionsMenu(menu);
+   }
+
+   @Override
+   public boolean onOptionsItemSelected(final MenuItem item) {
+      switch (item.getItemId()) {
+      case MENU_MORE_RESULTS:
+         this.startIndex += 20;
+         new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
+                  .valueOf(BookEntrySearch.this.startIndex));
+         return true;
+      default:
+         return super.onOptionsItemSelected(item);
+      }
    }
 
    private class SearchTask extends AsyncTask<String, Void, Void> {
@@ -75,9 +99,10 @@ public class BookEntrySearch extends Activity {
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(final String... args) {
          String searchTerm = args[0];
+         int startIndex = Integer.valueOf(args[1]);
          if (searchTerm != null) {
             searchTerm = URLEncoder.encode(searchTerm);
-            this.books = this.gbs.getBooks(searchTerm);
+            this.books = this.gbs.getBooks(searchTerm, startIndex);
          }
          return null;
       }
@@ -89,7 +114,6 @@ public class BookEntrySearch extends Activity {
          }
 
          if ((this.books != null) && !this.books.isEmpty()) {
-            Log.d(Constants.LOG_TAG, "book list size - " + this.books.size());
             ArrayAdapter<Book> adapter =
                      new ArrayAdapter<Book>(BookEntrySearch.this, android.R.layout.simple_list_item_1, this.books);
 

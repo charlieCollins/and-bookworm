@@ -61,7 +61,7 @@ public class BookEntryResult extends Activity {
       // ISBN may be present as intent extra OR entire Book may already be set?
 
       String isbn = this.getIntent().getStringExtra(Constants.ISBN);
-      Log.d(Constants.LOG_TAG, "ISBN after scan - " + isbn);
+      Log.i(Constants.LOG_TAG, "ISBN after scan - " + isbn);
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          this.setViewsForInvalidEntry();
       } else {
@@ -72,11 +72,9 @@ public class BookEntryResult extends Activity {
    private void bookAddClick() {
       // TODO add fallback to book isbn13 support
       if ((this.book != null) && (this.book.getIsbn10() != null)) {
-         Log.d(Constants.LOG_TAG, "Book object created, and ADD pressed");
          // TODO don't even let users get here if book exists, remove add button prev              
          Book retrieve = this.application.getDataHelper().selectBook(this.book.getIsbn10());
          if (retrieve == null) {
-            Log.d(Constants.LOG_TAG, "Book does not already exist in DB, attempt to insert");
             // save image to ContentProvider
             if (this.bookCoverBitmap != null) {
                int imageId =
@@ -91,15 +89,14 @@ public class BookEntryResult extends Activity {
             }
             // save book to database
             this.application.getDataHelper().insertBook(this.book);
-         } else {
-            Log.d(Constants.LOG_TAG, "Book already exists in DB, ignore");
-         }
+         } 
       }
       this.startActivity(new Intent(BookEntryResult.this, Main.class));
    }
 
    private void setViewsForInvalidEntry() {
       this.bookCover.setImageResource(R.drawable.book_invalid_isbn);
+      this.bookAddButton.setVisibility(View.INVISIBLE);
       this.bookAuthors
                .setText("Whoops, that entry didn't work. Please try again (and if one method fails, such as scanning, try a search or direct entry).");
    }
@@ -153,7 +150,9 @@ public class BookEntryResult extends Activity {
             imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbns[0]);
          }            
          
-         Log.d(Constants.LOG_TAG, "book cover imageUrl - " + imageUrl);
+         if (Constants.LOCAL_LOGD) {
+            Log.d(Constants.LOG_TAG, "book cover imageUrl - " + imageUrl);
+         }
          if ((imageUrl != null) && !imageUrl.equals("")) {
             try {
                URL url = new URL(imageUrl);
@@ -169,7 +168,6 @@ public class BookEntryResult extends Activity {
                Log.e(Constants.LOG_TAG, " ", e);
             }
          }
-         Log.d(Constants.LOG_TAG, "background operation complete");
          return null;
       }
 
@@ -192,11 +190,15 @@ public class BookEntryResult extends Activity {
             BookEntryResult.this.bookAuthors.setText(authors);
 
             if (this.bookCoverBitmapTask != null) {
-               Log.d(Constants.LOG_TAG, "book cover bitmap present, set cover");
+               if (Constants.LOCAL_LOGV) {
+                  Log.v(Constants.LOG_TAG, "book cover bitmap present, set cover");
+               }
                BookEntryResult.this.bookCover.setImageBitmap(this.bookCoverBitmapTask);
                BookEntryResult.this.bookCoverBitmap = bookCoverBitmapTask;
             } else {
-               Log.d(Constants.LOG_TAG, "book cover not found");
+               if (Constants.LOCAL_LOGV) {
+                  Log.v(Constants.LOG_TAG, "book cover not found");
+               }
                BookEntryResult.this.bookCover.setImageResource(R.drawable.book_cover_missing);
             }
 

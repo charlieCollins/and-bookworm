@@ -45,7 +45,9 @@ public class BookEntryForm extends Activity {
       @Override
       public void onPictureTaken(byte[] arg0, Camera arg1) {
          picBitmap = BitmapFactory.decodeByteArray(arg0, 0, arg0.length);
-         Log.d(Constants.LOG_TAG, "picBitmap size - " + picBitmap.getWidth() + " " + picBitmap.getHeight());
+         if (Constants.LOCAL_LOGV) {
+            Log.v(Constants.LOG_TAG, "picBitmap size - " + picBitmap.getWidth() + " " + picBitmap.getHeight());
+         }
          new InsertBookTask().execute(titleInput.getText().toString(), authorInput.getText().toString());
       }
    };
@@ -86,20 +88,19 @@ public class BookEntryForm extends Activity {
 
       this.surfaceHolder.addCallback(new android.view.SurfaceHolder.Callback() {
          public void surfaceCreated(SurfaceHolder holder) {
-            BookEntryForm.this.camera = Camera.open();            
+            BookEntryForm.this.camera = Camera.open();
          }
 
          public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
             if (previewRunning) {
                camera.stopPreview();
             }
-            
+
             try {
                camera.setPreviewDisplay(holder);
             } catch (IOException e) {
                Toast.makeText(BookEntryForm.this, "Error - " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-            
 
             Camera.Parameters params = camera.getParameters();
             params.setPreviewSize(480, 320); // required on G1 regardless?
@@ -136,7 +137,7 @@ public class BookEntryForm extends Activity {
          }
 
          public void surfaceDestroyed(SurfaceHolder holder) {
-            camera.stopPreview();            
+            camera.stopPreview();
             camera.release();
             camera = null;
             previewRunning = false;
@@ -206,22 +207,26 @@ public class BookEntryForm extends Activity {
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(String... args) {
          book = new Book();
-         book.setTitle(args[0]);         
+         book.setTitle(args[0]);
          book.setAuthors(AuthorsStringUtil.expandAuthors(args[1]));
 
          if (picBitmap != null) {
-            Log.d(Constants.LOG_TAG, "picBitmap present in task, attempt image save");
+            if (Constants.LOCAL_LOGV) {
+               Log.v(Constants.LOG_TAG, "picBitmap present in task, attempt image save");
+            }
             int imageId = application.getDataImageHelper().saveBitmap(title, picBitmap);
-            Log.d(Constants.LOG_TAG, "imageId - " + imageId);
+            if (Constants.LOCAL_LOGV) {
+               Log.d(Constants.LOG_TAG, "imageId - " + imageId);
+            }
             book.setCoverImageId(imageId);
-         } else {
-            Log.d(Constants.LOG_TAG, "picBitmap NULL - async?");
-         }
+         } 
 
          // TODO - run search for title here, make SURE can't be looked up/resolved to ISBN   
-         
+
          long bookId = application.getDataHelper().insertBook(book);
-         Log.d(Constants.LOG_TAG, "bookId - " + bookId);
+         if (Constants.LOCAL_LOGV) {
+            Log.v(Constants.LOG_TAG, "bookId - " + bookId);
+         }
          return null;
       }
 

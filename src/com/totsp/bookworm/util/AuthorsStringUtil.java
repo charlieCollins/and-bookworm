@@ -5,7 +5,7 @@ import com.totsp.bookworm.model.Author;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class AuthorsStringUtil {
+public final class AuthorsStringUtil {
 
    public static LinkedHashSet<Author> expandAuthors(String in) {
       LinkedHashSet<Author> authors = new LinkedHashSet<Author>();
