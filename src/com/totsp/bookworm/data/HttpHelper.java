@@ -1,5 +1,7 @@
 package com.totsp.bookworm.data;
 
+import com.totsp.bookworm.Constants;
+
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -140,11 +142,11 @@ public class HttpHelper {
 
    private String performRequest(final String contentType, final String url, final String user, final String pass,
             final Map<String, String> headers, final Map<String, String> params, final int requestType) {
-      System.out.println(CLASSTAG + " making HTTP request to url - " + url);
+      ///System.out.println(CLASSTAG + " making HTTP request to url - " + url);      
 
       // add user and pass to client credentials if present
       if ((user != null) && (pass != null)) {
-         System.out.println(CLASSTAG + " user and pass present, adding credentials to request");
+         ///System.out.println(CLASSTAG + " user and pass present, adding credentials to request");
          client.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, pass));
       }
 
@@ -161,7 +163,7 @@ public class HttpHelper {
             public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
                for (String key : sendHeaders.keySet()) {
                   if (!request.containsHeader(key)) {
-                     System.out.println(CLASSTAG + " adding header: " + key + " | " + sendHeaders.get(key));
+                     ///System.out.println(CLASSTAG + " adding header: " + key + " | " + sendHeaders.get(key));
                      request.addHeader(key, sendHeaders.get(key));
                   }
                }
@@ -172,14 +174,14 @@ public class HttpHelper {
       // handle POST or GET request respectively
       HttpRequestBase method = null;
       if (requestType == HttpHelper.POST_TYPE) {
-         System.out.println(CLASSTAG + " performRequest POST");
+         ///System.out.println(CLASSTAG + " performRequest POST");
          method = new HttpPost(url);
          // data - name/value params
          List<NameValuePair> nvps = null;
          if ((params != null) && (params.size() > 0)) {
             nvps = new ArrayList<NameValuePair>();
             for (String key : params.keySet()) {
-               System.out.println(CLASSTAG + " adding param: " + key + " | " + params.get(key));
+               ///System.out.println(CLASSTAG + " adding param: " + key + " | " + params.get(key));
                nvps.add(new BasicNameValuePair(key, params.get(key)));
             }
          }
@@ -193,7 +195,7 @@ public class HttpHelper {
             }
          }
       } else if (requestType == HttpHelper.GET_TYPE) {
-         System.out.println(CLASSTAG + " performRequest GET");
+         ///System.out.println(CLASSTAG + " performRequest GET");
          method = new HttpGet(url);
       }
 
@@ -202,7 +204,7 @@ public class HttpHelper {
    } 
 
    private synchronized String execute(HttpRequestBase method) {
-      System.out.println(CLASSTAG + " execute invoked");
+      ///System.out.println(CLASSTAG + " execute invoked");
       String response = null;
       // execute method returns?!? (rather than async) - do it here sync, and wrap async elsewhere
       try {
@@ -214,7 +216,7 @@ public class HttpHelper {
          response = HTTP_RESPONSE_ERROR + " - " +  e.getClass().getSimpleName() + " " + e.getMessage();
          //e.printStackTrace();
       }
-      System.out.println(CLASSTAG + " request completed");
+      ///System.out.println(CLASSTAG + " request completed");
       return response;
    }
 }
