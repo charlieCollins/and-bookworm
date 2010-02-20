@@ -1,5 +1,9 @@
 package com.totsp.bookworm;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -28,10 +32,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.model.Book;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-
 public class Main extends Activity {
 
    private static final int MENU_ABOUT = 0;
@@ -39,6 +39,7 @@ public class Main extends Activity {
    private static final int MENU_BOOKADD = 2;
    private static final int MENU_SORT_RATING = 3;
    private static final int MENU_SORT_ALPHA = 4;
+   private static final int MENU_MANAGE = 5;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -94,6 +95,7 @@ public class Main extends Activity {
       menu.add(0, Main.MENU_BOOKADD, 2, "Add Book").setIcon(android.R.drawable.ic_menu_add);
       menu.add(0, Main.MENU_ABOUT, 3, "About").setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 4, "Prefs").setIcon(android.R.drawable.ic_menu_preferences);
+      menu.add(0, Main.MENU_MANAGE, 6, "Manage Database").setIcon(android.R.drawable.ic_menu_manage);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -107,7 +109,7 @@ public class Main extends Activity {
          this.startActivity(new Intent(Main.this, Preferences.class));
          return true;
       case MENU_BOOKADD:
-         this.startActivity(new Intent(Main.this, BookAdd.class));
+          this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
       case MENU_SORT_RATING:
          this.adapter.sort(new RatingComparator());
@@ -115,6 +117,9 @@ public class Main extends Activity {
       case MENU_SORT_ALPHA:
          this.adapter.sort(new AlphaComparator());
          return true;
+      case MENU_MANAGE:
+          this.startActivity(new Intent(Main.this, Manage.class));          
+          return true;
       default:
          return super.onOptionsItemSelected(item);
       }

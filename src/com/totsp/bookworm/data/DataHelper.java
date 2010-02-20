@@ -73,6 +73,10 @@ public class DataHelper {
          // insert default data here if needed
       }
    }
+   
+   public SQLiteDatabase getDb() {
+       return this.db;
+   }
 
    public void cleanup() {
       if (this.db != null && this.db.isOpen()) {
