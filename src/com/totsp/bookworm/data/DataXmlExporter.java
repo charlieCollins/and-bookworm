@@ -8,8 +8,12 @@ import android.util.Log;
 import com.totsp.bookworm.Constants;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 /**
  * Android DataExporter that allows the passed in SQLiteDatabase 
@@ -32,7 +36,7 @@ import java.io.IOException;
 public class DataXmlExporter {
 
    private static final String DATASUBDIRECTORY = "bookwormdata";
-   
+
    private SQLiteDatabase db;
    private XmlBuilder xmlBuilder;
 
@@ -40,7 +44,7 @@ public class DataXmlExporter {
       this.db = db;
    }
 
-   public void export(String dbName, String exportFileNamePrefix) throws IOException {      
+   public void export(String dbName, String exportFileNamePrefix) throws IOException {
       Log.i(Constants.LOG_TAG, "exporting database - " + dbName + " exportFileNamePrefix=" + exportFileNamePrefix);
 
       this.xmlBuilder = new XmlBuilder();
@@ -87,23 +91,35 @@ public class DataXmlExporter {
    }
 
    private void writeToFile(String xmlString, String exportFileName) throws IOException {
-      FileWriter fw = null;
-      // TODO handle files better, existing check, etc
       File dir = new File(Environment.getExternalStorageDirectory(), DATASUBDIRECTORY);
       if (!dir.exists()) {
          dir.mkdirs();
       }
       File file = new File(dir, exportFileName);
       file.createNewFile();
-      fw = new FileWriter(file);
 
-      if (fw != null) {
-         fw.write(xmlString);
-         fw.flush();
-         fw.close();
+      ByteBuffer buff = ByteBuffer.wrap(xmlString.getBytes());
+      FileChannel channel = new FileOutputStream(file).getChannel();
+      try {
+         channel.write(buff);
+      } finally {
+         if (channel != null)
+            channel.close();
       }
+
+      /*
+      FileWriter fw = new FileWriter(file);
+      if (fw != null) {
+         try {
+            fw.write(xmlString);
+            fw.flush();
+         } finally {
+            fw.close();
+         }
+      }
+      */
    }
-   
+
    public static boolean isExternalStorageAvail() {
       return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
    }
@@ -163,6 +179,5 @@ public class DataXmlExporter {
          this.sb.append(COL_OPEN + name + CLOSE_WITH_TICK + val + COL_CLOSE);
       }
    }
-   
-   
+
 }

@@ -85,7 +85,7 @@ public class ManageData extends Activity {
       // automatically done on worker thread (separate from UI thread)
       protected Boolean doInBackground(final String... args) {
 
-         File dbFile = new File(Environment.getDataDirectory() + "/data/databases/bookworm.db");
+         File dbFile = new File(Environment.getDataDirectory() + "/data/com.totsp.bookworm/databases/bookworm.db");
 
          File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata");
          if (!exportDir.exists()) {
@@ -109,9 +109,9 @@ public class ManageData extends Activity {
             this.dialog.dismiss();
          }
          if (success) {
-            Toast.makeText(ManageData.this, "Export successful!", Toast.LENGTH_LONG).show();            
+            Toast.makeText(ManageData.this, "Export successful!", Toast.LENGTH_SHORT).show();            
          } else {
-            Toast.makeText(ManageData.this, "Export failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(ManageData.this, "Export failed", Toast.LENGTH_SHORT).show();
          }
       }
 
@@ -159,9 +159,9 @@ public class ManageData extends Activity {
             this.dialog.dismiss();
          }
          if (errMsg == null) {
-            Toast.makeText(ManageData.this, "Export successful!", Toast.LENGTH_LONG).show();            
+            Toast.makeText(ManageData.this, "Export successful!", Toast.LENGTH_SHORT).show();            
          } else {
-            Toast.makeText(ManageData.this, "Export failed - " + errMsg, Toast.LENGTH_LONG).show();
+            Toast.makeText(ManageData.this, "Export failed - " + errMsg, Toast.LENGTH_SHORT).show();
          }
       }
    }
