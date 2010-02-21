@@ -118,7 +118,7 @@ public class Main extends Activity {
          this.adapter.sort(new AlphaComparator());
          return true;
       case MENU_MANAGE:
-          this.startActivity(new Intent(Main.this, Manage.class));          
+          this.startActivity(new Intent(Main.this, ManageData.class));          
           return true;
       default:
          return super.onOptionsItemSelected(item);

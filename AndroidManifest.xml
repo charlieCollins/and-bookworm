@@ -23,6 +23,6 @@
 		<activity android:name="BookEntrySearch" />            
 		<activity android:name="BookEntryResult" />      
 		<activity android:name="Preferences" />      
-		<activity android:name="Manage" />      
+		<activity android:name="ManageData" />      
 	</application>
 </manifest> 

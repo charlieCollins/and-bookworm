@@ -1,6 +1,5 @@
 package com.totsp.bookworm.data;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
@@ -14,33 +13,36 @@ import java.io.IOException;
 
 /**
  * Android DataExporter that allows the passed in SQLiteDatabase 
- * to be exported to an XML file (optionally on the external
- * storage [sdcard] or as a private file in the application's context).
+ * to be exported to external storage (SD card) in an XML format.
+ * 
+ * To backup a SQLite database you need only copy the database file itself
+ * (on Android /data/data/APP_PACKAGE/databases/DB_NAME.db) -- you *don't* need this
+ * export to XML step.
+ * 
+ * XML export is useful so that the data can be more easily transformed into
+ * other formats and imported/exported with other tools (not for backup per se).  
+ * 
+ * The kernel of inspiration for this came from: 
+ * http://mgmblog.com/2009/02/06/export-an-android-sqlite-db-to-an-xml-file-on-the-sd-card/. 
+ * (Though I have made many changes/updates here, I did initially start from that article.)
  * 
  * @author ccollins
  *
  */
-public class DataExporter {
+public class DataXmlExporter {
 
-   private final Context context;
+   private static final String DATASUBDIRECTORY = "bookwormdata";
+   
    private SQLiteDatabase db;
    private XmlBuilder xmlBuilder;
 
-   public DataExporter(final Context ctx, SQLiteDatabase db) {
-      this.context = ctx;
+   public DataXmlExporter(SQLiteDatabase db) {
       this.db = db;
    }
 
-   public void export(String exportFileName, boolean toSdCard) throws IOException {
-      // TODO get dbName from db?
-      String dbName = "tempdbname";
-      Log.i(Constants.LOG_TAG, "exporting database - " + dbName + " fileName=" + exportFileName + " toSdCard="
-               + toSdCard);
+   public void export(String dbName, String exportFileNamePrefix) throws IOException {      
+      Log.i(Constants.LOG_TAG, "exporting database - " + dbName + " exportFileNamePrefix=" + exportFileNamePrefix);
 
-      if (toSdCard && !this.isSdAvail()) {
-         // TODO warn the user, SD not avail
-      }
-      
       this.xmlBuilder = new XmlBuilder();
       this.xmlBuilder.start(dbName);
 
@@ -53,7 +55,7 @@ public class DataExporter {
             String tableName = c.getString(c.getColumnIndex("name"));
             Log.d(Constants.LOG_TAG, "table name " + tableName);
 
-            // skip metadata, sequence, and uidx (user indexes)
+            // skip metadata, sequence, and uidx (unique indexes)
             if (!tableName.equals("android_metadata") && !tableName.equals("sqlite_sequence")
                      && !tableName.startsWith("uidx")) {
                this.exportTable(tableName);
@@ -61,7 +63,7 @@ public class DataExporter {
          } while (c.moveToNext());
       }
       String xmlString = this.xmlBuilder.end();
-      this.writeToFile(xmlString, exportFileName, toSdCard);
+      this.writeToFile(xmlString, exportFileNamePrefix + ".xml");
       Log.i(Constants.LOG_TAG, "exporting database complete");
    }
 
@@ -84,34 +86,25 @@ public class DataExporter {
       this.xmlBuilder.closeTable();
    }
 
-   private void writeToFile(String xmlString, String exportFileName, boolean toSdCard) throws IOException {
+   private void writeToFile(String xmlString, String exportFileName) throws IOException {
       FileWriter fw = null;
-      // TODO handle files better, existing, etc
-      if (toSdCard) {
-         File dir = new File (Environment.getExternalStorageDirectory(), "bookwormdata");
-         if (!dir.exists()) {
-            dir.mkdirs();
-         }
-         File file = new File(dir, exportFileName + ".xml");
-         file.createNewFile();
-         fw = new FileWriter(file);
-      } else {
-         File dir = DataExporter.this.context.getDir("bookwormdata", Context.MODE_PRIVATE);
-         if (!dir.exists()) {
-            dir.mkdirs();
-         }
-         File file = new File(dir, exportFileName + ".xml");
-         file.createNewFile();
-         fw = new FileWriter(file);
+      // TODO handle files better, existing check, etc
+      File dir = new File(Environment.getExternalStorageDirectory(), DATASUBDIRECTORY);
+      if (!dir.exists()) {
+         dir.mkdirs();
       }
+      File file = new File(dir, exportFileName);
+      file.createNewFile();
+      fw = new FileWriter(file);
+
       if (fw != null) {
          fw.write(xmlString);
          fw.flush();
          fw.close();
       }
    }
-
-   private boolean isSdAvail() {
+   
+   public static boolean isExternalStorageAvail() {
       return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
    }
 
@@ -123,6 +116,7 @@ public class DataExporter {
     *
     */
    class XmlBuilder {
+      private static final String OPEN_XML_STANZA = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
       private static final String CLOSE_WITH_TICK = "'>";
       private static final String DB_OPEN = "<database name='";
       private static final String DB_CLOSE = "</database>";
@@ -140,6 +134,7 @@ public class DataExporter {
       }
 
       void start(String dbName) {
+         this.sb.append(OPEN_XML_STANZA);
          this.sb.append(DB_OPEN + dbName + CLOSE_WITH_TICK);
       }
 
@@ -168,4 +163,6 @@ public class DataExporter {
          this.sb.append(COL_OPEN + name + CLOSE_WITH_TICK + val + COL_CLOSE);
       }
    }
+   
+   
 }
