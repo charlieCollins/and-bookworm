@@ -152,8 +152,6 @@ public class BookDetail extends Activity {
          this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
          return true;
       case MENU_WEB_AMAZON:
-         // TODO save book isbn10 for amazon - then use http://amzn.com/isbn10
-         // (right now can only get search results, which is annoying)
          // TODO add fallback book isbn13 support
          uri =
                   Uri.parse("http://www.amazon.com/gp/search?keywords="

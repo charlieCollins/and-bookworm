@@ -195,9 +195,6 @@ public class BookEntryForm extends Activity {
    private class InsertBookTask extends AsyncTask<String, Void, Void> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryForm.this);
 
-      private Book book;
-      String title;
-
       // can use UI thread here
       protected void onPreExecute() {
          this.dialog.setMessage("Saving book..");
@@ -206,7 +203,7 @@ public class BookEntryForm extends Activity {
 
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(String... args) {
-         book = new Book();
+         Book book = new Book();
          book.setTitle(args[0]);
          book.setAuthors(AuthorsStringUtil.expandAuthors(args[1]));
 
@@ -214,14 +211,12 @@ public class BookEntryForm extends Activity {
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "picBitmap present in task, attempt image save");
             }
-            int imageId = application.getDataImageHelper().saveBitmap(title, picBitmap);
+            int imageId = application.getDataImageHelper().saveBitmap(args[0], picBitmap);
             if (Constants.LOCAL_LOGV) {
                Log.d(Constants.LOG_TAG, "imageId - " + imageId);
             }
             book.setCoverImageId(imageId);
          } 
-
-         // TODO - run search for title here, make SURE can't be looked up/resolved to ISBN   
 
          long bookId = application.getDataHelper().insertBook(book);
          if (Constants.LOCAL_LOGV) {

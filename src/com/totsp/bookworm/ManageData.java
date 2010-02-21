@@ -74,8 +74,6 @@ public class ManageData extends Activity {
    private class ExportDatabaseFileTask extends AsyncTask<String, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(ManageData.this);
 
-      private String errMsg;
-
       // can use UI thread here
       protected void onPreExecute() {
          this.dialog.setMessage("Exporting database...");

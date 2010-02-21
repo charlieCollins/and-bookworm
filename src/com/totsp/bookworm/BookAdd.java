@@ -71,8 +71,6 @@ public class BookAdd extends Activity {
          Intent scanIntent = new Intent(this, BookEntryResult.class);
          scanIntent.putExtra(Constants.ISBN, scanResult.getContents());
          this.startActivity(scanIntent);
-      } else {
-         // TODO report scan problem?
-      }
+      } 
    }   
 }

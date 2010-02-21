@@ -1,9 +1,5 @@
 package com.totsp.bookworm;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -31,6 +27,10 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.model.Book;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 
 public class Main extends Activity {
 
@@ -248,10 +248,8 @@ public class Main extends Activity {
    }
 
    // TODO don't select ALL - rather page data smarter (or at least leave images out and add in later?)
-   private class SelectAllBooksTask extends AsyncTask<String, Void, Void> {
+   private class SelectAllBooksTask extends AsyncTask<String, Void, HashSet<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(Main.this);
-
-      HashSet<Book> books = new HashSet<Book>();
 
       // can use UI thread here
       protected void onPreExecute() {
@@ -260,18 +258,17 @@ public class Main extends Activity {
       }
 
       // automatically done on worker thread (separate from UI thread)
-      protected Void doInBackground(final String... args) {
-         this.books = Main.this.application.getDataHelper().selectAllBooks();
-         return null;
+      protected HashSet<Book> doInBackground(final String... args) {
+         return Main.this.application.getDataHelper().selectAllBooks();
       }
 
       // can use UI thread here
-      protected void onPostExecute(final Void unused) {
+      protected void onPostExecute(final HashSet<Book> books) {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
          }
-         if (this.books.size() > 0) {
-            Main.this.bookList.addAll(this.books);
+         if (books.size() > 0) {
+            Main.this.bookList.addAll(books);
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "bookList size - " + Main.this.bookList.size());
             }

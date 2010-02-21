@@ -119,6 +119,8 @@ public class BookEntryResult extends Activity {
    private class GetBookDataTask extends AsyncTask<String, Void, Void> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
 
+      // use members here instead of return, since we have multiple items
+      // TODO could make a type for this, or use Pair
       private Book bookTask;
       private Bitmap bookCoverBitmapTask;
       

@@ -91,10 +91,8 @@ public class BookEntrySearch extends Activity {
       }
    }
 
-   private class SearchTask extends AsyncTask<String, Void, Void> {
+   private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntrySearch.this);
-
-      private ArrayList<Book> books = new ArrayList<Book>();
 
       private final GoogleBookDataSource gbs = new GoogleBookDataSource();
 
@@ -105,27 +103,27 @@ public class BookEntrySearch extends Activity {
       }
 
       // automatically done on worker thread (separate from UI thread)
-      protected Void doInBackground(final String... args) {
+      protected ArrayList<Book> doInBackground(final String... args) {
          String searchTerm = args[0];
          int startIndex = Integer.valueOf(args[1]);
          if (searchTerm != null) {
             searchTerm = URLEncoder.encode(searchTerm);
-            this.books = this.gbs.getBooks(searchTerm, startIndex);
+            return this.gbs.getBooks(searchTerm, startIndex);
          }
          return null;
       }
 
       // can use UI thread here
-      protected void onPostExecute(final Void unused) {
+      protected void onPostExecute(final ArrayList<Book> books) {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
          }
 
          final ArrayList<Book> parsedBooks = new ArrayList<Book>();
-         if ((this.books != null) && !this.books.isEmpty()) {
+         if ((books != null) && !books.isEmpty()) {
             // TODO if parsedBooks ends up less than 10 (especially if zero) - make another net request?
             // try to strip out results that don't have ISBNs
-            for (Book b : this.books) {
+            for (Book b : books) {
                if ((b.getIsbn10() != null && !b.getIsbn10().equals(""))
                         || (b.getIsbn13() != null && !b.getIsbn13().equals(""))) {
                   parsedBooks.add(b);
