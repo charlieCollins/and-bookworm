@@ -73,9 +73,9 @@ public class DataHelper {
          // insert default data here if needed
       }
    }
-   
+
    public SQLiteDatabase getDb() {
-       return this.db;
+      return this.db;
    }
 
    public void cleanup() {
@@ -547,6 +547,21 @@ public class DataHelper {
       if (a != null) {
          this.db.delete(AUTHOR_TABLE, DataConstants.NAME + " = ?", new String[] { name });
       }
+   }
+
+   // super delete - clears all tables
+   public void deleteAllDataYesIAmSure() {
+      this.db.beginTransaction();
+      try {
+         this.db.delete(AUTHOR_TABLE, null, null);
+         this.db.delete(BOOKAUTHOR_TABLE, null, null);
+         this.db.delete(BOOKUSERDATA_TABLE, null, null);
+         this.db.delete(BOOK_TABLE, null, null);
+         this.db.setTransactionSuccessful();
+      } finally {
+         this.db.endTransaction();
+      }
+      this.db.execSQL("vacuum");
    }
 
    //

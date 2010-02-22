@@ -8,9 +8,14 @@
 		android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
 		android:text="Export DB to SD card" style="@style/black" />
 
-	<Button android:id="@+id/exportdbxmltosdbutton"
+	<Button android:id="@+id/importdbfromsdbutton"
 		android:layout_width="200dp" android:layout_height="wrap_content"
 		android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
-		android:text="Export DB as XML to SD card" style="@style/black" />
+		android:text="Import DB from SD card" style="@style/black" />
+		
+	<Button android:id="@+id/cleardbutton"
+        android:layout_width="200dp" android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
+        android:text="Delete all current data from DB" style="@style/black" />
 
 </LinearLayout>
