@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.totsp.bookworm.data.DataXmlExporter;
+import com.totsp.bookworm.util.FileUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,42 +43,48 @@ public class ManageData extends Activity {
       this.exportDbToSdButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             new ExportDatabaseTask().execute();
+            ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
          }
       });
 
       this.importDbFromSdButton = (Button) this.findViewById(R.id.importdbfromsdbutton);
       this.importDbFromSdButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            // TODO "are you sure" AlertDialog
-            if (DataXmlExporter.isExternalStorageAvail()) {
-               new ImportDatabaseTask().execute("bookworm", "bookwormdata");
-               ManageData.this.application.reinstantiateDataHelper();
-               ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
-            } else {
-               Toast.makeText(ManageData.this, "External storage is not available, unable to export data.",
-                        Toast.LENGTH_SHORT).show();
-            }
+            new AlertDialog.Builder(ManageData.this).setMessage(
+                     "Are you sure (this will overwrite existing current data)?").setPositiveButton("Yes",
+                     new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                           if (DataXmlExporter.isExternalStorageAvail()) {
+                              new ImportDatabaseTask().execute("bookworm", "bookwormdata");                              
+                              ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
+                           } else {
+                              Toast.makeText(ManageData.this,
+                                       "External storage is not available, unable to export data.", Toast.LENGTH_SHORT)
+                                       .show();
+                           }
+                        }
+                     }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+               public void onClick(DialogInterface arg0, int arg1) {
+               }
+            }).show();
          }
       });
-      
+
       this.clearDbButton = (Button) this.findViewById(R.id.cleardbutton);
       this.clearDbButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            new AlertDialog.Builder(ManageData.this)
-            .setMessage("Are you sure (this will delete all data)?")            
-            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {               
-               public void onClick(DialogInterface arg0, int arg1) {                  
-                  ManageData.this.application.getDataHelper().deleteAllDataYesIAmSure();  
-                  ManageData.this.application.reinstantiateDataHelper();
-                  Toast.makeText(ManageData.this, "Data deleted", Toast.LENGTH_SHORT).show();
-                  ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
-               }
-            })
-            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-               public void onClick(DialogInterface arg0, int arg1) {                  
-               }
-            })            
-            .show();            
+            new AlertDialog.Builder(ManageData.this).setMessage("Are you sure (this will delete all data)?")
+                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                           ManageData.this.application.getDataHelper().deleteAllDataYesIAmSure();
+                           ManageData.this.application.getDataHelper().resetDbConnection();
+                           Toast.makeText(ManageData.this, "Data deleted", Toast.LENGTH_SHORT).show();
+                           ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
+                        }
+                     }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                        }
+                     }).show();
          }
       });
    }
@@ -119,12 +126,12 @@ public class ManageData extends Activity {
 
          try {
             file.createNewFile();
-            this.copyFile(dbFile, file);
+            FileUtil.copyFile(dbFile, file);
             return true;
          } catch (IOException e) {
             Log.e(Constants.LOG_TAG, e.getMessage(), e);
             return false;
-         }         
+         }
       }
 
       // can use UI thread here
@@ -133,27 +140,13 @@ public class ManageData extends Activity {
             this.dialog.dismiss();
          }
          if (success) {
-            Toast.makeText(ManageData.this, "Export successful!", Toast.LENGTH_SHORT).show();            
+            Toast.makeText(ManageData.this, "Export successful!", Toast.LENGTH_SHORT).show();
          } else {
             Toast.makeText(ManageData.this, "Export failed", Toast.LENGTH_SHORT).show();
          }
       }
-
-      void copyFile(File src, File dst) throws IOException {
-         FileChannel inChannel = new FileInputStream(src).getChannel();
-         FileChannel outChannel = new FileOutputStream(dst).getChannel();
-         try {
-            inChannel.transferTo(0, inChannel.size(), outChannel);
-         } finally {
-            if (inChannel != null)
-               inChannel.close();
-            if (outChannel != null)
-               outChannel.close();
-         }
-      }
-
    }
-   
+
    private class ImportDatabaseTask extends AsyncTask<String, Void, String> {
       private final ProgressDialog dialog = new ProgressDialog(ManageData.this);
 
@@ -172,7 +165,7 @@ public class ManageData extends Activity {
          } else if (!dbBackupFile.canRead()) {
             return "Database backup file exists, but is not readable, cannot import.";
          }
-         
+
          File dbFile = new File(Environment.getDataDirectory() + "/data/com.totsp.bookworm/databases/bookworm.db");
          if (dbFile.exists()) {
             dbFile.delete();
@@ -180,12 +173,13 @@ public class ManageData extends Activity {
 
          try {
             dbFile.createNewFile();
-            this.copyFile(dbBackupFile, dbFile);
+            FileUtil.copyFile(dbBackupFile, dbFile);
+            ManageData.this.application.getDataHelper().resetDbConnection();
             return null;
          } catch (IOException e) {
             Log.e(Constants.LOG_TAG, e.getMessage(), e);
             return e.getMessage();
-         }         
+         }
       }
 
       // can use UI thread here
@@ -194,26 +188,11 @@ public class ManageData extends Activity {
             this.dialog.dismiss();
          }
          if (errMsg == null) {
-            Toast.makeText(ManageData.this, "Import successful!", Toast.LENGTH_SHORT).show();            
+            Toast.makeText(ManageData.this, "Import successful!", Toast.LENGTH_SHORT).show();
          } else {
             Toast.makeText(ManageData.this, "Import failed - " + errMsg, Toast.LENGTH_SHORT).show();
          }
       }
-
-      void copyFile(File src, File dst) throws IOException {
-         FileChannel inChannel = new FileInputStream(src).getChannel();
-         FileChannel outChannel = new FileOutputStream(dst).getChannel();
-         try {
-            inChannel.transferTo(0, inChannel.size(), outChannel);
-         } finally {
-            if (inChannel != null)
-               inChannel.close();
-            if (outChannel != null)
-               outChannel.close();
-         }
-      }
-
    }
 
-   
 }

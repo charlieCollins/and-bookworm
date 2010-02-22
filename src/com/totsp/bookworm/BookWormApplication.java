@@ -55,11 +55,6 @@ public class BookWormApplication extends Application {
       this.selectedBook = null;
       super.onTerminate();      
    } 
-   
-   public void reinstantiateDataHelper() {
-      this.dataHelper.cleanup();
-      this.dataHelper = new DataHelper(this);
-   }
 
    public IBookDataSource getBookDataSource() {
       return this.bookDataSource;

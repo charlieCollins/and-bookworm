@@ -77,12 +77,19 @@ public class DataHelper {
    public SQLiteDatabase getDb() {
       return this.db;
    }
+   
+   public void resetDbConnection() {
+      this.cleanup();
+      this.db =
+               SQLiteDatabase.openDatabase("/data/data/com.totsp.bookworm/databases/bookworm.db", null,
+                        SQLiteDatabase.OPEN_READWRITE);
+   }
 
    public void cleanup() {
       if (this.db != null && this.db.isOpen()) {
          this.db.close();
       }
-   }
+   }   
 
    //
    // DB methods
