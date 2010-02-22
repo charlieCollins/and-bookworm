@@ -18,10 +18,7 @@ import com.totsp.bookworm.data.DataXmlExporter;
 import com.totsp.bookworm.util.FileUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 
 public class ManageData extends Activity {
 
@@ -43,7 +40,7 @@ public class ManageData extends Activity {
       this.exportDbToSdButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             new ExportDatabaseTask().execute();
-            ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
+            ManageData.this.finish();
          }
       });
 
@@ -56,7 +53,7 @@ public class ManageData extends Activity {
                         public void onClick(DialogInterface arg0, int arg1) {
                            if (DataXmlExporter.isExternalStorageAvail()) {
                               new ImportDatabaseTask().execute("bookworm", "bookwormdata");                              
-                              ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
+                              ManageData.this.finish();
                            } else {
                               Toast.makeText(ManageData.this,
                                        "External storage is not available, unable to export data.", Toast.LENGTH_SHORT)
@@ -79,7 +76,7 @@ public class ManageData extends Activity {
                            ManageData.this.application.getDataHelper().deleteAllDataYesIAmSure();
                            ManageData.this.application.getDataHelper().resetDbConnection();
                            Toast.makeText(ManageData.this, "Data deleted", Toast.LENGTH_SHORT).show();
-                           ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
+                           ManageData.this.finish();
                         }
                      }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -174,7 +171,7 @@ public class ManageData extends Activity {
          try {
             dbFile.createNewFile();
             FileUtil.copyFile(dbBackupFile, dbFile);
-            ManageData.this.application.getDataHelper().resetDbConnection();
+            ManageData.this.application.getDataHelper().resetDbConnection();            
             return null;
          } catch (IOException e) {
             Log.e(Constants.LOG_TAG, e.getMessage(), e);
