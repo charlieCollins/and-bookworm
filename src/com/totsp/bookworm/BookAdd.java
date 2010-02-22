@@ -49,21 +49,6 @@ public class BookAdd extends Activity {
    }
 
    @Override
-   public void onPause() {
-      super.onPause();
-   }   
-
-   @Override
-   protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-      super.onRestoreInstanceState(savedInstanceState);
-   }
-
-   @Override
-   protected void onSaveInstanceState(final Bundle saveState) {
-      super.onSaveInstanceState(saveState);
-   }
-
-   @Override
    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
       ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
       if (scanResult != null) {

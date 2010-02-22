@@ -28,8 +28,6 @@ public class BookEntrySearch extends Activity {
    private static final int MENU_PREV_PAGE = 1;
    private int startIndex = 1;
 
-   ///private BookWormApplication application;
-
    private EditText searchInput;
    private Button searchButton;
    private ListView searchResults;
@@ -37,8 +35,6 @@ public class BookEntrySearch extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
-      ///this.application = (BookWormApplication) this.getApplication();
 
       this.setContentView(R.layout.bookentrysearch);
 
@@ -52,16 +48,6 @@ public class BookEntrySearch extends Activity {
             new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), "1");
          }
       });
-   }
-
-   @Override
-   protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-      super.onRestoreInstanceState(savedInstanceState);
-   }
-
-   @Override
-   protected void onSaveInstanceState(final Bundle saveState) {
-      super.onSaveInstanceState(saveState);
    }
 
    @Override

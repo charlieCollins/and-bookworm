@@ -23,21 +23,6 @@ public class Splash extends Activity {
          this.startActivity(new Intent(Splash.this, Main.class));
       }
    }
-
-   @Override
-   public void onStart() {
-      super.onStart();
-   }
-
-   @Override
-   public void onPause() {
-      super.onPause();
-   }
-
-   @Override
-   protected void onStop() {
-      super.onStop();
-   }
    
    @Override
    public boolean onTouchEvent(MotionEvent e) {

@@ -65,19 +65,9 @@ public class BookEdit extends Activity {
    }
 
    @Override
-   public void onStart() {
-      super.onStart();
-   }
-
-   @Override
    public void onPause() {
       this.bookTitle = null;
       super.onPause();
-   }
-
-   @Override
-   protected void onStop() {
-      super.onStop();
    }
 
    private void saveEdits() {

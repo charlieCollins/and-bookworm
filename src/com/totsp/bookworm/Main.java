@@ -62,9 +62,13 @@ public class Main extends Activity {
 
       this.bookListViewEmpty = (TextView) this.findViewById(R.id.booklistviewempty);
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
-      this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));
-
-      new SelectAllBooksTask().execute();
+      this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));      
+   }
+   
+   @Override
+   public void onStart(){
+      super.onStart();
+      new SelectAllBooksTask().execute();  
    }
 
    private void bindBookList(final ArrayList<Book> books) {
@@ -158,34 +162,10 @@ public class Main extends Activity {
          return super.onContextItemSelected(item);
       }
    }
-
-   @Override
-   protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-      super.onRestoreInstanceState(savedInstanceState);
-   }
-
-   @Override
-   protected void onSaveInstanceState(final Bundle saveState) {
-      super.onSaveInstanceState(saveState);
-   }
-
-   /*
-   // TODO handle back to search results intention (more complicated than this)?  
-   @Override
-   public boolean onKeyDown(int keyCode, KeyEvent event) {
-      // override back button to go back ONE MORE (users don't want to come back here, they want to go back to search results, etc)
-      if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-         finish();
-         return true;
-      }
-      return super.onKeyDown(keyCode, event);
-   }
-   */
    
    //
    // Sort Comparators
    //
-
    private class AlphaComparator implements Comparator<Book> {
       public int compare(final Book b1, final Book b2) {
          String title1 = b1.getTitle();
@@ -205,7 +185,6 @@ public class Main extends Activity {
    //
    // BookAdapter
    //
-
    private class BookAdapter extends ArrayAdapter<Book> implements Filterable {
 
       LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -248,6 +227,9 @@ public class Main extends Activity {
    }
 
    // TODO don't select ALL - rather page data smarter (or at least leave images out and add in later?)
+   //
+   // AsyncTasks
+   //
    private class SelectAllBooksTask extends AsyncTask<String, Void, HashSet<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(Main.this);
 

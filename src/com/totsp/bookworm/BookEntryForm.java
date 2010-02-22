@@ -10,8 +10,6 @@ import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -145,49 +143,6 @@ public class BookEntryForm extends Activity {
       });
 
       this.surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-   }
-
-   @Override
-   public void onStart() {
-      super.onStart();
-   }
-
-   @Override
-   public void onPause() {
-      super.onPause();
-   }
-
-   @Override
-   protected void onStop() {
-      super.onStop();
-   }
-
-   @Override
-   protected void onRestoreInstanceState(Bundle savedInstanceState) {
-      super.onRestoreInstanceState(savedInstanceState);
-   }
-
-   @Override
-   protected void onSaveInstanceState(Bundle saveState) {
-      super.onSaveInstanceState(saveState);
-   }
-
-   @Override
-   public boolean onCreateOptionsMenu(Menu menu) {
-      ///menu.add(0, MENU_HELP, 0, "Help").setIcon(android.R.drawable.ic_menu_help);
-      return super.onCreateOptionsMenu(menu);
-   }
-
-   @Override
-   public boolean onOptionsItemSelected(MenuItem item) {
-      /*
-      switch (item.getItemId()) {
-      case MENU_HELP:
-         this.startActivity(new Intent(Main.this, Help.class));
-         return true;
-      }
-      */
-      return super.onOptionsItemSelected(item);
    }
 
    // TODO should the form just take you to the BookEntryResult page same as scan and search? 

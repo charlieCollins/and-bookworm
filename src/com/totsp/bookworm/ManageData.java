@@ -86,21 +86,6 @@ public class ManageData extends Activity {
       });
    }
 
-   @Override
-   public void onPause() {
-      super.onPause();
-   }
-
-   @Override
-   protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-      super.onRestoreInstanceState(savedInstanceState);
-   }
-
-   @Override
-   protected void onSaveInstanceState(final Bundle saveState) {
-      super.onSaveInstanceState(saveState);
-   }
-
    private class ExportDatabaseTask extends AsyncTask<String, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(ManageData.this);
 

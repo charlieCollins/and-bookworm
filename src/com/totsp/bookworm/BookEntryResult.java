@@ -101,21 +101,6 @@ public class BookEntryResult extends Activity {
                .setText("Whoops, that entry didn't work. Please try again (and if one method fails, such as scanning, try a search or direct entry).");
    }
 
-   @Override
-   public void onStart() {
-      super.onStart();
-   }
-
-   @Override
-   public void onPause() {
-      super.onPause();
-   }
-
-   @Override
-   protected void onStop() {
-      super.onStop();
-   }
-
    private class GetBookDataTask extends AsyncTask<String, Void, Void> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
 
