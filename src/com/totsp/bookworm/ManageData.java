@@ -40,7 +40,7 @@ public class ManageData extends Activity {
       this.exportDbToSdButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             new ExportDatabaseTask().execute();
-            ManageData.this.finish();
+            ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
          }
       });
 
@@ -53,7 +53,7 @@ public class ManageData extends Activity {
                         public void onClick(DialogInterface arg0, int arg1) {
                            if (DataXmlExporter.isExternalStorageAvail()) {
                               new ImportDatabaseTask().execute("bookworm", "bookwormdata");                              
-                              ManageData.this.finish();
+                              ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
                            } else {
                               Toast.makeText(ManageData.this,
                                        "External storage is not available, unable to export data.", Toast.LENGTH_SHORT)
@@ -76,7 +76,7 @@ public class ManageData extends Activity {
                            ManageData.this.application.getDataHelper().deleteAllDataYesIAmSure();
                            ManageData.this.application.getDataHelper().resetDbConnection();
                            Toast.makeText(ManageData.this, "Data deleted", Toast.LENGTH_SHORT).show();
-                           ManageData.this.finish();
+                           ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
                         }
                      }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
