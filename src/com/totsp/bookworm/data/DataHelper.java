@@ -79,6 +79,7 @@ public class DataHelper {
    }
    
    public void resetDbConnection() {
+      Log.i(Constants.LOG_TAG, "resetting database connection (close and re-open).");
       this.cleanup();
       this.db =
                SQLiteDatabase.openDatabase("/data/data/com.totsp.bookworm/databases/bookworm.db", null,
@@ -558,6 +559,7 @@ public class DataHelper {
 
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
+      Log.i(Constants.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");
       this.db.beginTransaction();
       try {
          this.db.delete(AUTHOR_TABLE, null, null);

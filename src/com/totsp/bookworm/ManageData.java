@@ -39,6 +39,7 @@ public class ManageData extends Activity {
       this.exportDbToSdButton = (Button) this.findViewById(R.id.exportdbtosdbutton);
       this.exportDbToSdButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
+            Log.i(Constants.LOG_TAG, "exporting database to external storage");
             new ExportDatabaseTask().execute();
             ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
          }
@@ -52,6 +53,7 @@ public class ManageData extends Activity {
                      new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                            if (DataXmlExporter.isExternalStorageAvail()) {
+                              Log.i(Constants.LOG_TAG, "importing database from external storage, and resetting database");
                               new ImportDatabaseTask().execute("bookworm", "bookwormdata");
                               // sleep momentarily so that database reset stuff has time to take place (else Main shows no data)
                               try {
@@ -79,6 +81,7 @@ public class ManageData extends Activity {
             new AlertDialog.Builder(ManageData.this).setMessage("Are you sure (this will delete all data)?")
                      .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
+                           Log.i(Constants.LOG_TAG, "deleting database");
                            ManageData.this.application.getDataHelper().deleteAllDataYesIAmSure();
                            ManageData.this.application.getDataHelper().resetDbConnection();
                            Toast.makeText(ManageData.this, "Data deleted", Toast.LENGTH_SHORT).show();
