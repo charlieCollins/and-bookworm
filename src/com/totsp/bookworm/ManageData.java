@@ -1,8 +1,11 @@
 package com.totsp.bookworm;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -52,7 +55,13 @@ public class ManageData extends Activity {
                      new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                            if (DataXmlExporter.isExternalStorageAvail()) {
-                              new ImportDatabaseTask().execute("bookworm", "bookwormdata");                              
+                              new ImportDatabaseTask().execute("bookworm", "bookwormdata");
+                              // sleep momentarily so that database reset stuff has time to take place (else Main shows no data)
+                              try {
+                                 Thread.sleep(1000);
+                              } catch (InterruptedException e) {
+                                 
+                              }
                               ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
                            } else {
                               Toast.makeText(ManageData.this,
@@ -156,7 +165,7 @@ public class ManageData extends Activity {
          try {
             dbFile.createNewFile();
             FileUtil.copyFile(dbBackupFile, dbFile);
-            ManageData.this.application.getDataHelper().resetDbConnection();            
+            ManageData.this.application.getDataHelper().resetDbConnection();
             return null;
          } catch (IOException e) {
             Log.e(Constants.LOG_TAG, e.getMessage(), e);

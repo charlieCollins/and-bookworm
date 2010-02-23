@@ -62,13 +62,13 @@ public class Main extends Activity {
 
       this.bookListViewEmpty = (TextView) this.findViewById(R.id.booklistviewempty);
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
-      this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));      
+      this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));
    }
-   
+
    @Override
-   public void onStart(){
+   public void onStart() {
       super.onStart();
-      new SelectAllBooksTask().execute();  
+      new SelectAllBooksTask().execute();
    }
 
    private void bindBookList(final ArrayList<Book> books) {
@@ -85,11 +85,6 @@ public class Main extends Activity {
          }
       });
       this.registerForContextMenu(this.bookListView);
-   }
-
-   @Override
-   public void onPause() {
-      super.onPause();
    }
 
    @Override
@@ -113,7 +108,7 @@ public class Main extends Activity {
          this.startActivity(new Intent(Main.this, Preferences.class));
          return true;
       case MENU_BOOKADD:
-          this.startActivity(new Intent(Main.this, BookAdd.class));
+         this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
       case MENU_SORT_RATING:
          this.adapter.sort(new RatingComparator());
@@ -122,8 +117,8 @@ public class Main extends Activity {
          this.adapter.sort(new AlphaComparator());
          return true;
       case MENU_MANAGE:
-          this.startActivity(new Intent(Main.this, ManageData.class));          
-          return true;
+         this.startActivity(new Intent(Main.this, ManageData.class));
+         return true;
       default:
          return super.onOptionsItemSelected(item);
       }
@@ -162,7 +157,7 @@ public class Main extends Activity {
          return super.onContextItemSelected(item);
       }
    }
-   
+
    //
    // Sort Comparators
    //
@@ -223,7 +218,7 @@ public class Main extends Activity {
             this.belowTextView.setText(book.getSubTitle());
          }
          return v;
-      }      
+      }
    }
 
    // TODO don't select ALL - rather page data smarter (or at least leave images out and add in later?)
@@ -250,6 +245,7 @@ public class Main extends Activity {
             this.dialog.dismiss();
          }
          if (books.size() > 0) {
+            Main.this.bookList.clear();
             Main.this.bookList.addAll(books);
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "bookList size - " + Main.this.bookList.size());

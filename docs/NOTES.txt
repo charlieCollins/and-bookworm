@@ -64,3 +64,5 @@ whereas android:layout_gravity positions the view with respect to its parent
 
 IF you have list view items in a list view that are focusable, the list click listener won't fire. 
 For example, an EditText, or more subtle, "android:inputType="text"" on a TextView
+
+logcat filterspec - adb -d logcat "*:s BookWorm:v"
