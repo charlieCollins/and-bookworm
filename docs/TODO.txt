@@ -1,5 +1,20 @@
-For 1.0
----------------
+For 1.0 (in rough order)
+------------------------
+
+Sync with Google Books, and include pref to get login and store token, etc.
+
+Finish book meta/user data working - rating, readstatus, etc (and show on Main).
+
+Finish book edit activity - make collapsible sections, add remaining data elements, include changing cover image.
+
+Make sure ListView with images works with many many items, should NOT load images
+when flinging - should load other data and then get images when it can, etc. 
+
+Update ListView format/style - include more info (rating, readstatus), and make it not suck.
+
+Make sure all activities/screens work in multiple orientations.
+
+Make sure all activities/screens work in small/med/large devices.
 
 Book object stores multiple ISBNs now, make sure approp fallbacks are in code where one or other not present.
 
@@ -7,31 +22,10 @@ Buttons (add book, etc) should look better use an image or something.
 
 Make sure all bg operations use AsyncTask and make sure it works right when orient change.
 
-Make sure ListView with images works with many many items, should NOT load images
-when flinging - should load other data and then get images when it can, etc. 
-
-Update ListView format/style - include more info (rating, readstatus), and make it not suck.
-
 Clean up search form.
-
-Make sure all activities/screens work in multiple orientations.
-
-Make sure all activities/screens work in small/med/large devices.
-
-Book edit activity - make collapsible sections, add remaining data elements, include changing cover image.
-
-Finish book meta/user data working - rating, readstatus, etc.
-
-Sync with Google Books (will need separate activity).
-
-Make sync provider specified in a pref and not hard coded (even if just one prov to start).
-
-Export to SD card and import from (export as SQL or CSV?).
 
 Profile and performance optimize.
 
 Full tests - with coverage/emma.
 
 Project web site/page in place at Google Code - link from help.
-
-Locale support i18n.
