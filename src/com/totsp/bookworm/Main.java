@@ -63,12 +63,13 @@ public class Main extends Activity {
       this.bookListViewEmpty = (TextView) this.findViewById(R.id.booklistviewempty);
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
       this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));
+      
+      new SelectAllBooksTask().execute();
    }
 
    @Override
    public void onStart() {
-      super.onStart();
-      new SelectAllBooksTask().execute();
+      
    }
 
    private void bindBookList(final ArrayList<Book> books) {
