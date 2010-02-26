@@ -69,7 +69,7 @@ public class Main extends Activity {
 
    @Override
    public void onStart() {
-      
+      super.onStart();
    }
 
    private void bindBookList(final ArrayList<Book> books) {
