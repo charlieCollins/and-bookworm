@@ -2,12 +2,11 @@ package com.totsp.bookworm;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -18,19 +17,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.totsp.bookworm.data.DataConstants;
+import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.model.Book;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 
 public class Main extends Activity {
 
@@ -46,9 +46,9 @@ public class Main extends Activity {
 
    private BookWormApplication application;
 
-   private TextView bookListViewEmpty;
    private ListView bookListView;
-   BookAdapter adapter;
+   private CursorAdapter adapter;
+   private Cursor cursor;
 
    private final ArrayList<Book> bookList = new ArrayList<Book>();
 
@@ -60,11 +60,11 @@ public class Main extends Activity {
 
       this.setContentView(R.layout.main);
 
-      this.bookListViewEmpty = (TextView) this.findViewById(R.id.booklistviewempty);
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
       this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));
-      
-      new SelectAllBooksTask().execute();
+
+      // TODO get last sort order from prefs
+      this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
    }
 
    @Override
@@ -72,17 +72,28 @@ public class Main extends Activity {
       super.onStart();
    }
 
-   private void bindBookList(final ArrayList<Book> books) {
-      this.adapter = new BookAdapter(this, 0, books);
+   private void bindBookList(String orderBy) {
+      this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy);
+      this.startManagingCursor(cursor);
+      this.adapter = new BookCursorAdapter(cursor);
       this.bookListView.setAdapter(this.adapter);
       this.bookListView.setTextFilterEnabled(true);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
-         public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
+         public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {            
+            cursor.moveToPosition(index);
+            // note - this is tricky, table doesn't have _id, but CursorAdapter requires it
+            // in the query we used "book.bid as _id" so here we have to use _id too
+            int bookId = cursor.getInt(cursor.getColumnIndex("_id"));
+            Book book = Main.this.application.getDataHelper().selectBook(bookId);
+            if (book != null) {
             if (Constants.LOCAL_LOGV) {
-               Log.v(Constants.LOG_TAG, "book selected - " + index);
+               Log.v(Constants.LOG_TAG, "book selected - " + book.getTitle());
             }
-            Main.this.application.setSelectedBook(books.get(index));
+            Main.this.application.setSelectedBook(book);
             Main.this.startActivity(new Intent(Main.this, BookDetail.class));
+            } else {
+               Toast.makeText(Main.this, "Unrecoverable error selecting book", Toast.LENGTH_SHORT).show();
+            }
          }
       });
       this.registerForContextMenu(this.bookListView);
@@ -112,10 +123,10 @@ public class Main extends Activity {
          this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
       case MENU_SORT_RATING:
-         this.adapter.sort(new RatingComparator());
+         this.bindBookList(DataHelper.ORDER_BY_RATING_ASC);
          return true;
       case MENU_SORT_ALPHA:
-         this.adapter.sort(new AlphaComparator());
+         this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
          return true;
       case MENU_MANAGE:
          this.startActivity(new Intent(Main.this, ManageData.class));
@@ -160,36 +171,60 @@ public class Main extends Activity {
    }
 
    //
-   // Sort Comparators
+   // BookCursorAdapter
    //
-   private class AlphaComparator implements Comparator<Book> {
-      public int compare(final Book b1, final Book b2) {
-         String title1 = b1.getTitle();
-         String title2 = b2.getTitle();
-         return title1.toLowerCase().compareTo(title2.toLowerCase());
+   private class BookCursorAdapter extends CursorAdapter implements Filterable {
+
+      LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+      public BookCursorAdapter(Cursor c) {
+         super(Main.this, c);
+      }
+
+      @Override
+      public void bindView(View v, Context context, Cursor c) {
+         this.populateView(v, c);
+      }
+
+      @Override
+      public View newView(Context context, Cursor c, ViewGroup parent) {
+         View v = vi.inflate(R.layout.itemslistitem, parent, false);
+         this.populateView(v, c);
+         return v;
+      }
+
+      private void populateView(View v, Cursor c) {
+         if (c != null && !c.isClosed()) {
+            int covImageId = c.getInt(c.getColumnIndex(DataConstants.COVERIMAGEID));
+            ///int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
+            ///int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
+            String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
+            String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
+
+            ImageView coverImageView = (ImageView) v.findViewById(R.id.itemslistitemimage);
+            if (covImageId > 0) {
+               Bitmap coverImage = Main.this.application.getDataImageHelper().getBitmap(covImageId);
+               coverImageView.setImageBitmap(coverImage);
+            } else {
+               coverImageView.setImageResource(R.drawable.book_cover_missing);
+            }
+
+            TextView aboveTextView = (TextView) v.findViewById(R.id.itemslistitemtextabove);
+            aboveTextView.setText(title);
+            TextView belowTextView = (TextView) v.findViewById(R.id.itemslistitemtextbelow);
+            belowTextView.setText(subTitle);
+         }
       }
    }
 
-   private class RatingComparator implements Comparator<Book> {
-      public int compare(final Book b1, final Book b2) {
-         Integer rat1 = b1.getRating();
-         Integer rat2 = b2.getRating();
-         return rat2.compareTo(rat1);
-      }
-   }
-
    //
-   // BookAdapter
+   // OLD BookAdapter (works well for small data sets, larger want CursorAdapter or such)
    //
+   /*
    private class BookAdapter extends ArrayAdapter<Book> implements Filterable {
 
       LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       private final ArrayList<Book> books;
-
-      private Bitmap coverImage;
-      private ImageView coverImageView;
-      private TextView aboveTextView;
-      private TextView belowTextView;
 
       public BookAdapter(final Context context, final int resId, final ArrayList<Book> books) {
          super(context, resId, books);
@@ -205,27 +240,28 @@ public class Main extends Activity {
 
          Book book = this.books.get(position);
          if (book != null) {
-            this.coverImageView = (ImageView) v.findViewById(R.id.itemslistitemimage);
+            ImageView coverImageView = (ImageView) v.findViewById(R.id.itemslistitemimage);
             if (book.getCoverImageId() > 0) {
-               this.coverImage = Main.this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
-               this.coverImageView.setImageBitmap(this.coverImage);
+               Bitmap coverImage = Main.this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
+               coverImageView.setImageBitmap(coverImage);
             } else {
-               this.coverImageView.setImageResource(R.drawable.book_cover_missing);
+               coverImageView.setImageResource(R.drawable.book_cover_missing);
             }
 
-            this.aboveTextView = (TextView) v.findViewById(R.id.itemslistitemtextabove);
-            this.aboveTextView.setText(book.getTitle());
-            this.belowTextView = (TextView) v.findViewById(R.id.itemslistitemtextbelow);
-            this.belowTextView.setText(book.getSubTitle());
+            TextView aboveTextView = (TextView) v.findViewById(R.id.itemslistitemtextabove);
+            aboveTextView.setText(book.getTitle());
+            TextView belowTextView = (TextView) v.findViewById(R.id.itemslistitemtextbelow);
+            belowTextView.setText(book.getSubTitle());
          }
          return v;
       }
    }
+   */
 
-   // TODO don't select ALL - rather page data smarter (or at least leave images out and add in later?)
    //
    // AsyncTasks
    //
+   /*
    private class SelectAllBooksTask extends AsyncTask<String, Void, HashSet<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(Main.this);
 
@@ -251,10 +287,32 @@ public class Main extends Activity {
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "bookList size - " + Main.this.bookList.size());
             }
-            Main.this.bindBookList(Main.this.bookList);
+            ///Main.this.bindBookList(Main.this.bookList);
          } else {
             Main.this.bookListViewEmpty.setText(R.string.books_list_empty);
          }
       }
    }
+   */
+
+   //
+   // Sort Comparators
+   //
+   /*
+   private class AlphaComparator implements Comparator<Book> {
+      public int compare(final Book b1, final Book b2) {
+         String title1 = b1.getTitle();
+         String title2 = b2.getTitle();
+         return title1.toLowerCase().compareTo(title2.toLowerCase());
+      }
+   }
+
+   private class RatingComparator implements Comparator<Book> {
+      public int compare(final Book b1, final Book b2) {
+         Integer rat1 = b1.getRating();
+         Integer rat2 = b2.getRating();
+         return rat2.compareTo(rat1);
+      }
+   }
+   */
 }

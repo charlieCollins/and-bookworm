@@ -66,3 +66,6 @@ IF you have list view items in a list view that are focusable, the list click li
 For example, an EditText, or more subtle, "android:inputType="text"" on a TextView
 
 logcat filterspec - adb -d logcat "*:s BookWorm:v"
+
+use onSaveInstanceState/onRestoreInstanceState to restore in memory state from you app ANY TIME it is KILLED/RESTARTED
+this includes orientation changes, onRetainConfigurationInstance can also be used, but it ONLY works for orientation change

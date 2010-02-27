@@ -25,8 +25,12 @@ import java.util.HashSet;
 public class DataHelper {
 
    // TODO make a generic interface then impl for particular data type (IDataHelper<Book>)
-   // TODO create a cache for data type?
 
+   public static final String ORDER_BY_TITLE_ASC = "book.tit asc";
+   public static final String ORDER_BY_TITLE_DESC = "book.tit desc";
+   public static final String ORDER_BY_RATING_ASC = "bookuserdata.rat asc";
+   public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc";
+   
    private static final String DATABASE_NAME = "bookworm.db";
    private static final int DATABASE_VERSION = 5;
    private static final String BOOK_TABLE = "book";
@@ -77,7 +81,7 @@ public class DataHelper {
    public SQLiteDatabase getDb() {
       return this.db;
    }
-   
+
    public void resetDbConnection() {
       Log.i(Constants.LOG_TAG, "resetting database connection (close and re-open).");
       this.cleanup();
@@ -90,7 +94,7 @@ public class DataHelper {
       if (this.db != null && this.db.isOpen()) {
          this.db.close();
       }
-   }   
+   }
 
    //
    // DB methods
@@ -98,7 +102,19 @@ public class DataHelper {
 
    //
    // book
-   //
+   //   
+   public Cursor getSelectBookJoinCursor(String orderBy) {
+      // note that query MUST have a column named _id
+      String query =
+               "select book.bid as _id, book.tit, book.subtit, book.pub, book.datepub, book.format, book.covimgid, " + ""
+                        + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb from book "
+                        + "join bookuserdata on book.bid = bookuserdata.bid";
+      if (orderBy != null && orderBy.length() > 0) {
+         query += " order by " + orderBy;
+      }
+      return this.db.rawQuery(query, null);
+   }
+
    public long insertBook(Book b) {
       long bookId = 0L;
       if (b != null && b.getTitle() != null) {
