@@ -63,7 +63,27 @@ public class Main extends Activity {
       this.setContentView(R.layout.main);
 
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
-      this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty));
+      this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty)); 
+      this.bookListView.setTextFilterEnabled(true);
+      this.bookListView.setOnItemClickListener(new OnItemClickListener() {
+         public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
+            cursor.moveToPosition(index);
+            // note - this is tricky, table doesn't have _id, but CursorAdapter requires it
+            // in the query we used "book.bid as _id" so here we have to use _id too
+            int bookId = cursor.getInt(cursor.getColumnIndex("_id"));
+            Book book = Main.this.application.getDataHelper().selectBook(bookId);
+            if (book != null) {
+               if (Constants.LOCAL_LOGV) {
+                  Log.v(Constants.LOG_TAG, "book selected - " + book.getTitle());
+               }
+               Main.this.application.setSelectedBook(book);
+               Main.this.startActivity(new Intent(Main.this, BookDetail.class));
+            } else {
+               Toast.makeText(Main.this, "Unrecoverable error selecting book", Toast.LENGTH_SHORT).show();
+            }
+         }
+      });
+      this.registerForContextMenu(this.bookListView);      
 
       // TODO get last sort order from prefs
       this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
@@ -76,31 +96,10 @@ public class Main extends Activity {
 
    private void bindBookList(String orderBy) {
       this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy);
-
       if (this.cursor != null && this.cursor.getCount() > 0) {
          this.startManagingCursor(cursor);
          this.adapter = new BookCursorAdapter(cursor);
-         this.bookListView.setAdapter(this.adapter);
-         this.bookListView.setTextFilterEnabled(true);
-         this.bookListView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-               cursor.moveToPosition(index);
-               // note - this is tricky, table doesn't have _id, but CursorAdapter requires it
-               // in the query we used "book.bid as _id" so here we have to use _id too
-               int bookId = cursor.getInt(cursor.getColumnIndex("_id"));
-               Book book = Main.this.application.getDataHelper().selectBook(bookId);
-               if (book != null) {
-                  if (Constants.LOCAL_LOGV) {
-                     Log.v(Constants.LOG_TAG, "book selected - " + book.getTitle());
-                  }
-                  Main.this.application.setSelectedBook(book);
-                  Main.this.startActivity(new Intent(Main.this, BookDetail.class));
-               } else {
-                  Toast.makeText(Main.this, "Unrecoverable error selecting book", Toast.LENGTH_SHORT).show();
-               }
-            }
-         });
-         this.registerForContextMenu(this.bookListView);
+         this.bookListView.setAdapter(this.adapter);         
       }
    }
 
