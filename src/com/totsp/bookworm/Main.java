@@ -52,6 +52,8 @@ public class Main extends Activity {
 
    private final ArrayList<Book> bookList = new ArrayList<Book>();
 
+   // TODO empty view not working
+   
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -74,29 +76,32 @@ public class Main extends Activity {
 
    private void bindBookList(String orderBy) {
       this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy);
-      this.startManagingCursor(cursor);
-      this.adapter = new BookCursorAdapter(cursor);
-      this.bookListView.setAdapter(this.adapter);
-      this.bookListView.setTextFilterEnabled(true);
-      this.bookListView.setOnItemClickListener(new OnItemClickListener() {
-         public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {            
-            cursor.moveToPosition(index);
-            // note - this is tricky, table doesn't have _id, but CursorAdapter requires it
-            // in the query we used "book.bid as _id" so here we have to use _id too
-            int bookId = cursor.getInt(cursor.getColumnIndex("_id"));
-            Book book = Main.this.application.getDataHelper().selectBook(bookId);
-            if (book != null) {
-            if (Constants.LOCAL_LOGV) {
-               Log.v(Constants.LOG_TAG, "book selected - " + book.getTitle());
+
+      if (this.cursor != null && this.cursor.getCount() > 0) {
+         this.startManagingCursor(cursor);
+         this.adapter = new BookCursorAdapter(cursor);
+         this.bookListView.setAdapter(this.adapter);
+         this.bookListView.setTextFilterEnabled(true);
+         this.bookListView.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
+               cursor.moveToPosition(index);
+               // note - this is tricky, table doesn't have _id, but CursorAdapter requires it
+               // in the query we used "book.bid as _id" so here we have to use _id too
+               int bookId = cursor.getInt(cursor.getColumnIndex("_id"));
+               Book book = Main.this.application.getDataHelper().selectBook(bookId);
+               if (book != null) {
+                  if (Constants.LOCAL_LOGV) {
+                     Log.v(Constants.LOG_TAG, "book selected - " + book.getTitle());
+                  }
+                  Main.this.application.setSelectedBook(book);
+                  Main.this.startActivity(new Intent(Main.this, BookDetail.class));
+               } else {
+                  Toast.makeText(Main.this, "Unrecoverable error selecting book", Toast.LENGTH_SHORT).show();
+               }
             }
-            Main.this.application.setSelectedBook(book);
-            Main.this.startActivity(new Intent(Main.this, BookDetail.class));
-            } else {
-               Toast.makeText(Main.this, "Unrecoverable error selecting book", Toast.LENGTH_SHORT).show();
-            }
-         }
-      });
-      this.registerForContextMenu(this.bookListView);
+         });
+         this.registerForContextMenu(this.bookListView);
+      }
    }
 
    @Override
@@ -178,7 +183,7 @@ public class Main extends Activity {
       LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
       public BookCursorAdapter(Cursor c) {
-         super(Main.this, c);
+         super(Main.this, c, true);
       }
 
       @Override
