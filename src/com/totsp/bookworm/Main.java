@@ -63,7 +63,7 @@ public class Main extends Activity {
       this.setContentView(R.layout.main);
 
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
-      this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty)); 
+      ///this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty)); 
       this.bookListView.setTextFilterEnabled(true);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {

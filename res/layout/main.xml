@@ -6,13 +6,6 @@
 	<ListView android:id="@+id/booklistview" android:layout_width="fill_parent"
 		android:layout_height="0dp" android:layout_weight="1"
 		android:drawSelectorOnTop="false" />
-	
-	<TextView android:id="@+id/booklistviewempty"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:layout_marginTop="20dp" android:layout_marginLeft="20dp"
-		android:layout_marginRight="20dp" android:gravity="center"
-		android:text=""
-		style="@style/white" />
 </LinearLayout>
 
 	<!--  android:cacheColorHint="#00000000" -->
