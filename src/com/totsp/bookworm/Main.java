@@ -192,7 +192,7 @@ public class Main extends Activity {
 
       @Override
       public View newView(Context context, Cursor c, ViewGroup parent) {
-         View v = vi.inflate(R.layout.itemslistitem, parent, false);
+         View v = vi.inflate(R.layout.list_items_item, parent, false);
          this.populateView(v, c);
          return v;
       }
@@ -205,7 +205,7 @@ public class Main extends Activity {
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
 
-            ImageView coverImageView = (ImageView) v.findViewById(R.id.itemslistitemimage);
+            ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
             if (covImageId > 0) {
                Bitmap coverImage = Main.this.application.getDataImageHelper().getBitmap(covImageId);
                coverImageView.setImageBitmap(coverImage);
@@ -213,9 +213,9 @@ public class Main extends Activity {
                coverImageView.setImageResource(R.drawable.book_cover_missing);
             }
 
-            TextView aboveTextView = (TextView) v.findViewById(R.id.itemslistitemtextabove);
+            TextView aboveTextView = (TextView) v.findViewById(R.id.list_items_item_textabove);
             aboveTextView.setText(title);
-            TextView belowTextView = (TextView) v.findViewById(R.id.itemslistitemtextbelow);
+            TextView belowTextView = (TextView) v.findViewById(R.id.list_items_item_textbelow);
             belowTextView.setText(subTitle);
          }
       }

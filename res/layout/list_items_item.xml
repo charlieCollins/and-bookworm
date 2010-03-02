@@ -2,26 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="?android:attr/listPreferredItemHeight"
 	android:padding="6dp">
-	<ImageView android:id="@+id/itemslistitemimage"
+	<ImageView android:id="@+id/list_items_item_image"
 		android:layout_width="54dp" android:layout_height="70dp"
 		android:minWidth="54dp" android:minHeight="70dp"
 		android:layout_alignParentBottom="true" android:layout_marginRight="10dp"
 		android:background="@drawable/border1" />
-	<TextView android:id="@+id/itemslistitemtextabove"
+	<TextView android:id="@+id/list_items_item_textabove"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_toRightOf="@id/itemslistitemimage" android:maxLines="2"
+		android:layout_toRightOf="@id/list_items_item_image" android:maxLines="2"
 		android:ellipsize="marquee" style="@style/white" />
-	<TextView android:id="@+id/itemslistitemtextbelow"
+	<TextView android:id="@+id/list_items_item_textbelow"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_toRightOf="@id/itemslistitemimage"
-		android:layout_below="@id/itemslistitemtextabove" android:maxLines="1"
+		android:layout_toRightOf="@id/list_items_item_image"
+		android:layout_below="@id/list_items_item_textabove" android:maxLines="1"
 		android:ellipsize="marquee" style="@style/greysmall" />
 </RelativeLayout>
-
-	<!--
-		android:background="@drawable/bgrnd_bar2"
-		android:background="@drawable/border1"
-
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentRight="true"
-	-->
