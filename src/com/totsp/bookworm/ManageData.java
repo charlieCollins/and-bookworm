@@ -95,6 +95,11 @@ public class ManageData extends Activity {
       });
    }
 
+   // TODO don't need param types on these, don't use the params?
+   // could pass in the param strings for data dirs though
+   
+   // also need are you sure for export (will overwrite any existing export)
+   
    private class ExportDatabaseTask extends AsyncTask<String, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(ManageData.this);
 
