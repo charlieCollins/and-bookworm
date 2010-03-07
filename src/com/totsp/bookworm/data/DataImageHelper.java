@@ -97,9 +97,9 @@ public class DataImageHelper {
       values.put(ImageColumns.BUCKET_DISPLAY_NAME, this.bucketDisplayName);
       values.put(ImageColumns.BUCKET_ID, this.bucketId);
       if (this.privateStore == true) {
-         values.put(ImageColumns.IS_PRIVATE, 0);
-      } else {
          values.put(ImageColumns.IS_PRIVATE, 1);
+      } else {
+         values.put(ImageColumns.IS_PRIVATE, 0);
       }
       Uri uri = this.context.getContentResolver().insert(DataImageHelper.IMAGES_URI, values);
       int imageId = Integer.parseInt(uri.toString().substring(Media.EXTERNAL_CONTENT_URI.toString().length() + 1));
