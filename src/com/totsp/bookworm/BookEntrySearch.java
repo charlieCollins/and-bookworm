@@ -124,14 +124,14 @@ public class BookEntrySearch extends Activity {
             BookEntrySearch.this.searchResults.setOnItemClickListener(new OnItemClickListener() {
                public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
                   Book selected = parsedBooks.get(index);
-                  Intent scanIntent = new Intent(BookEntrySearch.this, BookEntryResult.class);
+                  Intent intent = new Intent(BookEntrySearch.this, BookEntryResult.class);
                   // favor isbn 10, but use 13 if 10 missing
                   if (selected.getIsbn10() != null && !selected.getIsbn10().equals("")) {
-                     scanIntent.putExtra(Constants.ISBN, selected.getIsbn10());
+                     intent.putExtra(Constants.ISBN, selected.getIsbn10());
                   } else if (selected.getIsbn13() != null && !selected.getIsbn13().equals("")) {
-                     scanIntent.putExtra(Constants.ISBN, selected.getIsbn10());
+                     intent.putExtra(Constants.ISBN, selected.getIsbn10());
                   }
-                  BookEntrySearch.this.startActivity(scanIntent);
+                  BookEntrySearch.this.startActivity(intent);
                }
             });
          }

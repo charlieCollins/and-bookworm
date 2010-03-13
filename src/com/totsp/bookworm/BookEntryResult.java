@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,12 +17,7 @@ import android.widget.TextView;
 
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.OpenLibraryUtil;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
+import com.totsp.bookworm.util.CoverImageUtil;
 
 public class BookEntryResult extends Activity {
 
@@ -35,7 +29,7 @@ public class BookEntryResult extends Activity {
    ImageView bookCover;
    TextView bookAuthors;
 
-   Bitmap bookCoverBitmap;
+   ///Bitmap bookCoverBitmap;
    Book book;
 
    @Override
@@ -69,7 +63,7 @@ public class BookEntryResult extends Activity {
          new GetBookDataTask().execute(isbn);
       }
    }
-   
+
    private void bookAddClick() {
       // TODO add fallback to book isbn13 support
       if ((this.book != null) && (this.book.getIsbn10() != null)) {
@@ -77,20 +71,22 @@ public class BookEntryResult extends Activity {
          Book retrieve = this.application.getDataHelper().selectBook(this.book.getIsbn10());
          if (retrieve == null) {
             // save image to ContentProvider
-            if (this.bookCoverBitmap != null) {
+            if (this.book.getCoverImage() != null) {
                int imageId =
-                        this.application.getDataImageHelper().saveBitmap(this.book.getTitle(), this.bookCoverBitmap);
+                        this.application.getDataImageHelper().saveBitmap(this.book.getTitle(),
+                                 this.book.getCoverImage());
                this.book.setCoverImageId(imageId);
 
                // also save one really small for use in ListView - rather than scaling later
+               Bitmap scaledBookCoverImage = CoverImageUtil.scaleAndFrame(book.getCoverImage(), 55, 70);
                imageId =
                         this.application.getDataImageHelper().saveBitmap(this.book.getTitle() + "-T",
-                                 Bitmap.createScaledBitmap(this.bookCoverBitmap, 55, 70, false));
+                                 scaledBookCoverImage);
                this.book.setCoverImageTinyId(imageId);
             }
             // save book to database
             this.application.getDataHelper().insertBook(this.book);
-         } 
+         }
       }
       this.startActivity(new Intent(BookEntryResult.this, Main.class));
    }
@@ -101,15 +97,11 @@ public class BookEntryResult extends Activity {
                .setText("Whoops, that entry didn't work. Please try again (and if one method fails, such as scanning, try a search or direct entry).");
    }
 
-   private class GetBookDataTask extends AsyncTask<String, Void, Void> {
+   private class GetBookDataTask extends AsyncTask<String, Void, Book> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
-
-      // use members here instead of return, since we have multiple items
-      // TODO could make a type for this, or use Pair
-      private Book bookTask;
-      private Bitmap bookCoverBitmapTask;
       
-      private String coverImageProviderKey;
+      // TODO ctor to pass provider keys
+      private String coverImageProviderKey;      
 
       // can use UI thread here
       protected void onPreExecute() {
@@ -121,22 +113,26 @@ public class BookEntryResult extends Activity {
       }
 
       // automatically done on worker thread (separate from UI thread)
-      protected Void doInBackground(final String... isbns) {
-         // book data itself
-         this.bookTask = BookEntryResult.this.application.getBookDataSource().getBook(isbns[0]);
+      protected Book doInBackground(final String... isbns) {
 
+         Book b = BookEntryResult.this.application.getBookDataSource().getBook(isbns[0]);
+
+         Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.getIsbn10());
+         b.setCoverImage(coverImageBitmap);
+         
+         /*
          // TODO better book cover get stuff (HttpHelper binary)
          // book cover image
          String imageUrl = null;
          if (this.coverImageProviderKey.equals("1")) {
             // 1 = Google Books (TODO 1 should equal "default for handler" or such - regardless of current handler)
             // TODO if user selects Google Books, get them to login and store token
-            imageUrl = this.bookTask.getCoverImageURL();
+            imageUrl = b.getCoverImageURL();
          } else if (this.coverImageProviderKey.equals("2")) {
             // 2 = OpenLibrary
             imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbns[0]);
-         }            
-         
+         }
+
          if (Constants.LOCAL_LOGD) {
             Log.d(Constants.LOG_TAG, "book cover imageUrl - " + imageUrl);
          }
@@ -147,27 +143,29 @@ public class BookEntryResult extends Activity {
                conn.setConnectTimeout(10000);
                conn.connect();
                BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
-               this.bookCoverBitmapTask = BitmapFactory.decodeStream(bis);
-               if (this.bookCoverBitmapTask.getWidth() < 10) {
-                  this.bookCoverBitmapTask = null;
+               Bitmap coverImageBitmap = BitmapFactory.decodeStream(bis);
+               if (coverImageBitmap.getWidth() < 10) {
+                  coverImageBitmap = null;
                }
+               b.setCoverImage(coverImageBitmap);
             } catch (IOException e) {
                Log.e(Constants.LOG_TAG, " ", e);
             }
          }
-         return null;
+         */
+         return b;
       }
 
       // can use UI thread here
-      protected void onPostExecute(final Void unused) {
+      protected void onPostExecute(final Book b) {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
          }
 
-         if (this.bookTask != null) {
-            BookEntryResult.this.bookTitle.setText(this.bookTask.getTitle());
+         if (b != null) {
+            BookEntryResult.this.bookTitle.setText(b.getTitle());
             String authors = null;
-            for (Author a : this.bookTask.getAuthors()) {
+            for (Author a : b.getAuthors()) {
                if (authors == null) {
                   authors = a.getName();
                } else {
@@ -176,12 +174,11 @@ public class BookEntryResult extends Activity {
             }
             BookEntryResult.this.bookAuthors.setText(authors);
 
-            if (this.bookCoverBitmapTask != null) {
+            if (b.getCoverImage() != null) {
                if (Constants.LOCAL_LOGV) {
                   Log.v(Constants.LOG_TAG, "book cover bitmap present, set cover");
                }
-               BookEntryResult.this.bookCover.setImageBitmap(this.bookCoverBitmapTask);
-               BookEntryResult.this.bookCoverBitmap = bookCoverBitmapTask;
+               BookEntryResult.this.bookCover.setImageBitmap(b.getCoverImage());
             } else {
                if (Constants.LOCAL_LOGV) {
                   Log.v(Constants.LOG_TAG, "book cover not found");
@@ -189,7 +186,7 @@ public class BookEntryResult extends Activity {
                BookEntryResult.this.bookCover.setImageResource(R.drawable.book_cover_missing);
             }
 
-            BookEntryResult.this.book = this.bookTask;
+            BookEntryResult.this.book = b;
             BookEntryResult.this.bookAddButton.setVisibility(View.VISIBLE);
          } else {
             BookEntryResult.this.setViewsForInvalidEntry();

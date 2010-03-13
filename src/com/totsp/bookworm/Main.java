@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -32,11 +31,10 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.data.DataHelper;
-import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Main extends Activity {
 
@@ -46,6 +44,7 @@ public class Main extends Activity {
    private static final int MENU_SORT_RATING = 3;
    private static final int MENU_SORT_ALPHA = 4;
    private static final int MENU_MANAGE = 5;
+   private static final int MENU_RESET_COVER_IMAGES = 6;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -121,6 +120,7 @@ public class Main extends Activity {
       menu.add(0, Main.MENU_ABOUT, 3, "About").setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 4, "Prefs").setIcon(android.R.drawable.ic_menu_preferences);
       menu.add(0, Main.MENU_MANAGE, 6, "Manage Database").setIcon(android.R.drawable.ic_menu_manage);
+      menu.add(0, Main.MENU_RESET_COVER_IMAGES, 7, "Reset Cover Images").setIcon(android.R.drawable.ic_menu_gallery);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -144,6 +144,9 @@ public class Main extends Activity {
          return true;
       case MENU_MANAGE:
          this.startActivity(new Intent(Main.this, ManageData.class));
+         return true;
+      case MENU_RESET_COVER_IMAGES:
+         new ResetCoverImagesTask().execute();
          return true;
       default:
          return super.onOptionsItemSelected(item);
@@ -215,19 +218,10 @@ public class Main extends Activity {
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
 
-            /*
-            ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
-            if (covImageId > 0) {
-               Bitmap coverImage = Main.this.application.getDataImageHelper().getBitmap(covImageId);
-               coverImageView.setImageBitmap(coverImage);
-            } else {
-               coverImageView.setImageResource(R.drawable.book_cover_missing);
-            }
-            */
             ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
             coverImageView.setImageBitmap(Main.this.coverImageMissing);
-            
-            new CoverImageTask(coverImageView).execute(covImageId);
+
+            new PopulateCoverImageTask(coverImageView).execute(covImageId);
 
             ((TextView) v.findViewById(R.id.list_items_item_textabove)).setText(title);
             ((TextView) v.findViewById(R.id.list_items_item_textbelow)).setText(subTitle);
@@ -235,11 +229,11 @@ public class Main extends Activity {
       }
    }
 
-   private class CoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
-      
+   private class PopulateCoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
+
       private ImageView v;
 
-      public CoverImageTask(ImageView v) {
+      public PopulateCoverImageTask(ImageView v) {
          super();
          this.v = v;
       }
@@ -252,13 +246,40 @@ public class Main extends Activity {
          int covImageId = args[0];
          if (covImageId > 0) {
             bitmap = Main.this.application.getDataImageHelper().getBitmap(covImageId);
-         } 
+         }
          return bitmap;
       }
 
       protected void onPostExecute(final Bitmap bitmap) {
          if (bitmap != null) {
             this.v.setImageBitmap(bitmap);
+         }
+      }
+   }
+
+   private class ResetCoverImagesTask extends AsyncTask<Void, Void, Void> {
+      private final ProgressDialog dialog = new ProgressDialog(Main.this);
+      
+      protected void onPreExecute() {
+         this.dialog.setMessage("Resetting cover images, this could take a few minutes ...");
+         this.dialog.show();
+      }
+
+      protected Void doInBackground(final Void... args) {
+         HashSet<Book> books = Main.this.application.getDataHelper().selectAllBooks();
+         for (Book b : books) {
+            if (Constants.LOCAL_LOGV) {
+               Log.v(Constants.LOG_TAG, "resetting cover image for book - " + b.getTitle());
+            }
+            Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
+         }
+         return null;
+      }
+
+      protected void onPostExecute(final Void v) {         
+         Main.this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
+         if (this.dialog.isShowing()) {
+            this.dialog.dismiss();
          }
       }
    }

@@ -13,9 +13,10 @@ import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
+import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CacheMap;
+import com.totsp.bookworm.util.CoverImageUtil;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,10 +39,11 @@ public class DataImageHelper {
    private String bucketId;
    private String bucketDisplayName;
    private boolean privateStore;
-   
+
    private boolean cacheEnabled;
 
-   public DataImageHelper(Context context, String bucketId, String bucketDisplayName, boolean privateStore, boolean cacheEnabled) {
+   public DataImageHelper(Context context, String bucketId, String bucketDisplayName, boolean privateStore,
+            boolean cacheEnabled) {
       this.context = context;
       this.bucketId = bucketId;
       this.bucketDisplayName = bucketDisplayName;
@@ -63,7 +65,12 @@ public class DataImageHelper {
          c = this.context.getContentResolver().query(IMAGES_URI, projection, selection, null, null);
          if (c != null) {
             c.moveToFirst();
-            filePath = c.getString(0);
+            try {
+               filePath = c.getString(0);
+            } catch (Exception e) {
+               // if user manually deletes images from SD, can cause exceptions
+               Log.e(Constants.LOG_TAG, e.getMessage());               
+            }
          }
       } finally {
          if (c != null && !c.isClosed()) {
@@ -105,11 +112,11 @@ public class DataImageHelper {
       int id = Integer.parseInt(uri.toString().substring(Media.EXTERNAL_CONTENT_URI.toString().length() + 1));
 
       this.saveStream(this.context, uri, bitmap);
-      
+
       if (this.cacheEnabled) {
          this.imageCache.put(id, bitmap);
       }
-      
+
       return id;
    }
 
@@ -123,6 +130,22 @@ public class DataImageHelper {
          Log.e(Constants.LOG_TAG, e.toString());
       } catch (IOException e) {
          Log.e(Constants.LOG_TAG, e.toString());
+      }
+   }
+
+   public void resetCoverImage(DataHelper dataHelper, String coverImageProviderKey, Book b) {
+      Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(coverImageProviderKey, b.getIsbn10());
+      if (coverImageBitmap != null) {
+         // TODO remove OLD images first?
+
+         int imageId = this.saveBitmap(b.getTitle(), coverImageBitmap);
+         b.setCoverImageId(imageId);
+
+         // also save one really small for use in ListView - rather than scaling later
+         Bitmap scaledBookCoverImage = CoverImageUtil.scaleAndFrame(coverImageBitmap, 55, 70);
+         imageId = this.saveBitmap(b.getTitle() + "-T", scaledBookCoverImage);
+         b.setCoverImageTinyId(imageId);
+         dataHelper.updateBook(b);
       }
    }
 }

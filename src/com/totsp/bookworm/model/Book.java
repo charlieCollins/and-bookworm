@@ -1,10 +1,14 @@
 package com.totsp.bookworm.model;
 
+import android.graphics.Bitmap;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public final class Book {
 
+   // TODO get rid of getters/setters
+   
    // give things explicit defaults, easier than null checks later for SQLite
    private long id = 0L;
    private String isbn10 = "";
@@ -28,6 +32,7 @@ public final class Book {
    // not stored in db or serialized
    // (optionally returned from parser, but not stored, image Ids are stored after processing)
    private transient String coverImageURL = "";
+   private transient Bitmap coverImage;
 
    public Book() {
       this.authors = new LinkedHashSet<Author>();
@@ -209,4 +214,11 @@ public final class Book {
       this.coverImageURL = coverImageURL;
    }
 
+   public Bitmap getCoverImage() {
+      return this.coverImage;
+   }
+
+   public void setCoverImage(Bitmap coverImage) {
+      this.coverImage = coverImage;
+   }
 }
