@@ -257,7 +257,7 @@ public class Main extends Activity {
       }
    }
 
-   private class ResetCoverImagesTask extends AsyncTask<Void, Void, Void> {
+   private class ResetCoverImagesTask extends AsyncTask<Void, String, Void> {
       private final ProgressDialog dialog = new ProgressDialog(Main.this);
       
       protected void onPreExecute() {
@@ -265,12 +265,17 @@ public class Main extends Activity {
          this.dialog.show();
       }
 
+      protected void onProgressUpdate(final String... args) {
+         this.dialog.setMessage(args[0]);
+      }
+      
       protected Void doInBackground(final Void... args) {
          HashSet<Book> books = Main.this.application.getDataHelper().selectAllBooks();
          for (Book b : books) {
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "resetting cover image for book - " + b.getTitle());
             }
+            this.publishProgress("processing: " + b.getTitle());
             Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
          }
          return null;
