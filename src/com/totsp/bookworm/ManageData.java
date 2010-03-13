@@ -39,9 +39,18 @@ public class ManageData extends Activity {
       this.exportDbToSdButton = (Button) this.findViewById(R.id.exportdbtosdbutton);
       this.exportDbToSdButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            Log.i(Constants.LOG_TAG, "exporting database to external storage");
-            new ExportDatabaseTask().execute();
-            ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
+            new AlertDialog.Builder(ManageData.this).setMessage(
+                     "Are you sure (this will replace any existing prior export)?").setPositiveButton("Yes",
+                     new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                           Log.i(Constants.LOG_TAG, "exporting database to external storage");
+                           new ExportDatabaseTask().execute();
+                           ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
+                        }
+                     }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+               public void onClick(DialogInterface arg0, int arg1) {
+               }
+            }).show();
          }
       });
 
@@ -49,17 +58,17 @@ public class ManageData extends Activity {
       this.importDbFromSdButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             new AlertDialog.Builder(ManageData.this).setMessage(
-                     "Are you sure (this will overwrite existing current data)?").setPositiveButton("Yes",
+                     "Are you sure (this will overwrite any existing current data)?").setPositiveButton("Yes",
                      new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                            if (DataXmlExporter.isExternalStorageAvail()) {
-                              Log.i(Constants.LOG_TAG, "importing database from external storage, and resetting database");
+                              Log.i(Constants.LOG_TAG, "importing database from external storage");
                               new ImportDatabaseTask().execute("bookworm", "bookwormdata");
                               // sleep momentarily so that database reset stuff has time to take place (else Main shows no data)
                               try {
                                  Thread.sleep(1000);
                               } catch (InterruptedException e) {
-                                 
+
                               }
                               ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
                            } else {
@@ -78,7 +87,7 @@ public class ManageData extends Activity {
       this.clearDbButton = (Button) this.findViewById(R.id.cleardbutton);
       this.clearDbButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            new AlertDialog.Builder(ManageData.this).setMessage("Are you sure (this will delete all data)?")
+            new AlertDialog.Builder(ManageData.this).setMessage("Are you sure (this will delete all data from database)?")
                      .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                            Log.i(Constants.LOG_TAG, "deleting database");
@@ -97,9 +106,9 @@ public class ManageData extends Activity {
 
    // TODO don't need param types on these, don't use the params?
    // could pass in the param strings for data dirs though
-   
+
    // also need are you sure for export (will overwrite any existing export)
-   
+
    private class ExportDatabaseTask extends AsyncTask<String, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(ManageData.this);
 
