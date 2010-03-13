@@ -2,11 +2,14 @@ package com.totsp.bookworm;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -28,8 +32,10 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.data.DataHelper;
+import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class Main extends Activity {
@@ -50,10 +56,12 @@ public class Main extends Activity {
    private CursorAdapter adapter;
    private Cursor cursor;
 
+   private Bitmap coverImageMissing;
+
    private final ArrayList<Book> bookList = new ArrayList<Book>();
 
    // TODO empty view not working
-   
+
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -61,6 +69,8 @@ public class Main extends Activity {
       this.application = (BookWormApplication) this.getApplication();
 
       this.setContentView(R.layout.main);
+
+      this.coverImageMissing = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_cover_missing);
 
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
       ///this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty)); 
@@ -83,7 +93,7 @@ public class Main extends Activity {
             }
          }
       });
-      this.registerForContextMenu(this.bookListView);      
+      this.registerForContextMenu(this.bookListView);
 
       // TODO get last sort order from prefs
       this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
@@ -99,7 +109,7 @@ public class Main extends Activity {
       if (this.cursor != null && this.cursor.getCount() > 0) {
          this.startManagingCursor(cursor);
          this.adapter = new BookCursorAdapter(cursor);
-         this.bookListView.setAdapter(this.adapter);         
+         this.bookListView.setAdapter(this.adapter);
       }
    }
 
@@ -205,6 +215,7 @@ public class Main extends Activity {
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
 
+            /*
             ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
             if (covImageId > 0) {
                Bitmap coverImage = Main.this.application.getDataImageHelper().getBitmap(covImageId);
@@ -212,10 +223,43 @@ public class Main extends Activity {
             } else {
                coverImageView.setImageResource(R.drawable.book_cover_missing);
             }
+            */
+            ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
+            coverImageView.setImageBitmap(Main.this.coverImageMissing);
+            
+            new CoverImageTask(coverImageView).execute(covImageId);
 
             ((TextView) v.findViewById(R.id.list_items_item_textabove)).setText(title);
             ((TextView) v.findViewById(R.id.list_items_item_textbelow)).setText(subTitle);
          }
       }
-   }   
+   }
+
+   private class CoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
+      
+      private ImageView v;
+
+      public CoverImageTask(ImageView v) {
+         super();
+         this.v = v;
+      }
+
+      protected void onPreExecute() {
+      }
+
+      protected Bitmap doInBackground(final Integer... args) {
+         Bitmap bitmap = null;
+         int covImageId = args[0];
+         if (covImageId > 0) {
+            bitmap = Main.this.application.getDataImageHelper().getBitmap(covImageId);
+         } 
+         return bitmap;
+      }
+
+      protected void onPostExecute(final Bitmap bitmap) {
+         if (bitmap != null) {
+            this.v.setImageBitmap(bitmap);
+         }
+      }
+   }
 }

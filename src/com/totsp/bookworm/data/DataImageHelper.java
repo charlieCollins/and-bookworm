@@ -33,25 +33,28 @@ public class DataImageHelper {
    private static final Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
    private HashMap<Integer, Bitmap> imageCache = new CacheMap<Integer, Bitmap>(1000);
-   
+
    private final Context context;
    private String bucketId;
    private String bucketDisplayName;
    private boolean privateStore;
+   
+   private boolean cacheEnabled;
 
-   public DataImageHelper(Context context, String bucketId, String bucketDisplayName, boolean privateStore) {
+   public DataImageHelper(Context context, String bucketId, String bucketDisplayName, boolean privateStore, boolean cacheEnabled) {
       this.context = context;
       this.bucketId = bucketId;
       this.bucketDisplayName = bucketDisplayName;
       this.privateStore = privateStore;
+      this.cacheEnabled = cacheEnabled;
    }
 
    public Bitmap getBitmap(final int id) {
-      
-      if (this.imageCache.containsKey(id)) {
+
+      if (this.cacheEnabled && this.imageCache.containsKey(id)) {
          return this.imageCache.get(id);
       }
-      
+
       String[] projection = { MediaStore.MediaColumns.DATA };
       String selection = MediaStore.Images.Media._ID + "=" + id;
       Cursor c = null;
@@ -70,23 +73,20 @@ public class DataImageHelper {
 
       Bitmap bitmap = null;
       if (filePath != null) {
-         try {
-            FileInputStream fis = new FileInputStream(filePath);
-            bitmap = BitmapFactory.decodeStream(fis);
-         } catch (IOException e) {
-            Log.e("Constants.LOG_TAG", "", e);
-         }
+         bitmap = BitmapFactory.decodeFile(filePath);
       }
-      
-      this.imageCache.put(id, bitmap);
-      
+
+      if (this.cacheEnabled) {
+         this.imageCache.put(id, bitmap);
+      }
+
       return bitmap;
    }
-   
+
    public void clearCache() {
       this.imageCache.clear();
    }
-   
+
    public void clearCache(int id) {
       this.imageCache.remove(id);
    }
@@ -102,10 +102,15 @@ public class DataImageHelper {
          values.put(ImageColumns.IS_PRIVATE, 0);
       }
       Uri uri = this.context.getContentResolver().insert(DataImageHelper.IMAGES_URI, values);
-      int imageId = Integer.parseInt(uri.toString().substring(Media.EXTERNAL_CONTENT_URI.toString().length() + 1));
+      int id = Integer.parseInt(uri.toString().substring(Media.EXTERNAL_CONTENT_URI.toString().length() + 1));
 
       this.saveStream(this.context, uri, bitmap);
-      return imageId;
+      
+      if (this.cacheEnabled) {
+         this.imageCache.put(id, bitmap);
+      }
+      
+      return id;
    }
 
    private void saveStream(final Context context, final Uri uri, final Bitmap bitmap) {
