@@ -2,6 +2,7 @@ package com.totsp.bookworm;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -14,9 +15,12 @@ public class BookWormApplication extends Application {
 
    public static final String APP_NAME = "BookWorm";
 
+   public static final boolean TEMP_REQUIRE_GOOGLE_LOGIN = false;
+   
    private static final boolean IMAGE_STORE_PRIVATE = true;
    private static final boolean IMAGE_CACHE_ENABLED = true;
 
+   private SharedPreferences prefs;
    private IBookDataSource bookDataSource;
    private DataHelper dataHelper;
    private DataImageHelper dataImageHelper;
@@ -29,14 +33,18 @@ public class BookWormApplication extends Application {
       if (Constants.LOCAL_LOGV) {
          Log.v(Constants.LOG_TAG, "APPLICATION onCreate");
       }
+      
+      this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      
       this.establishBookDataSourceFromProvider();
+      
       this.dataHelper = new DataHelper(this);
       this.dataImageHelper =
                new DataImageHelper(this, "BookWorm", "BookWorm Cover Images", IMAGE_STORE_PRIVATE, IMAGE_CACHE_ENABLED);
    }
 
    private void establishBookDataSourceFromProvider() {
-      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      
       String className = prefs.getString("dataproviderpref", "com.totsp.bookworm.data.GoogleBookDataSource");
       Log.i(Constants.LOG_TAG, "establishing book data provider using class name - " + className);
       try {
@@ -50,6 +58,16 @@ public class BookWormApplication extends Application {
       } catch (InstantiationException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
       }
+   }
+   
+   public String getProviderToken() {     
+      return this.prefs.getString("dataprovidertoken", null);
+   }
+   
+   public void setProviderToken(String token) {
+      Editor editor = this.prefs.edit();
+      editor.putString("dataprovidertoken", token);
+      editor.commit();
    }
 
    @Override

@@ -11,4 +11,7 @@
     please visit &lt;a href="http://code.google.com/p/and-bookworm/"&gt;the BookWorm project site&lt;/a&gt;.
     </string>
     <string name="books_list_empty">You don't have any books in your list yet. Use the Menu Add feature to add books.</string>
+    <string name="login_info_format">Current Provider: %s</string>
+    <string name="login_info_disclaimer">Your information is *not* stored, rather a token provided by the provider for future requests is saved.</string>
+    <string name="login_required_explain">Book provider login information is not present, please login to continue (an account with the specified provider is required).</string>
 </resources>

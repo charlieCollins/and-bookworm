@@ -17,10 +17,22 @@
 			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 			android:layout_below="@id/booktitlelabel" android:gravity="left" />
 
+		<TextView android:id="@+id/bookreadstatuslabel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="12dp" android:layout_marginLeft="15dp"
+			android:layout_marginRight="10dp" android:layout_below="@id/booktitle"
+			android:layout_toRightOf="@id/bookcover" android:gravity="left"
+			android:text="Read it?:" style="@style/black" />
+		<CheckBox android:id="@+id/bookreadstatus"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="1dp" android:layout_marginRight="10dp"
+			android:layout_below="@id/booktitle" android:layout_toRightOf="@id/bookreadstatuslabel"
+			android:gravity="right" />
+
 		<RatingBar android:id="@+id/bookrating"
 			android:layout_width="285dip" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginLeft="15dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/booktitle"
+			android:layout_marginRight="10dp" android:layout_below="@id/bookreadstatus"
 			android:gravity="center_horizontal" android:isIndicator="false"
 			android:numStars="5" />
 
@@ -28,7 +40,7 @@
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 			android:layout_marginRight="10dp" android:layout_below="@id/bookrating"
-			android:gravity="left" style="@style/blackbold" android:text="Subtitle:" />
+			android:gravity="left" style="@style/black" android:text="Subtitle:" />
 		<EditText android:id="@+id/booksubtitle"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
@@ -49,7 +61,7 @@
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 			android:layout_marginRight="10dp" android:layout_below="@id/bookcover"
-			android:gravity="left" style="@style/blackbold" android:text="Authors (comma sep):" />
+			android:gravity="left" style="@style/black" android:text="Authors (comma sep):" />
 		<EditText android:id="@+id/bookauthors" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" android:layout_marginTop="3dp"
 			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
@@ -59,7 +71,7 @@
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 			android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
-			android:gravity="left" style="@style/blackbold" android:text="Subject:" />
+			android:gravity="left" style="@style/black" android:text="Subject:" />
 		<EditText android:id="@+id/booksubject" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" android:layout_marginTop="3dp"
 			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
@@ -69,7 +81,7 @@
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 			android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
-			android:gravity="left" style="@style/blackbold" android:text="Publisher:" />
+			android:gravity="left" style="@style/black" android:text="Publisher:" />
 		<EditText android:id="@+id/bookpublisher"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
@@ -80,7 +92,7 @@
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 			android:layout_marginRight="10dp" android:layout_below="@id/bookpublisher"
-			android:gravity="left" style="@style/blackbold" android:text="Date:" />
+			android:gravity="left" style="@style/black" android:text="Date:" />
 		<EditText android:id="@+id/bookdatepub" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" android:layout_marginTop="3dp"
 			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
@@ -89,7 +101,7 @@
 
 		<Button android:id="@+id/bookeditsavebutton"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_marginTop="15dp" android:layout_marginBottom="30dp"
+			android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
 			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 			android:layout_below="@id/bookdatepub" android:gravity="left"
 			android:text="Save" style="@style/black" />

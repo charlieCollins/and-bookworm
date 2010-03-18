@@ -9,17 +9,23 @@
 		<item name="android:shadowDy">1.5</item>
 		<item name="android:shadowRadius">3.0</item>
 	</style>
-	
-    <style name="subtitledkred">
-        <item name="android:textSize">25sp</item>
-        <item name="android:textColor">#7a1819</item>
-        <item name="android:textStyle">bold</item>        
-    </style>
-    <style name="subsubtitledkred">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#7a1819</item>
-        <item name="android:textStyle">bold</item>       
-    </style>
+
+	<style name="subtitleblack">
+		<item name="android:textSize">25sp</item>
+		<item name="android:textColor">#000</item>
+		<item name="android:textStyle">bold</item>
+	</style>
+
+	<style name="subtitledkred">
+		<item name="android:textSize">25sp</item>
+		<item name="android:textColor">#7a1819</item>
+		<item name="android:textStyle">bold</item>
+	</style>
+	<style name="subsubtitledkred">
+		<item name="android:textSize">18sp</item>
+		<item name="android:textColor">#7a1819</item>
+		<item name="android:textStyle">bold</item>
+	</style>
 
 	<style name="whitebold">
 		<item name="android:textSize">20sp</item>
@@ -34,9 +40,18 @@
 		<item name="android:textSize">16sp</item>
 		<item name="android:textColor">#fff</item>
 	</style>
-	
+
 	<style name="blackbold">
 		<item name="android:textSize">20sp</item>
+		<item name="android:textColor">#000</item>
+		<item name="android:textStyle">bold</item>
+	</style>
+	<style name="blackmed">
+		<item name="android:textSize">18sp</item>
+		<item name="android:textColor">#000</item>
+	</style>
+	<style name="blackmedbold">
+		<item name="android:textSize">18sp</item>
 		<item name="android:textColor">#000</item>
 		<item name="android:textStyle">bold</item>
 	</style>
@@ -49,15 +64,15 @@
 		<item name="android:textColor">#000</item>
 	</style>
 	<style name="blacksmallbold">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">#000</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-    
-    <style name="greysmall">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">#BFBBBC</item>
-    </style>
+		<item name="android:textSize">16sp</item>
+		<item name="android:textColor">#000</item>
+		<item name="android:textStyle">bold</item>
+	</style>
+
+	<style name="greysmall">
+		<item name="android:textSize">16sp</item>
+		<item name="android:textColor">#BFBBBC</item>
+	</style>
 
 
 

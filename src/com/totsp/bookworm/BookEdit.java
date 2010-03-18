@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -33,6 +34,7 @@ public class BookEdit extends Activity {
 
    private Button saveButton;
 
+   private CheckBox readStatus;
    private RatingBar ratingBar;
 
    @Override
@@ -51,6 +53,7 @@ public class BookEdit extends Activity {
       this.bookDatePub = (EditText) this.findViewById(R.id.bookdatepub);
       this.bookPublisher = (EditText) this.findViewById(R.id.bookpublisher);
 
+      this.readStatus = (CheckBox) this.findViewById(R.id.bookreadstatus);
       this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
 
       this.saveButton = (Button) this.findViewById(R.id.bookeditsavebutton);
@@ -84,6 +87,7 @@ public class BookEdit extends Activity {
          newBook.setDatePubStamp(DateUtil.parse(this.bookDatePub.getText().toString()).getTime());
          newBook.setPublisher(this.bookPublisher.getText().toString());
          newBook.setRating(Math.round(this.ratingBar.getRating()));
+         newBook.setRead(this.readStatus.isChecked());
 
          // TODO properties not yet editable, but should be
          newBook.setCoverImageId(book.getCoverImageId());
@@ -93,7 +97,6 @@ public class BookEdit extends Activity {
          newBook.setFormat(book.getFormat());
          newBook.setIsbn13(book.getIsbn13());
          newBook.setIsbn10(book.getIsbn10());
-         newBook.setRead(book.isRead());
 
          newBook.setId(book.getId());
 
@@ -115,6 +118,7 @@ public class BookEdit extends Activity {
          this.bookSubTitle.setText(book.getSubTitle());
 
          this.ratingBar.setRating(new Float(book.getRating()));
+         this.readStatus.setChecked(book.isRead());
 
          this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.getAuthors()));
          this.bookSubject.setText(book.getSubject());

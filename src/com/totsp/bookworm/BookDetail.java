@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -33,6 +35,7 @@ public class BookDetail extends Activity {
    private TextView bookDatePub;
    private TextView bookPublisher;
 
+   private CheckBox readStatus;
    private RatingBar ratingBar;
 
    @Override
@@ -51,6 +54,7 @@ public class BookDetail extends Activity {
       this.bookDatePub = (TextView) this.findViewById(R.id.bookdatepub);
       this.bookPublisher = (TextView) this.findViewById(R.id.bookpublisher);
 
+      this.readStatus = (CheckBox) this.findViewById(R.id.bookreadstatus);
       this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
 
       // pattern is onCreate THEN onRestoreInstanceState 
@@ -97,6 +101,8 @@ public class BookDetail extends Activity {
          }
 
          this.ratingBar.setRating(new Float(book.getRating()));
+         this.readStatus.setChecked(book.isRead());
+         this.readStatus.setEnabled(false);
 
          this.bookAuthors.setText(authors);
          this.bookSubject.setText(book.getSubject());

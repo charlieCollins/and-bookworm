@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 public interface IBookDataSource {
 
+   String getProviderName();
+   
    Book getBook(String identifier); 
    
    ArrayList<Book> getBooks(String searchTerm, int startIndex);

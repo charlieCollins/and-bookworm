@@ -3,56 +3,74 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd_noheader_textarea">
 
-    <!--  redo this and align things without margings, also need landscape rev-->
-    <!--  remove stuff that's not there, don't let if affect layout? android:layout_alignWithParentIfMissing="true" -->
+	<!--
+		redo this and align things without margings, also need landscape rev
+	-->
+	<!--
+		remove stuff that's not there, don't let if affect layout?
+		android:layout_alignWithParentIfMissing="true"
+	-->
 
 	<TextView android:id="@+id/booktitle" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="20dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:gravity="center_horizontal" style="@style/subtitledkred"
-		android:maxLines="2" android:ellipsize="marquee" />
+		android:gravity="center_horizontal" style="@style/subtitleblack"
+		android:maxLines="2" android:ellipsize="end" />
 
 	<TextView android:id="@+id/booksubtitle" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="3dp"
-		android:layout_marginBottom="15dp" android:layout_marginLeft="10dp"
-		android:layout_marginRight="10dp" android:layout_below="@id/booktitle"
-		android:gravity="center_horizontal" style="@style/subsubtitledkred"
-		android:maxLines="2" android:ellipsize="marquee" />
-
-	<ImageView android:id="@+id/bookcover" android:layout_width="90px"
-		android:layout_height="139px" android:layout_marginTop="5dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/booksubtitle" android:layout_gravity="left" />
+		android:layout_below="@id/booktitle" android:gravity="center_horizontal"
+		style="@style/subsubtitledkred" android:maxLines="2"
+		android:ellipsize="end" />
 
-	<TextView android:id="@+id/bookauthors" android:layout_width="200dp"
-		android:layout_height="140dp" android:layout_marginTop="15dp"
+	<ImageView android:id="@+id/bookcover" android:layout_width="100dp"
+		android:layout_height="150dp" android:layout_marginTop="5dp"
+		android:layout_marginLeft="50dp" android:layout_marginRight="10dp"
+		android:layout_below="@id/booksubtitle" />
+
+	<TextView android:id="@+id/bookauthors" android:layout_width="wrap_content"
+		android:layout_height="100dp" android:layout_marginTop="15dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
-		android:layout_gravity="left" android:gravity="center_horizontal"
-		style="@style/black" />
+		android:maxHeight="150dp" android:maxLines="4" 
+		android:gravity="center_horizontal" style="@style/blackmed" />
+		<!--  several bug reports note this, if you ellipsize you only get 2 lines :( android:ellipsize="end" -->
+
+	<TextView android:id="@+id/bookreadstatuslabel"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginTop="12dp" android:layout_marginLeft="15dp"
+		android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
+		android:layout_toRightOf="@id/bookcover" android:gravity="right"
+		android:text="Read it?:" style="@style/blacksmall" />
+	<CheckBox android:id="@+id/bookreadstatus"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginTop="1dp" android:layout_marginRight="10dp"
+		android:layout_below="@id/bookauthors" android:layout_toRightOf="@id/bookreadstatuslabel"
+		android:gravity="right" />
 
 	<RatingBar android:id="@+id/bookrating" android:layout_width="285dip"
-		android:layout_height="wrap_content" android:layout_marginTop="15dp"
+		android:layout_height="wrap_content" android:layout_marginTop="10dp"
 		android:layout_marginLeft="15dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/bookcover" android:gravity="center_horizontal"
 		android:isIndicator="true" android:numStars="5" />
 
-	<TextView android:id="@+id/booksubject" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_marginTop="15dp"
-		android:layout_marginBottom="10dp" android:layout_marginLeft="10dp"
-		android:layout_marginRight="15dp" android:layout_below="@id/bookrating"
-		style="@style/black" />
+	<TextView android:id="@+id/booksubject" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="5dp"
+		android:layout_marginLeft="10dp" android:layout_marginRight="15dp"
+		android:layout_below="@id/bookrating" 
+		style="@style/blacksmall" android:lines="1" android:ellipsize="end" />
 
 	<TextView android:id="@+id/bookpublisher"
-		android:layout_width="150dp" android:layout_height="30dp"
-		android:layout_marginTop="2dp" android:layout_marginBottom="10dp"
+		android:layout_width="150dp" android:layout_height="wrap_content"
+		android:layout_marginTop="3dp" android:layout_marginBottom="10dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/booksubject" style="@style/black"
-		android:ellipsize="marquee" />
+		android:layout_below="@id/booksubject" style="@style/blacksmall"
+		android:lines="1" android:ellipsize="end" />
 	<TextView android:id="@+id/bookdatepub" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="2dp"
-		android:layout_marginBottom="10dp" android:layout_marginLeft="3dp"
+		android:layout_marginBottom="12dp" android:layout_marginLeft="3dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
 		android:layout_toRightOf="@id/bookpublisher" android:gravity="right"
-		style="@style/black" />
+		style="@style/blacksmall" />
 </RelativeLayout>

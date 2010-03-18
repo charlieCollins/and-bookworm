@@ -427,7 +427,6 @@ public class DataHelper {
    // book-user data
    //
    public Book selectBookUserData(long bookId) {
-      // TODO don't use "Book" for this - create a type? (do NOT pass in and manip input param either)
       Book passData = null;
       Cursor c =
                this.db.query(BOOKUSERDATA_TABLE, new String[] { DataConstants.READSTATUS, DataConstants.RATING,
@@ -435,7 +434,7 @@ public class DataHelper {
                         null, null, null, "1");
       if (c.moveToFirst()) {
          passData = new Book();
-         passData.setRead(c.getInt(0) == 0 ? true : false);
+         passData.setRead(c.getInt(0) == 0 ? false : true);
          passData.setRating(c.getInt(1));
          passData.setBlurb(c.getString(2));
       }

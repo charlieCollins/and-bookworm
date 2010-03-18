@@ -221,7 +221,9 @@ public class Main extends Activity {
             ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
             coverImageView.setImageBitmap(Main.this.coverImageMissing);
 
-            new PopulateCoverImageTask(coverImageView).execute(covImageId);
+            if (coverImageView.isShown()) {
+               new PopulateCoverImageTask(coverImageView).execute(covImageId);
+            }
 
             ((TextView) v.findViewById(R.id.list_items_item_textabove)).setText(title);
             ((TextView) v.findViewById(R.id.list_items_item_textbelow)).setText(subTitle);
