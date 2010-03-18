@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -214,19 +215,23 @@ public class Main extends Activity {
          if (c != null && !c.isClosed()) {
             int covImageId = c.getInt(c.getColumnIndex(DataConstants.COVERIMAGEID));
             ///int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
-            ///int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
+            int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
 
             ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
             coverImageView.setImageBitmap(Main.this.coverImageMissing);
-
-            if (coverImageView.isShown()) {
-               new PopulateCoverImageTask(coverImageView).execute(covImageId);
-            }
+            // TODO when recycling views the async tasks return in an unpredictable order and can mess up images
+            new PopulateCoverImageTask(coverImageView).execute(covImageId);            
 
             ((TextView) v.findViewById(R.id.list_items_item_textabove)).setText(title);
             ((TextView) v.findViewById(R.id.list_items_item_textbelow)).setText(subTitle);
+            
+            if (readStatus == 1) {
+               ((CheckBox) v.findViewById(R.id.list_items_item_read_status)).setChecked(true);
+            } else {
+               ((CheckBox) v.findViewById(R.id.list_items_item_read_status)).setChecked(false);
+            }
          }
       }
    }

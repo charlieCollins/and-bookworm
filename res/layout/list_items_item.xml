@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="?android:attr/listPreferredItemHeight"
-	android:padding="6dp">
+	android:padding="5dp">
 	<ImageView android:id="@+id/list_items_item_image"
 		android:layout_width="54dp" android:layout_height="70dp"
 		android:minWidth="54dp" android:minHeight="70dp"
 		android:layout_alignParentBottom="true" android:layout_marginRight="10dp"
 		android:background="@drawable/border1" />
 	<TextView android:id="@+id/list_items_item_textabove"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_width="180dp" android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/list_items_item_image" android:maxLines="2"
-		android:ellipsize="marquee" style="@style/white" />
+		android:ellipsize="end" style="@style/white" />
 	<TextView android:id="@+id/list_items_item_textbelow"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_width="180dp" android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/list_items_item_image"
 		android:layout_below="@id/list_items_item_textabove" android:maxLines="1"
-		android:ellipsize="marquee" style="@style/greysmall" />
+		android:ellipsize="end" style="@style/greysmall" />
+	<CheckBox android:id="@+id/list_items_item_read_status"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true" android:layout_marginLeft="5dp"
+		android:layout_marginRight="3dp" android:layout_toRightOf="@id/list_items_item_textbelow"
+		android:gravity="right" android:enabled="false" android:focusable="false" />
 </RelativeLayout>
