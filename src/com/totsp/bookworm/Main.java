@@ -158,9 +158,8 @@ public class Main extends Activity {
          return true;
       case MENU_RESET_COVER_IMAGES:
          new AlertDialog.Builder(Main.this).setTitle("Reset all cover images?").setMessage(
-                  "This will use the network to try to find and replace all cover images"
-                           + " (can take a minute if you have a lot of data).").setPositiveButton("Yes, I'm Sure",
-                  new DialogInterface.OnClickListener() {
+                  "This will use the network to try to find and replace all cover images.").setPositiveButton(
+                  "Yes, I'm Sure", new DialogInterface.OnClickListener() {
                      public void onClick(final DialogInterface d, final int i) {
                         new ResetCoverImagesTask().execute();
                      }
