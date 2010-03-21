@@ -30,10 +30,6 @@ public class GoogleBookDataSource implements IBookDataSource {
       this.saxHandler = new GoogleBooksHandler();
       this.httpHelper = new HttpHelper();
    }
-
-   public String getProviderName() {
-      return "Google Books";
-   }
    
    public String getProviderLoginUrl() {
       return "https://www.google.com/accounts/ClientLogin";

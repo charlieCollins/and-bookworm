@@ -59,7 +59,7 @@ public class CoverImageUtil {
    private static final float PHOTO_BORDER_WIDTH = 3.0f;
    private static final Paint STROKE_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-   // taken from apps-for-android
+   // taken from apps-for-android examples 
    public static Bitmap scaleAndFrame(Bitmap bitmap, int width, int height) {
       final int bitmapWidth = bitmap.getWidth();
       final int bitmapHeight = bitmap.getHeight();
@@ -70,12 +70,14 @@ public class CoverImageUtil {
       final int scaledHeight = (int) (bitmapHeight * scale);
 
       final Bitmap decored = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true);
+      
+      /*
       final Canvas canvas = new Canvas(decored);
-
       final int offset = (int) (PHOTO_BORDER_WIDTH / 2);
       STROKE_PAINT.setAntiAlias(false);
       canvas.drawRect(offset, offset, scaledWidth - offset - 1, scaledHeight - offset - 1, STROKE_PAINT);
       STROKE_PAINT.setAntiAlias(true);
+      */
 
       return decored;
    }
