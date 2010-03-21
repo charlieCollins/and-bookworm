@@ -34,6 +34,7 @@ public class BookEdit extends Activity {
    private EditText bookPublisher;
 
    private Button saveButton;
+   private Button manageCoverImageButton;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,10 @@ public class BookEdit extends Activity {
             BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
          }
       });
+      
+      // TODO another Activity that lets user reset cover image individually from network (or pic, or file)
+      this.manageCoverImageButton = (Button) this.findViewById(R.id.bookeditcoverbutton);
+      this.manageCoverImageButton.setEnabled(false);
 
       this.setViewData();
    }
