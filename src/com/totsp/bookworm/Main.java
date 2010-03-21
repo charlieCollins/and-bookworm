@@ -68,8 +68,6 @@ public class Main extends Activity {
    private Bitmap star4;
    private Bitmap star5;
 
-   // TODO empty view not working
-
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -88,7 +86,7 @@ public class Main extends Activity {
       this.star5 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star5);
 
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
-      ///this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty)); 
+      this.bookListView.setEmptyView(this.findViewById(R.id.empty)); 
       this.bookListView.setTextFilterEnabled(true);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {

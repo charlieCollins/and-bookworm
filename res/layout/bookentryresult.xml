@@ -1,32 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="wrap_content" android:background="@drawable/book_bgrnd_noheader_textarea">
+	android:layout_height="wrap_content" android:gravity="center"
+	android:background="@drawable/book_bgrnd_noheader_textarea">
 
 	<TextView android:id="@+id/bookentrytitle"
-		android:layout_width="fill_parent" android:layout_height="80dp"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_marginTop="20dp" android:layout_marginBottom="10dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:gravity="center_horizontal" style="@style/subtitledkred"
-		android:lines="2" android:ellipsize="marquee" />
+		style="@style/subtitledkred" android:lines="2" android:ellipsize="end" />
 
 	<ImageView android:id="@+id/bookentrycover"
-		android:layout_width="64px" android:layout_height="80px"
+		android:layout_width="100px" android:layout_height="150px"
 		android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
-		android:layout_marginRight="10dp" android:layout_below="@id/bookentrytitle"
-		android:gravity="center_vertical" />
+		android:layout_marginRight="10dp" />
 
 	<TextView android:id="@+id/bookentryauthors"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_marginTop="20dp" android:layout_below="@id/bookentrycover"
-		android:gravity="center_horizontal" style="@style/black" />
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginTop="20dp" style="@style/black" />
 
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_below="@id/bookentryauthors" android:gravity="center">
-		<Button android:id="@+id/bookentryaddbutton"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_marginTop="25dp" android:text="Add book" style="@style/black" />
-	</LinearLayout>
-</RelativeLayout>
+	<Button android:id="@+id/bookentryaddbutton"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginTop="25dp" android:text="Add book" style="@style/black" />
+</LinearLayout>
 
