@@ -17,29 +17,10 @@
 			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 			android:layout_below="@id/booktitlelabel" android:gravity="left" />
 
-		<TextView android:id="@+id/bookreadstatuslabel"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_marginTop="12dp" android:layout_marginLeft="15dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/booktitle"
-			android:layout_toRightOf="@id/bookcover" android:gravity="left"
-			android:text="Read it?:" style="@style/black" />
-		<CheckBox android:id="@+id/bookreadstatus"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_marginTop="1dp" android:layout_marginRight="10dp"
-			android:layout_below="@id/booktitle" android:layout_toRightOf="@id/bookreadstatuslabel"
-			android:gravity="right" />
-
-		<RatingBar android:id="@+id/bookrating"
-			android:layout_width="285dip" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginLeft="15dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/bookreadstatus"
-			android:gravity="center_horizontal" android:isIndicator="false"
-			android:numStars="5" />
-
 		<TextView android:id="@+id/booksubtitlelabel"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/bookrating"
+			android:layout_marginRight="10dp" android:layout_below="@id/booktitle"
 			android:gravity="left" style="@style/black" android:text="Subtitle:" />
 		<EditText android:id="@+id/booksubtitle"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -55,7 +36,13 @@
 			android:layout_height="80px" android:layout_marginTop="5dp"
 			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 			android:layout_below="@id/booksubtitle" android:layout_gravity="center_horizontal" />
-
+		<Button android:id="@+id/bookeditcoverbutton"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
+			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+			android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
+			android:gravity="left" android:text="Manage Cover Image"
+			style="@style/blacksmall" />
 
 		<TextView android:id="@+id/bookauthorslabel"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"

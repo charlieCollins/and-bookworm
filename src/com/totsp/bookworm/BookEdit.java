@@ -11,10 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.totsp.bookworm.model.Book;
@@ -37,9 +35,6 @@ public class BookEdit extends Activity {
 
    private Button saveButton;
 
-   private CheckBox readStatus;
-   private RatingBar ratingBar;
-
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -55,9 +50,6 @@ public class BookEdit extends Activity {
       this.bookSubject = (EditText) this.findViewById(R.id.booksubject);
       this.bookDatePub = (EditText) this.findViewById(R.id.bookdatepub);
       this.bookPublisher = (EditText) this.findViewById(R.id.bookpublisher);
-
-      this.readStatus = (CheckBox) this.findViewById(R.id.bookreadstatus);
-      this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
 
       this.saveButton = (Button) this.findViewById(R.id.bookeditsavebutton);
       this.saveButton.setOnClickListener(new OnClickListener() {
@@ -86,8 +78,6 @@ public class BookEdit extends Activity {
          newBook.setSubject(this.bookSubject.getText().toString());
          newBook.setDatePubStamp(DateUtil.parse(this.bookDatePub.getText().toString()).getTime());
          newBook.setPublisher(this.bookPublisher.getText().toString());
-         newBook.setRating(Math.round(this.ratingBar.getRating()));
-         newBook.setRead(this.readStatus.isChecked());
 
          // TODO properties not yet editable, but should be
          newBook.setCoverImageId(book.getCoverImageId());
@@ -97,6 +87,10 @@ public class BookEdit extends Activity {
          newBook.setFormat(book.getFormat());
          newBook.setIsbn13(book.getIsbn13());
          newBook.setIsbn10(book.getIsbn10());
+         
+         // properties editable on display page and not on edit page
+         newBook.setRating(book.getRating());
+         newBook.setRead(book.isRead());
 
          newBook.setId(book.getId());
          new UpdateBookTask().execute(newBook);
@@ -115,10 +109,6 @@ public class BookEdit extends Activity {
 
          this.bookTitle.setText(book.getTitle());
          this.bookSubTitle.setText(book.getSubTitle());
-
-         this.ratingBar.setRating(new Float(book.getRating()));
-         this.readStatus.setChecked(book.isRead());
-
          this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.getAuthors()));
          this.bookSubject.setText(book.getSubject());
          this.bookDatePub.setText(DateUtil.format(new Date(book.getDatePubStamp())));
