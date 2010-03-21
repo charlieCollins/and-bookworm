@@ -86,7 +86,7 @@ public class Main extends Activity {
       this.star5 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star5);
 
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
-      this.bookListView.setEmptyView(this.findViewById(R.id.empty)); 
+      this.bookListView.setEmptyView(this.findViewById(R.id.empty));
       this.bookListView.setTextFilterEnabled(true);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
@@ -157,7 +157,17 @@ public class Main extends Activity {
          this.startActivity(new Intent(Main.this, ManageData.class));
          return true;
       case MENU_RESET_COVER_IMAGES:
-         new ResetCoverImagesTask().execute();
+         new AlertDialog.Builder(Main.this).setTitle("Reset all cover images?").setMessage(
+                  "This will use the network to try to find and replace all cover images"
+                           + " (can take a minute if you have a lot of data).").setPositiveButton("Yes, I'm Sure",
+                  new DialogInterface.OnClickListener() {
+                     public void onClick(final DialogInterface d, final int i) {
+                        new ResetCoverImagesTask().execute();
+                     }
+                  }).setNegativeButton("No, Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(final DialogInterface d, final int i) {
+            }
+         }).show();
          return true;
       default:
          return super.onOptionsItemSelected(item);
@@ -259,7 +269,7 @@ public class Main extends Activity {
                break;
             case 5:
                ratingImageView.setImageBitmap(Main.this.star5);
-               break;               
+               break;
             }
 
             ((TextView) v.findViewById(R.id.list_items_item_textabove)).setText(title);
