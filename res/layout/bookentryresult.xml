@@ -8,7 +8,7 @@
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_marginTop="20dp" android:layout_marginBottom="10dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		style="@style/subtitledkred" android:lines="2" android:ellipsize="end" />
+		style="@style/subtitledkred" android:maxLines="3" android:ellipsize="end" />
 
 	<ImageView android:id="@+id/bookentrycover"
 		android:layout_width="100px" android:layout_height="150px"
@@ -17,7 +17,8 @@
 
 	<TextView android:id="@+id/bookentryauthors"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_marginTop="20dp" style="@style/black" />
+		android:layout_marginTop="20dp" android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp" style="@style/black" />
 
 	<Button android:id="@+id/bookentryaddbutton"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
