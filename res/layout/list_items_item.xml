@@ -16,7 +16,7 @@
 		android:layout_width="185dp" android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/list_items_item_image"
 		android:layout_below="@id/list_items_item_textabove" android:maxLines="2"
-		android:ellipsize="end" style="@style/greysmall" />
+		android:ellipsize="end" style="@style/greytiny" />
 
 	<CheckBox android:id="@+id/list_items_item_read_status"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
