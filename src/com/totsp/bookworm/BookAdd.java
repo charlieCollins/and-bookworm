@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
 
 public class BookAdd extends Activity {
 
-   private BookWormApplication application;
+   ///private BookWormApplication application;
 
    private Button scanButton;
    private Button searchButton;
@@ -23,7 +22,7 @@ public class BookAdd extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      this.application = (BookWormApplication) this.getApplication();
+      ///this.application = (BookWormApplication) this.getApplication();
 
       this.setContentView(R.layout.bookadd);
 
@@ -47,12 +46,6 @@ public class BookAdd extends Activity {
             BookAdd.this.startActivity(new Intent(BookAdd.this, BookEntryForm.class));
          }
       });
-
-      // if the provider token is null, before we add any books we need to log in
-      if (BookWormApplication.TEMP_REQUIRE_GOOGLE_LOGIN && this.application.getProviderToken() == null) {
-         Toast.makeText(this, this.getResources().getString(R.string.login_required_explain), Toast.LENGTH_LONG).show();
-         this.startActivity(new Intent(BookAdd.this, ProviderLogin.class));
-      }
    }
 
    @Override

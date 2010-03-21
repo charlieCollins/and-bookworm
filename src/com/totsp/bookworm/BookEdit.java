@@ -1,8 +1,10 @@
 package com.totsp.bookworm;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.AuthorsStringUtil;
@@ -74,14 +77,11 @@ public class BookEdit extends Activity {
    }
 
    private void saveEdits() {
-      // TODO AsyncTask      
       Book book = this.application.getSelectedBook();
       if (book != null) {
-
          Book newBook = new Book();
-
          newBook.setTitle(this.bookTitle.getText().toString());
-         newBook.setSubTitle(this.bookSubTitle.getText().toString());         
+         newBook.setSubTitle(this.bookSubTitle.getText().toString());
          newBook.setAuthors(AuthorsStringUtil.expandAuthors(this.bookAuthors.getText().toString()));
          newBook.setSubject(this.bookSubject.getText().toString());
          newBook.setDatePubStamp(DateUtil.parse(this.bookDatePub.getText().toString()).getTime());
@@ -99,8 +99,7 @@ public class BookEdit extends Activity {
          newBook.setIsbn10(book.getIsbn10());
 
          newBook.setId(book.getId());
-
-         this.application.getDataHelper().updateBook(newBook);
+         new UpdateBookTask().execute(newBook);
       }
    }
 
@@ -150,11 +149,39 @@ public class BookEdit extends Activity {
    }
 
    @Override
-   public boolean onOptionsItemSelected(MenuItem item) {      
+   public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
 
       default:
          return super.onOptionsItemSelected(item);
+      }
+   }
+
+   private class UpdateBookTask extends AsyncTask<Book, Void, Boolean> {
+      private final ProgressDialog dialog = new ProgressDialog(BookEdit.this);
+
+      protected void onPreExecute() {
+         this.dialog.setMessage("Saving updated book info...");
+         this.dialog.show();
+      }
+
+      protected Boolean doInBackground(final Book... args) {
+         Book book = args[0];
+         if (book != null && book.getId() > 0) {
+            application.getDataHelper().updateBook(book);
+            return true;
+         }
+         return false;
+      }
+
+      protected void onPostExecute(final Boolean b) {
+         if (this.dialog.isShowing()) {
+            this.dialog.dismiss();
+         }
+         if (!b) {
+            Toast.makeText(BookEdit.this, "Error updating book, book information not present, or ID null",
+                     Toast.LENGTH_LONG).show();
+         }
       }
    }
 }

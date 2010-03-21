@@ -9,14 +9,14 @@
     <PreferenceCategory android:title="Book Data Provider Preferences">
         <ListPreference
            android:title="Book Data Provider"
-           android:summary="Select provider to use for data (searches, and details)"
+           android:summary="Currently only Google Books (future additions planned)"
            android:key="dataproviderpref"
            android:defaultValue="com.totsp.bookworm.data.GoogleBookDataSource"
            android:entries="@array/bookdataprovidernames"
            android:entryValues="@array/bookdataproviderkeys" />   
          <ListPreference
            android:title="Book Cover Image Provider"
-           android:summary="Select provider to use for cover images (OpenLibrary does not require a login)"
+           android:summary="Currently only OpenLibrary (future additions planned)"
            android:key="coverimageproviderpref"
            android:defaultValue="2"
            android:entries="@array/bookcoverimageprovidernames"

@@ -24,6 +24,5 @@
 		<activity android:name="BookEntryResult" />      
 		<activity android:name="Preferences" />      
 		<activity android:name="ManageData" />      
-		<activity android:name="ProviderLogin" />      
 	</application>
 </manifest> 

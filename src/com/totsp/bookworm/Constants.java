@@ -7,7 +7,9 @@ public final class Constants {
    public static final boolean LOCAL_LOGV = true;   
    
    public static final String ISBN = "ISBN";   
-   public static final String TITLE = "TITLE";   
+   public static final String TITLE = "TITLE"; 
+   
+   public static final String DEFAULT_SORT_ORDER = "def_sort_order";
 
    private Constants() {
    }

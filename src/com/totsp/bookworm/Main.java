@@ -6,11 +6,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -52,6 +55,8 @@ public class Main extends Activity {
 
    private BookWormApplication application;
 
+   private SharedPreferences prefs;
+
    private ListView bookListView;
    private CursorAdapter adapter;
    private Cursor cursor;
@@ -68,6 +73,8 @@ public class Main extends Activity {
 
       this.application = (BookWormApplication) this.getApplication();
 
+      this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
       this.setContentView(R.layout.main);
 
       this.coverImageMissing = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_cover_missing);
@@ -77,10 +84,10 @@ public class Main extends Activity {
       this.bookListView.setTextFilterEnabled(true);
       this.bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-            cursor.moveToPosition(index);
+            Main.this.cursor.moveToPosition(index);
             // note - this is tricky, table doesn't have _id, but CursorAdapter requires it
             // in the query we used "book.bid as _id" so here we have to use _id too
-            int bookId = cursor.getInt(cursor.getColumnIndex("_id"));
+            int bookId = Main.this.cursor.getInt(Main.this.cursor.getColumnIndex("_id"));
             Book book = Main.this.application.getDataHelper().selectBook(bookId);
             if (book != null) {
                if (Constants.LOCAL_LOGV) {
@@ -95,8 +102,8 @@ public class Main extends Activity {
       });
       this.registerForContextMenu(this.bookListView);
 
-      // TODO get last sort order from prefs
-      this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
+      String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
+      this.bindBookList(sortOrder);
    }
 
    @Override
@@ -104,11 +111,11 @@ public class Main extends Activity {
       super.onStart();
    }
 
-   private void bindBookList(String orderBy) {
+   private void bindBookList(final String orderBy) {
       this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy);
-      if (this.cursor != null && this.cursor.getCount() > 0) {
-         this.startManagingCursor(cursor);
-         this.adapter = new BookCursorAdapter(cursor);
+      if ((this.cursor != null) && (this.cursor.getCount() > 0)) {
+         this.startManagingCursor(this.cursor);
+         this.adapter = new BookCursorAdapter(this.cursor);
          this.bookListView.setAdapter(this.adapter);
       }
    }
@@ -138,10 +145,12 @@ public class Main extends Activity {
          this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
       case MENU_SORT_RATING:
-         this.bindBookList(DataHelper.ORDER_BY_RATING_ASC);
+         this.bindBookList(DataHelper.ORDER_BY_RATING_DESC);
+         this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
          return true;
       case MENU_SORT_ALPHA:
          this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
+         this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
          return true;
       case MENU_MANAGE:
          this.startActivity(new Intent(Main.this, ManageData.class));
@@ -152,6 +161,12 @@ public class Main extends Activity {
       default:
          return super.onOptionsItemSelected(item);
       }
+   }
+
+   private void saveSortOrder(final String order) {
+      Editor editor = this.prefs.edit();
+      editor.putString(Constants.DEFAULT_SORT_ORDER, order);
+      editor.commit();
    }
 
    public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
@@ -195,24 +210,24 @@ public class Main extends Activity {
 
       LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-      public BookCursorAdapter(Cursor c) {
+      public BookCursorAdapter(final Cursor c) {
          super(Main.this, c, true);
       }
 
       @Override
-      public void bindView(View v, Context context, Cursor c) {
+      public void bindView(final View v, final Context context, final Cursor c) {
          this.populateView(v, c);
       }
 
       @Override
-      public View newView(Context context, Cursor c, ViewGroup parent) {
-         View v = vi.inflate(R.layout.list_items_item, parent, false);
+      public View newView(final Context context, final Cursor c, final ViewGroup parent) {
+         View v = this.vi.inflate(R.layout.list_items_item, parent, false);
          this.populateView(v, c);
          return v;
       }
 
-      private void populateView(View v, Cursor c) {
-         if (c != null && !c.isClosed()) {
+      private void populateView(final View v, final Cursor c) {
+         if ((c != null) && !c.isClosed()) {
             int covImageId = c.getInt(c.getColumnIndex(DataConstants.COVERIMAGEID));
             ///int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
             int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
@@ -222,11 +237,11 @@ public class Main extends Activity {
             ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
             coverImageView.setImageBitmap(Main.this.coverImageMissing);
             // TODO when recycling views the async tasks return in an unpredictable order and can mess up images
-            new PopulateCoverImageTask(coverImageView).execute(covImageId);            
+            new PopulateCoverImageTask(coverImageView).execute(covImageId);
 
             ((TextView) v.findViewById(R.id.list_items_item_textabove)).setText(title);
             ((TextView) v.findViewById(R.id.list_items_item_textbelow)).setText(subTitle);
-            
+
             if (readStatus == 1) {
                ((CheckBox) v.findViewById(R.id.list_items_item_read_status)).setChecked(true);
             } else {
@@ -238,9 +253,9 @@ public class Main extends Activity {
 
    private class PopulateCoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
 
-      private ImageView v;
+      private final ImageView v;
 
-      public PopulateCoverImageTask(ImageView v) {
+      public PopulateCoverImageTask(final ImageView v) {
          super();
          this.v = v;
       }
@@ -266,7 +281,7 @@ public class Main extends Activity {
 
    private class ResetCoverImagesTask extends AsyncTask<Void, String, Void> {
       private final ProgressDialog dialog = new ProgressDialog(Main.this);
-      
+
       protected void onPreExecute() {
          this.dialog.setMessage("Resetting cover images, this could take a few minutes ...");
          this.dialog.show();
@@ -275,7 +290,7 @@ public class Main extends Activity {
       protected void onProgressUpdate(final String... args) {
          this.dialog.setMessage(args[0]);
       }
-      
+
       protected Void doInBackground(final Void... args) {
          HashSet<Book> books = Main.this.application.getDataHelper().selectAllBooks();
          for (Book b : books) {
@@ -288,7 +303,7 @@ public class Main extends Activity {
          return null;
       }
 
-      protected void onPostExecute(final Void v) {         
+      protected void onPostExecute(final Void v) {
          Main.this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();

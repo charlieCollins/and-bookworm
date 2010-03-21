@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.RatingBar.OnRatingBarChangeListener;
 
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
@@ -39,12 +42,12 @@ public class BookDetail extends Activity {
    private RatingBar ratingBar;
 
    @Override
-   public void onCreate(Bundle savedInstanceState) {
+   public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
       this.application = (BookWormApplication) this.getApplication();
 
-      setContentView(R.layout.bookdetail);
+      this.setContentView(R.layout.bookdetail);
 
       this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
       this.bookTitle = (TextView) this.findViewById(R.id.booktitle);
@@ -57,14 +60,18 @@ public class BookDetail extends Activity {
       this.readStatus = (CheckBox) this.findViewById(R.id.bookreadstatus);
       this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
 
-      // pattern is onCreate THEN onRestoreInstanceState 
-      // can't exit/give up from onCreate if data is missing, have to re-setup in onRestore
-      this.setViewData();
-   }
+      this.readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+         public void onCheckedChanged(final CompoundButton button, final boolean b) {
+            BookDetail.this.saveEdits();
+         }
+      });
+      this.ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+         public void onRatingChanged(final RatingBar rb, final float val, final boolean b) {
+            BookDetail.this.saveEdits();
+         }
+      });
 
-   @Override
-   public void onStart() {
-      super.onStart();
+      this.setViewData();
    }
 
    @Override
@@ -73,19 +80,23 @@ public class BookDetail extends Activity {
       super.onPause();
    }
 
-   @Override
-   protected void onStop() {
-      super.onStop();
+   private void saveEdits() {
+      Book book = this.application.getSelectedBook();
+      if (book != null) {
+         book.setRating(Math.round(this.ratingBar.getRating()));
+         book.setRead(this.readStatus.isChecked());
+         new UpdateBookTask().execute(book);
+      }
    }
 
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
          if (book.getCoverImageId() > 0) {
-            Bitmap coverImage = application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
-            bookCover.setImageBitmap(coverImage);
+            Bitmap coverImage = this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
+            this.bookCover.setImageBitmap(coverImage);
          } else {
-            bookCover.setImageResource(R.drawable.book_cover_missing);
+            this.bookCover.setImageResource(R.drawable.book_cover_missing);
          }
 
          this.bookTitle.setText(book.getTitle());
@@ -102,7 +113,6 @@ public class BookDetail extends Activity {
 
          this.ratingBar.setRating(new Float(book.getRating()));
          this.readStatus.setChecked(book.isRead());
-         this.readStatus.setEnabled(false);
 
          this.bookAuthors.setText(authors);
          this.bookSubject.setText(book.getSubject());
@@ -112,7 +122,7 @@ public class BookDetail extends Activity {
    }
 
    @Override
-   protected void onRestoreInstanceState(Bundle savedInstanceState) {
+   protected void onRestoreInstanceState(final Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
       if (this.application.getSelectedBook() == null) {
          String title = savedInstanceState.getString(Constants.TITLE);
@@ -130,7 +140,7 @@ public class BookDetail extends Activity {
    }
 
    @Override
-   protected void onSaveInstanceState(Bundle saveState) {
+   protected void onSaveInstanceState(final Bundle saveState) {
       if (this.application.getSelectedBook() != null) {
          saveState.putString(Constants.TITLE, this.application.getSelectedBook().getTitle());
       }
@@ -138,15 +148,15 @@ public class BookDetail extends Activity {
    }
 
    @Override
-   public boolean onCreateOptionsMenu(Menu menu) {
-      menu.add(0, MENU_EDIT, 0, "Edit").setIcon(android.R.drawable.ic_menu_edit);
-      menu.add(0, MENU_WEB_GOOGLE, 1, "Google Books page").setIcon(android.R.drawable.ic_menu_view);
-      menu.add(0, MENU_WEB_AMAZON, 2, "Amazon page").setIcon(android.R.drawable.ic_menu_view);
+   public boolean onCreateOptionsMenu(final Menu menu) {
+      menu.add(0, BookDetail.MENU_EDIT, 0, "Edit").setIcon(android.R.drawable.ic_menu_edit);
+      menu.add(0, BookDetail.MENU_WEB_GOOGLE, 1, "Google Books page").setIcon(android.R.drawable.ic_menu_view);
+      menu.add(0, BookDetail.MENU_WEB_AMAZON, 2, "Amazon page").setIcon(android.R.drawable.ic_menu_view);
       return super.onCreateOptionsMenu(menu);
    }
 
    @Override
-   public boolean onOptionsItemSelected(MenuItem item) {
+   public boolean onOptionsItemSelected(final MenuItem item) {
       Uri uri = null;
       switch (item.getItemId()) {
       case MENU_EDIT:
@@ -166,6 +176,18 @@ public class BookDetail extends Activity {
          return true;
       default:
          return super.onOptionsItemSelected(item);
+      }
+   }
+
+   private class UpdateBookTask extends AsyncTask<Book, Void, Boolean> {
+
+      protected Boolean doInBackground(final Book... args) {
+         Book book = args[0];
+         if ((book != null) && (book.getId() > 0)) {
+            BookDetail.this.application.getDataHelper().updateBook(book);
+            return true;
+         }
+         return false;
       }
    }
 }
