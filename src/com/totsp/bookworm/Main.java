@@ -62,6 +62,12 @@ public class Main extends Activity {
    private Cursor cursor;
 
    private Bitmap coverImageMissing;
+   private Bitmap star0;
+   private Bitmap star1;
+   private Bitmap star2;
+   private Bitmap star3;
+   private Bitmap star4;
+   private Bitmap star5;
 
    private final ArrayList<Book> bookList = new ArrayList<Book>();
 
@@ -72,12 +78,17 @@ public class Main extends Activity {
       super.onCreate(savedInstanceState);
 
       this.application = (BookWormApplication) this.getApplication();
-
       this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
       this.setContentView(R.layout.main);
 
       this.coverImageMissing = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_cover_missing);
+      this.star0 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star0);
+      this.star1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star1);
+      this.star2 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star2);
+      this.star3 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star3);
+      this.star4 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star4);
+      this.star5 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star5);
 
       this.bookListView = (ListView) this.findViewById(R.id.booklistview);
       ///this.bookListView.setEmptyView(this.findViewById(R.id.booklistviewempty)); 
@@ -104,11 +115,6 @@ public class Main extends Activity {
 
       String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
       this.bindBookList(sortOrder);
-   }
-
-   @Override
-   public void onStart() {
-      super.onStart();
    }
 
    private void bindBookList(final String orderBy) {
@@ -163,12 +169,6 @@ public class Main extends Activity {
       }
    }
 
-   private void saveSortOrder(final String order) {
-      Editor editor = this.prefs.edit();
-      editor.putString(Constants.DEFAULT_SORT_ORDER, order);
-      editor.commit();
-   }
-
    public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
       super.onCreateContextMenu(menu, v, menuInfo);
       menu.add(0, Main.MENU_CONTEXT_EDIT, 0, "Edit Book");
@@ -203,6 +203,12 @@ public class Main extends Activity {
       }
    }
 
+   private void saveSortOrder(final String order) {
+      Editor editor = this.prefs.edit();
+      editor.putString(Constants.DEFAULT_SORT_ORDER, order);
+      editor.commit();
+   }
+
    //
    // BookCursorAdapter
    //
@@ -229,7 +235,7 @@ public class Main extends Activity {
       private void populateView(final View v, final Cursor c) {
          if ((c != null) && !c.isClosed()) {
             int covImageId = c.getInt(c.getColumnIndex(DataConstants.COVERIMAGEID));
-            ///int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
+            int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
             int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
@@ -238,6 +244,28 @@ public class Main extends Activity {
             coverImageView.setImageBitmap(Main.this.coverImageMissing);
             // TODO when recycling views the async tasks return in an unpredictable order and can mess up images
             new PopulateCoverImageTask(coverImageView).execute(covImageId);
+
+            ImageView ratingImageView = (ImageView) v.findViewById(R.id.list_items_item_rating_image);
+            switch (rating) {
+            case 0:
+               ratingImageView.setImageBitmap(Main.this.star0);
+               break;
+            case 1:
+               ratingImageView.setImageBitmap(Main.this.star1);
+               break;
+            case 2:
+               ratingImageView.setImageBitmap(Main.this.star2);
+               break;
+            case 3:
+               ratingImageView.setImageBitmap(Main.this.star3);
+               break;
+            case 4:
+               ratingImageView.setImageBitmap(Main.this.star4);
+               break;
+            case 5:
+               ratingImageView.setImageBitmap(Main.this.star5);
+               break;               
+            }
 
             ((TextView) v.findViewById(R.id.list_items_item_textabove)).setText(title);
             ((TextView) v.findViewById(R.id.list_items_item_textbelow)).setText(subTitle);
@@ -252,15 +280,11 @@ public class Main extends Activity {
    }
 
    private class PopulateCoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
-
       private final ImageView v;
 
       public PopulateCoverImageTask(final ImageView v) {
          super();
          this.v = v;
-      }
-
-      protected void onPreExecute() {
       }
 
       protected Bitmap doInBackground(final Integer... args) {
