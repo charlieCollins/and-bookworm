@@ -127,7 +127,10 @@ public class BookDetail extends Activity {
          this.bookAuthors.setText(authors);
          this.bookSubject.setText(book.getSubject());
          this.bookDatePub.setText(DateUtil.format(new Date(book.getDatePubStamp())));
-         this.bookPublisher.setText(book.getPublisher());
+         if (this.bookPublisher != null) {
+            // we leave publisher off of landscape layout
+            this.bookPublisher.setText(book.getPublisher());
+         }
       }
    }
 
