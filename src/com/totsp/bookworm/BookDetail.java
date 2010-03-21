@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -61,13 +62,15 @@ public class BookDetail extends Activity {
       this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
 
       this.readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-         public void onCheckedChanged(final CompoundButton button, final boolean b) {
-            BookDetail.this.saveEdits();
+         public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
+            // TODO not sure why change listener fires when onCreate is init, but does
+            BookDetail.this.saveReadStatusEdit();
          }
       });
+
       this.ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
          public void onRatingChanged(final RatingBar rb, final float val, final boolean b) {
-            BookDetail.this.saveEdits();
+            BookDetail.this.saveRatingEdit();
          }
       });
 
@@ -80,12 +83,19 @@ public class BookDetail extends Activity {
       super.onPause();
    }
 
-   private void saveEdits() {
+   private void saveRatingEdit() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
          book.setRating(Math.round(this.ratingBar.getRating()));
+         BookDetail.this.application.getDataHelper().updateBook(book);
+      }
+   }
+   
+   private void saveReadStatusEdit() {
+      Book book = this.application.getSelectedBook();
+      if (book != null) {         
          book.setRead(this.readStatus.isChecked());
-         new UpdateBookTask().execute(book);
+         BookDetail.this.application.getDataHelper().updateBook(book);
       }
    }
 
@@ -176,18 +186,6 @@ public class BookDetail extends Activity {
          return true;
       default:
          return super.onOptionsItemSelected(item);
-      }
-   }
-
-   private class UpdateBookTask extends AsyncTask<Book, Void, Boolean> {
-
-      protected Boolean doInBackground(final Book... args) {
-         Book book = args[0];
-         if ((book != null) && (book.getId() > 0)) {
-            BookDetail.this.application.getDataHelper().updateBook(book);
-            return true;
-         }
-         return false;
       }
    }
 }

@@ -18,13 +18,11 @@ import java.util.HashSet;
 /**
  * Android DataHelper to encapsulate SQL and DB details.
  * Includes SQLiteOpenHelper.
- * 
+ *
  * @author ccollins
  *
  */
 public class DataHelper {
-
-   // TODO make a generic interface then impl for particular data type (IDataHelper<Book>)
 
    public static final String ORDER_BY_TITLE_ASC = "book.tit asc";
    public static final String ORDER_BY_TITLE_DESC = "book.tit desc";
@@ -117,15 +115,7 @@ public class DataHelper {
 
    public long insertBook(Book b) {
       long bookId = 0L;
-      if (b != null && b.getTitle() != null) {
-         // TODO simplify this with ContentValues?
-         // what is speed vs Statement?
-         /*
-         final ContentValues values = new ContentValues();
-         values.put(DbConstants.ISBN, b.getIsbn());
-         ...
-         db.insert(BOOK_TABLE, DbConstants.DATEPUB, values);
-         */
+      if (b != null && b.getTitle() != null) {         
 
          Book bookExists = this.selectBook(b.getTitle());
          if (bookExists != null) {

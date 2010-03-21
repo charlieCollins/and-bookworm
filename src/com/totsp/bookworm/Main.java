@@ -37,7 +37,6 @@ import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.model.Book;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Main extends Activity {
@@ -68,8 +67,6 @@ public class Main extends Activity {
    private Bitmap star3;
    private Bitmap star4;
    private Bitmap star5;
-
-   private final ArrayList<Book> bookList = new ArrayList<Book>();
 
    // TODO empty view not working
 
@@ -178,8 +175,8 @@ public class Main extends Activity {
 
    public boolean onContextItemSelected(final MenuItem item) {
       AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-      long listIndex = info.id;
-      final Book b = this.bookList.get((int) listIndex);
+      long bookId = info.id;
+      final Book b = this.application.getDataHelper().selectBook(bookId);
       switch (item.getItemId()) {
       case MENU_CONTEXT_EDIT:
          Main.this.application.setSelectedBook(b);
