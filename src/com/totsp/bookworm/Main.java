@@ -237,6 +237,7 @@ public class Main extends Activity {
       }
 
       private void populateView(final View v, final Cursor c) {
+         // TODO make this more efficient -- I am not sure how to use ViewHolder, etc with CursorAdapter (or if necc?)
          if ((c != null) && !c.isClosed()) {
             int covImageId = c.getInt(c.getColumnIndex(DataConstants.COVERIMAGEID));
             int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
@@ -246,8 +247,12 @@ public class Main extends Activity {
 
             ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
             coverImageView.setImageBitmap(Main.this.coverImageMissing);
-            // TODO when recycling views the async tasks return in an unpredictable order and can mess up images
-            new PopulateCoverImageTask(coverImageView).execute(covImageId);
+            // TODO when recycling views the async tasks can return in the wrong order when flinging and such -- need to figure out
+            ///new PopulateCoverImageTask(coverImageView).execute(covImageId);
+            if (covImageId > 0) {
+               Bitmap coverImageBitmap = Main.this.application.getDataImageHelper().getBitmap(covImageId);
+               coverImageView.setImageBitmap(coverImageBitmap);
+            }
 
             ImageView ratingImageView = (ImageView) v.findViewById(R.id.list_items_item_rating_image);
             switch (rating) {
@@ -281,7 +286,7 @@ public class Main extends Activity {
             }
          }
       }
-   }
+   }   
 
    private class PopulateCoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
       private final ImageView v;

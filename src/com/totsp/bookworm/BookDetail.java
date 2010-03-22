@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -123,12 +121,15 @@ public class BookDetail extends Activity {
 
          this.ratingBar.setRating(new Float(book.getRating()));
          this.readStatus.setChecked(book.isRead());
-
-         this.bookAuthors.setText(authors);
-         this.bookSubject.setText(book.getSubject());
          this.bookDatePub.setText(DateUtil.format(new Date(book.getDatePubStamp())));
-         if (this.bookPublisher != null) {
-            // we leave publisher off of landscape layout
+         this.bookAuthors.setText(authors);
+         
+         // we leave publisher and subject out of landscape layout         
+         if (this.bookSubject != null) {
+            this.bookSubject.setText(book.getSubject());
+         }         
+         
+         if (this.bookPublisher != null) {            
             this.bookPublisher.setText(book.getPublisher());
          }
       }
