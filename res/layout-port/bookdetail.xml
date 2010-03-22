@@ -26,12 +26,12 @@
 
 	<ImageView android:id="@+id/bookcover" android:layout_width="100dp"
 		android:layout_height="150dp" android:layout_marginTop="5dp"
-		android:layout_marginLeft="50dp" android:layout_marginRight="10dp"
+		android:layout_marginLeft="40dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booksubtitle" />
 
 	<TextView android:id="@+id/bookauthors" android:layout_width="wrap_content"
 		android:layout_height="100dp" android:layout_marginTop="15dp"
-		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+		android:layout_marginLeft="5dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
 		android:maxHeight="150dp" android:maxLines="4" 
 		android:gravity="center_horizontal" style="@style/blackmed" />
@@ -39,13 +39,13 @@
 
 	<TextView android:id="@+id/bookreadstatuslabel"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_marginTop="12dp" android:layout_marginLeft="10dp"
+		android:layout_marginTop="12dp" android:layout_marginLeft="5dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
 		android:layout_toRightOf="@id/bookcover" android:gravity="right"
 		android:text="Have read?:" style="@style/blacksmall" />
 	<CheckBox android:id="@+id/bookreadstatus"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_marginTop="1dp" android:layout_marginRight="10dp"
+		android:layout_marginTop="1dp" android:layout_marginRight="2dp"
 		android:layout_below="@id/bookauthors" android:layout_toRightOf="@id/bookreadstatuslabel"
 		android:gravity="right" />
 
