@@ -9,11 +9,11 @@
 		android:layout_marginRight="10dp" android:background="@drawable/border1" />
 
 	<TextView android:id="@+id/list_items_item_textabove"
-		android:layout_width="300dp" android:layout_height="wrap_content"
+		android:layout_width="320dp" android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/list_items_item_image" android:maxLines="2"
 		android:ellipsize="end" style="@style/whitemed" />
 	<TextView android:id="@+id/list_items_item_textbelow"
-		android:layout_width="300dp" android:layout_height="wrap_content"
+		android:layout_width="320dp" android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/list_items_item_image"
 		android:layout_below="@id/list_items_item_textabove" android:maxLines="2"
 		android:ellipsize="end" style="@style/greytiny" />

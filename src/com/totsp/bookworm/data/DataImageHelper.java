@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.MediaColumns;
 import android.provider.MediaStore.Images.ImageColumns;
@@ -13,10 +15,14 @@ import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
+import com.totsp.bookworm.ManageData;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CacheMap;
 import com.totsp.bookworm.util.CoverImageUtil;
+import com.totsp.bookworm.util.FileUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +39,7 @@ public class DataImageHelper {
 
    private static final Uri IMAGES_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-   private HashMap<Integer, Bitmap> imageCache = new CacheMap<Integer, Bitmap>(1000);
+   private HashMap<Integer, Bitmap> imageCache = new CacheMap<Integer, Bitmap>(200);
 
    private final Context context;
    private String bucketId;
@@ -69,7 +75,7 @@ public class DataImageHelper {
                filePath = c.getString(0);
             } catch (Exception e) {
                // if user manually deletes images from SD, can cause exceptions
-               Log.e(Constants.LOG_TAG, e.getMessage());               
+               Log.e(Constants.LOG_TAG, e.getMessage());
             }
          }
       } finally {
@@ -96,7 +102,7 @@ public class DataImageHelper {
 
    public void clearCache(int id) {
       this.imageCache.remove(id);
-   }
+   }   
 
    public int saveBitmap(final String title, final Bitmap bitmap) {
       ContentValues values = new ContentValues();
@@ -111,26 +117,13 @@ public class DataImageHelper {
       Uri uri = this.context.getContentResolver().insert(DataImageHelper.IMAGES_URI, values);
       int id = Integer.parseInt(uri.toString().substring(Media.EXTERNAL_CONTENT_URI.toString().length() + 1));
 
-      this.saveStream(this.context, uri, bitmap);
+      ///this.saveStream(this.context, uri, bitmap);
 
       if (this.cacheEnabled) {
          this.imageCache.put(id, bitmap);
       }
 
       return id;
-   }
-
-   private void saveStream(final Context context, final Uri uri, final Bitmap bitmap) {
-      OutputStream os = null;
-      try {
-         os = context.getContentResolver().openOutputStream(uri);
-         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, os);
-         os.close();
-      } catch (FileNotFoundException e) {
-         Log.e(Constants.LOG_TAG, e.toString());
-      } catch (IOException e) {
-         Log.e(Constants.LOG_TAG, e.toString());
-      }
    }
 
    public void resetCoverImage(DataHelper dataHelper, String coverImageProviderKey, Book b) {
@@ -148,4 +141,111 @@ public class DataImageHelper {
          dataHelper.updateBook(b);
       }
    }
+
+   /*
+   public static final void insertImage(String imagePath, String name, String description) throws FileNotFoundException {
+      FileInputStream stream = new FileInputStream(imagePath);
+      try {
+         insertImage(BitmapFactory.decodeFile(imagePath), name, description);
+      } finally {
+         try {
+            stream.close();
+         } catch (IOException e) {
+         }
+      }
+   }
+
+   private static final Bitmap storeThumbnail(Bitmap source, long id, float width, float height, int kind) {
+      // create the matrix to scale it
+      Matrix matrix = new Matrix();
+
+      float scaleX = width / source.getWidth();
+      float scaleY = height / source.getHeight();
+
+      matrix.setScale(scaleX, scaleY);
+
+      Bitmap thumb = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+
+      ///Uri url = cr.insert(Images.Thumbnails.EXTERNAL_CONTENT_URI, values);
+
+      
+      try {
+         ///OutputStream thumbOut = cr.openOutputStream(url);
+
+         ///thumb.compress(Bitmap.CompressFormat.JPEG, 100, thumbOut);
+         ///thumbOut.close();
+         return thumb;
+      } catch (FileNotFoundException ex) {
+         return null;
+      } catch (IOException ex) {
+         return null;
+      }
+      
+   }
+
+   public static final void insertImage(Context context, Bitmap source, long bookId) {
+
+      
+      ContentValues values = new ContentValues();
+      values.put(Images.Media.TITLE, title);
+      values.put(Images.Media.DESCRIPTION, description);
+      values.put(Images.Media.MIME_TYPE, "image/jpeg");
+     
+
+      File imageFile = new File(Environment.getExternalStorageDirectory() + "/bookwormdata/images/" + bookId + ".jpg");
+      if (imageFile.exists()) {
+         imageFile.delete();
+      }
+
+      try {
+         imageFile.createNewFile();
+         FileUtil.copyFile(dbBackupFile, dbFile);
+         ManageData.this.application.getDataHelper().resetDbConnection();
+         return null;
+      } catch (IOException e) {
+         Log.e(Constants.LOG_TAG, e.getMessage(), e);
+         return e.getMessage();
+      }
+
+      try {
+         /// url = cr.insert(EXTERNAL_CONTENT_URI, values);
+
+         if (source != null) {
+            
+            OutputStream imageOut = cr.openOutputStream(url);
+            try {
+               source.compress(Bitmap.CompressFormat.JPEG, 50, imageOut);
+            } finally {
+               imageOut.close();
+            }
+           
+
+            ///long id = ContentUris.parseId(url);
+            ///Bitmap miniThumb = StoreThumbnail(source, id, 320F, 240F, Images.Thumbnails.MINI_KIND);
+            ///Bitmap microThumb = StoreThumbnail(miniThumb, id, 50F, 50F, Images.Thumbnails.MICRO_KIND);
+         } else {
+           
+            Log.e(TAG, "Failed to create thumbnail, removing original");
+            cr.delete(url, null, null);
+            url = null;
+           
+         }
+      } catch (Exception e) {
+         
+         Log.e(TAG, "Failed to insert image", e);
+         if (url != null) {
+            cr.delete(url, null, null);
+            url = null;
+         }
+         
+         e.printStackTrace();
+      }
+
+      if (url != null) {
+         stringUrl = url.toString();
+      }
+
+   }
+   */
+
 }

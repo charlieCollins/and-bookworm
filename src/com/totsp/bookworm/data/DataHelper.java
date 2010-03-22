@@ -26,8 +26,8 @@ public class DataHelper {
 
    public static final String ORDER_BY_TITLE_ASC = "book.tit asc";
    public static final String ORDER_BY_TITLE_DESC = "book.tit desc";
-   public static final String ORDER_BY_RATING_ASC = "bookuserdata.rat asc";
-   public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc";
+   public static final String ORDER_BY_RATING_ASC = "bookuserdata.rat asc, book.tit asc";
+   public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc, book.tit asc";
    
    private static final String DATABASE_NAME = "bookworm.db";
    private static final int DATABASE_VERSION = 5;
