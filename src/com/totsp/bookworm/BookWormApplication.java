@@ -14,7 +14,6 @@ public class BookWormApplication extends Application {
 
    public static final String APP_NAME = "BookWorm";
 
-   private static final boolean IMAGE_STORE_PRIVATE = true;
    private static final boolean IMAGE_CACHE_ENABLED = true;
 
    private SharedPreferences prefs;
@@ -36,9 +35,7 @@ public class BookWormApplication extends Application {
       this.establishBookDataSourceFromProvider();
 
       this.dataHelper = new DataHelper(this);
-      this.dataImageHelper =
-               new DataImageHelper(this, "BookWorm", "BookWorm Cover Images", BookWormApplication.IMAGE_STORE_PRIVATE,
-                        BookWormApplication.IMAGE_CACHE_ENABLED);
+      this.dataImageHelper = new DataImageHelper(this, BookWormApplication.IMAGE_CACHE_ENABLED);
    }
 
    private void establishBookDataSourceFromProvider() {

@@ -14,9 +14,7 @@ public final class Book {
    private String isbn10 = "";
    private String isbn13 = "";
    private String title = "";
-   private String subTitle = "";
-   private long coverImageId = 0L;
-   private long coverImageTinyId = 0L;
+   private String subTitle = "";   
    private String publisher = "";
    private String description = "";
    private String format = "";
@@ -64,9 +62,7 @@ public final class Book {
       sb.append("\n publisher:" + this.publisher);
       sb.append("\n description:" + this.description);
       sb.append("\n format:" + this.format);
-      sb.append("\n subject:" + this.subject);
-      sb.append("\n coverImageId:" + this.coverImageId);
-      sb.append("\n coverImageTinyId:" + this.coverImageTinyId);
+      sb.append("\n subject:" + this.subject);      
       sb.append("\n datePubStamp:" + this.datePubStamp);
       return sb.toString();
    }
@@ -163,22 +159,6 @@ public final class Book {
 
    public void setSubject(String subject) {
       this.subject = subject;
-   }
-
-   public long getCoverImageId() {
-      return this.coverImageId;
-   }
-
-   public void setCoverImageId(long coverImageId) {
-      this.coverImageId = coverImageId;
-   }
-
-   public long getCoverImageTinyId() {
-      return this.coverImageTinyId;
-   }
-
-   public void setCoverImageTinyId(long coverImageTinyId) {
-      this.coverImageTinyId = coverImageTinyId;
    }
 
    public boolean isRead() {

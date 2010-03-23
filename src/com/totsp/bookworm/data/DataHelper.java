@@ -144,8 +144,8 @@ public class DataHelper {
             this.bookInsertStmt.bindString(2, b.getIsbn13());
             this.bookInsertStmt.bindString(3, b.getTitle());
             this.bookInsertStmt.bindString(4, b.getSubTitle());
-            this.bookInsertStmt.bindLong(5, b.getCoverImageId());
-            this.bookInsertStmt.bindLong(6, b.getCoverImageTinyId());
+            ///this.bookInsertStmt.bindLong(5, b.getCoverImageId());
+            ///this.bookInsertStmt.bindLong(6, b.getCoverImageTinyId());
             this.bookInsertStmt.bindString(7, b.getPublisher());
             this.bookInsertStmt.bindString(8, b.getDescription());
             this.bookInsertStmt.bindString(9, b.getFormat());
@@ -210,8 +210,8 @@ public class DataHelper {
             values.put(DataConstants.ISBN13, b.getIsbn13());
             values.put(DataConstants.TITLE, b.getTitle());
             values.put(DataConstants.SUBTITLE, b.getSubTitle());
-            values.put(DataConstants.COVERIMAGEID, b.getCoverImageId());
-            values.put(DataConstants.COVERIMAGETINYID, b.getCoverImageTinyId());
+            ///values.put(DataConstants.COVERIMAGEID, b.getCoverImageId());
+            ///values.put(DataConstants.COVERIMAGETINYID, b.getCoverImageTinyId());
             values.put(DataConstants.PUBLISHER, b.getPublisher());
             values.put(DataConstants.DESCRIPTION, b.getDescription());
             values.put(DataConstants.FORMAT, b.getFormat());
@@ -253,8 +253,8 @@ public class DataHelper {
          }
          b.setTitle(c.getString(2));
          b.setSubTitle(c.getString(3));
-         b.setCoverImageId(c.getLong(4));
-         b.setCoverImageTinyId(c.getLong(5));
+         ///b.setCoverImageId(c.getLong(4));
+         ///b.setCoverImageTinyId(c.getLong(5));
          b.setPublisher(c.getString(6));
          b.setDescription(c.getString(7));
          b.setFormat(c.getString(8));
@@ -312,8 +312,8 @@ public class DataHelper {
             }
             b.setTitle(c.getString(3));
             b.setSubTitle(c.getString(4));
-            b.setCoverImageId(c.getLong(5));
-            b.setCoverImageTinyId(c.getLong(6));
+            ///b.setCoverImageId(c.getLong(5));
+            ///b.setCoverImageTinyId(c.getLong(6));
             b.setPublisher(c.getString(7));
             b.setDescription(c.getString(8));
             b.setFormat(c.getString(9));

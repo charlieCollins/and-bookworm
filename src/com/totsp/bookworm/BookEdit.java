@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.AuthorsStringUtil;
 import com.totsp.bookworm.util.DateUtil;
@@ -60,7 +59,7 @@ public class BookEdit extends Activity {
             BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
          }
       });
-      
+
       // TODO another Activity that lets user reset cover image individually from network (or pic, or file)
       this.manageCoverImageButton = (Button) this.findViewById(R.id.bookeditcoverbutton);
       this.manageCoverImageButton.setEnabled(false);
@@ -85,15 +84,13 @@ public class BookEdit extends Activity {
          newBook.setDatePubStamp(DateUtil.parse(this.bookDatePub.getText().toString()).getTime());
          newBook.setPublisher(this.bookPublisher.getText().toString());
 
-         // TODO properties not yet editable, but should be
-         newBook.setCoverImageId(book.getCoverImageId());
-         newBook.setCoverImageTinyId(book.getCoverImageTinyId());
+         // TODO properties not yet editable, but should be         
          newBook.setBlurb(book.getBlurb());
          newBook.setDescription(book.getDescription());
          newBook.setFormat(book.getFormat());
          newBook.setIsbn13(book.getIsbn13());
          newBook.setIsbn10(book.getIsbn10());
-         
+
          // properties editable on display page and not on edit page
          newBook.setRating(book.getRating());
          newBook.setRead(book.isRead());
@@ -106,13 +103,12 @@ public class BookEdit extends Activity {
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
-         ///if (book.getCoverImageId() > 0) {
-            ///Bitmap coverImage = application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
-            Bitmap coverImage = DataImageHelper.retrieveBitmap(BookEdit.this, book.getTitle(), false); 
+         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.getTitle(), false);
+         if (coverImage != null) {
             bookCover.setImageBitmap(coverImage);
-         ///} else {
-         ///   bookCover.setImageResource(R.drawable.book_cover_missing);
-         ///}
+         } else {
+            bookCover.setImageResource(R.drawable.book_cover_missing);
+         }
 
          this.bookTitle.setText(book.getTitle());
          this.bookSubTitle.setText(book.getSubTitle());

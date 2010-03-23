@@ -35,7 +35,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.data.DataHelper;
-import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.model.Book;
 
 import java.util.HashSet;
@@ -247,14 +246,12 @@ public class Main extends Activity {
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
 
             ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
-            coverImageView.setImageBitmap(Main.this.coverImageMissing);
-            // TODO when recycling views the async tasks can return in the wrong order when flinging and such -- need to figure out
-            ///new PopulateCoverImageTask(coverImageView).execute(covImageId);
-            ///if (covImageId > 0) {
-               ///Bitmap coverImageBitmap = Main.this.application.getDataImageHelper().getBitmap(covImageId);
-               Bitmap coverImageBitmap = DataImageHelper.retrieveBitmap(Main.this, title, true); 
+            Bitmap coverImageBitmap = Main.this.application.getDataImageHelper().retrieveBitmap(title, true);
+            if (coverImageBitmap != null) {
                coverImageView.setImageBitmap(coverImageBitmap);
-            ///}
+            } else {
+               coverImageView.setImageBitmap(Main.this.coverImageMissing);
+            }
 
             ImageView ratingImageView = (ImageView) v.findViewById(R.id.list_items_item_rating_image);
             switch (rating) {
@@ -288,7 +285,7 @@ public class Main extends Activity {
             }
          }
       }
-   }   
+   }
 
    /*
    private class PopulateCoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
@@ -335,7 +332,7 @@ public class Main extends Activity {
                Log.v(Constants.LOG_TAG, "resetting cover image for book - " + b.getTitle());
             }
             this.publishProgress("processing: " + b.getTitle());
-            ///Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
+            Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
          }
          return null;
       }

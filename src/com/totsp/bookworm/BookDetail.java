@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RatingBar.OnRatingBarChangeListener;
 
-import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.DateUtil;
@@ -89,10 +88,10 @@ public class BookDetail extends Activity {
          BookDetail.this.application.getDataHelper().updateBook(book);
       }
    }
-   
+
    private void saveReadStatusEdit() {
       Book book = this.application.getSelectedBook();
-      if (book != null) {         
+      if (book != null) {
          book.setRead(this.readStatus.isChecked());
          BookDetail.this.application.getDataHelper().updateBook(book);
       }
@@ -101,13 +100,12 @@ public class BookDetail extends Activity {
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
-         ///if (book.getCoverImageId() > 0) {
-            ///Bitmap coverImage = this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
-            Bitmap coverImage = DataImageHelper.retrieveBitmap(BookDetail.this, book.getTitle(), false); 
+         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.getTitle(), false);
+         if (coverImage != null) {
             this.bookCover.setImageBitmap(coverImage);
-         ///} else {
-         ///   this.bookCover.setImageResource(R.drawable.book_cover_missing);
-         ///}
+         } else {
+            this.bookCover.setImageResource(R.drawable.book_cover_missing);
+         }
 
          this.bookTitle.setText(book.getTitle());
          this.bookSubTitle.setText(book.getSubTitle());
@@ -125,13 +123,13 @@ public class BookDetail extends Activity {
          this.readStatus.setChecked(book.isRead());
          this.bookDatePub.setText(DateUtil.format(new Date(book.getDatePubStamp())));
          this.bookAuthors.setText(authors);
-         
+
          // we leave publisher and subject out of landscape layout         
          if (this.bookSubject != null) {
             this.bookSubject.setText(book.getSubject());
-         }         
-         
-         if (this.bookPublisher != null) {            
+         }
+
+         if (this.bookPublisher != null) {
             this.bookPublisher.setText(book.getPublisher());
          }
       }

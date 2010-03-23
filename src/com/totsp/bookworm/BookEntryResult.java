@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CoverImageUtil;
@@ -73,18 +72,9 @@ public class BookEntryResult extends Activity {
          if (retrieve == null) {
             // save image to ContentProvider
             if (this.book.getCoverImage() != null) {
-               ///int imageId =
-               ///         this.application.getDataImageHelper().saveBitmap(this.book.getTitle(),
-               ///                  this.book.getCoverImage());
-               ///this.book.setCoverImageId(imageId);
-               DataImageHelper.storeBitmap(BookEntryResult.this, this.book.getCoverImage(),this.book.getTitle());
 
-               // also save one really small for use in ListView - rather than scaling later
-               ///Bitmap scaledBookCoverImage = CoverImageUtil.scaleAndFrame(book.getCoverImage(), 55, 70);
-               ///imageId =
-               ///         this.application.getDataImageHelper().saveBitmap(this.book.getTitle() + "-T",
-               ///                  scaledBookCoverImage);
-               ///this.book.setCoverImageTinyId(imageId);
+               BookEntryResult.this.application.getDataImageHelper().storeBitmap(this.book.getCoverImage(),
+                        this.book.getTitle());
             }
             // save book to database
             this.application.getDataHelper().insertBook(this.book);
@@ -101,9 +91,9 @@ public class BookEntryResult extends Activity {
 
    private class GetBookDataTask extends AsyncTask<String, Void, Book> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
-      
+
       // TODO ctor to pass provider keys
-      private String coverImageProviderKey;      
+      private String coverImageProviderKey;
 
       // can use UI thread here
       protected void onPreExecute() {
@@ -121,7 +111,7 @@ public class BookEntryResult extends Activity {
 
          Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.getIsbn10());
          b.setCoverImage(coverImageBitmap);
-         
+
          /*
          // TODO better book cover get stuff (HttpHelper binary)
          // book cover image
