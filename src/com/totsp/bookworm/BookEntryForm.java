@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.AuthorsStringUtil;
 
@@ -166,11 +167,12 @@ public class BookEntryForm extends Activity {
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "picBitmap present in task, attempt image save");
             }
-            int imageId = application.getDataImageHelper().saveBitmap(args[0], picBitmap);
-            if (Constants.LOCAL_LOGV) {
-               Log.d(Constants.LOG_TAG, "imageId - " + imageId);
-            }
-            book.setCoverImageId(imageId);
+            ///int imageId = application.getDataImageHelper().saveBitmap(args[0], picBitmap);
+            DataImageHelper.storeBitmap(BookEntryForm.this, picBitmap, args[0]);
+            ///if (Constants.LOCAL_LOGV) {
+            ///   Log.d(Constants.LOG_TAG, "imageId - " + imageId);
+            ///}
+            ///book.setCoverImageId(imageId);
          } 
 
          long bookId = application.getDataHelper().insertBook(book);

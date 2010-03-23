@@ -9,7 +9,10 @@
 		android:gravity="center_horizontal" style="@style/subtitleblack"
 		android:maxLines="2" android:ellipsize="end" />
 
-    <!--  maxLines="1" seems to kill ellipsize-ability, but can't go 2 lines on this landscape view -->
+	<!--
+		maxLines="1" seems to kill ellipsize-ability, but can't go 2 lines on
+		this landscape view
+	-->
 	<TextView android:id="@+id/booksubtitle" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="1dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
@@ -17,10 +20,10 @@
 		style="@style/subsubtitledkred" android:maxLines="1"
 		android:ellipsize="end" />
 
-	<ImageView android:id="@+id/bookcover" android:layout_width="100px"
+	<ImageView android:id="@+id/bookcover" android:layout_width="120px"
 		android:layout_height="150px" android:layout_marginTop="5dp"
-		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/booksubtitle" android:layout_gravity="left" />
+		android:layout_marginLeft="5dp" android:layout_below="@id/booksubtitle"
+		android:layout_gravity="left" />
 
 	<TextView android:id="@+id/bookauthors" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_marginTop="3dp"

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.AuthorsStringUtil;
 import com.totsp.bookworm.util.DateUtil;
@@ -105,12 +106,13 @@ public class BookEdit extends Activity {
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
-         if (book.getCoverImageId() > 0) {
-            Bitmap coverImage = application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
+         ///if (book.getCoverImageId() > 0) {
+            ///Bitmap coverImage = application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
+            Bitmap coverImage = DataImageHelper.retrieveBitmap(BookEdit.this, book.getTitle(), false); 
             bookCover.setImageBitmap(coverImage);
-         } else {
-            bookCover.setImageResource(R.drawable.book_cover_missing);
-         }
+         ///} else {
+         ///   bookCover.setImageResource(R.drawable.book_cover_missing);
+         ///}
 
          this.bookTitle.setText(book.getTitle());
          this.bookSubTitle.setText(book.getSubTitle());

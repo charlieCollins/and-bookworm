@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RatingBar.OnRatingBarChangeListener;
 
+import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.DateUtil;
@@ -100,12 +101,13 @@ public class BookDetail extends Activity {
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
-         if (book.getCoverImageId() > 0) {
-            Bitmap coverImage = this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
+         ///if (book.getCoverImageId() > 0) {
+            ///Bitmap coverImage = this.application.getDataImageHelper().getBitmap((int) book.getCoverImageId());
+            Bitmap coverImage = DataImageHelper.retrieveBitmap(BookDetail.this, book.getTitle(), false); 
             this.bookCover.setImageBitmap(coverImage);
-         } else {
-            this.bookCover.setImageResource(R.drawable.book_cover_missing);
-         }
+         ///} else {
+         ///   this.bookCover.setImageResource(R.drawable.book_cover_missing);
+         ///}
 
          this.bookTitle.setText(book.getTitle());
          this.bookSubTitle.setText(book.getSubTitle());

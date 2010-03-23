@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CoverImageUtil;
@@ -72,17 +73,18 @@ public class BookEntryResult extends Activity {
          if (retrieve == null) {
             // save image to ContentProvider
             if (this.book.getCoverImage() != null) {
-               int imageId =
-                        this.application.getDataImageHelper().saveBitmap(this.book.getTitle(),
-                                 this.book.getCoverImage());
-               this.book.setCoverImageId(imageId);
+               ///int imageId =
+               ///         this.application.getDataImageHelper().saveBitmap(this.book.getTitle(),
+               ///                  this.book.getCoverImage());
+               ///this.book.setCoverImageId(imageId);
+               DataImageHelper.storeBitmap(BookEntryResult.this, this.book.getCoverImage(),this.book.getTitle());
 
                // also save one really small for use in ListView - rather than scaling later
-               Bitmap scaledBookCoverImage = CoverImageUtil.scaleAndFrame(book.getCoverImage(), 55, 70);
-               imageId =
-                        this.application.getDataImageHelper().saveBitmap(this.book.getTitle() + "-T",
-                                 scaledBookCoverImage);
-               this.book.setCoverImageTinyId(imageId);
+               ///Bitmap scaledBookCoverImage = CoverImageUtil.scaleAndFrame(book.getCoverImage(), 55, 70);
+               ///imageId =
+               ///         this.application.getDataImageHelper().saveBitmap(this.book.getTitle() + "-T",
+               ///                  scaledBookCoverImage);
+               ///this.book.setCoverImageTinyId(imageId);
             }
             // save book to database
             this.application.getDataHelper().insertBook(this.book);

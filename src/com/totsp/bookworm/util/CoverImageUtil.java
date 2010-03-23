@@ -2,8 +2,6 @@ package com.totsp.bookworm.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
@@ -23,16 +21,15 @@ public class CoverImageUtil {
       // book cover image
       String imageUrl = null;
       if (coverImageProviderKey.equals("1")) {
-         // TODO 1 should equal "default for handler" or such - regardless of current handler
+         // 1 should equal "default for handler" or such - regardless of current handler
          // 1 = Google Books 
-         // TODO if user selects Google Books, get them to login and store token
-         // then get cover image id from GB
+         // 1 not supported right now, only using OpenLibrary, which doesn't require login
       } else if (coverImageProviderKey.equals("2")) {
          // 2 = OpenLibrary
+         // M is about 180x225
+         // I scale to 120x150
          imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbn10);
       }
-
-      // TODO once using different cover image sources need to resize for consistency
 
       if (Constants.LOCAL_LOGD) {
          Log.d(Constants.LOG_TAG, "book cover imageUrl - " + imageUrl);
@@ -45,7 +42,7 @@ public class CoverImageUtil {
             conn.connect();
             BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
             coverImageBitmap = BitmapFactory.decodeStream(bis);
-            if (coverImageBitmap.getWidth() < 10) {
+            if (coverImageBitmap != null && coverImageBitmap.getWidth() < 10) {
                coverImageBitmap = null;
             }
          } catch (IOException e) {
@@ -56,8 +53,8 @@ public class CoverImageUtil {
       return coverImageBitmap;
    }
 
-   private static final float PHOTO_BORDER_WIDTH = 3.0f;
-   private static final Paint STROKE_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
+   ///private static final float PHOTO_BORDER_WIDTH = 3.0f;
+   ///private static final Paint STROKE_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
 
    // taken from apps-for-android examples 
    public static Bitmap scaleAndFrame(Bitmap bitmap, int width, int height) {

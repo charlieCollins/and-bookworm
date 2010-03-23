@@ -24,18 +24,21 @@
 		style="@style/subsubtitledkred" android:maxLines="2"
 		android:ellipsize="end" />
 
-	<ImageView android:id="@+id/bookcover" android:layout_width="100dp"
+	<ImageView android:id="@+id/bookcover" android:layout_width="120dp"
 		android:layout_height="150dp" android:layout_marginTop="5dp"
-		android:layout_marginLeft="40dp" android:layout_marginRight="10dp"
+		android:layout_marginLeft="20dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booksubtitle" />
 
 	<TextView android:id="@+id/bookauthors" android:layout_width="wrap_content"
 		android:layout_height="100dp" android:layout_marginTop="15dp"
 		android:layout_marginLeft="5dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
-		android:maxHeight="150dp" android:maxLines="4" 
-		android:gravity="center_horizontal" style="@style/blackmed" />
-		<!--  several bug reports note this, if you ellipsize you only get 2 lines :( android:ellipsize="end" -->
+		android:maxHeight="150dp" android:maxLines="4" android:gravity="center_horizontal"
+		style="@style/blackmed" />
+	<!--
+		several bug reports note this, if you ellipsize you only get 2 lines
+		:( android:ellipsize="end"
+	-->
 
 	<TextView android:id="@+id/bookreadstatuslabel"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -58,8 +61,8 @@
 	<TextView android:id="@+id/booksubject" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="5dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="15dp"
-		android:layout_below="@id/bookrating" 
-		style="@style/blacksmall" android:lines="1" android:ellipsize="end" />
+		android:layout_below="@id/bookrating" style="@style/blacksmall"
+		android:lines="1" android:ellipsize="end" />
 
 	<TextView android:id="@+id/bookpublisher"
 		android:layout_width="150dp" android:layout_height="wrap_content"

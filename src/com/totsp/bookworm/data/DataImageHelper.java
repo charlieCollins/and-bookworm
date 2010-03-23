@@ -15,17 +15,14 @@ import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
-import com.totsp.bookworm.ManageData;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CacheMap;
 import com.totsp.bookworm.util.CoverImageUtil;
-import com.totsp.bookworm.util.FileUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 
 /**
@@ -57,6 +54,7 @@ public class DataImageHelper {
       this.cacheEnabled = cacheEnabled;
    }
 
+   /*
    public Bitmap getBitmap(final int id) {
 
       if (this.cacheEnabled && this.imageCache.containsKey(id)) {
@@ -95,6 +93,7 @@ public class DataImageHelper {
 
       return bitmap;
    }
+   */
 
    public void clearCache() {
       this.imageCache.clear();
@@ -102,8 +101,9 @@ public class DataImageHelper {
 
    public void clearCache(int id) {
       this.imageCache.remove(id);
-   }   
+   }
 
+   /*
    public int saveBitmap(final String title, final Bitmap bitmap) {
       ContentValues values = new ContentValues();
       values.put(MediaColumns.TITLE, title);
@@ -125,7 +125,96 @@ public class DataImageHelper {
 
       return id;
    }
+   */
 
+   // TODO we are keyed on title here - won't allow multiple books with same title, bad
+   
+   public static final Bitmap retrieveBitmap(Context context, String nameInput, boolean thumb) {
+      
+      String name = nameInput.replaceAll("\\s+", "_");  
+      System.out.println("retrieving images using name (derived from title) " + name);
+      
+      Bitmap bitmap = null;
+      
+      File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+      File file = null;
+      if (!thumb) {
+         file = new File(exportDir, name + ".jpg");
+      } else {
+         file = new File(exportDir, name + "-t.jpg");
+      }
+      
+      if (file != null) {
+         bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+      }
+      
+      return bitmap;      
+   }   
+   
+   public static final void storeBitmap(Context context, Bitmap source, String nameInput) {    
+      
+      String name = nameInput.replaceAll("\\s+", "_");  
+      System.out.println("storing images using name (derived from title) " + name);
+      
+      // M from OpenLibrary is about 180x225
+      // I scale to 120x150
+      System.out.println("********** source - " + source + " width:" + source.getWidth() + " height:" + source.getHeight());
+      Bitmap bitmap = DataImageHelper.resizeBitmap(source, 120, 150);     
+      
+      Bitmap bitmapThumb = DataImageHelper.resizeBitmap(source, 55, 70);
+
+      try {
+         File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+         if (!exportDir.exists()) {
+            exportDir.mkdirs();
+         }
+         
+         File file = new File(exportDir, name + ".jpg");         
+         boolean created = file.createNewFile();         
+         if (!created) {
+            // file already exists, should we delete it and recreate it?
+         }         
+         FileOutputStream fos = new FileOutputStream(file);
+         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+         fos.close();
+         
+         File fileThumb = new File(exportDir, name + "-t.jpg");
+         boolean createdThumb = fileThumb.createNewFile(); 
+         if (!createdThumb) {
+            // file already exists, should we delete it and recreate it?
+         }    
+         fos = new FileOutputStream(fileThumb);
+         bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+         fos.close();
+         
+      } catch (FileNotFoundException e) {
+         e.printStackTrace();         
+      } catch (IOException e) {
+         e.printStackTrace();         
+      }
+   }
+   
+   private static final Bitmap resizeBitmap(Bitmap source, final int width, final int height) {
+      // create the matrix to scale it
+      /*
+      Matrix matrix = new Matrix();     
+      float scaleX = width / source.getWidth();
+      float scaleY = height / source.getHeight();
+      matrix.setScale(scaleX, scaleY);
+      return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+      */
+      final int bitmapWidth = source.getWidth();
+      final int bitmapHeight = source.getHeight();
+
+      final float scale = Math.min((float) width / (float) bitmapWidth, (float) height / (float) bitmapHeight);
+
+      final int scaledWidth = (int) (bitmapWidth * scale);
+      final int scaledHeight = (int) (bitmapHeight * scale);
+
+      return Bitmap.createScaledBitmap(source, scaledWidth, scaledHeight, true);
+   }
+
+   /*
    public void resetCoverImage(DataHelper dataHelper, String coverImageProviderKey, Book b) {
       Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(coverImageProviderKey, b.getIsbn10());
       if (coverImageBitmap != null) {
@@ -141,111 +230,5 @@ public class DataImageHelper {
          dataHelper.updateBook(b);
       }
    }
-
-   /*
-   public static final void insertImage(String imagePath, String name, String description) throws FileNotFoundException {
-      FileInputStream stream = new FileInputStream(imagePath);
-      try {
-         insertImage(BitmapFactory.decodeFile(imagePath), name, description);
-      } finally {
-         try {
-            stream.close();
-         } catch (IOException e) {
-         }
-      }
-   }
-
-   private static final Bitmap storeThumbnail(Bitmap source, long id, float width, float height, int kind) {
-      // create the matrix to scale it
-      Matrix matrix = new Matrix();
-
-      float scaleX = width / source.getWidth();
-      float scaleY = height / source.getHeight();
-
-      matrix.setScale(scaleX, scaleY);
-
-      Bitmap thumb = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-
-      ///Uri url = cr.insert(Images.Thumbnails.EXTERNAL_CONTENT_URI, values);
-
-      
-      try {
-         ///OutputStream thumbOut = cr.openOutputStream(url);
-
-         ///thumb.compress(Bitmap.CompressFormat.JPEG, 100, thumbOut);
-         ///thumbOut.close();
-         return thumb;
-      } catch (FileNotFoundException ex) {
-         return null;
-      } catch (IOException ex) {
-         return null;
-      }
-      
-   }
-
-   public static final void insertImage(Context context, Bitmap source, long bookId) {
-
-      
-      ContentValues values = new ContentValues();
-      values.put(Images.Media.TITLE, title);
-      values.put(Images.Media.DESCRIPTION, description);
-      values.put(Images.Media.MIME_TYPE, "image/jpeg");
-     
-
-      File imageFile = new File(Environment.getExternalStorageDirectory() + "/bookwormdata/images/" + bookId + ".jpg");
-      if (imageFile.exists()) {
-         imageFile.delete();
-      }
-
-      try {
-         imageFile.createNewFile();
-         FileUtil.copyFile(dbBackupFile, dbFile);
-         ManageData.this.application.getDataHelper().resetDbConnection();
-         return null;
-      } catch (IOException e) {
-         Log.e(Constants.LOG_TAG, e.getMessage(), e);
-         return e.getMessage();
-      }
-
-      try {
-         /// url = cr.insert(EXTERNAL_CONTENT_URI, values);
-
-         if (source != null) {
-            
-            OutputStream imageOut = cr.openOutputStream(url);
-            try {
-               source.compress(Bitmap.CompressFormat.JPEG, 50, imageOut);
-            } finally {
-               imageOut.close();
-            }
-           
-
-            ///long id = ContentUris.parseId(url);
-            ///Bitmap miniThumb = StoreThumbnail(source, id, 320F, 240F, Images.Thumbnails.MINI_KIND);
-            ///Bitmap microThumb = StoreThumbnail(miniThumb, id, 50F, 50F, Images.Thumbnails.MICRO_KIND);
-         } else {
-           
-            Log.e(TAG, "Failed to create thumbnail, removing original");
-            cr.delete(url, null, null);
-            url = null;
-           
-         }
-      } catch (Exception e) {
-         
-         Log.e(TAG, "Failed to insert image", e);
-         if (url != null) {
-            cr.delete(url, null, null);
-            url = null;
-         }
-         
-         e.printStackTrace();
-      }
-
-      if (url != null) {
-         stringUrl = url.toString();
-      }
-
-   }
    */
-
 }

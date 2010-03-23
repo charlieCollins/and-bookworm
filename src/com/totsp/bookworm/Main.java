@@ -35,6 +35,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.data.DataHelper;
+import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.model.Book;
 
 import java.util.HashSet;
@@ -239,7 +240,7 @@ public class Main extends Activity {
       private void populateView(final View v, final Cursor c) {
          // TODO make this more efficient -- I am not sure how to use ViewHolder, etc with CursorAdapter (or if necc?)
          if ((c != null) && !c.isClosed()) {
-            int covImageId = c.getInt(c.getColumnIndex(DataConstants.COVERIMAGEID));
+            ///int covImageId = c.getInt(c.getColumnIndex(DataConstants.COVERIMAGEID));
             int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
             int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
@@ -249,10 +250,11 @@ public class Main extends Activity {
             coverImageView.setImageBitmap(Main.this.coverImageMissing);
             // TODO when recycling views the async tasks can return in the wrong order when flinging and such -- need to figure out
             ///new PopulateCoverImageTask(coverImageView).execute(covImageId);
-            if (covImageId > 0) {
-               Bitmap coverImageBitmap = Main.this.application.getDataImageHelper().getBitmap(covImageId);
+            ///if (covImageId > 0) {
+               ///Bitmap coverImageBitmap = Main.this.application.getDataImageHelper().getBitmap(covImageId);
+               Bitmap coverImageBitmap = DataImageHelper.retrieveBitmap(Main.this, title, true); 
                coverImageView.setImageBitmap(coverImageBitmap);
-            }
+            ///}
 
             ImageView ratingImageView = (ImageView) v.findViewById(R.id.list_items_item_rating_image);
             switch (rating) {
@@ -288,6 +290,7 @@ public class Main extends Activity {
       }
    }   
 
+   /*
    private class PopulateCoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
       private final ImageView v;
 
@@ -311,6 +314,7 @@ public class Main extends Activity {
          }
       }
    }
+   */
 
    private class ResetCoverImagesTask extends AsyncTask<Void, String, Void> {
       private final ProgressDialog dialog = new ProgressDialog(Main.this);
@@ -331,7 +335,7 @@ public class Main extends Activity {
                Log.v(Constants.LOG_TAG, "resetting cover image for book - " + b.getTitle());
             }
             this.publishProgress("processing: " + b.getTitle());
-            Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
+            ///Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
          }
          return null;
       }
