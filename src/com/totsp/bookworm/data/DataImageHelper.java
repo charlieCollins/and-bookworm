@@ -27,12 +27,12 @@ import java.util.HashMap;
 public class DataImageHelper {
 
    private final HashMap<String, Bitmap> imageCache = new CacheMap<String, Bitmap>(200);
-   private final Context context;
+   ///private final Context context;
 
    private boolean cacheEnabled;
 
    public DataImageHelper(Context context, boolean cacheEnabled) {
-      this.context = context;      
+      ///this.context = context;      
       this.cacheEnabled = cacheEnabled;
    }
    

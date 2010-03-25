@@ -1,96 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@android:id/tabhost" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent">
+		<TabWidget android:id="@android:id/tabs"
+			android:layout_width="fill_parent" android:layout_height="wrap_content" />
+		<FrameLayout android:id="@android:id/tabcontent"
+			android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-	<RelativeLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:background="@drawable/book_bgrnd_noheader_textarea">
+			<!--  tab1 -->
+			<ScrollView android:id="@+id/bookedittab1"
+				android:orientation="vertical" android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
 
-		<TextView android:id="@+id/booktitlelabel"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="20dp" android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp" android:gravity="left" style="@style/blackbold"
-			android:text="Title:" />
-		<EditText android:id="@+id/booktitle" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:layout_marginTop="3dp"
-			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-			android:layout_below="@id/booktitlelabel" android:gravity="left" />
+				<RelativeLayout android:orientation="vertical"
+					android:layout_width="fill_parent" android:layout_height="fill_parent"
+					android:background="@drawable/book_bgrnd_noheader_textarea"
+					android:paddingBottom="40dp">
 
-		<TextView android:id="@+id/booksubtitlelabel"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/booktitle"
-			android:gravity="left" style="@style/black" android:text="Subtitle:" />
-		<EditText android:id="@+id/booksubtitle"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/booksubtitlelabel"
-			android:gravity="left" />
+					<TextView android:id="@+id/booktitlelabel"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="20dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:gravity="left" style="@style/black"
+						android:text="Title:" />
+					<EditText android:id="@+id/booktitleform"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/booktitlelabel"
+						android:gravity="left" />
 
-		<!--
-			TODO make cover selectable, and go to page to scan in cover, upload a
-			cover, etc
-		-->
-		<ImageView android:id="@+id/bookcover" android:layout_width="64px"
-			android:layout_height="80px" android:layout_marginTop="5dp"
-			android:layout_marginLeft="30dp" android:layout_marginRight="10dp"
-			android:layout_below="@id/booksubtitle" android:layout_gravity="center_horizontal" />
-		<Button android:id="@+id/bookeditcoverbutton"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
-			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-			android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
-			android:gravity="left" android:text="Manage Cover Image"
-			style="@style/blacksmall" />
+					<TextView android:id="@+id/booksubtitlelabel"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/booktitleform"
+						android:gravity="left" style="@style/black" android:text="Subtitle:" />
+					<EditText android:id="@+id/booksubtitle"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitlelabel"
+						android:gravity="left" />
 
-		<TextView android:id="@+id/bookauthorslabel"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/bookcover"
-			android:gravity="left" style="@style/black" android:text="Authors (comma sep):" />
-		<EditText android:id="@+id/bookauthors" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:layout_marginTop="3dp"
-			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-			android:layout_below="@id/bookauthorslabel" android:gravity="left" />
+					<TextView android:id="@+id/bookauthorslabel"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitle"
+						android:gravity="left" style="@style/black" android:text="Authors (comma sep):" />
+					<EditText android:id="@+id/bookauthors"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/bookauthorslabel"
+						android:gravity="left" />
 
-		<TextView android:id="@+id/booksubjectlabel"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
-			android:gravity="left" style="@style/black" android:text="Subject:" />
-		<EditText android:id="@+id/booksubject" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:layout_marginTop="3dp"
-			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-			android:layout_below="@id/booksubjectlabel" android:gravity="left" />
+					<TextView android:id="@+id/booksubjectlabel"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
+						android:gravity="left" style="@style/black" android:text="Subject:" />
+					<EditText android:id="@+id/booksubject"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/booksubjectlabel"
+						android:gravity="left" />
 
-		<TextView android:id="@+id/bookpublisherlabel"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
-			android:gravity="left" style="@style/black" android:text="Publisher:" />
-		<EditText android:id="@+id/bookpublisher"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/bookpublisherlabel"
-			android:gravity="left" />
+					<TextView android:id="@+id/bookpublisherlabel"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
+						android:gravity="left" style="@style/black" android:text="Publisher:" />
+					<EditText android:id="@+id/bookpublisher"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/bookpublisherlabel"
+						android:gravity="left" />
 
-		<TextView android:id="@+id/bookdatepublabel"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp" android:layout_below="@id/bookpublisher"
-			android:gravity="left" style="@style/black" android:text="Date:" />
-		<EditText android:id="@+id/bookdatepub" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:layout_marginTop="3dp"
-			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-			android:layout_below="@id/bookdatepublabel" android:gravity="left" />
+					<TextView android:id="@+id/bookdatepublabel"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/bookpublisher"
+						android:gravity="left" style="@style/black" android:text="Date:" />
+					<EditText android:id="@+id/bookdatepub"
+						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/bookdatepublabel"
+						android:gravity="left" />
 
 
-		<Button android:id="@+id/bookeditsavebutton"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
-			android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-			android:layout_below="@id/bookdatepub" android:gravity="left"
-			android:text="Save" style="@style/black" />
-	</RelativeLayout>
-</ScrollView>
+					<Button android:id="@+id/bookeditsavebutton"
+						android:layout_width="150dp" android:layout_height="wrap_content"
+						android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
+						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+						android:layout_below="@id/bookdatepub" android:layout_gravity="center_horizontal"
+						android:text="Save" style="@style/black" />
+				</RelativeLayout>
+			</ScrollView>
+
+			<!--  tab 2 -->
+			<LinearLayout android:id="@+id/bookedittab2"
+				android:orientation="vertical" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:gravity="center">
+
+				<TextView android:id="@+id/booktitlecover"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
+					android:layout_marginRight="10dp" android:gravity="center_horizontal"
+					style="@style/subtitleblack" android:maxLines="2"
+					android:ellipsize="end" />
+				<TextView android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:layout_marginTop="20dp"
+					android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+					android:layout_below="@id/booktitle" android:gravity="center_horizontal"
+					android:text="Current Cover Image" />
+				<ImageView android:id="@+id/bookcover"
+					android:layout_width="120px" android:layout_height="150px"
+					android:layout_marginTop="5dp" android:layout_marginLeft="30dp"
+					android:layout_marginRight="10dp" android:layout_gravity="center_horizontal" />
+				<Button android:id="@+id/bookeditresetcoverbutton"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
+					android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+					android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
+					android:gravity="left" android:text="Reset cover image (via web)"
+					style="@style/blacksmall" />
+				<Button android:id="@+id/bookeditreplacecoverbutton"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
+					android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+					android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
+					android:gravity="left" android:text="Replace cover image with file (from sdcard)"
+					style="@style/blacksmall" />
+
+			</LinearLayout>
+		</FrameLayout>
+	</LinearLayout>
+</TabHost>

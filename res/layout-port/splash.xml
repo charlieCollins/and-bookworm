@@ -8,7 +8,7 @@
 		style="@style/titlegold" />
 	<ImageView android:id="@+id/splashlogo" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginBottom="10dp"
-		android:layout_marginTop="15dp" android:layout_below="@id/splashtitle"
+		android:layout_marginTop="60dp" android:layout_below="@id/splashtitle"
 		android:gravity="center" android:src="@drawable/books200" />
 	<TextView android:id="@+id/splashtap" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="85dp"
