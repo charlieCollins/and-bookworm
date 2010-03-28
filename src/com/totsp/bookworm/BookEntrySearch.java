@@ -63,10 +63,12 @@ public class BookEntrySearch extends Activity {
       LayoutInflater li = this.getLayoutInflater();
       this.getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);
       this.getMoreData.setOnClickListener(new OnClickListener() {
-         public void onClick(final View v) {
+         public void onClick(final View v) {        
             BookEntrySearch.this.startIndex += 20;
             new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
                      .valueOf(BookEntrySearch.this.startIndex));
+            BookEntrySearch.this.searchResults.setSelection(BookEntrySearch.this.startIndex  - 20);
+            
          }
       });
    }
