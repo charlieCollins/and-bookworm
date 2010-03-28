@@ -97,7 +97,7 @@ public class Main extends Activity {
             Book book = Main.this.application.getDataHelper().selectBook(bookId);
             if (book != null) {
                if (Constants.LOCAL_LOGV) {
-                  Log.v(Constants.LOG_TAG, "book selected - " + book.getTitle());
+                  Log.v(Constants.LOG_TAG, "book selected - " + book.title);
                }
                Main.this.application.setSelectedBook(book);
                Main.this.startActivity(new Intent(Main.this, BookDetail.class));
@@ -186,10 +186,11 @@ public class Main extends Activity {
          Main.this.startActivity(new Intent(Main.this, BookEdit.class));
          return true;
       case MENU_CONTEXT_DELETE:
-         new AlertDialog.Builder(Main.this).setTitle("Delete book?").setMessage(b.getTitle()).setPositiveButton(
+         new AlertDialog.Builder(Main.this).setTitle("Delete book?").setMessage(b.title).setPositiveButton(
                   "Yes, I'm Sure", new DialogInterface.OnClickListener() {
                      public void onClick(final DialogInterface d, final int i) {
-                        Main.this.application.getDataHelper().deleteBook(b.getId());
+                        Main.this.application.getDataImageHelper().deleteBitmapSourceFile(b.title, b.id);
+                        Main.this.application.getDataHelper().deleteBook(b.id);
                         Main.this.startActivity(Main.this.getIntent());
                         Main.this.finish();
                      }
@@ -370,13 +371,13 @@ public class Main extends Activity {
       }
 
       protected Void doInBackground(final Void... args) {
-         Main.this.application.getDataImageHelper().clearAllCurrentImageFiles();
+         Main.this.application.getDataImageHelper().clearAllBitmapSourceFiles();
          HashSet<Book> books = Main.this.application.getDataHelper().selectAllBooks();
          for (Book b : books) {
             if (Constants.LOCAL_LOGV) {
-               Log.v(Constants.LOG_TAG, "resetting cover image for book - " + b.getTitle());
+               Log.v(Constants.LOG_TAG, "resetting cover image for book - " + b.title);
             }            
-            this.publishProgress("processing: " + b.getTitle());
+            this.publishProgress("processing: " + b.title);
             Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
          }
          return null;

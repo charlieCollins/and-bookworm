@@ -95,8 +95,8 @@ public class BookEntrySearch extends Activity {
 
          if ((books != null) && !books.isEmpty()) {            
             for (Book b : books) {
-               if (((b.getIsbn10() != null) && !b.getIsbn10().equals(""))
-                        || ((b.getIsbn13() != null) && !b.getIsbn13().equals(""))) {
+               if (((b.isbn10 != null) && !b.isbn10.equals(""))
+                        || ((b.isbn13 != null) && !b.isbn13.equals(""))) {
                   BookEntrySearch.this.parsedBooks.add(b);
                }
             }
@@ -118,10 +118,10 @@ public class BookEntrySearch extends Activity {
                   Book selected = BookEntrySearch.this.parsedBooks.get(index);
                   Intent intent = new Intent(BookEntrySearch.this, BookEntryResult.class);
                   // favor isbn 10, but use 13 if 10 missing
-                  if ((selected.getIsbn10() != null) && !selected.getIsbn10().equals("")) {
-                     intent.putExtra(Constants.ISBN, selected.getIsbn10());
-                  } else if ((selected.getIsbn13() != null) && !selected.getIsbn13().equals("")) {
-                     intent.putExtra(Constants.ISBN, selected.getIsbn13());
+                  if ((selected.isbn10 != null) && !selected.isbn10.equals("")) {
+                     intent.putExtra(Constants.ISBN, selected.isbn10);
+                  } else if ((selected.isbn13 != null) && !selected.isbn13.equals("")) {
+                     intent.putExtra(Constants.ISBN, selected.isbn13);
                   }
                   intent.putExtra("FROM_SEARCH_RESULTS", true);
                   BookEntrySearch.this.startActivity(intent);

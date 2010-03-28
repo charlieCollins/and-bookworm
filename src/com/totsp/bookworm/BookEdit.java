@@ -117,25 +117,25 @@ public class BookEdit extends TabActivity {
       Book book = this.application.getSelectedBook();
       if (book != null) {
          Book newBook = new Book();
-         newBook.setTitle(this.bookTitleFormTab.getText().toString());
-         newBook.setSubTitle(this.bookSubTitle.getText().toString());
-         newBook.setAuthors(AuthorsStringUtil.expandAuthors(this.bookAuthors.getText().toString()));
-         newBook.setSubject(this.bookSubject.getText().toString());
-         newBook.setDatePubStamp(DateUtil.parse(this.bookDatePub.getText().toString()).getTime());
-         newBook.setPublisher(this.bookPublisher.getText().toString());
+         newBook.title = (this.bookTitleFormTab.getText().toString());
+         newBook.subTitle = (this.bookSubTitle.getText().toString());
+         newBook.authors = (AuthorsStringUtil.expandAuthors(this.bookAuthors.getText().toString()));
+         newBook.subject = (this.bookSubject.getText().toString());
+         newBook.datePubStamp = (DateUtil.parse(this.bookDatePub.getText().toString()).getTime());
+         newBook.publisher = (this.bookPublisher.getText().toString());
 
-         // TODO properties not yet editable, but should be         
-         newBook.setBlurb(book.getBlurb());
-         newBook.setDescription(book.getDescription());
-         newBook.setFormat(book.getFormat());
-         newBook.setIsbn13(book.getIsbn13());
-         newBook.setIsbn10(book.getIsbn10());
+         // NOTE - properties not yet editable (will be in future)        
+         newBook.blurb = book.blurb;
+         newBook.description = (book.description);
+         newBook.format = (book.format);
+         newBook.isbn13 = (book.isbn13);
+         newBook.isbn10 = (book.isbn10);
 
          // properties editable on display page and not on edit page
-         newBook.setRating(book.getRating());
-         newBook.setRead(book.isRead());
+         newBook.rating = (book.rating);
+         newBook.read = (book.read);
 
-         newBook.setId(book.getId());
+         newBook.id = (book.id);
          new UpdateBookTask().execute(newBook);
       }
    }
@@ -143,20 +143,20 @@ public class BookEdit extends TabActivity {
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
-         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.getTitle(), book.getId(), false);
+         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.title, book.id, false);
          if (coverImage != null) {
             this.bookCover.setImageBitmap(coverImage);
          } else {
             this.bookCover.setImageResource(R.drawable.book_cover_missing);
          }
 
-         this.bookTitleFormTab.setText(book.getTitle());
-         this.bookTitleCoverTab.setText(book.getTitle());
-         this.bookSubTitle.setText(book.getSubTitle());
-         this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.getAuthors()));
-         this.bookSubject.setText(book.getSubject());
-         this.bookDatePub.setText(DateUtil.format(new Date(book.getDatePubStamp())));
-         this.bookPublisher.setText(book.getPublisher());
+         this.bookTitleFormTab.setText(book.title);
+         this.bookTitleCoverTab.setText(book.title);
+         this.bookSubTitle.setText(book.subTitle);
+         this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
+         this.bookSubject.setText(book.subject);
+         this.bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
+         this.bookPublisher.setText(book.publisher);
       }
    }
 
@@ -171,7 +171,7 @@ public class BookEdit extends TabActivity {
 
    @Override
    protected void onSaveInstanceState(final Bundle saveState) {
-      saveState.putLong(Constants.BOOK_ID, this.application.getSelectedBook().getId());
+      saveState.putLong(Constants.BOOK_ID, this.application.getSelectedBook().id);
       super.onSaveInstanceState(saveState);
    }
 
@@ -200,9 +200,9 @@ public class BookEdit extends TabActivity {
 
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
-         if ((book != null) && (book.getId() > 0)) {
+         if ((book != null) && (book.id > 0)) {
             BookEdit.this.application.getDataHelper().updateBook(book);
-            BookEdit.this.application.establishSelectedBook(book.getId());
+            BookEdit.this.application.establishSelectedBook(book.id);
             return true;
          }
          return false;
@@ -234,7 +234,7 @@ public class BookEdit extends TabActivity {
 
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
-         if ((book != null) && (book.getId() > 0)) {
+         if ((book != null) && (book.id > 0)) {
             BookEdit.this.application.getDataImageHelper().resetCoverImage(BookEdit.this.application.getDataHelper(),
                      "2", book);
             return true;
@@ -267,8 +267,8 @@ public class BookEdit extends TabActivity {
 
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
-         if ((book != null) && (book.getId() > 0)) {
-            BookEdit.this.application.getDataImageHelper().createAndStoreCoverImage(book.getTitle(), book.getId());
+         if ((book != null) && (book.id > 0)) {
+            BookEdit.this.application.getDataImageHelper().createAndStoreCoverImage(book.title, book.id);
             return true;
          }
          return false;

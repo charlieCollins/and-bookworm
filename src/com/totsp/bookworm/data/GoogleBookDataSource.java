@@ -36,7 +36,6 @@ public class GoogleBookDataSource implements IBookDataSource {
    }
    
    public Book getBook(String isbn) {
-      // TODO validate isbn
       return this.getSingleBook(isbn);
    }
 
@@ -57,7 +56,7 @@ public class GoogleBookDataSource implements IBookDataSource {
          Log.v(Constants.LOG_TAG, "HTTP response\n" + response);
       }
       if (response == null || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
-         return null; // TODO better error handling
+         return null; 
       }
       return this.parseResponse(response).get(0);
    }
@@ -76,7 +75,7 @@ public class GoogleBookDataSource implements IBookDataSource {
          Log.v(Constants.LOG_TAG, "HTTP response\n" + response);
       }
       if (response == null || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
-         return null; // TODO better error handling
+         return null; 
       }
       return this.parseResponse(response);
    }

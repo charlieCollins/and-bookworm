@@ -3,8 +3,10 @@ package com.totsp.bookworm.model;
 
 public final class Author {
 
-   private long id;
-   private String name;
+   // NOTE - no accessors/mutators by design, Android optimization
+   
+   public long id;
+   public String name;
    
    public Author() {
    }
@@ -20,20 +22,4 @@ public final class Author {
       sb.append(" name:" + this.name);
       return sb.toString();
    }
-
-   public long getId() {
-      return this.id;
-   }
-
-   public void setId(long id) {
-      this.id = id;
-   }
-
-   public String getName() {
-      return this.name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
-   }   
 }

@@ -29,7 +29,7 @@ public class GoogleBooksHandler extends DefaultHandler {
    private boolean inEntry;
    StringBuilder sb;
 
-   public GoogleBooksHandler() {      
+   public GoogleBooksHandler() {
    }
 
    @Override
@@ -76,7 +76,7 @@ public class GoogleBooksHandler extends DefaultHandler {
 
          String rel = this.getAttributeValue("rel", atts);
          if (rel.equalsIgnoreCase("http://schemas.google.com/books/2008/thumbnail")) {
-            book.setCoverImageURL(this.getAttributeValue("href", atts));
+            this.book.coverImageURL = (this.getAttributeValue("href", atts));
          }
       }
    }
@@ -90,48 +90,48 @@ public class GoogleBooksHandler extends DefaultHandler {
          }
       }
 
-      String bufferContents = sb.toString().replaceAll("\\s+", " ");
+      String bufferContents = this.sb.toString().replaceAll("\\s+", " ");
 
       if (this.inEntry && localName.equals("title")) {
          // there is an unqualified title and 0-n dc:title (s) so title is complicated  
          // and qName seems to be NULL on Android, namespace-prefixes feature may not be enabled?
          // whatever the cause, have to rely on this to work WITHOUT qNames
-         if (book.getTitle() == null || book.getTitle().equals("")) {
-            book.setTitle(bufferContents);
-         } else if (book.getSubTitle() == null || book.getSubTitle().equals("")) {
-            if (!book.getTitle().equals(bufferContents)) {
-               book.setSubTitle(bufferContents);
+         if ((this.book.title == null) || this.book.title.equals("")) {
+            this.book.title = (bufferContents);
+         } else if ((this.book.subTitle == null) || this.book.subTitle.equals("")) {
+            if (!this.book.title.equals(bufferContents)) {
+               this.book.subTitle = (bufferContents);
             }
          }
          // don't set past sub
       } else if (this.inEntry && localName.equals("date")) {
          Date d = DateUtil.parse(bufferContents);
          if (d != null) {
-            this.book.setDatePubStamp(d.getTime());
+            this.book.datePubStamp = (d.getTime());
          }
       } else if (this.inEntry && localName.equals("creator")) {
-         this.book.getAuthors().add(new Author(bufferContents));
+         this.book.authors.add(new Author(bufferContents));
       } else if (this.inEntry && localName.equals("identifier")) {
          String id = bufferContents;
-         if (id != null && id.startsWith("ISBN")) {
+         if ((id != null) && id.startsWith("ISBN")) {
             id = id.substring(5, id.length()).trim();
             if (id.length() == 10) {
-               book.setIsbn10(id);
+               this.book.isbn10 = (id);
             } else if (id.length() == 13) {
-               book.setIsbn13(id);
+               this.book.isbn13 = (id);
             }
          }
       } else if (this.inEntry && localName.equals("publisher")) {
-         this.book.setPublisher(bufferContents);
+         this.book.publisher = (bufferContents);
       } else if (this.inEntry && localName.equals("subject")) {
-         this.book.setSubject(bufferContents);
+         this.book.subject = (bufferContents);
       } else if (this.inEntry && localName.equals("description")) {
-         this.book.setDescription(bufferContents);
+         this.book.description = (bufferContents);
       } else if (this.inEntry && localName.equals("format")) {
-         if (this.book.getFormat() != null) {
-            this.book.setFormat(new String(this.book.getFormat() + " " + bufferContents).trim());
+         if (this.book.format != null) {
+            this.book.format = (new String(this.book.format + " " + bufferContents).trim());
          } else {
-            this.book.setFormat(bufferContents);
+            this.book.format = (bufferContents);
          }
       } else if (this.inEntry && localName.equals("link")) {
       }

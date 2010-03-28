@@ -145,8 +145,7 @@ public class BookEntryForm extends Activity {
       this.surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
    }
 
-   // TODO should the form just take you to the BookEntryResult page same as scan and search? 
-   // no need to do all this here?
+   // Note - the form could potentially just take you to the BookEntryResult page same as scan and search? 
    private class InsertBookTask extends AsyncTask<String, Void, Void> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryForm.this);
 
@@ -159,14 +158,14 @@ public class BookEntryForm extends Activity {
       // automatically done on worker thread (separate from UI thread)
       protected Void doInBackground(String... args) {
          Book book = new Book();
-         book.setTitle(args[0]);
-         book.setAuthors(AuthorsStringUtil.expandAuthors(args[1]));
+         book.title = (args[0]);
+         book.authors = (AuthorsStringUtil.expandAuthors(args[1]));
          long bookId = application.getDataHelper().insertBook(book);
          if (picBitmap != null) {
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "picBitmap present in task, attempt image save");
             }
-            BookEntryForm.this.application.getDataImageHelper().storeBitmap(picBitmap, book.getTitle(), bookId);
+            BookEntryForm.this.application.getDataImageHelper().storeBitmap(picBitmap, book.title, bookId);
          }
          if (Constants.LOCAL_LOGV) {
             Log.v(Constants.LOG_TAG, "Created book, bookId - " + bookId);

@@ -23,14 +23,14 @@ public final class AuthorsStringUtil {
    public static String contractAuthors(Set<Author> authors) {
       String result = null;
       if (authors.size() == 1) {
-         result = authors.iterator().next().getName();
+         result = authors.iterator().next().name;
       } else {
          int count = 0;
          for (Author a : authors) {
             if (count == 0) {
-               result = a.getName();
+               result = a.name;
             } else {
-               result += ", " + a.getName();
+               result += ", " + a.name;
             }
             count++;
          }

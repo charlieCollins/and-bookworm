@@ -84,13 +84,13 @@ public class BookEntryResult extends Activity {
    */
 
    private void bookAddClick() {
-      if ((this.book != null) && (this.book.getIsbn10() != null)) {
+      if ((this.book != null) && (this.book.isbn10 != null)) {
          // TODO check for book exists using more than just ISBN or title (these are not unique - use a combination maybe?)
          // save book to database
          long bookId = this.application.getDataHelper().insertBook(this.book);
-         if (this.book.getCoverImage() != null) {
-            BookEntryResult.this.application.getDataImageHelper().storeBitmap(this.book.getCoverImage(),
-                     this.book.getTitle(), bookId);
+         if (this.book.coverImage != null) {
+            BookEntryResult.this.application.getDataImageHelper().storeBitmap(this.book.coverImage,
+                     this.book.title, bookId);
          }
       }
       this.startActivity(new Intent(BookEntryResult.this, Main.class));
@@ -105,7 +105,6 @@ public class BookEntryResult extends Activity {
    private class GetBookDataTask extends AsyncTask<String, Void, Book> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
 
-      // TODO ctor to pass provider keys
       private String coverImageProviderKey;
 
       protected void onPreExecute() {
@@ -118,8 +117,8 @@ public class BookEntryResult extends Activity {
 
       protected Book doInBackground(final String... isbns) {
          Book b = BookEntryResult.this.application.getBookDataSource().getBook(isbns[0]);
-         Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.getIsbn10());         
-         b.setCoverImage(coverImageBitmap);
+         Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);         
+         b.coverImage = (coverImageBitmap);
          return b;
       }
 
@@ -129,22 +128,22 @@ public class BookEntryResult extends Activity {
          }
 
          if (b != null) {
-            BookEntryResult.this.bookTitle.setText(b.getTitle());
+            BookEntryResult.this.bookTitle.setText(b.title);
             String authors = null;
-            for (Author a : b.getAuthors()) {
+            for (Author a : b.authors) {
                if (authors == null) {
-                  authors = a.getName();
+                  authors = a.name;
                } else {
-                  authors += ", " + a.getName();
+                  authors += ", " + a.name;
                }
             }
             BookEntryResult.this.bookAuthors.setText(authors);
 
-            if (b.getCoverImage() != null) {
+            if (b.coverImage != null) {
                if (Constants.LOCAL_LOGV) {
                   Log.v(Constants.LOG_TAG, "book cover bitmap present, set cover");
                }
-               BookEntryResult.this.bookCover.setImageBitmap(b.getCoverImage());
+               BookEntryResult.this.bookCover.setImageBitmap(b.coverImage);
             } else {
                if (Constants.LOCAL_LOGV) {
                   Log.v(Constants.LOG_TAG, "book cover not found");
