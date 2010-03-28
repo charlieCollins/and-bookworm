@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -253,7 +252,6 @@ public class BookEdit extends TabActivity {
          } else {
             Toast.makeText(BookEdit.this, "Book updated", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookEdit.this, BookDetail.class);
-            intent.putExtra("RELOAD_AFTER_EDIT", true);
             BookEdit.this.startActivity(intent);
          }
       }
@@ -285,8 +283,7 @@ public class BookEdit extends TabActivity {
                      Toast.LENGTH_LONG).show();
          } else {            
             Toast.makeText(BookEdit.this, "Book updated", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(BookEdit.this, Main.class);
-            intent.putExtra("RELOAD_AFTER_EDIT", true);
+            Intent intent = new Intent(BookEdit.this, BookDetail.class);
             BookEdit.this.startActivity(intent);
          }
       }
