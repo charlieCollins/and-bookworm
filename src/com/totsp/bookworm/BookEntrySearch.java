@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -16,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
@@ -27,8 +24,6 @@ import java.util.ArrayList;
 
 public class BookEntrySearch extends Activity {
 
-   private static final int MENU_NEXT_PAGE = 0;
-   private static final int MENU_PREV_PAGE = 1;
    private int startIndex = 1;
 
    private EditText searchInput;
@@ -71,33 +66,6 @@ public class BookEntrySearch extends Activity {
             
          }
       });
-   }
-
-   @Override
-   public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, BookEntrySearch.MENU_PREV_PAGE, 0, "Prev page of results").setIcon(android.R.drawable.ic_menu_search);
-      menu.add(0, BookEntrySearch.MENU_NEXT_PAGE, 1, "Next page of results").setIcon(android.R.drawable.ic_menu_search);
-      return super.onCreateOptionsMenu(menu);
-   }
-
-   @Override
-   public boolean onOptionsItemSelected(final MenuItem item) {
-      switch (item.getItemId()) {
-      case MENU_NEXT_PAGE:
-         this.startIndex += 20;
-         new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
-                  .valueOf(BookEntrySearch.this.startIndex));
-         return true;
-      case MENU_PREV_PAGE:
-         if (this.startIndex > 1) {
-            this.startIndex -= 20;
-            new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
-                     .valueOf(BookEntrySearch.this.startIndex));
-         }
-         return true;
-      default:
-         return super.onOptionsItemSelected(item);
-      }
    }
 
    private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
