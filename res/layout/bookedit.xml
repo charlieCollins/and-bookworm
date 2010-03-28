@@ -90,12 +90,13 @@
 				android:layout_width="fill_parent" android:layout_height="wrap_content">
 				<LinearLayout android:orientation="vertical"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:gravity="center" android:background="@drawable/book_bgrnd_noheader_textarea">
+					android:gravity="center_horizontal" android:background="@drawable/book_bgrnd_noheader_textarea">
 					<TextView android:id="@+id/booktitlecover"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
-						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-						android:gravity="center_horizontal" style="@style/subtitleblack"
-						android:maxLines="3" android:ellipsize="end" />
+						android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:gravity="center_horizontal"
+						style="@style/subtitleblack" android:maxLines="3"
+						android:ellipsize="end" />
 					<TextView android:layout_width="fill_parent"
 						android:layout_height="wrap_content" android:layout_marginTop="10dp"
 						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
@@ -109,13 +110,11 @@
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitle"
-						android:layout_toRightOf="@id/bookcover" android:gravity="left"
 						android:text="Reset cover image" style="@style/blacksmall" />
 					<Button android:id="@+id/bookeditcreatecoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitle"
-						android:layout_toRightOf="@id/bookcover" android:gravity="left"
 						android:text="Create cover image" style="@style/blacksmall" />
 				</LinearLayout>
 			</ScrollView>
