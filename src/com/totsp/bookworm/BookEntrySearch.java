@@ -63,7 +63,7 @@ public class BookEntrySearch extends Activity {
             BookEntrySearch.this.startIndex += 20;
             new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
                      .valueOf(BookEntrySearch.this.startIndex));
-            //BookEntrySearch.this.searchResults.setSelection(BookEntrySearch.this.startIndex  - 20);            
+            ///BookEntrySearch.this.searchResults.setSelection(BookEntrySearch.this.startIndex  - 20);            
          }
       });
    }
