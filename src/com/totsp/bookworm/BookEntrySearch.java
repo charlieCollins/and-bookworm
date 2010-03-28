@@ -32,6 +32,7 @@ public class BookEntrySearch extends Activity {
 
    private TextView getMoreData;
 
+   private boolean footerViewShown;
    private ArrayList<Book> parsedBooks;
    private ArrayAdapter<Book> adapter;
 
@@ -101,8 +102,9 @@ public class BookEntrySearch extends Activity {
             }
 
             // add footer view BEFORE setting adapter
-            if (!BookEntrySearch.this.parsedBooks.isEmpty()) {
+            if (!BookEntrySearch.this.parsedBooks.isEmpty() && !BookEntrySearch.this.footerViewShown) {               
                BookEntrySearch.this.searchResults.addFooterView(BookEntrySearch.this.getMoreData);
+               BookEntrySearch.this.footerViewShown = true;
             }
 
             BookEntrySearch.this.adapter =
