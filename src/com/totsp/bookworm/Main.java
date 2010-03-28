@@ -284,7 +284,6 @@ public class Main extends Activity {
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
             
-            // TODO why is populate called twice for each item
             if (Constants.LOCAL_LOGD) {
                Log.d(Constants.LOG_TAG, "book id from cursor - " + id);
                Log.d(Constants.LOG_TAG, "title from cursor - " + title);
