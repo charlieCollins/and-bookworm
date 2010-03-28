@@ -91,6 +91,9 @@ public class BookEntryResult extends Activity {
          if (this.book.coverImage != null) {
             BookEntryResult.this.application.getDataImageHelper().storeBitmap(this.book.coverImage,
                      this.book.title, bookId);
+         } else {
+            // create cover image if none found
+            this.application.getDataImageHelper().createAndStoreCoverImage(this.book.title, bookId);            
          }
       }
       this.startActivity(new Intent(BookEntryResult.this, Main.class));

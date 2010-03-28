@@ -159,6 +159,9 @@ public class DataHelper {
             this.bookInsertStmt.bindString(10, b.subject);
             this.bookInsertStmt.bindLong(11, b.datePubStamp);
             bookId = this.bookInsertStmt.executeInsert();
+            if (Constants.LOCAL_LOGD) {
+               Log.d(Constants.LOG_TAG, "book id after insert - " + bookId);
+            }
 
             // insert bookauthors
             this.insertBookAuthorData(bookId, authorIds);
@@ -225,6 +228,8 @@ public class DataHelper {
             values.put(DataConstants.SUBJECT, b.subject);
             values.put(DataConstants.DATEPUB, b.datePubStamp);
 
+            Log.d(Constants.LOG_TAG, "prior to UPDATE STATEMENT **** ");
+            
             this.db.update(DataHelper.BOOK_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String
                      .valueOf(b.id) });
 

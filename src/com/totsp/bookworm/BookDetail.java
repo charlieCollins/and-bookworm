@@ -61,7 +61,7 @@ public class BookDetail extends Activity {
 
       this.readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
          public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
-            // TODO not sure why change listener fires when onCreate is init, but does
+            // NOTE not sure why change listener fires when onCreate is init, but does
             BookDetail.this.saveReadStatusEdit();
          }
       });

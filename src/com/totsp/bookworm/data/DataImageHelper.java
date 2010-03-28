@@ -155,11 +155,11 @@ public class DataImageHelper {
       paint.setAntiAlias(true);
 
       String[] words = title.split(" ");
-      String line1 = this.parseLine(0, 25, words);
-      String line2 = this.parseLine(line1.split(" ").length, 25, words);
-      String line3 = this.parseLine(line1.split(" ").length + line2.split(" ").length, 25, words);
+      String line1 = this.parseLine(0, 15, words);
+      String line2 = this.parseLine(line1.split(" ").length, 15, words);
+      String line3 = this.parseLine(line1.split(" ").length + line2.split(" ").length, 15, words);
       String line4 =
-               this.parseLine(line1.split(" ").length + line2.split(" ").length + line3.split(" ").length, 25, words);
+               this.parseLine(line1.split(" ").length + line2.split(" ").length + line3.split(" ").length, 15, words);
 
       canvas.drawText(line1, 3, 70, new Paint());
       if (line2.length() > 0) {
