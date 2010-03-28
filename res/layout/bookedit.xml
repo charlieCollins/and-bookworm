@@ -106,16 +106,28 @@
 						android:layout_width="120px" android:layout_height="150px"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_gravity="center_horizontal" />
+
+					<TextView android:layout_width="fill_parent"
+						android:layout_height="wrap_content" android:layout_marginTop="10dp"
+						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+						android:gravity="center_horizontal" style="@style/blacksmall"
+						android:text="Try to retrieve cover image from web:" />
 					<Button android:id="@+id/bookeditresetcoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
+						android:layout_marginTop="2dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitle"
 						android:text="Reset cover image" style="@style/blacksmall" />
-					<Button android:id="@+id/bookeditcreatecoverbutton"
+
+					<TextView android:layout_width="fill_parent"
+						android:layout_height="wrap_content" android:layout_marginTop="10dp"
+						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+						android:gravity="center_horizontal" style="@style/blacksmall"
+						android:text="Generate default cover image using title:" />
+					<Button android:id="@+id/bookeditgeneratecoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitle"
-						android:text="Create cover image" style="@style/blacksmall" />
+						android:text="Generate cover image" style="@style/blacksmall" />
 				</LinearLayout>
 			</ScrollView>
 		</FrameLayout>

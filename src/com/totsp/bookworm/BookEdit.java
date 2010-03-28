@@ -40,7 +40,7 @@ public class BookEdit extends TabActivity {
 
    private Button saveButton;
    private Button resetCoverButton;
-   private Button createCoverButton;
+   private Button generateCoverButton;
    // TODO allow use to select an image from gallery/sdcard to use as cover
    ///private Button selectCoverButton;
 
@@ -85,10 +85,10 @@ public class BookEdit extends TabActivity {
          }
       });
 
-      this.createCoverButton = (Button) this.findViewById(R.id.bookeditcreatecoverbutton);
-      this.createCoverButton.setOnClickListener(new OnClickListener() {
+      this.generateCoverButton = (Button) this.findViewById(R.id.bookeditgeneratecoverbutton);
+      this.generateCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            new CreateCoverImageTask().execute(BookEdit.this.application.getSelectedBook());
+            new GenerateCoverImageTask().execute(BookEdit.this.application.getSelectedBook());
          }
       });
 
@@ -238,11 +238,11 @@ public class BookEdit extends TabActivity {
       }
    }
 
-   private class CreateCoverImageTask extends AsyncTask<Book, Void, Boolean> {
+   private class GenerateCoverImageTask extends AsyncTask<Book, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(BookEdit.this);
 
       protected void onPreExecute() {
-         this.dialog.setMessage("Creating cover image...");
+         this.dialog.setMessage("Generating cover image...");
          this.dialog.show();
       }
 
@@ -260,7 +260,7 @@ public class BookEdit extends TabActivity {
             this.dialog.dismiss();
          }
          if (!b) {
-            Toast.makeText(BookEdit.this, "Error creating cover image, book information not present, or ID null.",
+            Toast.makeText(BookEdit.this, "Error generating cover image, book information not present, or ID null.",
                      Toast.LENGTH_LONG).show();
          } else {
             BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
