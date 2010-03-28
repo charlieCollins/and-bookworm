@@ -3,10 +3,14 @@ package com.totsp.bookworm.data;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.os.Environment;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
+import com.totsp.bookworm.R;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CacheMap;
 import com.totsp.bookworm.util.CoverImageUtil;
@@ -27,12 +31,12 @@ import java.util.HashMap;
 public class DataImageHelper {
 
    private final HashMap<String, Bitmap> imageCache = new CacheMap<String, Bitmap>(200);
-   ///private final Context context;
+   private final Context context;
 
    private boolean cacheEnabled;
 
    public DataImageHelper(Context context, boolean cacheEnabled) {
-      ///this.context = context;      
+      this.context = context;      
       this.cacheEnabled = cacheEnabled;
    }
    
@@ -140,5 +144,53 @@ public class DataImageHelper {
          // TODO remove OLD images first?
          this.storeBitmap(coverImageBitmap, b.getTitle());         
       }
+   }
+   
+   public void createCoverImage(String title) {
+      Bitmap bitmap = Bitmap.createBitmap(120, 183, Bitmap.Config.ARGB_4444);
+      Canvas canvas = new Canvas(bitmap);
+      Bitmap bkgrnd = BitmapFactory.decodeResource(this.context.getResources(), R.drawable.book_bgrnd_small);
+      canvas.drawBitmap(bkgrnd, new Matrix(), null);
+      Paint paint = new Paint();
+      paint.setTextSize(13);
+      paint.setAlpha(255);
+      paint.setAntiAlias(true);
+
+      String[] words = title.split(" ");
+      String line1 = parseLine(0, 25, words);
+      String line2 = parseLine(line1.split(" ").length, 25, words);
+      String line3 = parseLine(line1.split(" ").length + line2.split(" ").length, 25, words);
+      String line4 = parseLine(line1.split(" ").length + line2.split(" ").length + line3.split(" ").length, 25, words);
+      
+      canvas.drawText(line1, 3, 70, new Paint());
+      if (line2.length() > 0) {
+         canvas.drawText(line2, 3, 85, new Paint());
+      }
+      if (line3.length() > 0) {
+         canvas.drawText(line3, 3, 100, new Paint());
+      }
+      if (line4.length() > 0) {
+         canvas.drawText("...", 3, 115, new Paint());
+      }
+      canvas.save();
+
+      this.storeBitmap(bitmap, title);
+   }
+   
+   private String parseLine(int wordStart, int maxLineLength, String[] words) {      
+      String line = "";
+      if (words != null && wordStart < words.length) {
+         for (int i = wordStart; i < words.length; i++) {
+            if (line == null) {
+               line = words[i];
+            } else {
+               line += " " + words[i];
+            }               
+            if (line.length() >= maxLineLength - 2) {
+               break;
+            }
+         }
+      }
+      return line;
    }
 }

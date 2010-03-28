@@ -4,10 +4,6 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -44,7 +40,9 @@ public class BookEdit extends TabActivity {
 
    private Button saveButton;
    private Button resetCoverButton;
-   private Button replaceCoverButton;
+   private Button createCoverButton;
+   // TODO allow use to select an image from gallery/sdcard to use as cover
+   ///private Button selectCoverButton;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -87,11 +85,10 @@ public class BookEdit extends TabActivity {
          }
       });
 
-      // TODO browse cover image replace capability
-      this.replaceCoverButton = (Button) this.findViewById(R.id.bookeditreplacecoverbutton);
-      this.replaceCoverButton.setOnClickListener(new OnClickListener() {
+      this.createCoverButton = (Button) this.findViewById(R.id.bookeditcreatecoverbutton);
+      this.createCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            Toast.makeText(BookEdit.this, "TODO - browse for cover image replacement", Toast.LENGTH_SHORT).show();
+            new CreateCoverImageTask().execute(BookEdit.this.application.getSelectedBook());
          }
       });
 
@@ -221,39 +218,8 @@ public class BookEdit extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.getId() > 0)) {
-            ///BookEdit.this.application.getDataImageHelper().resetCoverImage(BookEdit.this.application.getDataHelper(),
-            ///         "2", BookEdit.this.application.getSelectedBook());
-
-            Bitmap bitmap = Bitmap.createBitmap(120, 183, Bitmap.Config.ARGB_4444);
-            Canvas canvas = new Canvas(bitmap);
-            Bitmap bkgrnd = BitmapFactory.decodeResource(getResources(), R.drawable.book_bgrnd_small);
-            canvas.drawBitmap(bkgrnd, new Matrix(), null);
-            Paint paint = new Paint();
-            paint.setTextSize(13);
-            paint.setAlpha(255);
-            paint.setAntiAlias(true);
-            // TODO break up AT words
-            String titleToDraw = book.getTitle();
-            String firstLine = null;
-            String secondLine = null;
-            if (titleToDraw.length() > 30) {
-               firstLine = titleToDraw.substring(0, 25);
-               secondLine = titleToDraw.substring(25, titleToDraw.length());
-               if (secondLine.length() > 25) {
-                  secondLine = secondLine.substring(0, 22);
-                  secondLine += "...";
-               }
-            } else {
-               firstLine = titleToDraw;
-            }
-            canvas.drawText(firstLine, 5, 70, new Paint());
-            if (secondLine != null) {
-               canvas.drawText(secondLine, 5, 85, new Paint());
-            }
-            canvas.save();
-
-            application.getDataImageHelper().storeBitmap(bitmap, book.getTitle());
-
+            BookEdit.this.application.getDataImageHelper().resetCoverImage(BookEdit.this.application.getDataHelper(),
+                     "2", book);
             return true;
          }
          return false;
@@ -264,11 +230,42 @@ public class BookEdit extends TabActivity {
             this.dialog.dismiss();
          }
          if (!b) {
-            Toast.makeText(BookEdit.this, "Error updating book, book information not present, or ID null",
+            Toast.makeText(BookEdit.this, "Error updating book, book information not present, or ID null.",
                      Toast.LENGTH_LONG).show();
          } else {
             BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
          }
       }
    }
+
+   private class CreateCoverImageTask extends AsyncTask<Book, Void, Boolean> {
+      private final ProgressDialog dialog = new ProgressDialog(BookEdit.this);
+
+      protected void onPreExecute() {
+         this.dialog.setMessage("Creating cover image...");
+         this.dialog.show();
+      }
+
+      protected Boolean doInBackground(final Book... args) {
+         Book book = args[0];
+         if ((book != null) && (book.getId() > 0)) {
+            BookEdit.this.application.getDataImageHelper().createCoverImage(book.getTitle());
+            return true;
+         }
+         return false;
+      }
+
+      protected void onPostExecute(final Boolean b) {
+         if (this.dialog.isShowing()) {
+            this.dialog.dismiss();
+         }
+         if (!b) {
+            Toast.makeText(BookEdit.this, "Error creating cover image, book information not present, or ID null.",
+                     Toast.LENGTH_LONG).show();
+         } else {
+            BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
+         }
+      }
+   }
+
 }
