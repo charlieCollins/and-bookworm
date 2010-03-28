@@ -121,8 +121,9 @@ public class BookEntrySearch extends Activity {
                   if ((selected.getIsbn10() != null) && !selected.getIsbn10().equals("")) {
                      intent.putExtra(Constants.ISBN, selected.getIsbn10());
                   } else if ((selected.getIsbn13() != null) && !selected.getIsbn13().equals("")) {
-                     intent.putExtra(Constants.ISBN, selected.getIsbn10());
+                     intent.putExtra(Constants.ISBN, selected.getIsbn13());
                   }
+                  intent.putExtra("FROM_SEARCH_RESULTS", true);
                   BookEntrySearch.this.startActivity(intent);
                }
             });

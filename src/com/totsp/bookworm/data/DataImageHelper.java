@@ -7,9 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.Environment;
-import android.util.Log;
 
-import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.R;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CacheMap;
@@ -30,7 +28,7 @@ import java.util.HashMap;
  */
 public class DataImageHelper {
 
-   private final HashMap<String, Bitmap> imageCache = new CacheMap<String, Bitmap>(200);
+   private final HashMap<String, Bitmap> imageCache = new CacheMap<String, Bitmap>(250);
    private final Context context;
 
    private boolean cacheEnabled;
@@ -50,9 +48,9 @@ public class DataImageHelper {
 
    // TODO we are keyed on title here - won't allow multiple books with same title, bad
    
-   public final Bitmap retrieveBitmap(String nameInput, boolean thumb) {      
-      String name = nameInput.replaceAll("\\s+", "_");  
-      Log.d(Constants.LOG_TAG, "retrieving images using name (derived from title) " + name);
+   public final Bitmap retrieveBitmap(String nameInput, Long id, boolean thumb) {      
+      String name = nameInput.replaceAll("\\s+", "_");      
+      name += "_" + id;
       
       if (this.cacheEnabled && this.imageCache.containsKey(name)) {
          return this.imageCache.get(name);
@@ -75,9 +73,9 @@ public class DataImageHelper {
       return bitmap;      
    }   
    
-   public final void storeBitmap(Bitmap source, String nameInput) {      
-      String name = nameInput.replaceAll("\\s+", "_");  
-      Log.d(Constants.LOG_TAG, "storing images using name (derived from title) " + name);
+   public final void storeBitmap(Bitmap source, String nameInput, Long id) {      
+      String name = nameInput.replaceAll("\\s+", "_"); 
+      name += "_" + id;
       
       // M from OpenLibrary is about 180x225
       // I scale to 120x150      
@@ -142,11 +140,11 @@ public class DataImageHelper {
       Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(coverImageProviderKey, b.getIsbn10());      
       if (coverImageBitmap != null) {
          // TODO remove OLD images first?
-         this.storeBitmap(coverImageBitmap, b.getTitle());         
+         this.storeBitmap(coverImageBitmap, b.getTitle(), b.getId());         
       }
    }
    
-   public void createCoverImage(String title) {
+   public void createAndStoreCoverImage(String title, Long id) {
       Bitmap bitmap = Bitmap.createBitmap(120, 183, Bitmap.Config.ARGB_4444);
       Canvas canvas = new Canvas(bitmap);
       Bitmap bkgrnd = BitmapFactory.decodeResource(this.context.getResources(), R.drawable.book_bgrnd_small);
@@ -174,7 +172,7 @@ public class DataImageHelper {
       }
       canvas.save();
 
-      this.storeBitmap(bitmap, title);
+      this.storeBitmap(bitmap, title, id);
    }
    
    private String parseLine(int wordStart, int maxLineLength, String[] words) {      

@@ -96,7 +96,7 @@ public class BookWormApplication extends Application {
    }
 
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved title
-   public void establishSelectedBook(final String title) {
-      this.selectedBook = this.dataHelper.selectBook(title);
+   public void establishSelectedBook(final long id) {
+      this.selectedBook = this.dataHelper.selectBook(id);
    }
 }

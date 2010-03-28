@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,6 +73,8 @@ public class Main extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
+      Log.d(Constants.LOG_TAG, "*********** ONCREATE");
+      
       this.application = (BookWormApplication) this.getApplication();
       this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -108,18 +111,17 @@ public class Main extends Activity {
       });
       this.registerForContextMenu(this.bookListView);
 
+      //String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
+      //this.bindBookList(sortOrder);
+   }
+   
+   @Override
+   public void onStart() {
+      super.onStart();
+      Log.d(Constants.LOG_TAG, "*********** ONSTART");
       String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
       this.bindBookList(sortOrder);
-   }
-
-   private void bindBookList(final String orderBy) {
-      this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy);
-      if ((this.cursor != null) && (this.cursor.getCount() > 0)) {
-         this.startManagingCursor(this.cursor);
-         this.adapter = new BookCursorAdapter(this.cursor);
-         this.bookListView.setAdapter(this.adapter);
-      }
-   }
+   }  
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
@@ -161,7 +163,7 @@ public class Main extends Activity {
                   "This will use the network to try to find and replace all cover images.").setPositiveButton(
                   "Yes, I'm Sure", new DialogInterface.OnClickListener() {
                      public void onClick(final DialogInterface d, final int i) {
-                        new ResetCoverImagesTask().execute();
+                        new ResetAllCoverImagesTask().execute();
                      }
                   }).setNegativeButton("No, Cancel", new DialogInterface.OnClickListener() {
             public void onClick(final DialogInterface d, final int i) {
@@ -207,6 +209,29 @@ public class Main extends Activity {
       }
    }
 
+   /*
+   // go to home on back from Main (cannot just "finish" because that will end up at Splash)
+   @Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
+      if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+         Intent intent = new Intent(Intent.ACTION_MAIN);
+         intent.addCategory(Intent.CATEGORY_HOME);
+         this.startActivity(intent);
+         return true;
+      }
+      return super.onKeyDown(keyCode, event);
+   }
+   */
+
+   private void bindBookList(final String orderBy) {
+      this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy);
+      if ((this.cursor != null) && (this.cursor.getCount() > 0)) {
+         this.startManagingCursor(this.cursor);
+         this.adapter = new BookCursorAdapter(this.cursor);
+         this.bookListView.setAdapter(this.adapter);
+      }
+   }
+   
    private void saveSortOrder(final String order) {
       Editor editor = this.prefs.edit();
       editor.putString(Constants.DEFAULT_SORT_ORDER, order);
@@ -237,16 +262,16 @@ public class Main extends Activity {
       }
 
       private void populateView(final View v, final Cursor c) {
-         // TODO make this more efficient -- I am not sure how to use ViewHolder, etc with CursorAdapter (or if necc?)
+         // ? make this more efficient -- how to use ViewHolder, etc with CursorAdapter (or necc?)
          if ((c != null) && !c.isClosed()) {
-            ///int covImageId = c.getInt(c.getColumnIndex(DataConstants.COVERIMAGEID));
+            long id = c.getLong(c.getColumnIndex("_id"));
             int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
             int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
 
             ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
-            Bitmap coverImageBitmap = Main.this.application.getDataImageHelper().retrieveBitmap(title, true);
+            Bitmap coverImageBitmap = Main.this.application.getDataImageHelper().retrieveBitmap(title, id, true);
             if (coverImageBitmap != null) {
                coverImageView.setImageBitmap(coverImageBitmap);
             } else {
@@ -313,7 +338,7 @@ public class Main extends Activity {
    }
    */
 
-   private class ResetCoverImagesTask extends AsyncTask<Void, String, Void> {
+   private class ResetAllCoverImagesTask extends AsyncTask<Void, String, Void> {
       private final ProgressDialog dialog = new ProgressDialog(Main.this);
 
       protected void onPreExecute() {

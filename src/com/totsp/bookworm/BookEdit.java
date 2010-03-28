@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,7 @@ public class BookEdit extends TabActivity {
    private Button saveButton;
    private Button resetCoverButton;
    private Button generateCoverButton;
+
    // TODO allow use to select an image from gallery/sdcard to use as cover
    ///private Button selectCoverButton;
 
@@ -74,7 +76,6 @@ public class BookEdit extends TabActivity {
       this.saveButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookEdit.this.saveEdits();
-            BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
          }
       });
 
@@ -100,6 +101,18 @@ public class BookEdit extends TabActivity {
       this.bookTitleFormTab = null;
       super.onPause();
    }
+
+   /*
+   // go back to main if back pressed here, in case path is multiple tabs, etc
+   @Override
+   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+      if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
+         BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
+         return true;
+      }
+      return super.onKeyDown(keyCode, event);
+   }
+   */
 
    private void saveEdits() {
       Book book = this.application.getSelectedBook();
@@ -131,7 +144,7 @@ public class BookEdit extends TabActivity {
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
-         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.getTitle(), false);
+         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.getTitle(), book.getId(), false);
          if (coverImage != null) {
             this.bookCover.setImageBitmap(coverImage);
          } else {
@@ -152,15 +165,14 @@ public class BookEdit extends TabActivity {
    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
       if (this.application.getSelectedBook() == null) {
-         this.application.establishSelectedBook(savedInstanceState.getString(Constants.ISBN));
+         this.application.establishSelectedBook(savedInstanceState.getLong(Constants.BOOK_ID));
          this.setViewData();
       }
    }
 
    @Override
    protected void onSaveInstanceState(final Bundle saveState) {
-      // TODO add fallback to book isbn13 support
-      saveState.putString(Constants.ISBN, this.application.getSelectedBook().getIsbn10());
+      saveState.putLong(Constants.BOOK_ID, this.application.getSelectedBook().getId());
       super.onSaveInstanceState(saveState);
    }
 
@@ -199,10 +211,15 @@ public class BookEdit extends TabActivity {
       protected void onPostExecute(final Boolean b) {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
-         }
+         }        
          if (!b) {
             Toast.makeText(BookEdit.this, "Error updating book, book information not present, or ID null",
                      Toast.LENGTH_LONG).show();
+         } else {
+            Toast.makeText(BookEdit.this, "Book updated", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(BookEdit.this, BookDetail.class);
+            intent.putExtra("RELOAD_AFTER_EDIT", true);
+            BookEdit.this.startActivity(intent);
          }
       }
    }
@@ -233,7 +250,10 @@ public class BookEdit extends TabActivity {
             Toast.makeText(BookEdit.this, "Error updating book, book information not present, or ID null.",
                      Toast.LENGTH_LONG).show();
          } else {
-            BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
+            Toast.makeText(BookEdit.this, "Book updated", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(BookEdit.this, BookDetail.class);
+            intent.putExtra("RELOAD_AFTER_EDIT", true);
+            BookEdit.this.startActivity(intent);
          }
       }
    }
@@ -249,7 +269,7 @@ public class BookEdit extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.getId() > 0)) {
-            BookEdit.this.application.getDataImageHelper().createCoverImage(book.getTitle());
+            BookEdit.this.application.getDataImageHelper().createAndStoreCoverImage(book.getTitle(), book.getId());
             return true;
          }
          return false;
@@ -263,7 +283,10 @@ public class BookEdit extends TabActivity {
             Toast.makeText(BookEdit.this, "Error generating cover image, book information not present, or ID null.",
                      Toast.LENGTH_LONG).show();
          } else {
-            BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
+            Toast.makeText(BookEdit.this, "Book updated", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(BookEdit.this, Main.class);
+            intent.putExtra("RELOAD_AFTER_EDIT", true);
+            BookEdit.this.startActivity(intent);
          }
       }
    }

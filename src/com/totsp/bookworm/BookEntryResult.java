@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -23,14 +24,17 @@ public class BookEntryResult extends Activity {
 
    private BookWormApplication application;
 
-   // package scope for use in inner class (Android optimization)    
+   // package scope for use in inner class (Android optimization)
+   // TODO do this package scope var thing elsewhere too
    Button bookAddButton;
    TextView bookTitle;
    ImageView bookCover;
    TextView bookAuthors;
 
-   ///Bitmap bookCoverBitmap;
    Book book;
+   
+   boolean fromSearchResults;
+   
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -53,8 +57,7 @@ public class BookEntryResult extends Activity {
       });
 
       // several other activites can populate this one
-      // ISBN may be present as intent extra OR entire Book may already be set?
-
+      // ISBN must be present as intent extra to proceed
       String isbn = this.getIntent().getStringExtra(Constants.ISBN);
       Log.i(Constants.LOG_TAG, "ISBN on entry result - " + isbn);
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
@@ -62,23 +65,41 @@ public class BookEntryResult extends Activity {
       } else {
          new GetBookDataTask().execute(isbn);
       }
+      
+      if (savedInstanceState != null && savedInstanceState.getBoolean("FROM_SEARCH_RESULTS", false)) {
+         this.fromSearchResults = true;
+      }
    }
 
+   // go back to search results if coming from there
+   @Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
+      if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+         if (this.fromSearchResults) {
+            this.startActivity(new Intent(BookEntryResult.this, BookEntrySearch.class));
+            this.fromSearchResults = false;
+         }
+         return true;
+      }
+      return super.onKeyDown(keyCode, event);
+   }
+
+   
    private void bookAddClick() {
       // TODO add fallback to book isbn13 support
       if ((this.book != null) && (this.book.getIsbn10() != null)) {
-         // TODO don't even let users get here if book exists, remove add button prev              
-         Book retrieve = this.application.getDataHelper().selectBook(this.book.getIsbn10());
-         if (retrieve == null) {
+         // TODO check for book exists using more than just ISBN or title (these are not unique - use a combination maybe?)      
+         ///Book retrieve = this.application.getDataHelper().selectBook(this.book.getIsbn10());
+         ///if (retrieve == null) {
             // save image to ContentProvider
             if (this.book.getCoverImage() != null) {
 
                BookEntryResult.this.application.getDataImageHelper().storeBitmap(this.book.getCoverImage(),
-                        this.book.getTitle());
+                        this.book.getTitle(), this.book.getId());
             }
             // save book to database
             this.application.getDataHelper().insertBook(this.book);
-         }
+         ///}
       }
       this.startActivity(new Intent(BookEntryResult.this, Main.class));
    }
@@ -95,7 +116,6 @@ public class BookEntryResult extends Activity {
       // TODO ctor to pass provider keys
       private String coverImageProviderKey;
 
-      // can use UI thread here
       protected void onPreExecute() {
          this.dialog.setMessage("Retrieving book data..");
          this.dialog.show();
@@ -104,51 +124,15 @@ public class BookEntryResult extends Activity {
          this.coverImageProviderKey = prefs.getString("coverimagelistpref", "2");
       }
 
-      // automatically done on worker thread (separate from UI thread)
       protected Book doInBackground(final String... isbns) {
 
          Book b = BookEntryResult.this.application.getBookDataSource().getBook(isbns[0]);
 
          Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.getIsbn10());
-         b.setCoverImage(coverImageBitmap);
-
-         /*
-         // TODO better book cover get stuff (HttpHelper binary)
-         // book cover image
-         String imageUrl = null;
-         if (this.coverImageProviderKey.equals("1")) {
-            // 1 = Google Books (TODO 1 should equal "default for handler" or such - regardless of current handler)
-            // TODO if user selects Google Books, get them to login and store token
-            imageUrl = b.getCoverImageURL();
-         } else if (this.coverImageProviderKey.equals("2")) {
-            // 2 = OpenLibrary
-            imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbns[0]);
-         }
-
-         if (Constants.LOCAL_LOGD) {
-            Log.d(Constants.LOG_TAG, "book cover imageUrl - " + imageUrl);
-         }
-         if ((imageUrl != null) && !imageUrl.equals("")) {
-            try {
-               URL url = new URL(imageUrl);
-               URLConnection conn = url.openConnection();
-               conn.setConnectTimeout(10000);
-               conn.connect();
-               BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
-               Bitmap coverImageBitmap = BitmapFactory.decodeStream(bis);
-               if (coverImageBitmap.getWidth() < 10) {
-                  coverImageBitmap = null;
-               }
-               b.setCoverImage(coverImageBitmap);
-            } catch (IOException e) {
-               Log.e(Constants.LOG_TAG, " ", e);
-            }
-         }
-         */
+         b.setCoverImage(coverImageBitmap);        
          return b;
       }
 
-      // can use UI thread here
       protected void onPostExecute(final Book b) {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();

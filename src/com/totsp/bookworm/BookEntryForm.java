@@ -161,18 +161,15 @@ public class BookEntryForm extends Activity {
          Book book = new Book();
          book.setTitle(args[0]);
          book.setAuthors(AuthorsStringUtil.expandAuthors(args[1]));
-
+         long bookId = application.getDataHelper().insertBook(book);
          if (picBitmap != null) {
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "picBitmap present in task, attempt image save");
             }
-
-            BookEntryForm.this.application.getDataImageHelper().storeBitmap(picBitmap, args[0]);
+            BookEntryForm.this.application.getDataImageHelper().storeBitmap(picBitmap, book.getTitle(), bookId);
          }
-
-         long bookId = application.getDataHelper().insertBook(book);
          if (Constants.LOCAL_LOGV) {
-            Log.v(Constants.LOG_TAG, "bookId - " + bookId);
+            Log.v(Constants.LOG_TAG, "Created book, bookId - " + bookId);
          }
          return null;
       }

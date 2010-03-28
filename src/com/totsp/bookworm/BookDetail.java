@@ -100,7 +100,7 @@ public class BookDetail extends Activity {
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
-         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.getTitle(), false);
+         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.getTitle(), book.getId(), false);
          if (coverImage != null) {
             this.bookCover.setImageBitmap(coverImage);
          } else {
@@ -139,9 +139,9 @@ public class BookDetail extends Activity {
    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
       if (this.application.getSelectedBook() == null) {
-         String title = savedInstanceState.getString(Constants.TITLE);
-         if (title != null) {
-            this.application.establishSelectedBook(title);
+         Long id = savedInstanceState.getLong(Constants.BOOK_ID);
+         if (id != null) {
+            this.application.establishSelectedBook(id);
             if (this.application.getSelectedBook() != null) {
                this.setViewData();
             } else {
@@ -156,7 +156,7 @@ public class BookDetail extends Activity {
    @Override
    protected void onSaveInstanceState(final Bundle saveState) {
       if (this.application.getSelectedBook() != null) {
-         saveState.putString(Constants.TITLE, this.application.getSelectedBook().getTitle());
+         saveState.putLong(Constants.BOOK_ID, this.application.getSelectedBook().getId());
       }
       super.onSaveInstanceState(saveState);
    }

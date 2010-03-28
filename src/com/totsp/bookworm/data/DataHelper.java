@@ -30,7 +30,7 @@ public class DataHelper {
    public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc, book.tit asc";
    
    private static final String DATABASE_NAME = "bookworm.db";
-   private static final int DATABASE_VERSION = 5;
+   private static final int DATABASE_VERSION = 1;
    private static final String BOOK_TABLE = "book";
    private static final String BOOKUSERDATA_TABLE = "bookuserdata";
    private static final String BOOKAUTHOR_TABLE = "bookauthor";
@@ -104,9 +104,12 @@ public class DataHelper {
    public Cursor getSelectBookJoinCursor(String orderBy) {
       // note that query MUST have a column named _id
       String query =
-               "select book.bid as _id, book.tit, book.subtit, book.pub, book.datepub, book.format, book.covimgid, " + ""
+               "select book.bid as _id, book.tit, book.subtit, book.pub, book.datepub, book.format, " 
                         + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb from book "
                         + "join bookuserdata on book.bid = bookuserdata.bid";
+      if (Constants.LOCAL_LOGD) {
+         Log.d(Constants.LOG_TAG, "Main screen adapter cursor query - " + query);
+      }
       if (orderBy != null && orderBy.length() > 0) {
          query += " order by " + orderBy;
       }
@@ -117,10 +120,13 @@ public class DataHelper {
       long bookId = 0L;
       if (b != null && b.getTitle() != null) {         
 
+         // TODO check for existing book using multiple criteria (not just title)
+         /*
          Book bookExists = this.selectBook(b.getTitle());
          if (bookExists != null) {
             return bookExists.getId();
          }
+         */
 
          // use transaction
          this.db.beginTransaction();
@@ -275,6 +281,7 @@ public class DataHelper {
       return b;
    }
 
+   /*
    public Book selectBook(String title) {
       Book b = null;
       Cursor c =
@@ -288,6 +295,7 @@ public class DataHelper {
       }
       return b;
    }
+   */
 
    public HashSet<Book> selectAllBooks() {
       HashSet<Book> set = new HashSet<Book>();
@@ -390,12 +398,14 @@ public class DataHelper {
       // TODO delete images from ContentProvider
    }
 
+   /*
    public void deleteBook(String isbn) {
       Book b = this.selectBook(isbn);
       if (b != null) {
          this.deleteBook(b.getId());
       }
    }
+   */
 
    //
    // book-author data
@@ -653,9 +663,11 @@ public class DataHelper {
 
          // constraints 
          // (ISBN cannot be unique - some books don't have em - use TITLE unique?)
-         db.execSQL("CREATE UNIQUE INDEX uidxBookTitle ON " + BOOK_TABLE + "(" + DataConstants.TITLE
-                  + " COLLATE NOCASE)");
+         //db.execSQL("CREATE UNIQUE INDEX uidxBookTitle ON " + BOOK_TABLE + "(" + DataConstants.TITLE
+         //         + " COLLATE NOCASE)");
          db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON " + AUTHOR_TABLE + "(" + DataConstants.NAME
+                  + " COLLATE NOCASE)");
+         db.execSQL("CREATE UNIQUE INDEX uidxBookIdForUserData ON " + BOOKUSERDATA_TABLE + "(" + DataConstants.BOOKID
                   + " COLLATE NOCASE)");
 
          this.dbCreated = true;
