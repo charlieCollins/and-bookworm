@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -25,16 +24,14 @@ public class BookEntryResult extends Activity {
    private BookWormApplication application;
 
    // package scope for use in inner class (Android optimization)
-   // TODO do this package scope var thing elsewhere too
    Button bookAddButton;
    TextView bookTitle;
    ImageView bookCover;
    TextView bookAuthors;
 
    Book book;
-   
+
    boolean fromSearchResults;
-   
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -65,12 +62,13 @@ public class BookEntryResult extends Activity {
       } else {
          new GetBookDataTask().execute(isbn);
       }
-      
+
       if (savedInstanceState != null && savedInstanceState.getBoolean("FROM_SEARCH_RESULTS", false)) {
          this.fromSearchResults = true;
       }
    }
 
+   /*
    // go back to search results if coming from there
    @Override
    public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -83,23 +81,17 @@ public class BookEntryResult extends Activity {
       }
       return super.onKeyDown(keyCode, event);
    }
+   */
 
-   
    private void bookAddClick() {
-      // TODO add fallback to book isbn13 support
       if ((this.book != null) && (this.book.getIsbn10() != null)) {
-         // TODO check for book exists using more than just ISBN or title (these are not unique - use a combination maybe?)      
-         ///Book retrieve = this.application.getDataHelper().selectBook(this.book.getIsbn10());
-         ///if (retrieve == null) {
-            // save image to ContentProvider
-            if (this.book.getCoverImage() != null) {
-
-               BookEntryResult.this.application.getDataImageHelper().storeBitmap(this.book.getCoverImage(),
-                        this.book.getTitle(), this.book.getId());
-            }
-            // save book to database
-            this.application.getDataHelper().insertBook(this.book);
-         ///}
+         // TODO check for book exists using more than just ISBN or title (these are not unique - use a combination maybe?)
+         // save book to database
+         long bookId = this.application.getDataHelper().insertBook(this.book);
+         if (this.book.getCoverImage() != null) {
+            BookEntryResult.this.application.getDataImageHelper().storeBitmap(this.book.getCoverImage(),
+                     this.book.getTitle(), bookId);
+         }
       }
       this.startActivity(new Intent(BookEntryResult.this, Main.class));
    }
@@ -125,11 +117,9 @@ public class BookEntryResult extends Activity {
       }
 
       protected Book doInBackground(final String... isbns) {
-
          Book b = BookEntryResult.this.application.getBookDataSource().getBook(isbns[0]);
-
-         Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.getIsbn10());
-         b.setCoverImage(coverImageBitmap);        
+         Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.getIsbn10());         
+         b.setCoverImage(coverImageBitmap);
          return b;
       }
 
@@ -159,7 +149,7 @@ public class BookEntryResult extends Activity {
                if (Constants.LOCAL_LOGV) {
                   Log.v(Constants.LOG_TAG, "book cover not found");
                }
-               BookEntryResult.this.bookCover.setImageResource(R.drawable.book_cover_missing);
+               BookEntryResult.this.bookCover.setImageResource(R.drawable.book_cover_missing);                              
             }
 
             BookEntryResult.this.book = b;

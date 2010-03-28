@@ -203,6 +203,7 @@ public class BookEdit extends TabActivity {
          Book book = args[0];
          if ((book != null) && (book.getId() > 0)) {
             BookEdit.this.application.getDataHelper().updateBook(book);
+            BookEdit.this.application.establishSelectedBook(book.getId());
             return true;
          }
          return false;
@@ -282,7 +283,7 @@ public class BookEdit extends TabActivity {
          if (!b) {
             Toast.makeText(BookEdit.this, "Error generating cover image, book information not present, or ID null.",
                      Toast.LENGTH_LONG).show();
-         } else {
+         } else {            
             Toast.makeText(BookEdit.this, "Book updated", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookEdit.this, Main.class);
             intent.putExtra("RELOAD_AFTER_EDIT", true);

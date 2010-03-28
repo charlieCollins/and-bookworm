@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 /**
  * Util class to use Android external storage to store and retrieve images with
- * a String (title) key (and optional cache).
+ * a key (title and id), and maintain and optional cache.
  * 
  * @author ccollins
  *
@@ -34,10 +34,10 @@ public class DataImageHelper {
    private boolean cacheEnabled;
 
    public DataImageHelper(Context context, boolean cacheEnabled) {
-      this.context = context;      
+      this.context = context;
       this.cacheEnabled = cacheEnabled;
    }
-   
+
    public void clearCache() {
       this.imageCache.clear();
    }
@@ -46,18 +46,15 @@ public class DataImageHelper {
       this.imageCache.remove(item);
    }
 
-   // TODO we are keyed on title here - won't allow multiple books with same title, bad
-   
-   public final Bitmap retrieveBitmap(String nameInput, Long id, boolean thumb) {      
-      String name = nameInput.replaceAll("\\s+", "_");      
-      name += "_" + id;
-      
+   public final Bitmap retrieveBitmap(String title, Long id, boolean thumb) {
+      String name = this.getNameKey(title, id);
+
       if (this.cacheEnabled && this.imageCache.containsKey(name)) {
          return this.imageCache.get(name);
       }
-      
+
       Bitmap bitmap = null;
-      
+
       File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
       File file = null;
       if (!thumb) {
@@ -65,21 +62,20 @@ public class DataImageHelper {
       } else {
          file = new File(exportDir, name + "-t.jpg");
       }
-      
+
       if (file != null) {
          bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
       }
-      
-      return bitmap;      
-   }   
-   
-   public final void storeBitmap(Bitmap source, String nameInput, Long id) {      
-      String name = nameInput.replaceAll("\\s+", "_"); 
-      name += "_" + id;
-      
+
+      return bitmap;
+   }
+
+   public final void storeBitmap(Bitmap source, String title, Long id) {
+      String name = this.getNameKey(title, id);
+
       // M from OpenLibrary is about 180x225
       // I scale to 120x150      
-      Bitmap bitmap = DataImageHelper.resizeBitmap(source, 120, 150);      
+      Bitmap bitmap = DataImageHelper.resizeBitmap(source, 120, 150);
       Bitmap bitmapThumb = DataImageHelper.resizeBitmap(source, 55, 70);
 
       try {
@@ -87,63 +83,55 @@ public class DataImageHelper {
          if (!exportDir.exists()) {
             exportDir.mkdirs();
          }
-         
-         File file = new File(exportDir, name + ".jpg");         
-         boolean created = file.createNewFile();         
+
+         File file = new File(exportDir, name + ".jpg");
+         boolean created = file.createNewFile();
          if (!created) {
             // file already exists, should we delete it and recreate it?
-         }         
+         }
          FileOutputStream fos = new FileOutputStream(file);
          bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
          fos.close();
-         
+
          File fileThumb = new File(exportDir, name + "-t.jpg");
-         boolean createdThumb = fileThumb.createNewFile(); 
+         boolean createdThumb = fileThumb.createNewFile();
          if (!createdThumb) {
             // file already exists, should we delete it and recreate it?
-         }    
+         }
          fos = new FileOutputStream(fileThumb);
          bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
          fos.close();
-         
+
          if (this.cacheEnabled) {
             this.imageCache.put(name, bitmap);
          }
-         
+
       } catch (FileNotFoundException e) {
-         e.printStackTrace();         
+         e.printStackTrace();
       } catch (IOException e) {
-         e.printStackTrace();         
+         e.printStackTrace();
       }
    }
-   
-   private static final Bitmap resizeBitmap(Bitmap source, final int width, final int height) {
-      // create the matrix to scale it
-      /*
-      Matrix matrix = new Matrix();     
-      float scaleX = width / source.getWidth();
-      float scaleY = height / source.getHeight();
-      matrix.setScale(scaleX, scaleY);
-      return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-      */
-      
-      final int bitmapWidth = source.getWidth();
-      final int bitmapHeight = source.getHeight();
-      final float scale = Math.min((float) width / (float) bitmapWidth, (float) height / (float) bitmapHeight);
-      final int scaledWidth = (int) (bitmapWidth * scale);
-      final int scaledHeight = (int) (bitmapHeight * scale);
-      return Bitmap.createScaledBitmap(source, scaledWidth, scaledHeight, true);
+
+   public final void clearAllCurrentImageFiles() {
+      File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+      if (!exportDir.exists()) {
+         exportDir.mkdirs();
+      }
+
+      for (File f : exportDir.listFiles()) {
+         f.delete();
+      }
    }
 
-
-   public void resetCoverImage(DataHelper dataHelper, String coverImageProviderKey, Book b) {      
-      Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(coverImageProviderKey, b.getIsbn10());      
+   public void resetCoverImage(DataHelper dataHelper, String coverImageProviderKey, Book b) {
+      Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(coverImageProviderKey, b.getIsbn10());
       if (coverImageBitmap != null) {
          // TODO remove OLD images first?
-         this.storeBitmap(coverImageBitmap, b.getTitle(), b.getId());         
+         this.storeBitmap(coverImageBitmap, b.getTitle(), b.getId());
       }
    }
-   
+
    public void createAndStoreCoverImage(String title, Long id) {
       Bitmap bitmap = Bitmap.createBitmap(120, 183, Bitmap.Config.ARGB_4444);
       Canvas canvas = new Canvas(bitmap);
@@ -159,7 +147,7 @@ public class DataImageHelper {
       String line2 = parseLine(line1.split(" ").length, 25, words);
       String line3 = parseLine(line1.split(" ").length + line2.split(" ").length, 25, words);
       String line4 = parseLine(line1.split(" ").length + line2.split(" ").length + line3.split(" ").length, 25, words);
-      
+
       canvas.drawText(line1, 3, 70, new Paint());
       if (line2.length() > 0) {
          canvas.drawText(line2, 3, 85, new Paint());
@@ -174,8 +162,32 @@ public class DataImageHelper {
 
       this.storeBitmap(bitmap, title, id);
    }
-   
-   private String parseLine(int wordStart, int maxLineLength, String[] words) {      
+
+   private static final Bitmap resizeBitmap(Bitmap source, final int width, final int height) {
+      // create the matrix to scale it
+      /*
+      Matrix matrix = new Matrix();     
+      float scaleX = width / source.getWidth();
+      float scaleY = height / source.getHeight();
+      matrix.setScale(scaleX, scaleY);
+      return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+      */
+
+      final int bitmapWidth = source.getWidth();
+      final int bitmapHeight = source.getHeight();
+      final float scale = Math.min((float) width / (float) bitmapWidth, (float) height / (float) bitmapHeight);
+      final int scaledWidth = (int) (bitmapWidth * scale);
+      final int scaledHeight = (int) (bitmapHeight * scale);
+      return Bitmap.createScaledBitmap(source, scaledWidth, scaledHeight, true);
+   }
+
+   private String getNameKey(String title, Long id) {
+      String key = title.replaceAll("\\W+", "_");
+      key += "_" + id;
+      return key;
+   }
+
+   private String parseLine(int wordStart, int maxLineLength, String[] words) {
       String line = "";
       if (words != null && wordStart < words.length) {
          for (int i = wordStart; i < words.length; i++) {
@@ -183,7 +195,7 @@ public class DataImageHelper {
                line = words[i];
             } else {
                line += " " + words[i];
-            }               
+            }
             if (line.length() >= maxLineLength - 2) {
                break;
             }

@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,8 +72,6 @@ public class Main extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      Log.d(Constants.LOG_TAG, "*********** ONCREATE");
-      
       this.application = (BookWormApplication) this.getApplication();
       this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -111,16 +108,13 @@ public class Main extends Activity {
       });
       this.registerForContextMenu(this.bookListView);
 
-      //String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
-      //this.bindBookList(sortOrder);
+      String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
+      this.bindBookList(sortOrder);
    }
    
    @Override
    public void onStart() {
       super.onStart();
-      Log.d(Constants.LOG_TAG, "*********** ONSTART");
-      String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
-      this.bindBookList(sortOrder);
    }  
 
    @Override
@@ -237,6 +231,15 @@ public class Main extends Activity {
       editor.putString(Constants.DEFAULT_SORT_ORDER, order);
       editor.commit();
    }
+   
+   // static and package access as an Android optimization (used in inner class)
+   static class ViewHolder {
+      ImageView coverImage;
+      ImageView ratingImage;
+      TextView textAbove;
+      TextView textBelow;
+      CheckBox readStatus;
+   }
 
    //
    // BookCursorAdapter
@@ -255,58 +258,74 @@ public class Main extends Activity {
       }
 
       @Override
-      public View newView(final Context context, final Cursor c, final ViewGroup parent) {
-         View v = this.vi.inflate(R.layout.list_items_item, parent, false);
+      public View newView(final Context context, final Cursor c, final ViewGroup parent) {       
+      // use ViewHolder pattern to avoid extra trips to findViewById
+         View v = this.vi.inflate(R.layout.list_items_item, parent, false);         
+         ViewHolder holder = new ViewHolder();         
+         holder.coverImage = (ImageView) v.findViewById(R.id.list_items_item_image);
+         holder.ratingImage = (ImageView) v.findViewById(R.id.list_items_item_rating_image);
+         holder.textAbove = (TextView) v.findViewById(R.id.list_items_item_textabove);;
+         holder.textBelow = (TextView) v.findViewById(R.id.list_items_item_textbelow);
+         holder.readStatus = (CheckBox) v.findViewById(R.id.list_items_item_read_status);         
+         v.setTag(holder);
          this.populateView(v, c);
          return v;
-      }
-
+      }      
+      
       private void populateView(final View v, final Cursor c) {
-         // ? make this more efficient -- how to use ViewHolder, etc with CursorAdapter (or necc?)
+         // use ViewHolder pattern to avoid extra trips to findViewById
+         ViewHolder holder = (ViewHolder) v.getTag();        
+         
          if ((c != null) && !c.isClosed()) {
-            long id = c.getLong(c.getColumnIndex("_id"));
+            long id = c.getLong(c.getColumnIndex("_id"));            
             int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
             int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
-
-            ImageView coverImageView = (ImageView) v.findViewById(R.id.list_items_item_image);
+            
+            // TODO why is populate called twice for each item
+            if (Constants.LOCAL_LOGD) {
+               Log.d(Constants.LOG_TAG, "book id from cursor - " + id);
+               Log.d(Constants.LOG_TAG, "title from cursor - " + title);
+            }
+            
+            ImageView coverImage = holder.coverImage;
             Bitmap coverImageBitmap = Main.this.application.getDataImageHelper().retrieveBitmap(title, id, true);
             if (coverImageBitmap != null) {
-               coverImageView.setImageBitmap(coverImageBitmap);
+               coverImage.setImageBitmap(coverImageBitmap);
             } else {
-               coverImageView.setImageBitmap(Main.this.coverImageMissing);
+               coverImage.setImageBitmap(Main.this.coverImageMissing);
             }
 
-            ImageView ratingImageView = (ImageView) v.findViewById(R.id.list_items_item_rating_image);
+            ImageView ratingImage = holder.ratingImage;
             switch (rating) {
             case 0:
-               ratingImageView.setImageBitmap(Main.this.star0);
+               ratingImage.setImageBitmap(Main.this.star0);
                break;
             case 1:
-               ratingImageView.setImageBitmap(Main.this.star1);
+               ratingImage.setImageBitmap(Main.this.star1);
                break;
             case 2:
-               ratingImageView.setImageBitmap(Main.this.star2);
+               ratingImage.setImageBitmap(Main.this.star2);
                break;
             case 3:
-               ratingImageView.setImageBitmap(Main.this.star3);
+               ratingImage.setImageBitmap(Main.this.star3);
                break;
             case 4:
-               ratingImageView.setImageBitmap(Main.this.star4);
+               ratingImage.setImageBitmap(Main.this.star4);
                break;
             case 5:
-               ratingImageView.setImageBitmap(Main.this.star5);
+               ratingImage.setImageBitmap(Main.this.star5);
                break;
             }
 
-            ((TextView) v.findViewById(R.id.list_items_item_textabove)).setText(title);
-            ((TextView) v.findViewById(R.id.list_items_item_textbelow)).setText(subTitle);
+            holder.textAbove.setText(title);
+            holder.textBelow.setText(subTitle);
 
             if (readStatus == 1) {
-               ((CheckBox) v.findViewById(R.id.list_items_item_read_status)).setChecked(true);
+               holder.readStatus.setChecked(true);
             } else {
-               ((CheckBox) v.findViewById(R.id.list_items_item_read_status)).setChecked(false);
+               holder.readStatus.setChecked(false);
             }
          }
       }
@@ -351,11 +370,12 @@ public class Main extends Activity {
       }
 
       protected Void doInBackground(final Void... args) {
+         Main.this.application.getDataImageHelper().clearAllCurrentImageFiles();
          HashSet<Book> books = Main.this.application.getDataHelper().selectAllBooks();
          for (Book b : books) {
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "resetting cover image for book - " + b.getTitle());
-            }
+            }            
             this.publishProgress("processing: " + b.getTitle());
             Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
          }
