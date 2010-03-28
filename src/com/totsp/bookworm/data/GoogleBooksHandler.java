@@ -129,7 +129,7 @@ public class GoogleBooksHandler extends DefaultHandler {
          this.book.description = (bufferContents);
       } else if (this.inEntry && localName.equals("format")) {
          if (this.book.format != null) {
-            this.book.format = (new String(this.book.format + " " + bufferContents).trim());
+            this.book.format = this.book.format + " " + bufferContents.trim();
          } else {
             this.book.format = (bufferContents);
          }

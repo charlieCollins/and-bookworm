@@ -84,25 +84,25 @@ public class DataImageHelper {
             exportDir.mkdirs();
          }
 
+         FileOutputStream fos = null;
+         
          File file = new File(exportDir, name + ".jpg");
          boolean created = file.createNewFile();
-         if (!created) {
-            // file already exists, should we delete it and recreate it?
-         }
-         FileOutputStream fos = new FileOutputStream(file);
-         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-         fos.close();
+         if (created) {
+            fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.close();
+         }         
 
          File fileThumb = new File(exportDir, name + "-t.jpg");
-         boolean createdThumb = fileThumb.createNewFile();
-         if (!createdThumb) {
-            // file already exists, should we delete it and recreate it?
-         }
-         fos = new FileOutputStream(fileThumb);
-         bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-         fos.close();
+         boolean thumbCreated = fileThumb.createNewFile();
+         if (thumbCreated) {
+            fos = new FileOutputStream(fileThumb);
+            bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.close();
+         }         
 
-         if (this.cacheEnabled) {
+         if (this.cacheEnabled && bitmap != null) {
             this.imageCache.put(name, bitmap);
          }
 

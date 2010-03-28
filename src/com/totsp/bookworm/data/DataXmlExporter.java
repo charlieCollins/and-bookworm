@@ -129,7 +129,7 @@ public class DataXmlExporter {
     * @author ccollins
     *
     */
-   class XmlBuilder {
+   static class XmlBuilder {
       private static final String OPEN_XML_STANZA = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
       private static final String CLOSE_WITH_TICK = "'>";
       private static final String DB_OPEN = "<database name='";

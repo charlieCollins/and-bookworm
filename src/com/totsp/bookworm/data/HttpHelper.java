@@ -190,11 +190,11 @@ public class HttpHelper {
          List<NameValuePair> nvps = null;
          if ((params != null) && (params.size() > 0)) {
             nvps = new ArrayList<NameValuePair>();
-            for (String key : params.keySet()) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
                if (Constants.LOCAL_LOGD) {
-                  Log.d(CLASSTAG, "adding param: " + key + " | " + params.get(key));
+                  Log.d(CLASSTAG, "adding param: " + entry.getKey() + " | " + entry.getValue());
                }
-               nvps.add(new BasicNameValuePair(key, params.get(key)));
+               nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
          }
          if (nvps != null) {

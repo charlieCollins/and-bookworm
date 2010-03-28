@@ -119,7 +119,7 @@ public class BookDetail extends Activity {
             }
          }
 
-         this.ratingBar.setRating(new Float(book.rating));
+         this.ratingBar.setRating(book.rating);
          this.readStatus.setChecked(book.read);
          this.bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
          this.bookAuthors.setText(authors);
