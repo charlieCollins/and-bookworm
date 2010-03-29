@@ -1,31 +1,18 @@
-For 1.0 (in rough order)
+For 2.0 (in rough order)
 ------------------------
 
-Sync with Google Books, and include pref to get login and store token, etc.
+Sync with Google Books, and include pref to get login and store token (Using OAuth), etc.
 
-Finish book meta/user data working - rating, readstatus, etc (and show on Main).
+Complete the book data provider abstraction, so that multiple providers (more that Google Books, but start with that) can easily be supported.
 
-Finish book edit activity - make collapsible sections, add remaining data elements, include changing cover image.
-
-Make sure ListView with images works with many many items, should NOT load images
-when flinging - should load other data and then get images when it can, etc. 
-
-Update ListView format/style - include more info (rating, readstatus), and make it not suck.
-
-Make sure all activities/screens work in multiple orientations.
-
-Make sure all activities/screens work in small/med/large devices.
+See Google Books "bookshelf" which now has read, want to read, rating, review, etc 
+(When I started this app, that is *exactly* what I had in mind, and Google Books did not have said features, now they do
+-- need to basically rewrite this to just leverage that stuff - maybe even throw out the data model here?)
 
 Book object stores multiple ISBNs now, make sure approp fallbacks are in code where one or other not present.
 
 Buttons (add book, etc) should look better use an image or something.
 
-Make sure all bg operations use AsyncTask and make sure it works right when orient change.
-
-Clean up search form.
-
 Profile and performance optimize.
 
 Full tests - with coverage/emma.
-
-Project web site/page in place at Google Code - link from help.

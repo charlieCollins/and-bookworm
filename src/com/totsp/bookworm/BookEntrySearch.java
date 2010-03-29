@@ -35,17 +35,16 @@ public class BookEntrySearch extends Activity {
    private boolean footerViewShown;
    private ArrayList<Book> parsedBooks;
    private ArrayAdapter<Book> adapter;
-   
+
    private SearchTask searchTask;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
       this.setContentView(R.layout.bookentrysearch);
-      
-      this.searchTask =  new SearchTask();      
-      this.parsedBooks =  null;
+
+      this.searchTask = new SearchTask();
+      this.parsedBooks = null;
       this.adapter = null;
 
       this.searchInput = (EditText) this.findViewById(R.id.bookentrysearchinput);
@@ -55,7 +54,7 @@ public class BookEntrySearch extends Activity {
 
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookEntrySearch.this.parsedBooks =  new ArrayList<Book>();
+            BookEntrySearch.this.parsedBooks = new ArrayList<Book>();
             BookEntrySearch.this.searchTask.execute(BookEntrySearch.this.searchInput.getText().toString(), "1");
             ///v.setBackgroundResource(android.R.color.background_light);   
          }
@@ -64,7 +63,7 @@ public class BookEntrySearch extends Activity {
       LayoutInflater li = this.getLayoutInflater();
       this.getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);
       this.getMoreData.setOnClickListener(new OnClickListener() {
-         public void onClick(final View v) {        
+         public void onClick(final View v) {
             BookEntrySearch.this.startIndex += 20;
             new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
                      .valueOf(BookEntrySearch.this.startIndex));
@@ -72,15 +71,18 @@ public class BookEntrySearch extends Activity {
          }
       });
    }
-   
+
    @Override
    public void onPause() {
-      super.onPause();
       if (this.searchTask.dialog.isShowing()) {
          this.searchTask.dialog.dismiss();
-      }      
+      }
+      super.onPause();
    }
 
+   //
+   // AsyncTasks
+   //
    private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntrySearch.this);
 
@@ -106,16 +108,15 @@ public class BookEntrySearch extends Activity {
             this.dialog.dismiss();
          }
 
-         if ((books != null) && !books.isEmpty()) {            
+         if ((books != null) && !books.isEmpty()) {
             for (Book b : books) {
-               if (((b.isbn10 != null) && !b.isbn10.equals(""))
-                        || ((b.isbn13 != null) && !b.isbn13.equals(""))) {
+               if (((b.isbn10 != null) && !b.isbn10.equals("")) || ((b.isbn13 != null) && !b.isbn13.equals(""))) {
                   BookEntrySearch.this.parsedBooks.add(b);
                }
             }
 
             // add footer view BEFORE setting adapter
-            if (!BookEntrySearch.this.parsedBooks.isEmpty() && !BookEntrySearch.this.footerViewShown) {               
+            if (!BookEntrySearch.this.parsedBooks.isEmpty() && !BookEntrySearch.this.footerViewShown) {
                BookEntrySearch.this.searchResults.addFooterView(BookEntrySearch.this.getMoreData);
                BookEntrySearch.this.footerViewShown = true;
             }
@@ -124,7 +125,7 @@ public class BookEntrySearch extends Activity {
                      new ArrayAdapter<Book>(BookEntrySearch.this, R.layout.simple_list_item_1,
                               BookEntrySearch.this.parsedBooks);
 
-            BookEntrySearch.this.searchResults.setAdapter(adapter);
+            BookEntrySearch.this.searchResults.setAdapter(BookEntrySearch.this.adapter);
             BookEntrySearch.this.searchResults.setTextFilterEnabled(true);
             BookEntrySearch.this.searchResults.setOnItemClickListener(new OnItemClickListener() {
                public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {

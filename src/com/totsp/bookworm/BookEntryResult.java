@@ -32,14 +32,15 @@ public class BookEntryResult extends Activity {
    Book book;
 
    boolean fromSearchResults;
+   private GetBookDataTask getBookDataTask;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
+      this.setContentView(R.layout.bookentryresult);
       this.application = (BookWormApplication) this.getApplication();
 
-      this.setContentView(R.layout.bookentryresult);
+      this.getBookDataTask = new GetBookDataTask();
 
       this.bookTitle = (TextView) this.findViewById(R.id.bookentrytitle);
       this.bookCover = (ImageView) this.findViewById(R.id.bookentrycover);
@@ -60,12 +61,20 @@ public class BookEntryResult extends Activity {
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          this.setViewsForInvalidEntry();
       } else {
-         new GetBookDataTask().execute(isbn);
+         this.getBookDataTask.execute(isbn);
       }
 
-      if (savedInstanceState != null && savedInstanceState.getBoolean("FROM_SEARCH_RESULTS", false)) {
+      if ((savedInstanceState != null) && savedInstanceState.getBoolean("FROM_SEARCH_RESULTS", false)) {
          this.fromSearchResults = true;
       }
+   }
+
+   @Override
+   public void onPause() {
+      if (this.getBookDataTask.dialog.isShowing()) {
+         this.getBookDataTask.dialog.dismiss();
+      }
+      super.onPause();
    }
 
    /*
@@ -102,6 +111,9 @@ public class BookEntryResult extends Activity {
                + " (and if one method fails, such as scanning, try a search or direct entry).");
    }
 
+   //
+   // AsyncTasks
+   //
    private class GetBookDataTask extends AsyncTask<String, Void, Book> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
 

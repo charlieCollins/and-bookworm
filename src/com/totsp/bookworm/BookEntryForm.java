@@ -41,12 +41,14 @@ public class BookEntryForm extends Activity {
 
    Camera.PictureCallback jpegCallback = new Camera.PictureCallback() {
       @Override
-      public void onPictureTaken(byte[] arg0, Camera arg1) {
-         picBitmap = BitmapFactory.decodeByteArray(arg0, 0, arg0.length);
+      public void onPictureTaken(final byte[] arg0, final Camera arg1) {
+         BookEntryForm.this.picBitmap = BitmapFactory.decodeByteArray(arg0, 0, arg0.length);
          if (Constants.LOCAL_LOGV) {
-            Log.v(Constants.LOG_TAG, "picBitmap size - " + picBitmap.getWidth() + " " + picBitmap.getHeight());
+            Log.v(Constants.LOG_TAG, "picBitmap size - " + BookEntryForm.this.picBitmap.getWidth() + " "
+                     + BookEntryForm.this.picBitmap.getHeight());
          }
-         new InsertBookTask().execute(titleInput.getText().toString(), authorInput.getText().toString());
+         BookEntryForm.this.insertBookTask.execute(BookEntryForm.this.titleInput.getText().toString(),
+                  BookEntryForm.this.authorInput.getText().toString());
       }
    };
    Camera.ShutterCallback shutterCallback = new Camera.ShutterCallback() {
@@ -56,13 +58,16 @@ public class BookEntryForm extends Activity {
       }
    };
 
-   @Override
-   public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
+   // keep handle to AsyncTasks so cleanup in onPause can be done (else would just create new during usage)
+   private InsertBookTask insertBookTask;
 
+   @Override
+   public void onCreate(final Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      this.setContentView(R.layout.bookentryform);
       this.application = (BookWormApplication) this.getApplication();
 
-      setContentView(R.layout.bookentryform);
+      this.insertBookTask = new InsertBookTask();
 
       this.titleInput = (EditText) this.findViewById(R.id.bookentryformtitleinput);
       this.authorInput = (EditText) this.findViewById(R.id.bookentryformauthorinput);
@@ -70,14 +75,15 @@ public class BookEntryForm extends Activity {
       this.surfaceView = (SurfaceView) this.findViewById(R.id.bookentryformcamera);
 
       this.saveButton.setOnClickListener(new OnClickListener() {
-         public void onClick(View v) {
-            String title = titleInput.getText().toString();
-            String authors = authorInput.getText().toString();
-            if (title.length() < 1 || authors.length() < 1) {
+         public void onClick(final View v) {
+            String title = BookEntryForm.this.titleInput.getText().toString();
+            String authors = BookEntryForm.this.authorInput.getText().toString();
+            if ((title.length() < 1) || (authors.length() < 1)) {
                Toast.makeText(BookEntryForm.this, "Title and author(s) are required", Toast.LENGTH_SHORT).show();
             } else {
                // on camera callback use local AsyncTask - see jpegCallback
-               BookEntryForm.this.camera.takePicture(shutterCallback, null, jpegCallback);
+               BookEntryForm.this.camera.takePicture(BookEntryForm.this.shutterCallback, null,
+                        BookEntryForm.this.jpegCallback);
             }
          }
       });
@@ -85,22 +91,22 @@ public class BookEntryForm extends Activity {
       this.surfaceHolder = this.surfaceView.getHolder();
 
       this.surfaceHolder.addCallback(new android.view.SurfaceHolder.Callback() {
-         public void surfaceCreated(SurfaceHolder holder) {
+         public void surfaceCreated(final SurfaceHolder holder) {
             BookEntryForm.this.camera = Camera.open();
          }
 
-         public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-            if (previewRunning) {
-               camera.stopPreview();
+         public void surfaceChanged(final SurfaceHolder holder, final int format, final int w, final int h) {
+            if (BookEntryForm.this.previewRunning) {
+               BookEntryForm.this.camera.stopPreview();
             }
 
             try {
-               camera.setPreviewDisplay(holder);
+               BookEntryForm.this.camera.setPreviewDisplay(holder);
             } catch (IOException e) {
                Toast.makeText(BookEntryForm.this, "Error - " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
-            Camera.Parameters params = camera.getParameters();
+            Camera.Parameters params = BookEntryForm.this.camera.getParameters();
             params.setPreviewSize(480, 320); // required on G1 regardless?
             ///params.setPictureFormat(PixelFormat.YCbCr_420_SP);
             params.setPictureFormat(PixelFormat.JPEG);
@@ -129,43 +135,53 @@ public class BookEntryForm extends Activity {
             ///params.set("jpeg-quality", 70);
             ///params.set("picture-size-values", "42x60, 42x60, 42x60");
 
-            camera.setParameters(params);
-            camera.startPreview();
-            previewRunning = true;
+            BookEntryForm.this.camera.setParameters(params);
+            BookEntryForm.this.camera.startPreview();
+            BookEntryForm.this.previewRunning = true;
          }
 
-         public void surfaceDestroyed(SurfaceHolder holder) {
-            camera.stopPreview();
-            camera.release();
-            camera = null;
-            previewRunning = false;
+         public void surfaceDestroyed(final SurfaceHolder holder) {
+            BookEntryForm.this.camera.stopPreview();
+            BookEntryForm.this.camera.release();
+            BookEntryForm.this.camera = null;
+            BookEntryForm.this.previewRunning = false;
          }
       });
 
       this.surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
    }
 
+   @Override
+   public void onPause() {
+      if (this.insertBookTask.dialog.isShowing()) {
+         this.insertBookTask.dialog.dismiss();
+      }
+      super.onPause();
+   }
+
+   //
+   // AsyncTasks
+   //
    // Note - the form could potentially just take you to the BookEntryResult page same as scan and search? 
    private class InsertBookTask extends AsyncTask<String, Void, Void> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryForm.this);
 
-      // can use UI thread here
       protected void onPreExecute() {
          this.dialog.setMessage("Saving book..");
          this.dialog.show();
       }
 
-      // automatically done on worker thread (separate from UI thread)
-      protected Void doInBackground(String... args) {
+      protected Void doInBackground(final String... args) {
          Book book = new Book();
          book.title = (args[0]);
          book.authors = (AuthorsStringUtil.expandAuthors(args[1]));
-         long bookId = application.getDataHelper().insertBook(book);
-         if (picBitmap != null) {
+         long bookId = BookEntryForm.this.application.getDataHelper().insertBook(book);
+         if (BookEntryForm.this.picBitmap != null) {
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "picBitmap present in task, attempt image save");
             }
-            BookEntryForm.this.application.getDataImageHelper().storeBitmap(picBitmap, book.title, bookId);
+            BookEntryForm.this.application.getDataImageHelper().storeBitmap(BookEntryForm.this.picBitmap, book.title,
+                     bookId);
          }
          if (Constants.LOCAL_LOGV) {
             Log.v(Constants.LOG_TAG, "Created book, bookId - " + bookId);
@@ -173,10 +189,9 @@ public class BookEntryForm extends Activity {
          return null;
       }
 
-      // can use UI thread here
       protected void onPostExecute(final Void unused) {
          this.dialog.dismiss();
-         startActivity(new Intent(BookEntryForm.this, Main.class));
+         BookEntryForm.this.startActivity(new Intent(BookEntryForm.this, Main.class));
       }
    }
 }

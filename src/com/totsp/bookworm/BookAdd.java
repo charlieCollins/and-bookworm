@@ -21,10 +21,8 @@ public class BookAdd extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
-      ///this.application = (BookWormApplication) this.getApplication();
-
       this.setContentView(R.layout.bookadd);
+      ///this.application = (BookWormApplication) this.getApplication();      
 
       this.scanButton = (Button) this.findViewById(R.id.bookaddscanbutton);
       this.scanButton.setOnClickListener(new OnClickListener() {

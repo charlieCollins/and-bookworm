@@ -28,13 +28,17 @@ public class ManageData extends Activity {
    private Button importDbFromSdButton;
    private Button clearDbButton;
 
+   private ImportDatabaseTask importDatabaseTask;
+   private ExportDatabaseTask exportDatabaseTask;
+
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
+      this.setContentView(R.layout.managedata);
       this.application = (BookWormApplication) this.getApplication();
 
-      this.setContentView(R.layout.managedata);
+      this.importDatabaseTask = new ImportDatabaseTask();
+      this.exportDatabaseTask = new ExportDatabaseTask();
 
       this.exportDbToSdButton = (Button) this.findViewById(R.id.exportdbtosdbutton);
       this.exportDbToSdButton.setOnClickListener(new OnClickListener() {
@@ -42,13 +46,13 @@ public class ManageData extends Activity {
             new AlertDialog.Builder(ManageData.this).setMessage(
                      "Are you sure (this will replace any existing prior export)?").setPositiveButton("Yes",
                      new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
+                        public void onClick(final DialogInterface arg0, final int arg1) {
                            Log.i(Constants.LOG_TAG, "exporting database to external storage");
-                           new ExportDatabaseTask().execute();
+                           ManageData.this.exportDatabaseTask.execute();
                            ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
                         }
                      }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-               public void onClick(DialogInterface arg0, int arg1) {
+               public void onClick(final DialogInterface arg0, final int arg1) {
                }
             }).show();
          }
@@ -60,10 +64,10 @@ public class ManageData extends Activity {
             new AlertDialog.Builder(ManageData.this).setMessage(
                      "Are you sure (this will overwrite any existing current data)?").setPositiveButton("Yes",
                      new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
+                        public void onClick(final DialogInterface arg0, final int arg1) {
                            if (DataXmlExporter.isExternalStorageAvail()) {
                               Log.i(Constants.LOG_TAG, "importing database from external storage");
-                              new ImportDatabaseTask().execute("bookworm", "bookwormdata");
+                              ManageData.this.importDatabaseTask.execute("bookworm", "bookwormdata");
                               // sleep momentarily so that database reset stuff has time to take place (else Main shows no data)
                               try {
                                  Thread.sleep(1000);
@@ -78,7 +82,7 @@ public class ManageData extends Activity {
                            }
                         }
                      }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-               public void onClick(DialogInterface arg0, int arg1) {
+               public void onClick(final DialogInterface arg0, final int arg1) {
                }
             }).show();
          }
@@ -87,9 +91,10 @@ public class ManageData extends Activity {
       this.clearDbButton = (Button) this.findViewById(R.id.cleardbutton);
       this.clearDbButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            new AlertDialog.Builder(ManageData.this).setMessage("Are you sure (this will delete all data from database)?")
-                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
+            new AlertDialog.Builder(ManageData.this).setMessage(
+                     "Are you sure (this will delete all data from database)?").setPositiveButton("Yes",
+                     new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface arg0, final int arg1) {
                            Log.i(Constants.LOG_TAG, "deleting database");
                            ManageData.this.application.getDataHelper().deleteAllDataYesIAmSure();
                            ManageData.this.application.getDataHelper().resetDbConnection();
@@ -97,28 +102,34 @@ public class ManageData extends Activity {
                            ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
                         }
                      }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                        }
-                     }).show();
+               public void onClick(final DialogInterface arg0, final int arg1) {
+               }
+            }).show();
          }
       });
    }
 
+   @Override
+   public void onPause() {
+      if (this.exportDatabaseTask.dialog.isShowing()) {
+         this.exportDatabaseTask.dialog.dismiss();
+      }
+      if (this.importDatabaseTask.dialog.isShowing()) {
+         this.importDatabaseTask.dialog.dismiss();
+      }
+      super.onPause();
+   }
+
    // TODO don't need param types on these, don't use the params?
    // could pass in the param strings for data dirs though
-
-   // also need are you sure for export (will overwrite any existing export)
-
    private class ExportDatabaseTask extends AsyncTask<String, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(ManageData.this);
 
-      // can use UI thread here
       protected void onPreExecute() {
          this.dialog.setMessage("Exporting database...");
          this.dialog.show();
       }
 
-      // automatically done on worker thread (separate from UI thread)
       protected Boolean doInBackground(final String... args) {
 
          File dbFile = new File(Environment.getDataDirectory() + "/data/com.totsp.bookworm/databases/bookworm.db");
@@ -139,7 +150,6 @@ public class ManageData extends Activity {
          }
       }
 
-      // can use UI thread here
       protected void onPostExecute(final Boolean success) {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
@@ -155,13 +165,11 @@ public class ManageData extends Activity {
    private class ImportDatabaseTask extends AsyncTask<String, Void, String> {
       private final ProgressDialog dialog = new ProgressDialog(ManageData.this);
 
-      // can use UI thread here
       protected void onPreExecute() {
          this.dialog.setMessage("Importing database...");
          this.dialog.show();
       }
 
-      // automatically done on worker thread (separate from UI thread)
       protected String doInBackground(final String... args) {
 
          File dbBackupFile = new File(Environment.getExternalStorageDirectory() + "/bookwormdata/bookworm.db");
@@ -187,7 +195,6 @@ public class ManageData extends Activity {
          }
       }
 
-      // can use UI thread here
       protected void onPostExecute(final String errMsg) {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();

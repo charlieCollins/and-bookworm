@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -42,24 +40,28 @@ public class BookEdit extends TabActivity {
    private Button resetCoverButton;
    private Button generateCoverButton;
 
-   // TODO allow use to select an image from gallery/sdcard to use as cover
-   ///private Button selectCoverButton;
+   // keep handle to AsyncTasks so cleanup in onPause can be done (else would just create new during usage)
+   private ResetCoverImageTask resetCoverImageTask;
+   private GenerateCoverImageTask generateCoverImageTask;
+   private UpdateBookTask updateBookTask;
+
+   // NOTE - future allow use to select an image from gallery/sdcard to use as cover
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
+      this.setContentView(R.layout.bookedit);
       this.application = (BookWormApplication) this.getApplication();
 
-      this.setContentView(R.layout.bookedit);
+      this.resetCoverImageTask = new ResetCoverImageTask();
+      this.generateCoverImageTask = new GenerateCoverImageTask();
+      this.updateBookTask = new UpdateBookTask();
 
       this.tabHost = this.getTabHost();
-
       this.tabHost.addTab(this.tabHost.newTabSpec("tabs").setIndicator("Edit Book Details",
-               getResources().getDrawable(android.R.drawable.ic_menu_edit)).setContent(R.id.bookedittab1));
+               this.getResources().getDrawable(android.R.drawable.ic_menu_edit)).setContent(R.id.bookedittab1));
       this.tabHost.addTab(this.tabHost.newTabSpec("tabs").setIndicator("Manage Cover Image",
-               getResources().getDrawable(android.R.drawable.ic_menu_crop)).setContent(R.id.bookedittab2));
-
+               this.getResources().getDrawable(android.R.drawable.ic_menu_crop)).setContent(R.id.bookedittab2));
       this.tabHost.setCurrentTab(0);
 
       this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
@@ -81,14 +83,14 @@ public class BookEdit extends TabActivity {
       this.resetCoverButton = (Button) this.findViewById(R.id.bookeditresetcoverbutton);
       this.resetCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            new ResetCoverImageTask().execute(BookEdit.this.application.getSelectedBook());
+            BookEdit.this.resetCoverImageTask.execute(BookEdit.this.application.getSelectedBook());
          }
       });
 
       this.generateCoverButton = (Button) this.findViewById(R.id.bookeditgeneratecoverbutton);
       this.generateCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            new GenerateCoverImageTask().execute(BookEdit.this.application.getSelectedBook());
+            BookEdit.this.generateCoverImageTask.execute(BookEdit.this.application.getSelectedBook());
          }
       });
 
@@ -98,6 +100,15 @@ public class BookEdit extends TabActivity {
    @Override
    public void onPause() {
       this.bookTitleFormTab = null;
+      if (this.generateCoverImageTask.dialog.isShowing()) {
+         this.generateCoverImageTask.dialog.dismiss();
+      }
+      if (this.resetCoverImageTask.dialog.isShowing()) {
+         this.resetCoverImageTask.dialog.dismiss();
+      }
+      if (this.updateBookTask.dialog.isShowing()) {
+         this.updateBookTask.dialog.dismiss();
+      }
       super.onPause();
    }
 
@@ -112,6 +123,26 @@ public class BookEdit extends TabActivity {
       return super.onKeyDown(keyCode, event);
    }
    */
+
+   private void setViewData() {
+      Book book = this.application.getSelectedBook();
+      if (book != null) {
+         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.title, book.id, false);
+         if (coverImage != null) {
+            this.bookCover.setImageBitmap(coverImage);
+         } else {
+            this.bookCover.setImageResource(R.drawable.book_cover_missing);
+         }
+
+         this.bookTitleFormTab.setText(book.title);
+         this.bookTitleCoverTab.setText(book.title);
+         this.bookSubTitle.setText(book.subTitle);
+         this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
+         this.bookSubject.setText(book.subject);
+         this.bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
+         this.bookPublisher.setText(book.publisher);
+      }
+   }
 
    private void saveEdits() {
       Book book = this.application.getSelectedBook();
@@ -136,27 +167,7 @@ public class BookEdit extends TabActivity {
          newBook.read = (book.read);
 
          newBook.id = (book.id);
-         new UpdateBookTask().execute(newBook);
-      }
-   }
-
-   private void setViewData() {
-      Book book = this.application.getSelectedBook();
-      if (book != null) {
-         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.title, book.id, false);
-         if (coverImage != null) {
-            this.bookCover.setImageBitmap(coverImage);
-         } else {
-            this.bookCover.setImageResource(R.drawable.book_cover_missing);
-         }
-
-         this.bookTitleFormTab.setText(book.title);
-         this.bookTitleCoverTab.setText(book.title);
-         this.bookSubTitle.setText(book.subTitle);
-         this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
-         this.bookSubject.setText(book.subject);
-         this.bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
-         this.bookPublisher.setText(book.publisher);
+         this.updateBookTask.execute(newBook);
       }
    }
 
@@ -175,21 +186,9 @@ public class BookEdit extends TabActivity {
       super.onSaveInstanceState(saveState);
    }
 
-   @Override
-   public boolean onCreateOptionsMenu(final Menu menu) {
-
-      return super.onCreateOptionsMenu(menu);
-   }
-
-   @Override
-   public boolean onOptionsItemSelected(final MenuItem item) {
-      switch (item.getItemId()) {
-
-      default:
-         return super.onOptionsItemSelected(item);
-      }
-   }
-
+   //
+   // AsyncTasks
+   //
    private class UpdateBookTask extends AsyncTask<Book, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(BookEdit.this);
 

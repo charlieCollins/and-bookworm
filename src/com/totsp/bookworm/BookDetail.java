@@ -43,10 +43,8 @@ public class BookDetail extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
-      this.application = (BookWormApplication) this.getApplication();
-
       this.setContentView(R.layout.bookdetail);
+      this.application = (BookWormApplication) this.getApplication();      
 
       this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
       this.bookTitle = (TextView) this.findViewById(R.id.booktitle);
@@ -184,8 +182,8 @@ public class BookDetail extends Activity {
       case MENU_WEB_AMAZON:
          // TODO add fallback book isbn13 support
          uri =
-                  Uri.parse("http://www.amazon.com/gp/search?keywords="
-                           + this.application.getSelectedBook().isbn10 + "&index=books");
+                  Uri.parse("http://www.amazon.com/gp/search?keywords=" + this.application.getSelectedBook().isbn10
+                           + "&index=books");
          this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
          return true;
       default:

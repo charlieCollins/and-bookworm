@@ -11,20 +11,21 @@ import android.widget.TextView;
 public class About extends Activity {
 
    TextView about;
-   
+
    @Override
-   public void onCreate(Bundle savedInstanceState) {
+   public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.about);     
-      
+      this.setContentView(R.layout.about);
+
       this.about = (TextView) this.findViewById(R.id.aboutcontent);
-      this.about.setText(Html.fromHtml(getResources().getString(R.string.aboutcontent)), TextView.BufferType.SPANNABLE);
+      this.about.setText(Html.fromHtml(this.getResources().getString(R.string.aboutcontent)),
+               TextView.BufferType.SPANNABLE);
       this.about.setMovementMethod(LinkMovementMethod.getInstance());
-   }   
+   }
 
    @Override
    public void onStart() {
-      super.onStart();     
+      super.onStart();
    }
 
    @Override
@@ -35,26 +36,26 @@ public class About extends Activity {
    @Override
    protected void onStop() {
       super.onStop();
-   }  
-   
-   @Override
-   protected void onRestoreInstanceState(Bundle savedInstanceState) {
-       super.onRestoreInstanceState(savedInstanceState);
    }
 
    @Override
-   protected void onSaveInstanceState(Bundle saveState) {
-       super.onSaveInstanceState(saveState);       
+   protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
    }
-   
+
    @Override
-   public boolean onCreateOptionsMenu(Menu menu) {      
+   protected void onSaveInstanceState(final Bundle saveState) {
+      super.onSaveInstanceState(saveState);
+   }
+
+   @Override
+   public boolean onCreateOptionsMenu(final Menu menu) {
       ///menu.add(0, MENU_HELP, 0, "Help").setIcon(android.R.drawable.ic_menu_help);
       return super.onCreateOptionsMenu(menu);
    }
 
    @Override
-   public boolean onOptionsItemSelected(MenuItem item) {
+   public boolean onOptionsItemSelected(final MenuItem item) {
       /*
       switch (item.getItemId()) {
       case MENU_HELP:

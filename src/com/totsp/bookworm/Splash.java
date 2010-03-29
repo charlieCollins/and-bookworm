@@ -7,15 +7,15 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 
-public class Splash extends Activity {   
+public class Splash extends Activity {
 
    @Override
-   public void onCreate(Bundle savedInstanceState) {
+   public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.splash);
-      this.checkSkip();      
+      this.setContentView(R.layout.splash);
+      this.checkSkip();
    }
-   
+
    private void checkSkip() {
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
       boolean skipSplash = prefs.getBoolean("splashcheckpref", false);
@@ -23,9 +23,9 @@ public class Splash extends Activity {
          this.startActivity(new Intent(Splash.this, Main.class));
       }
    }
-   
+
    @Override
-   public boolean onTouchEvent(MotionEvent e) {
+   public boolean onTouchEvent(final MotionEvent e) {
       if (e.getAction() == MotionEvent.ACTION_DOWN) {
          this.startActivity(new Intent(Splash.this, Main.class));
       }

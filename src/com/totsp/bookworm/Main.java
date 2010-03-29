@@ -68,14 +68,16 @@ public class Main extends Activity {
    private Bitmap star4;
    private Bitmap star5;
 
+   private ResetAllCoverImagesTask resetAllCoverImagesTask;
+
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
+      this.setContentView(R.layout.main);
       this.application = (BookWormApplication) this.getApplication();
       this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-      this.setContentView(R.layout.main);
+      this.resetAllCoverImagesTask = new ResetAllCoverImagesTask();
 
       this.coverImageMissing = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_cover_missing);
       this.star0 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star0);
@@ -111,11 +113,11 @@ public class Main extends Activity {
       String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
       this.bindBookList(sortOrder);
    }
-   
+
    @Override
    public void onStart() {
       super.onStart();
-   }  
+   }
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
@@ -157,7 +159,7 @@ public class Main extends Activity {
                   "This will use the network to try to find and replace all cover images.").setPositiveButton(
                   "Yes, I'm Sure", new DialogInterface.OnClickListener() {
                      public void onClick(final DialogInterface d, final int i) {
-                        new ResetAllCoverImagesTask().execute();
+                        Main.this.resetAllCoverImagesTask.execute();
                      }
                   }).setNegativeButton("No, Cancel", new DialogInterface.OnClickListener() {
             public void onClick(final DialogInterface d, final int i) {
@@ -204,6 +206,14 @@ public class Main extends Activity {
       }
    }
 
+   @Override
+   public void onPause() {
+      if (this.resetAllCoverImagesTask.dialog.isShowing()) {
+         this.resetAllCoverImagesTask.dialog.dismiss();
+      }
+      super.onPause();
+   }
+
    /*
    // go to home on back from Main (cannot just "finish" because that will end up at Splash)
    @Override
@@ -226,13 +236,13 @@ public class Main extends Activity {
          this.bookListView.setAdapter(this.adapter);
       }
    }
-   
+
    private void saveSortOrder(final String order) {
       Editor editor = this.prefs.edit();
       editor.putString(Constants.DEFAULT_SORT_ORDER, order);
       editor.commit();
    }
-   
+
    // static and package access as an Android optimization (used in inner class)
    static class ViewHolder {
       ImageView coverImage;
@@ -259,36 +269,37 @@ public class Main extends Activity {
       }
 
       @Override
-      public View newView(final Context context, final Cursor c, final ViewGroup parent) {       
-      // use ViewHolder pattern to avoid extra trips to findViewById
-         View v = this.vi.inflate(R.layout.list_items_item, parent, false);         
-         ViewHolder holder = new ViewHolder();         
+      public View newView(final Context context, final Cursor c, final ViewGroup parent) {
+         // use ViewHolder pattern to avoid extra trips to findViewById
+         View v = this.vi.inflate(R.layout.list_items_item, parent, false);
+         ViewHolder holder = new ViewHolder();
          holder.coverImage = (ImageView) v.findViewById(R.id.list_items_item_image);
          holder.ratingImage = (ImageView) v.findViewById(R.id.list_items_item_rating_image);
-         holder.textAbove = (TextView) v.findViewById(R.id.list_items_item_textabove);;
+         holder.textAbove = (TextView) v.findViewById(R.id.list_items_item_textabove);
+         ;
          holder.textBelow = (TextView) v.findViewById(R.id.list_items_item_textbelow);
-         holder.readStatus = (CheckBox) v.findViewById(R.id.list_items_item_read_status);         
+         holder.readStatus = (CheckBox) v.findViewById(R.id.list_items_item_read_status);
          v.setTag(holder);
          this.populateView(v, c);
          return v;
-      }      
-      
+      }
+
       private void populateView(final View v, final Cursor c) {
          // use ViewHolder pattern to avoid extra trips to findViewById
-         ViewHolder holder = (ViewHolder) v.getTag();        
-         
+         ViewHolder holder = (ViewHolder) v.getTag();
+
          if ((c != null) && !c.isClosed()) {
-            long id = c.getLong(c.getColumnIndex("_id"));            
+            long id = c.getLong(c.getColumnIndex("_id"));
             int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
             int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
-            
+
             if (Constants.LOCAL_LOGD) {
                Log.d(Constants.LOG_TAG, "book id from cursor - " + id);
                Log.d(Constants.LOG_TAG, "title from cursor - " + title);
             }
-            
+
             ImageView coverImage = holder.coverImage;
             Bitmap coverImageBitmap = Main.this.application.getDataImageHelper().retrieveBitmap(title, id, true);
             if (coverImageBitmap != null) {
@@ -331,6 +342,9 @@ public class Main extends Activity {
       }
    }
 
+   //
+   // AsyncTasks
+   //
    /*
    private class PopulateCoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
       private final ImageView v;
@@ -375,7 +389,7 @@ public class Main extends Activity {
          for (Book b : books) {
             if (Constants.LOCAL_LOGV) {
                Log.v(Constants.LOG_TAG, "resetting cover image for book - " + b.title);
-            }            
+            }
             this.publishProgress("processing: " + b.title);
             Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
          }
