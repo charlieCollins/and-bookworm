@@ -30,7 +30,7 @@
 		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 		android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
 		android:layout_gravity="left" android:gravity="left" style="@style/black"
-		android:maxWidth="235dp" android:maxLines="2" android:ellipsize="end" />
+		android:maxWidth="230dp" android:maxLines="2" android:ellipsize="end" />
 
 	<TextView android:id="@+id/bookdatepub" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="5dp"
