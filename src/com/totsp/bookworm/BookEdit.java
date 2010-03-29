@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -17,9 +18,8 @@ import android.widget.Toast;
 
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.AuthorsStringUtil;
-import com.totsp.bookworm.util.DateUtil;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class BookEdit extends TabActivity {
 
@@ -33,7 +33,7 @@ public class BookEdit extends TabActivity {
    private EditText bookSubTitle;
    private EditText bookAuthors;
    private EditText bookSubject;
-   private EditText bookDatePub;
+   private DatePicker bookDatePub;
    private EditText bookPublisher;
 
    private Button saveButton;
@@ -70,7 +70,7 @@ public class BookEdit extends TabActivity {
       this.bookSubTitle = (EditText) this.findViewById(R.id.booksubtitle);
       this.bookAuthors = (EditText) this.findViewById(R.id.bookauthors);
       this.bookSubject = (EditText) this.findViewById(R.id.booksubject);
-      this.bookDatePub = (EditText) this.findViewById(R.id.bookdatepub);
+      this.bookDatePub = (DatePicker) this.findViewById(R.id.bookdatepub);
       this.bookPublisher = (EditText) this.findViewById(R.id.bookpublisher);
 
       this.saveButton = (Button) this.findViewById(R.id.bookeditsavebutton);
@@ -138,9 +138,12 @@ public class BookEdit extends TabActivity {
          this.bookTitleCoverTab.setText(book.title);
          this.bookSubTitle.setText(book.subTitle);
          this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
-         this.bookSubject.setText(book.subject);
-         this.bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
-         this.bookPublisher.setText(book.publisher);
+         this.bookSubject.setText(book.subject);         
+         this.bookPublisher.setText(book.publisher);        
+         
+         Calendar cal = Calendar.getInstance();
+         cal.setTimeInMillis(book.datePubStamp);         
+         this.bookDatePub.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
       }
    }
 
@@ -151,10 +154,15 @@ public class BookEdit extends TabActivity {
          newBook.title = (this.bookTitleFormTab.getText().toString());
          newBook.subTitle = (this.bookSubTitle.getText().toString());
          newBook.authors = (AuthorsStringUtil.expandAuthors(this.bookAuthors.getText().toString()));
-         newBook.subject = (this.bookSubject.getText().toString());
-         newBook.datePubStamp = (DateUtil.parse(this.bookDatePub.getText().toString()).getTime());
+         newBook.subject = (this.bookSubject.getText().toString());         
          newBook.publisher = (this.bookPublisher.getText().toString());
-
+        
+         Calendar cal = Calendar.getInstance();
+         cal.set(Calendar.YEAR, this.bookDatePub.getYear());         
+         cal.set(Calendar.MONTH, this.bookDatePub.getMonth());
+         cal.set(Calendar.DAY_OF_MONTH, this.bookDatePub.getDayOfMonth());         
+         newBook.datePubStamp = cal.getTimeInMillis();
+         
          // NOTE - properties not yet editable (will be in future)        
          newBook.blurb = book.blurb;
          newBook.description = (book.description);
