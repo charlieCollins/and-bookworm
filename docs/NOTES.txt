@@ -43,6 +43,9 @@ Instrumentation is required, even if don't want to use monitor?
 look carefully at orientation changes and how they affect things - 
 use android:configChanges="keyboardHidden|orientation" to react
 
+use onSaveInstanceState/onRestoreInstanceState to restore in memory state from you app ANY TIME it is KILLED/RESTARTED
+this includes orientation changes, onRetainConfigurationInstance can also be used, but it ONLY works for orientation change
+
 @+id/foo is the namespace of current application 
 @android:id/foo is the android namespace
 a? refers back to same config file, rather than another already defined resource
@@ -67,5 +70,3 @@ For example, an EditText, or more subtle, "android:inputType="text"" on a TextVi
 
 logcat filterspec - adb -d logcat "*:s BookWorm:v"
 
-use onSaveInstanceState/onRestoreInstanceState to restore in memory state from you app ANY TIME it is KILLED/RESTARTED
-this includes orientation changes, onRetainConfigurationInstance can also be used, but it ONLY works for orientation change
