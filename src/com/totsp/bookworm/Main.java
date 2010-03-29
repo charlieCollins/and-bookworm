@@ -98,8 +98,8 @@ public class Main extends Activity {
             int bookId = Main.this.cursor.getInt(Main.this.cursor.getColumnIndex("_id"));
             Book book = Main.this.application.getDataHelper().selectBook(bookId);
             if (book != null) {
-               if (Constants.LOCAL_LOGV) {
-                  Log.v(Constants.LOG_TAG, "book selected - " + book.title);
+               if (Constants.LOCAL_LOGD) {
+                  Log.d(Constants.LOG_TAG, "book selected - " + book.title);
                }
                Main.this.application.setSelectedBook(book);
                Main.this.startActivity(new Intent(Main.this, BookDetail.class));
@@ -388,8 +388,8 @@ public class Main extends Activity {
          Main.this.application.getDataImageHelper().clearAllBitmapSourceFiles();
          HashSet<Book> books = Main.this.application.getDataHelper().selectAllBooks();
          for (Book b : books) {
-            if (Constants.LOCAL_LOGV) {
-               Log.v(Constants.LOG_TAG, "resetting cover image for book - " + b.title);
+            if (Constants.LOCAL_LOGD) {
+               Log.d(Constants.LOG_TAG, "resetting cover image for book - " + b.title);
             }
             this.publishProgress("processing: " + b.title);
             Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);

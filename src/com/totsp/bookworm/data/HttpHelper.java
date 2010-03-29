@@ -217,8 +217,8 @@ public class HttpHelper {
    } 
 
    private synchronized String execute(HttpRequestBase method) {
-      if (Constants.LOCAL_LOGV) {
-         Log.v(CLASSTAG, "execute invoked");
+      if (Constants.LOCAL_LOGD) {
+         Log.d(CLASSTAG, "execute invoked");
       }
       String response = null;
       // execute method returns?!? (rather than async) - do it here sync, and wrap async elsewhere
@@ -231,8 +231,8 @@ public class HttpHelper {
          response = HTTP_RESPONSE_ERROR + " - " +  e.getClass().getSimpleName() + " " + e.getMessage();
          //e.printStackTrace();
       }
-      if (Constants.LOCAL_LOGV) {
-         Log.v(CLASSTAG, "request completed");
+      if (Constants.LOCAL_LOGD) {
+         Log.d(CLASSTAG, "request completed");
       }
       return response;
    }

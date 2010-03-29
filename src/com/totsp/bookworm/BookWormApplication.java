@@ -10,6 +10,8 @@ import com.totsp.bookworm.data.DataImageHelper;
 import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Book;
 
+import java.util.ArrayList;
+
 public class BookWormApplication extends Application {
 
    public static final String APP_NAME = "BookWorm";
@@ -22,12 +24,15 @@ public class BookWormApplication extends Application {
    private DataImageHelper dataImageHelper;
 
    private Book selectedBook;
+   
+   private String lastSearchTerm;
+   private ArrayList<Book> bookCacheList;
 
    @Override
    public void onCreate() {
       super.onCreate();
-      if (Constants.LOCAL_LOGV) {
-         Log.v(Constants.LOG_TAG, "APPLICATION onCreate");
+      if (Constants.LOCAL_LOGD) {
+         Log.d(Constants.LOG_TAG, "APPLICATION onCreate");
       }
 
       this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -99,4 +104,20 @@ public class BookWormApplication extends Application {
    public void establishSelectedBook(final long id) {
       this.selectedBook = this.dataHelper.selectBook(id);
    }
+   
+   public ArrayList<Book> getBookCacheList() {
+      return this.bookCacheList;
+   }
+   
+   public void setBookCacheList(ArrayList<Book> list) {
+      this.bookCacheList = list;
+   }
+
+   public String getLastSearchTerm() {
+      return this.lastSearchTerm;
+   }
+
+   public void setLastSearchTerm(String lastSearchTerm) {
+      this.lastSearchTerm = lastSearchTerm;
+   }   
 }

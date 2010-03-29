@@ -15,8 +15,6 @@ public class DataConstants {
    public static final String RATING = "rat";
    public static final String READSTATUS = "rstat";
    public static final String BLURB = "blurb";   
-   public static final String COVERIMAGEID = "covimgid";
-   public static final String COVERIMAGETINYID = "covimgtid";
    public static final String DESCRIPTION = "desc";
    public static final String PUBLISHER = "pub";
    public static final String FORMAT = "format";

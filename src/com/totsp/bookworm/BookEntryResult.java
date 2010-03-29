@@ -21,6 +21,8 @@ import com.totsp.bookworm.util.CoverImageUtil;
 
 public class BookEntryResult extends Activity {
 
+   public static final String FROM_RESULT = "FROM_RESULT";
+   
    private BookWormApplication application;
 
    // package scope for use in inner class (Android optimization)
@@ -31,7 +33,8 @@ public class BookEntryResult extends Activity {
 
    Book book;
 
-   boolean fromSearchResults;
+   boolean fromSearch;
+   
    private GetBookDataTask getBookDataTask;
 
    @Override
@@ -64,10 +67,8 @@ public class BookEntryResult extends Activity {
          this.getBookDataTask = new GetBookDataTask();
          this.getBookDataTask.execute(isbn);
       }
-
-      if ((savedInstanceState != null) && savedInstanceState.getBoolean("FROM_SEARCH_RESULTS", false)) {
-         this.fromSearchResults = true;
-      }
+      
+      this.fromSearch = this.getIntent().getBooleanExtra(BookEntrySearch.FROM_SEARCH, false);
    }
 
    @Override
@@ -77,21 +78,6 @@ public class BookEntryResult extends Activity {
       }
       super.onPause();
    }
-
-   /*
-   // go back to search results if coming from there
-   @Override
-   public boolean onKeyDown(int keyCode, KeyEvent event) {
-      if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-         if (this.fromSearchResults) {
-            this.startActivity(new Intent(BookEntryResult.this, BookEntrySearch.class));
-            this.fromSearchResults = false;
-         }
-         return true;
-      }
-      return super.onKeyDown(keyCode, event);
-   }
-   */
 
    private void bookAddClick() {
       if ((this.book != null) && (this.book.isbn10 != null)) {
@@ -103,7 +89,14 @@ public class BookEntryResult extends Activity {
                      bookId);
          }
       }
-      this.startActivity(new Intent(BookEntryResult.this, Main.class));
+      if (this.fromSearch) {
+         // if from search results, return to search
+         Intent intent = new Intent(BookEntryResult.this, BookEntrySearch.class);
+         intent.putExtra(FROM_RESULT, true);
+         this.startActivity(intent);
+      } else {
+         this.startActivity(new Intent(BookEntryResult.this, Main.class));
+      }
    }
 
    private void setViewsForInvalidEntry() {
@@ -153,17 +146,17 @@ public class BookEntryResult extends Activity {
             BookEntryResult.this.bookAuthors.setText(authors);
 
             if (b.coverImage != null) {
-               if (Constants.LOCAL_LOGV) {
-                  Log.v(Constants.LOG_TAG, "book cover bitmap present, set cover");
+               if (Constants.LOCAL_LOGD) {
+                  Log.d(Constants.LOG_TAG, "book cover bitmap present, set cover");
                }
                BookEntryResult.this.bookCover.setImageBitmap(b.coverImage);
             } else {
-               if (Constants.LOCAL_LOGV) {
-                  Log.v(Constants.LOG_TAG, "book cover not found");
+               if (Constants.LOCAL_LOGD) {
+                  Log.d(Constants.LOG_TAG, "book cover not found, generate image");
                }
                Bitmap generatedCover = BookEntryResult.this.application.getDataImageHelper().createCoverImage(b.title);
                BookEntryResult.this.bookCover.setImageBitmap(generatedCover);
-               ///BookEntryResult.this.bookCover.setImageResource(R.drawable.book_cover_missing);
+               b.coverImage = generatedCover;
             }
 
             BookEntryResult.this.book = b;

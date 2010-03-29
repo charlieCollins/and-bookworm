@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,24 +25,30 @@ import java.util.ArrayList;
 
 public class BookEntrySearch extends Activity {
 
+   public static final String FROM_SEARCH = "FROM_SEARCH";
+
+   private BookWormApplication application;
+   
    private int startIndex = 1;
 
    private EditText searchInput;
    private Button searchButton;
    private ListView searchResults;
-
    private TextView getMoreData;
 
    private boolean footerViewShown;
    private ArrayList<Book> parsedBooks;
-   private ArrayAdapter<Book> adapter;
+   private ArrayAdapter<Book> adapter;  
 
    private SearchTask searchTask;
+   
+   private boolean fromEntryResult;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.setContentView(R.layout.bookentrysearch);
+      this.application = (BookWormApplication) this.getApplication();
 
       this.searchTask = null;
       this.parsedBooks = null;
@@ -51,13 +58,27 @@ public class BookEntrySearch extends Activity {
       this.searchButton = (Button) this.findViewById(R.id.bookentrysearchbutton);
 
       this.searchResults = (ListView) this.findViewById(R.id.bookentrysearchresultlist);
+      this.searchResults.setTextFilterEnabled(true);
+      this.searchResults.setOnItemClickListener(new OnItemClickListener() {
+         public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
+            Book selected = BookEntrySearch.this.parsedBooks.get(index);
+            Intent intent = new Intent(BookEntrySearch.this, BookEntryResult.class);
+            // favor isbn 10, but use 13 if 10 missing
+            if ((selected.isbn10 != null) && !selected.isbn10.equals("")) {
+               intent.putExtra(Constants.ISBN, selected.isbn10);
+            } else if ((selected.isbn13 != null) && !selected.isbn13.equals("")) {
+               intent.putExtra(Constants.ISBN, selected.isbn13);
+            }
+            intent.putExtra(FROM_SEARCH, true);
+            BookEntrySearch.this.startActivity(intent);
+         }
+      });
 
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookEntrySearch.this.parsedBooks = new ArrayList<Book>();
             BookEntrySearch.this.searchTask = new SearchTask();
             BookEntrySearch.this.searchTask.execute(BookEntrySearch.this.searchInput.getText().toString(), "1");
-            ///v.setBackgroundResource(android.R.color.background_light);   
          }
       });
 
@@ -65,12 +86,18 @@ public class BookEntrySearch extends Activity {
       this.getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);
       this.getMoreData.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookEntrySearch.this.startIndex += 20;
+            BookEntrySearch.this.startIndex += 15;
             new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
                      .valueOf(BookEntrySearch.this.startIndex));
-            ///BookEntrySearch.this.searchResults.setSelection(BookEntrySearch.this.startIndex  - 20);            
+            ///BookEntrySearch.this.searchResults.setSelection(BookEntrySearch.this.startIndex  - 15);
+            v.setBackgroundResource(R.color.red1);
          }
       });
+
+      this.fromEntryResult = this.getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false);
+      if (this.fromEntryResult) {
+         this.restoreFromCache();
+      }
    }
 
    @Override
@@ -78,7 +105,41 @@ public class BookEntrySearch extends Activity {
       if (this.searchTask != null && this.searchTask.dialog.isShowing()) {
          this.searchTask.dialog.dismiss();
       }
+      if (this.parsedBooks != null) {
+         this.application.setBookCacheList(this.parsedBooks);
+      }
+      if (this.searchInput != null) {
+         this.application.setLastSearchTerm(this.searchInput.getText().toString());
+      }
       super.onPause();
+   }   
+
+   // go back to Main on back from here
+   @Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
+      if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            this.startActivity(new Intent(BookEntrySearch.this, Main.class));            
+         return true;
+      }
+      return super.onKeyDown(keyCode, event);
+   }
+
+   private void bindAdapter() {
+      this.adapter =
+               new ArrayAdapter<Book>(BookEntrySearch.this, R.layout.simple_list_item_1,
+                        BookEntrySearch.this.parsedBooks);
+      this.searchResults.setAdapter(this.adapter);
+   }
+
+   private void restoreFromCache() {
+      // use application object as quick/dirty cache for state      
+      if (this.application.getBookCacheList() != null) {
+         this.parsedBooks = this.application.getBookCacheList();
+         this.bindAdapter();
+      }
+      if (this.application.getLastSearchTerm() != null) {
+         this.searchInput.setText(this.application.getLastSearchTerm());
+      }
    }
 
    //
@@ -122,26 +183,8 @@ public class BookEntrySearch extends Activity {
                BookEntrySearch.this.footerViewShown = true;
             }
 
-            BookEntrySearch.this.adapter =
-                     new ArrayAdapter<Book>(BookEntrySearch.this, R.layout.simple_list_item_1,
-                              BookEntrySearch.this.parsedBooks);
-
-            BookEntrySearch.this.searchResults.setAdapter(BookEntrySearch.this.adapter);
-            BookEntrySearch.this.searchResults.setTextFilterEnabled(true);
-            BookEntrySearch.this.searchResults.setOnItemClickListener(new OnItemClickListener() {
-               public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-                  Book selected = BookEntrySearch.this.parsedBooks.get(index);
-                  Intent intent = new Intent(BookEntrySearch.this, BookEntryResult.class);
-                  // favor isbn 10, but use 13 if 10 missing
-                  if ((selected.isbn10 != null) && !selected.isbn10.equals("")) {
-                     intent.putExtra(Constants.ISBN, selected.isbn10);
-                  } else if ((selected.isbn13 != null) && !selected.isbn13.equals("")) {
-                     intent.putExtra(Constants.ISBN, selected.isbn13);
-                  }
-                  intent.putExtra("FROM_SEARCH_RESULTS", true);
-                  BookEntrySearch.this.startActivity(intent);
-               }
-            });
+            BookEntrySearch.this.bindAdapter();
+            BookEntrySearch.this.getMoreData.setBackgroundResource(R.color.grey1);
          }
       }
    }

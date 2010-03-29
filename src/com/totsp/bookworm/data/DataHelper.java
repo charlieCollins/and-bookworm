@@ -30,7 +30,7 @@ public class DataHelper {
    public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc, book.tit asc";
 
    private static final String DATABASE_NAME = "bookworm.db";
-   private static final int DATABASE_VERSION = 1;
+   private static final int DATABASE_VERSION = 10;
    private static final String BOOK_TABLE = "book";
    private static final String BOOKUSERDATA_TABLE = "bookuserdata";
    private static final String BOOKAUTHOR_TABLE = "bookauthor";
@@ -42,10 +42,9 @@ public class DataHelper {
    private final SQLiteStatement bookInsertStmt;
    private static final String BOOK_INSERT =
             "insert into " + DataHelper.BOOK_TABLE + "(" + DataConstants.ISBN10 + "," + DataConstants.ISBN13 + ","
-                     + DataConstants.TITLE + "," + DataConstants.SUBTITLE + "," + DataConstants.COVERIMAGEID + ","
-                     + DataConstants.COVERIMAGETINYID + "," + DataConstants.PUBLISHER + "," + DataConstants.DESCRIPTION
-                     + "," + DataConstants.FORMAT + "," + DataConstants.SUBJECT + "," + DataConstants.DATEPUB
-                     + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                     + DataConstants.TITLE + "," + DataConstants.SUBTITLE + "," + DataConstants.PUBLISHER + ","
+                     + DataConstants.DESCRIPTION + "," + DataConstants.FORMAT + "," + DataConstants.SUBJECT + ","
+                     + DataConstants.DATEPUB + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
    private final SQLiteStatement bookAuthorInsertStmt;
    private static final String BOOKAUTHOR_INSERT =
             "insert into " + DataHelper.BOOKAUTHOR_TABLE + "(" + DataConstants.BOOKID + "," + DataConstants.AUTHORID
@@ -151,13 +150,11 @@ public class DataHelper {
             this.bookInsertStmt.bindString(2, b.isbn13);
             this.bookInsertStmt.bindString(3, b.title);
             this.bookInsertStmt.bindString(4, b.subTitle);
-            ///this.bookInsertStmt.bindLong(5, b.getCoverImageId());
-            ///this.bookInsertStmt.bindLong(6, b.getCoverImageTinyId());
-            this.bookInsertStmt.bindString(7, b.publisher);
-            this.bookInsertStmt.bindString(8, b.description);
-            this.bookInsertStmt.bindString(9, b.format);
-            this.bookInsertStmt.bindString(10, b.subject);
-            this.bookInsertStmt.bindLong(11, b.datePubStamp);
+            this.bookInsertStmt.bindString(5, b.publisher);
+            this.bookInsertStmt.bindString(6, b.description);
+            this.bookInsertStmt.bindString(7, b.format);
+            this.bookInsertStmt.bindString(8, b.subject);
+            this.bookInsertStmt.bindLong(9, b.datePubStamp);
             bookId = this.bookInsertStmt.executeInsert();
             if (Constants.LOCAL_LOGD) {
                Log.d(Constants.LOG_TAG, "book id after insert - " + bookId);
@@ -220,8 +217,6 @@ public class DataHelper {
             values.put(DataConstants.ISBN13, b.isbn13);
             values.put(DataConstants.TITLE, b.title);
             values.put(DataConstants.SUBTITLE, b.subTitle);
-            ///values.put(DataConstants.COVERIMAGEID, b.getCoverImageId());
-            ///values.put(DataConstants.COVERIMAGETINYID, b.getCoverImageTinyId());
             values.put(DataConstants.PUBLISHER, b.publisher);
             values.put(DataConstants.DESCRIPTION, b.description);
             values.put(DataConstants.FORMAT, b.format);
@@ -246,11 +241,11 @@ public class DataHelper {
       Book b = null;
       // TODO add join to bookuserdata - rather than sep query
       Cursor c =
-               this.db.query(DataHelper.BOOK_TABLE, new String[] { DataConstants.ISBN10, DataConstants.ISBN13,
-                        DataConstants.TITLE, DataConstants.SUBTITLE, DataConstants.COVERIMAGEID,
-                        DataConstants.COVERIMAGETINYID, DataConstants.PUBLISHER, DataConstants.DESCRIPTION,
-                        DataConstants.FORMAT, DataConstants.SUBJECT, DataConstants.DATEPUB }, DataConstants.BOOKID
-                        + " = ?", new String[] { String.valueOf(id) }, null, null, null, "1");
+               this.db.query(DataHelper.BOOK_TABLE,
+                        new String[] { DataConstants.ISBN10, DataConstants.ISBN13, DataConstants.TITLE,
+                                 DataConstants.SUBTITLE, DataConstants.PUBLISHER, DataConstants.DESCRIPTION,
+                                 DataConstants.FORMAT, DataConstants.SUBJECT, DataConstants.DATEPUB },
+                        DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new Book();
          b.id = id;
@@ -264,13 +259,11 @@ public class DataHelper {
          }
          b.title = (c.getString(2));
          b.subTitle = (c.getString(3));
-         ///b.setCoverImageId(c.getLong(4));
-         ///b.setCoverImageTinyId(c.getLong(5));
-         b.publisher = (c.getString(6));
-         b.description = (c.getString(7));
-         b.format = (c.getString(8));
-         b.subject = (c.getString(9));
-         b.datePubStamp = (c.getLong(10));
+         b.publisher = (c.getString(4));
+         b.description = (c.getString(5));
+         b.format = (c.getString(6));
+         b.subject = (c.getString(7));
+         b.datePubStamp = (c.getLong(8));
          b.authors = (this.selectAuthorsByBookId(id));
 
          Book userData = this.selectBookUserData(id);
@@ -288,13 +281,13 @@ public class DataHelper {
 
    public HashSet<Book> selectAllBooks() {
       HashSet<Book> set = new HashSet<Book>();
-      // TODO add join to bookuserdata - rather than sep query
+      // NOTE - add join to bookuserdata - rather than sep query
       Cursor c =
-               this.db.query(DataHelper.BOOK_TABLE, new String[] { DataConstants.BOOKID, DataConstants.ISBN10,
-                        DataConstants.ISBN13, DataConstants.TITLE, DataConstants.SUBTITLE, DataConstants.COVERIMAGEID,
-                        DataConstants.COVERIMAGETINYID, DataConstants.PUBLISHER, DataConstants.DESCRIPTION,
-                        DataConstants.FORMAT, DataConstants.SUBJECT, DataConstants.DATEPUB }, null, null, null, null,
-                        DataConstants.TITLE + " desc", null);
+               this.db.query(DataHelper.BOOK_TABLE,
+                        new String[] { DataConstants.BOOKID, DataConstants.ISBN10, DataConstants.ISBN13,
+                                 DataConstants.TITLE, DataConstants.SUBTITLE, DataConstants.PUBLISHER,
+                                 DataConstants.DESCRIPTION, DataConstants.FORMAT, DataConstants.SUBJECT,
+                                 DataConstants.DATEPUB }, null, null, null, null, DataConstants.TITLE + " desc", null);
       if (c.moveToFirst()) {
          do {
             Book b = new Book();
@@ -308,14 +301,12 @@ public class DataHelper {
             } catch (IllegalArgumentException e) {
             }
             b.title = (c.getString(3));
-            b.subTitle = (c.getString(4));
-            ///b.setCoverImageId(c.getLong(5));
-            ///b.setCoverImageTinyId(c.getLong(6));
-            b.publisher = (c.getString(7));
-            b.description = (c.getString(8));
-            b.format = (c.getString(9));
-            b.subject = (c.getString(10));
-            b.datePubStamp = (c.getLong(11));
+            b.subTitle = (c.getString(4));           
+            b.publisher = (c.getString(5));
+            b.description = (c.getString(6));
+            b.format = (c.getString(7));
+            b.subject = (c.getString(8));
+            b.datePubStamp = (c.getLong(9));
             b.authors = (this.selectAuthorsByBookId(b.id));
 
             Book userData = this.selectBookUserData(b.id);
@@ -384,7 +375,7 @@ public class DataHelper {
                this.deleteAuthor(a.id);
             }
          }
-      }      
+      }
    }
 
    //
@@ -590,6 +581,10 @@ public class DataHelper {
       @Override
       public void onCreate(final SQLiteDatabase db) {
 
+         if (Constants.LOCAL_LOGD) {
+            Log.d(Constants.LOG_TAG, "onCreate DataHelper.OpenHelper");
+         }
+         
          // using StringBuilder here because it is easier to read/reuse lines
          StringBuilder sb = new StringBuilder();
 
@@ -600,8 +595,6 @@ public class DataHelper {
          sb.append(DataConstants.ISBN13 + " TEXT, ");
          sb.append(DataConstants.TITLE + " TEXT, ");
          sb.append(DataConstants.SUBTITLE + " TEXT, ");
-         sb.append(DataConstants.COVERIMAGEID + " INTEGER, ");
-         sb.append(DataConstants.COVERIMAGETINYID + " INTEGER, ");
          sb.append(DataConstants.PUBLISHER + " TEXT, ");
          sb.append(DataConstants.DESCRIPTION + " TEXT, ");
          sb.append(DataConstants.FORMAT + " TEXT, ");

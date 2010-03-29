@@ -52,8 +52,8 @@ public class GoogleBookDataSource implements IBookDataSource {
       HashMap<String, String> headers = new HashMap<String, String>();
       headers.put(X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = this.httpHelper.performGet(url, null, null, headers);
-      if (Constants.LOCAL_LOGV) {
-         Log.v(Constants.LOG_TAG, "HTTP response\n" + response);
+      if (Constants.LOCAL_LOGD) {
+         Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
       if (response == null || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
          return null; 
@@ -71,8 +71,8 @@ public class GoogleBookDataSource implements IBookDataSource {
       HashMap<String, String> headers = new HashMap<String, String>();
       headers.put(X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = this.httpHelper.performGet(url, null, null, headers);
-      if (Constants.LOCAL_LOGV) {
-         Log.v(Constants.LOG_TAG, "HTTP response\n" + response);
+      if (Constants.LOCAL_LOGD) {
+         Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
       if (response == null || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
          return null; 

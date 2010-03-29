@@ -29,7 +29,6 @@ public final class Book {
 
    // not stored in db or serialized
    // (optionally returned from parser, but not stored, image Ids are stored after processing)
-   public transient String coverImageURL = "";
    public transient Bitmap coverImage;
 
    public Book() {

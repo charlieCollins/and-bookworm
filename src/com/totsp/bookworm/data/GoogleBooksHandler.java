@@ -74,10 +74,10 @@ public class GoogleBooksHandler extends DefaultHandler {
          // use rel attribute = "http://schemas.google.com/books/2008/info" for overview web page
          // others are available, preview, etc, but not all books have such features (have to cross check with other feed items)
 
-         String rel = this.getAttributeValue("rel", atts);
+         /*String rel = this.getAttributeValue("rel", atts);
          if (rel.equalsIgnoreCase("http://schemas.google.com/books/2008/thumbnail")) {
             this.book.coverImageURL = (this.getAttributeValue("href", atts));
-         }
+         }*/
       }
    }
 
@@ -142,7 +142,7 @@ public class GoogleBooksHandler extends DefaultHandler {
       this.sb.append(new String(ch, start, length));
    }
 
-   private String getAttributeValue(final String attName, final Attributes atts) {
+   /*private String getAttributeValue(final String attName, final Attributes atts) {
       String result = null;
       for (int i = 0; i < atts.getLength(); i++) {
          String thisAtt = atts.getLocalName(i);
@@ -152,7 +152,7 @@ public class GoogleBooksHandler extends DefaultHandler {
          }
       }
       return result;
-   }
+   }*/
 
    public ArrayList<Book> getBooks() {
       return this.books;
