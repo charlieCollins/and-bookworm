@@ -228,8 +228,6 @@ public class DataHelper {
             values.put(DataConstants.SUBJECT, b.subject);
             values.put(DataConstants.DATEPUB, b.datePubStamp);
 
-            Log.d(Constants.LOG_TAG, "prior to UPDATE STATEMENT **** ");
-            
             this.db.update(DataHelper.BOOK_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String
                      .valueOf(b.id) });
 

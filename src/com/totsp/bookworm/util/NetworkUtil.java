@@ -18,7 +18,7 @@ public class NetworkUtil {
             for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
                InetAddress inetAddress = enumIpAddr.nextElement();
                if (!inetAddress.isLoopbackAddress()) {
-                  if (Constants.LOCAL_LOGV) {
+                  if (Constants.LOCAL_LOGD) {
                      Log.d(Constants.LOG_TAG, "getIpAddress found - " + inetAddress.getHostAddress().toString());
                   }
                   return inetAddress.getHostAddress().toString();

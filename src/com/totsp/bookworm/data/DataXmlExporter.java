@@ -51,11 +51,9 @@ public class DataXmlExporter {
       // get the tables
       String sql = "select * from sqlite_master";
       Cursor c = this.db.rawQuery(sql, new String[0]);
-      Log.d(Constants.LOG_TAG, "select * from sqlite_master, cur size " + c.getCount());
       if (c.moveToFirst()) {
          do {
             String tableName = c.getString(c.getColumnIndex("name"));
-            Log.d(Constants.LOG_TAG, "table name " + tableName);
 
             // skip metadata, sequence, and uidx (unique indexes)
             if (!tableName.equals("android_metadata") && !tableName.equals("sqlite_sequence")
@@ -70,7 +68,6 @@ public class DataXmlExporter {
    }
 
    private void exportTable(final String tableName) throws IOException {
-      Log.d(Constants.LOG_TAG, "exporting table - " + tableName);
       this.xmlBuilder.openTable(tableName);
       String sql = "select * from " + tableName;
       Cursor c = this.db.rawQuery(sql, new String[0]);
