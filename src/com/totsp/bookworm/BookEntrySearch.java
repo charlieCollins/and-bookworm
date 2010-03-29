@@ -35,6 +35,8 @@ public class BookEntrySearch extends Activity {
    private boolean footerViewShown;
    private ArrayList<Book> parsedBooks;
    private ArrayAdapter<Book> adapter;
+   
+   private SearchTask searchTask = new SearchTask(); 
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class BookEntrySearch extends Activity {
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookEntrySearch.this.parsedBooks =  new ArrayList<Book>();
-            new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), "1");
+            BookEntrySearch.this.searchTask.execute(BookEntrySearch.this.searchInput.getText().toString(), "1");
             ///v.setBackgroundResource(android.R.color.background_light);   
          }
       });
@@ -68,6 +70,14 @@ public class BookEntrySearch extends Activity {
             ///BookEntrySearch.this.searchResults.setSelection(BookEntrySearch.this.startIndex  - 20);            
          }
       });
+   }
+   
+   @Override
+   public void onPause() {
+      super.onPause();
+      if (this.searchTask.dialog.isShowing()) {
+         this.searchTask.dialog.dismiss();
+      }      
    }
 
    private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
