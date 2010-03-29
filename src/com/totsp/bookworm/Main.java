@@ -209,7 +209,7 @@ public class Main extends Activity {
 
    @Override
    public void onPause() {
-      if (this.resetAllCoverImagesTask.dialog.isShowing()) {
+      if (this.resetAllCoverImagesTask != null && this.resetAllCoverImagesTask.dialog.isShowing()) {
          this.resetAllCoverImagesTask.dialog.dismiss();
       }
       super.onPause();

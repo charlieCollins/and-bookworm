@@ -72,7 +72,7 @@ public class BookEntryResult extends Activity {
 
    @Override
    public void onPause() {
-      if (this.getBookDataTask.dialog.isShowing()) {
+      if (this.getBookDataTask != null && this.getBookDataTask.dialog.isShowing()) {
          this.getBookDataTask.dialog.dismiss();
       }
       super.onPause();

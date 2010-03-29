@@ -75,7 +75,7 @@ public class BookEntrySearch extends Activity {
 
    @Override
    public void onPause() {
-      if (this.searchTask.dialog.isShowing()) {
+      if (this.searchTask != null && this.searchTask.dialog.isShowing()) {
          this.searchTask.dialog.dismiss();
       }
       super.onPause();

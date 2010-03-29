@@ -102,13 +102,13 @@ public class BookEdit extends TabActivity {
    @Override
    public void onPause() {
       this.bookTitleFormTab = null;
-      if (this.generateCoverImageTask.dialog.isShowing()) {
+      if (this.generateCoverImageTask != null && this.generateCoverImageTask.dialog.isShowing()) {
          this.generateCoverImageTask.dialog.dismiss();
       }
-      if (this.resetCoverImageTask.dialog.isShowing()) {
+      if (this.resetCoverImageTask != null && this.resetCoverImageTask.dialog.isShowing()) {
          this.resetCoverImageTask.dialog.dismiss();
       }
-      if (this.updateBookTask.dialog.isShowing()) {
+      if (this.updateBookTask != null && this.updateBookTask.dialog.isShowing()) {
          this.updateBookTask.dialog.dismiss();
       }
       super.onPause();
