@@ -55,10 +55,10 @@ public class BookEdit extends TabActivity {
 
       this.tabHost = this.getTabHost();
 
-      this.tabHost.addTab(this.tabHost.newTabSpec("tabs").setIndicator("Edit Book Details").setContent(
-               R.id.bookedittab1));
-      this.tabHost.addTab(this.tabHost.newTabSpec("tabs").setIndicator("Manage Cover Image").setContent(
-               R.id.bookedittab2));
+      this.tabHost.addTab(this.tabHost.newTabSpec("tabs").setIndicator("Edit Book Details",
+               getResources().getDrawable(android.R.drawable.ic_menu_edit)).setContent(R.id.bookedittab1));
+      this.tabHost.addTab(this.tabHost.newTabSpec("tabs").setIndicator("Manage Cover Image",
+               getResources().getDrawable(android.R.drawable.ic_menu_crop)).setContent(R.id.bookedittab2));
 
       this.tabHost.setCurrentTab(0);
 
@@ -211,7 +211,7 @@ public class BookEdit extends TabActivity {
       protected void onPostExecute(final Boolean b) {
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
-         }        
+         }
          if (!b) {
             Toast.makeText(BookEdit.this, "Error updating book, book information not present, or ID null",
                      Toast.LENGTH_LONG).show();
@@ -268,7 +268,8 @@ public class BookEdit extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
-            BookEdit.this.application.getDataImageHelper().createAndStoreCoverImage(book.title, book.id);
+            Bitmap generatedCover = BookEdit.this.application.getDataImageHelper().createCoverImage(book.title);
+            BookEdit.this.application.getDataImageHelper().storeBitmap(generatedCover, book.title, book.id);
             return true;
          }
          return false;
@@ -281,7 +282,7 @@ public class BookEdit extends TabActivity {
          if (!b) {
             Toast.makeText(BookEdit.this, "Error generating cover image, book information not present, or ID null.",
                      Toast.LENGTH_LONG).show();
-         } else {            
+         } else {
             Toast.makeText(BookEdit.this, "Book updated", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookEdit.this, BookDetail.class);
             BookEdit.this.startActivity(intent);

@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd_noheader_textarea">
+	android:layout_height="fill_parent" android:gravity="center"
+	android:background="@drawable/book_bgrnd_noheader_textarea">
+
+	<TextView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="10dp"
+		android:text="Add Book" style="@style/subsubtitledkred" />
 
 	<Button android:id="@+id/bookaddscanbutton"
 		android:layout_width="200dp" android:layout_height="wrap_content"
-		android:layout_marginTop="40dp" android:layout_gravity="center_horizontal"
-		android:text="Scan product code" style="@style/black" />
+		android:layout_marginTop="5dp" android:text="Scan product code"
+		style="@style/black" />
 
 	<Button android:id="@+id/bookaddsearchbutton"
 		android:layout_width="200dp" android:layout_height="wrap_content"
-		android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
-		android:text="Search the web" style="@style/black" />
+		android:layout_marginTop="10dp" android:text="Search the web" style="@style/black" />
 
 	<Button android:id="@+id/bookaddformbutton"
 		android:layout_width="200dp" android:layout_height="wrap_content"
-		android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
-		android:text="Use form" style="@style/black" />
+		android:layout_marginTop="10dp" android:text="Use form" style="@style/black" />
 
 </LinearLayout>

@@ -85,14 +85,14 @@ public class DataImageHelper {
          }
 
          FileOutputStream fos = null;
-         
+
          File file = new File(exportDir, name + ".jpg");
          boolean created = file.createNewFile();
          if (created) {
             fos = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.close();
-         }         
+         }
 
          File fileThumb = new File(exportDir, name + "-t.jpg");
          boolean thumbCreated = fileThumb.createNewFile();
@@ -100,7 +100,7 @@ public class DataImageHelper {
             fos = new FileOutputStream(fileThumb);
             bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.close();
-         }         
+         }
 
          if (this.cacheEnabled && bitmap != null) {
             this.imageCache.put(name, bitmap);
@@ -112,12 +112,12 @@ public class DataImageHelper {
          e.printStackTrace();
       }
    }
-   
+
    public final void deleteBitmapSourceFile(final String title, final Long id) {
       String name = this.getNameKey(title, id);
       File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
       File file = new File(exportDir, name + ".jpg");
-      File thumbFile = new File(exportDir, name + "-t.jpg"); 
+      File thumbFile = new File(exportDir, name + "-t.jpg");
       if (file != null && file.exists() && file.canWrite()) {
          file.delete();
       }
@@ -139,12 +139,12 @@ public class DataImageHelper {
 
    public void resetCoverImage(final DataHelper dataHelper, final String coverImageProviderKey, final Book b) {
       Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(coverImageProviderKey, b.isbn10);
-      if (coverImageBitmap != null) {         
+      if (coverImageBitmap != null) {
          this.storeBitmap(coverImageBitmap, b.title, b.id);
       }
    }
 
-   public void createAndStoreCoverImage(final String title, final Long id) {
+   public Bitmap createCoverImage(final String title) {
       Bitmap bitmap = Bitmap.createBitmap(120, 183, Bitmap.Config.ARGB_4444);
       Canvas canvas = new Canvas(bitmap);
       Bitmap bkgrnd = BitmapFactory.decodeResource(this.context.getResources(), R.drawable.book_bgrnd_small);
@@ -156,10 +156,14 @@ public class DataImageHelper {
 
       String[] words = title.split(" ");
       String line1 = this.parseLine(0, 15, words);
-      String line2 = this.parseLine(line1.split(" ").length, 15, words);
-      String line3 = this.parseLine(line1.split(" ").length + line2.split(" ").length, 15, words);
+      String line2 = this.parseLine(line1.split(" ").length - 1, 15, words);
+      String line3 = this.parseLine(line1.split(" ").length + line2.split(" ").length - 2, 15, words);
       String line4 =
-               this.parseLine(line1.split(" ").length + line2.split(" ").length + line3.split(" ").length, 15, words);
+               this.parseLine(line1.split(" ").length + line2.split(" ").length + line3.split(" ").length - 3, 12,
+                        words);
+      if ((line1.split(" ").length + line2.split(" ").length + line3.split(" ").length + line4.split(" ").length) < words.length) {
+         line4 += "...";
+      }
 
       canvas.drawText(line1, 3, 70, new Paint());
       if (line2.length() > 0) {
@@ -169,11 +173,12 @@ public class DataImageHelper {
          canvas.drawText(line3, 3, 100, new Paint());
       }
       if (line4.length() > 0) {
-         canvas.drawText("...", 3, 115, new Paint());
+         canvas.drawText(line4, 3, 115, new Paint());
       }
-      canvas.save();
+      
+      canvas.save();      
 
-      this.storeBitmap(bitmap, title, id);
+      return bitmap;
    }
 
    private static final Bitmap resizeBitmap(final Bitmap source, final int width, final int height) {

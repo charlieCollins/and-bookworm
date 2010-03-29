@@ -89,11 +89,8 @@ public class BookEntryResult extends Activity {
          // save book to database
          long bookId = this.application.getDataHelper().insertBook(this.book);
          if (this.book.coverImage != null) {
-            BookEntryResult.this.application.getDataImageHelper().storeBitmap(this.book.coverImage,
-                     this.book.title, bookId);
-         } else {
-            // create cover image if none found
-            this.application.getDataImageHelper().createAndStoreCoverImage(this.book.title, bookId);            
+            BookEntryResult.this.application.getDataImageHelper().storeBitmap(this.book.coverImage, this.book.title,
+                     bookId);
          }
       }
       this.startActivity(new Intent(BookEntryResult.this, Main.class));
@@ -101,8 +98,8 @@ public class BookEntryResult extends Activity {
 
    private void setViewsForInvalidEntry() {
       this.bookCover.setImageResource(R.drawable.book_invalid_isbn);
-      this.bookAuthors
-               .setText("Whoops, that entry didn't work. Please try again (and if one method fails, such as scanning, try a search or direct entry).");
+      this.bookAuthors.setText("Whoops, that entry didn't work. Please try again"
+               + " (and if one method fails, such as scanning, try a search or direct entry).");
    }
 
    private class GetBookDataTask extends AsyncTask<String, Void, Book> {
@@ -120,7 +117,7 @@ public class BookEntryResult extends Activity {
 
       protected Book doInBackground(final String... isbns) {
          Book b = BookEntryResult.this.application.getBookDataSource().getBook(isbns[0]);
-         Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);         
+         Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);
          b.coverImage = (coverImageBitmap);
          return b;
       }
@@ -151,7 +148,9 @@ public class BookEntryResult extends Activity {
                if (Constants.LOCAL_LOGV) {
                   Log.v(Constants.LOG_TAG, "book cover not found");
                }
-               BookEntryResult.this.bookCover.setImageResource(R.drawable.book_cover_missing);                              
+               Bitmap generatedCover = BookEntryResult.this.application.getDataImageHelper().createCoverImage(b.title);
+               BookEntryResult.this.bookCover.setImageBitmap(generatedCover);
+               ///BookEntryResult.this.bookCover.setImageResource(R.drawable.book_cover_missing);
             }
 
             BookEntryResult.this.book = b;

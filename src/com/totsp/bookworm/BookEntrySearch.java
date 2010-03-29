@@ -42,7 +42,7 @@ public class BookEntrySearch extends Activity {
 
       this.setContentView(R.layout.bookentrysearch);
       
-      this.parsedBooks =  new ArrayList<Book>();
+      this.parsedBooks =  null;
       this.adapter = null;
 
       this.searchInput = (EditText) this.findViewById(R.id.bookentrysearchinput);
@@ -52,7 +52,9 @@ public class BookEntrySearch extends Activity {
 
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
+            BookEntrySearch.this.parsedBooks =  new ArrayList<Book>();
             new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), "1");
+            ///v.setBackgroundResource(android.R.color.background_light);   
          }
       });
 
