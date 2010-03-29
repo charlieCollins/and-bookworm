@@ -36,7 +36,7 @@ public class BookEntrySearch extends Activity {
    private ArrayList<Book> parsedBooks;
    private ArrayAdapter<Book> adapter;
    
-   private SearchTask searchTask = new SearchTask(); 
+   private SearchTask searchTask;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -44,6 +44,7 @@ public class BookEntrySearch extends Activity {
 
       this.setContentView(R.layout.bookentrysearch);
       
+      this.searchTask =  new SearchTask();      
       this.parsedBooks =  null;
       this.adapter = null;
 
