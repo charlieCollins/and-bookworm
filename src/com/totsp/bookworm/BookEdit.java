@@ -53,9 +53,9 @@ public class BookEdit extends TabActivity {
       this.setContentView(R.layout.bookedit);
       this.application = (BookWormApplication) this.getApplication();
 
-      this.resetCoverImageTask = new ResetCoverImageTask();
-      this.generateCoverImageTask = new GenerateCoverImageTask();
-      this.updateBookTask = new UpdateBookTask();
+      this.resetCoverImageTask = null;
+      this.generateCoverImageTask = null;
+      this.updateBookTask = null;
 
       this.tabHost = this.getTabHost();
       this.tabHost.addTab(this.tabHost.newTabSpec("tabs").setIndicator("Edit Book Details",
@@ -83,6 +83,7 @@ public class BookEdit extends TabActivity {
       this.resetCoverButton = (Button) this.findViewById(R.id.bookeditresetcoverbutton);
       this.resetCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
+            BookEdit.this.resetCoverImageTask = new ResetCoverImageTask();
             BookEdit.this.resetCoverImageTask.execute(BookEdit.this.application.getSelectedBook());
          }
       });
@@ -90,6 +91,7 @@ public class BookEdit extends TabActivity {
       this.generateCoverButton = (Button) this.findViewById(R.id.bookeditgeneratecoverbutton);
       this.generateCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
+            BookEdit.this.generateCoverImageTask = new GenerateCoverImageTask();
             BookEdit.this.generateCoverImageTask.execute(BookEdit.this.application.getSelectedBook());
          }
       });
@@ -175,6 +177,7 @@ public class BookEdit extends TabActivity {
          newBook.read = (book.read);
 
          newBook.id = (book.id);
+         this.updateBookTask = new UpdateBookTask();
          this.updateBookTask.execute(newBook);
       }
    }

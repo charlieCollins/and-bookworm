@@ -47,6 +47,7 @@ public class BookEntryForm extends Activity {
             Log.v(Constants.LOG_TAG, "picBitmap size - " + BookEntryForm.this.picBitmap.getWidth() + " "
                      + BookEntryForm.this.picBitmap.getHeight());
          }
+         BookEntryForm.this.insertBookTask = new InsertBookTask();
          BookEntryForm.this.insertBookTask.execute(BookEntryForm.this.titleInput.getText().toString(),
                   BookEntryForm.this.authorInput.getText().toString());
       }
@@ -67,7 +68,7 @@ public class BookEntryForm extends Activity {
       this.setContentView(R.layout.bookentryform);
       this.application = (BookWormApplication) this.getApplication();
 
-      this.insertBookTask = new InsertBookTask();
+      this.insertBookTask = null;
 
       this.titleInput = (EditText) this.findViewById(R.id.bookentryformtitleinput);
       this.authorInput = (EditText) this.findViewById(R.id.bookentryformauthorinput);

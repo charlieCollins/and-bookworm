@@ -43,7 +43,7 @@ public class BookEntrySearch extends Activity {
       super.onCreate(savedInstanceState);
       this.setContentView(R.layout.bookentrysearch);
 
-      this.searchTask = new SearchTask();
+      this.searchTask = null;
       this.parsedBooks = null;
       this.adapter = null;
 
@@ -55,6 +55,7 @@ public class BookEntrySearch extends Activity {
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookEntrySearch.this.parsedBooks = new ArrayList<Book>();
+            BookEntrySearch.this.searchTask = new SearchTask();
             BookEntrySearch.this.searchTask.execute(BookEntrySearch.this.searchInput.getText().toString(), "1");
             ///v.setBackgroundResource(android.R.color.background_light);   
          }

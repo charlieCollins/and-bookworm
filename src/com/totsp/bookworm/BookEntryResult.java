@@ -40,7 +40,7 @@ public class BookEntryResult extends Activity {
       this.setContentView(R.layout.bookentryresult);
       this.application = (BookWormApplication) this.getApplication();
 
-      this.getBookDataTask = new GetBookDataTask();
+      this.getBookDataTask = null;
 
       this.bookTitle = (TextView) this.findViewById(R.id.bookentrytitle);
       this.bookCover = (ImageView) this.findViewById(R.id.bookentrycover);
@@ -61,6 +61,7 @@ public class BookEntryResult extends Activity {
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          this.setViewsForInvalidEntry();
       } else {
+         this.getBookDataTask = new GetBookDataTask();
          this.getBookDataTask.execute(isbn);
       }
 

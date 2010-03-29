@@ -77,7 +77,7 @@ public class Main extends Activity {
       this.application = (BookWormApplication) this.getApplication();
       this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-      this.resetAllCoverImagesTask = new ResetAllCoverImagesTask();
+      this.resetAllCoverImagesTask = null;
 
       this.coverImageMissing = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_cover_missing);
       this.star0 = BitmapFactory.decodeResource(this.getResources(), R.drawable.star0);
@@ -159,6 +159,7 @@ public class Main extends Activity {
                   "This will use the network to try to find and replace all cover images.").setPositiveButton(
                   "Yes, I'm Sure", new DialogInterface.OnClickListener() {
                      public void onClick(final DialogInterface d, final int i) {
+                        Main.this.resetAllCoverImagesTask = new ResetAllCoverImagesTask();
                         Main.this.resetAllCoverImagesTask.execute();
                      }
                   }).setNegativeButton("No, Cancel", new DialogInterface.OnClickListener() {

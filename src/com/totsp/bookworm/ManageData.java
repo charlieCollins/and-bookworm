@@ -37,8 +37,8 @@ public class ManageData extends Activity {
       this.setContentView(R.layout.managedata);
       this.application = (BookWormApplication) this.getApplication();
 
-      this.importDatabaseTask = new ImportDatabaseTask();
-      this.exportDatabaseTask = new ExportDatabaseTask();
+      this.importDatabaseTask = null;
+      this.exportDatabaseTask = null;
 
       this.exportDbToSdButton = (Button) this.findViewById(R.id.exportdbtosdbutton);
       this.exportDbToSdButton.setOnClickListener(new OnClickListener() {
@@ -48,6 +48,7 @@ public class ManageData extends Activity {
                      new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface arg0, final int arg1) {
                            Log.i(Constants.LOG_TAG, "exporting database to external storage");
+                           ManageData.this.exportDatabaseTask = new ExportDatabaseTask();
                            ManageData.this.exportDatabaseTask.execute();
                            ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
                         }
@@ -67,6 +68,7 @@ public class ManageData extends Activity {
                         public void onClick(final DialogInterface arg0, final int arg1) {
                            if (DataXmlExporter.isExternalStorageAvail()) {
                               Log.i(Constants.LOG_TAG, "importing database from external storage");
+                              ManageData.this.importDatabaseTask = new ImportDatabaseTask();
                               ManageData.this.importDatabaseTask.execute("bookworm", "bookwormdata");
                               // sleep momentarily so that database reset stuff has time to take place (else Main shows no data)
                               try {
