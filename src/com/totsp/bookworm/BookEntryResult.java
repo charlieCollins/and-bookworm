@@ -22,7 +22,7 @@ import com.totsp.bookworm.util.CoverImageUtil;
 public class BookEntryResult extends Activity {
 
    public static final String FROM_RESULT = "FROM_RESULT";
-   
+
    private BookWormApplication application;
 
    // package scope for use in inner class (Android optimization)
@@ -34,7 +34,7 @@ public class BookEntryResult extends Activity {
    Book book;
 
    boolean fromSearch;
-   
+
    private GetBookDataTask getBookDataTask;
 
    @Override
@@ -67,13 +67,13 @@ public class BookEntryResult extends Activity {
          this.getBookDataTask = new GetBookDataTask();
          this.getBookDataTask.execute(isbn);
       }
-      
+
       this.fromSearch = this.getIntent().getBooleanExtra(BookEntrySearch.FROM_SEARCH, false);
    }
 
    @Override
    public void onPause() {
-      if (this.getBookDataTask != null && this.getBookDataTask.dialog.isShowing()) {
+      if ((this.getBookDataTask != null) && this.getBookDataTask.dialog.isShowing()) {
          this.getBookDataTask.dialog.dismiss();
       }
       super.onPause();
@@ -92,7 +92,7 @@ public class BookEntryResult extends Activity {
       if (this.fromSearch) {
          // if from search results, return to search
          Intent intent = new Intent(BookEntryResult.this, BookEntrySearch.class);
-         intent.putExtra(FROM_RESULT, true);
+         intent.putExtra(BookEntryResult.FROM_RESULT, true);
          this.startActivity(intent);
       } else {
          this.startActivity(new Intent(BookEntryResult.this, Main.class));

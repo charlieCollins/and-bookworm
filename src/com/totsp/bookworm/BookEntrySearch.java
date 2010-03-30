@@ -28,19 +28,19 @@ public class BookEntrySearch extends Activity {
    public static final String FROM_SEARCH = "FROM_SEARCH";
 
    private BookWormApplication application;
-   
+
    private int startIndex = 1;
 
    private EditText searchInput;
    private Button searchButton;
    private ListView searchResults;
    private TextView getMoreData;
-   
+
    private ArrayList<Book> parsedBooks;
-   private ArrayAdapter<Book> adapter;  
+   private ArrayAdapter<Book> adapter;
 
    private SearchTask searchTask;
-   
+
    private boolean footerViewShown;
    private boolean fromEntryResult;
 
@@ -69,7 +69,7 @@ public class BookEntrySearch extends Activity {
             } else if ((selected.isbn13 != null) && !selected.isbn13.equals("")) {
                intent.putExtra(Constants.ISBN, selected.isbn13);
             }
-            intent.putExtra(FROM_SEARCH, true);
+            intent.putExtra(BookEntrySearch.FROM_SEARCH, true);
             BookEntrySearch.this.startActivity(intent);
          }
       });
@@ -102,7 +102,7 @@ public class BookEntrySearch extends Activity {
 
    @Override
    public void onPause() {
-      if (this.searchTask != null && this.searchTask.dialog.isShowing()) {
+      if ((this.searchTask != null) && this.searchTask.dialog.isShowing()) {
          this.searchTask.dialog.dismiss();
       }
       if (this.parsedBooks != null) {
@@ -112,13 +112,13 @@ public class BookEntrySearch extends Activity {
          this.application.setLastSearchTerm(this.searchInput.getText().toString());
       }
       super.onPause();
-   }   
+   }
 
    // go back to Main on back from here
    @Override
-   public boolean onKeyDown(int keyCode, KeyEvent event) {
-      if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            this.startActivity(new Intent(BookEntrySearch.this, Main.class));            
+   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+      if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
+         this.startActivity(new Intent(BookEntrySearch.this, Main.class));
          return true;
       }
       return super.onKeyDown(keyCode, event);
@@ -130,7 +130,7 @@ public class BookEntrySearch extends Activity {
          this.searchResults.addFooterView(this.getMoreData);
          this.footerViewShown = true;
       }
-      
+
       this.adapter =
                new ArrayAdapter<Book>(BookEntrySearch.this, R.layout.simple_list_item_1,
                         BookEntrySearch.this.parsedBooks);
@@ -181,7 +181,7 @@ public class BookEntrySearch extends Activity {
                if (((b.isbn10 != null) && !b.isbn10.equals("")) || ((b.isbn13 != null) && !b.isbn13.equals(""))) {
                   BookEntrySearch.this.parsedBooks.add(b);
                }
-            }            
+            }
 
             BookEntrySearch.this.bindAdapter();
             BookEntrySearch.this.getMoreData.setBackgroundResource(android.R.color.transparent);

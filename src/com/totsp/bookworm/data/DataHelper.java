@@ -302,7 +302,7 @@ public class DataHelper {
             } catch (IllegalArgumentException e) {
             }
             b.title = (c.getString(3));
-            b.subTitle = (c.getString(4));           
+            b.subTitle = (c.getString(4));
             b.publisher = (c.getString(5));
             b.description = (c.getString(6));
             b.format = (c.getString(7));
@@ -593,7 +593,7 @@ public class DataHelper {
          if (Constants.LOCAL_LOGD) {
             Log.d(Constants.LOG_TAG, "onCreate DataHelper.OpenHelper");
          }
-         
+
          // using StringBuilder here because it is easier to read/reuse lines
          StringBuilder sb = new StringBuilder();
 

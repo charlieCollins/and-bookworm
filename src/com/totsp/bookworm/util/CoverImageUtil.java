@@ -13,7 +13,7 @@ import java.net.URLConnection;
 
 public class CoverImageUtil {
 
-   public static Bitmap retrieveCoverImage(String coverImageProviderKey, String isbn10) {
+   public static Bitmap retrieveCoverImage(final String coverImageProviderKey, final String isbn10) {
 
       Bitmap coverImageBitmap = null;
 
@@ -42,7 +42,7 @@ public class CoverImageUtil {
             conn.connect();
             BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
             coverImageBitmap = BitmapFactory.decodeStream(bis);
-            if (coverImageBitmap != null && coverImageBitmap.getWidth() < 10) {
+            if ((coverImageBitmap != null) && (coverImageBitmap.getWidth() < 10)) {
                coverImageBitmap = null;
             }
          } catch (IOException e) {
@@ -57,7 +57,7 @@ public class CoverImageUtil {
    ///private static final Paint STROKE_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
 
    // taken from apps-for-android examples 
-   public static Bitmap scaleAndFrame(Bitmap bitmap, int width, int height) {
+   public static Bitmap scaleAndFrame(final Bitmap bitmap, final int width, final int height) {
       final int bitmapWidth = bitmap.getWidth();
       final int bitmapHeight = bitmap.getHeight();
 
@@ -67,7 +67,7 @@ public class CoverImageUtil {
       final int scaledHeight = (int) (bitmapHeight * scale);
 
       final Bitmap decored = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true);
-      
+
       /*
       final Canvas canvas = new Canvas(decored);
       final int offset = (int) (PHOTO_BORDER_WIDTH / 2);

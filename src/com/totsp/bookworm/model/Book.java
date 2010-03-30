@@ -8,13 +8,13 @@ import java.util.Set;
 public final class Book {
 
    // NOTE - no accessors/mutators by design, Android optimization
-   
+
    // give things explicit defaults, easier than null checks later for SQLite
    public long id = 0L;
    public String isbn10 = "";
    public String isbn13 = "";
    public String title = "";
-   public String subTitle = "";   
+   public String subTitle = "";
    public String publisher = "";
    public String description = "";
    public String format = "";
@@ -35,8 +35,8 @@ public final class Book {
       this.authors = new LinkedHashSet<Author>();
    }
 
-   public Book(String title) {
-      if (title == null || title.length() < 1) {
+   public Book(final String title) {
+      if ((title == null) || (title.length() < 1)) {
          throw new IllegalArgumentException("Error, book must have a title (minimum size 1)");
       }
       this.authors = new LinkedHashSet<Author>();
@@ -61,8 +61,8 @@ public final class Book {
       sb.append("\n publisher:" + this.publisher);
       sb.append("\n description:" + this.description);
       sb.append("\n format:" + this.format);
-      sb.append("\n subject:" + this.subject);      
+      sb.append("\n subject:" + this.subject);
       sb.append("\n datePubStamp:" + this.datePubStamp);
       return sb.toString();
-   }   
+   }
 }

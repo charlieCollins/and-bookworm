@@ -11,7 +11,7 @@ public final class DateUtil {
    private DateUtil() {
    }
 
-   public static final Date parse(String s) {
+   public static final Date parse(final String s) {
       for (SimpleDateFormat format : DateUtil.getDateFormats()) {
          try {
             return format.parse(s);
@@ -21,11 +21,11 @@ public final class DateUtil {
       return null;
    }
 
-   public static final String format(Date d) {
+   public static final String format(final Date d) {
       if (d != null) {
          for (SimpleDateFormat format : DateUtil.getDateFormats()) {
             String dateString = format.format(d);
-            if (dateString != null && dateString.length() > 0) {
+            if ((dateString != null) && (dateString.length() > 0)) {
                return dateString;
             }
          }

@@ -102,13 +102,13 @@ public class BookEdit extends TabActivity {
    @Override
    public void onPause() {
       this.bookTitleFormTab = null;
-      if (this.generateCoverImageTask != null && this.generateCoverImageTask.dialog.isShowing()) {
+      if ((this.generateCoverImageTask != null) && this.generateCoverImageTask.dialog.isShowing()) {
          this.generateCoverImageTask.dialog.dismiss();
       }
-      if (this.resetCoverImageTask != null && this.resetCoverImageTask.dialog.isShowing()) {
+      if ((this.resetCoverImageTask != null) && this.resetCoverImageTask.dialog.isShowing()) {
          this.resetCoverImageTask.dialog.dismiss();
       }
-      if (this.updateBookTask != null && this.updateBookTask.dialog.isShowing()) {
+      if ((this.updateBookTask != null) && this.updateBookTask.dialog.isShowing()) {
          this.updateBookTask.dialog.dismiss();
       }
       super.onPause();
@@ -140,11 +140,11 @@ public class BookEdit extends TabActivity {
          this.bookTitleCoverTab.setText(book.title);
          this.bookSubTitle.setText(book.subTitle);
          this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
-         this.bookSubject.setText(book.subject);         
-         this.bookPublisher.setText(book.publisher);        
-         
+         this.bookSubject.setText(book.subject);
+         this.bookPublisher.setText(book.publisher);
+
          Calendar cal = Calendar.getInstance();
-         cal.setTimeInMillis(book.datePubStamp);         
+         cal.setTimeInMillis(book.datePubStamp);
          this.bookDatePub.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
       }
    }
@@ -156,15 +156,15 @@ public class BookEdit extends TabActivity {
          newBook.title = (this.bookTitleFormTab.getText().toString());
          newBook.subTitle = (this.bookSubTitle.getText().toString());
          newBook.authors = (AuthorsStringUtil.expandAuthors(this.bookAuthors.getText().toString()));
-         newBook.subject = (this.bookSubject.getText().toString());         
+         newBook.subject = (this.bookSubject.getText().toString());
          newBook.publisher = (this.bookPublisher.getText().toString());
-        
+
          Calendar cal = Calendar.getInstance();
-         cal.set(Calendar.YEAR, this.bookDatePub.getYear());         
+         cal.set(Calendar.YEAR, this.bookDatePub.getYear());
          cal.set(Calendar.MONTH, this.bookDatePub.getMonth());
-         cal.set(Calendar.DAY_OF_MONTH, this.bookDatePub.getDayOfMonth());         
+         cal.set(Calendar.DAY_OF_MONTH, this.bookDatePub.getDayOfMonth());
          newBook.datePubStamp = cal.getTimeInMillis();
-         
+
          // NOTE - properties not yet editable (will be in future)        
          newBook.blurb = book.blurb;
          newBook.description = (book.description);

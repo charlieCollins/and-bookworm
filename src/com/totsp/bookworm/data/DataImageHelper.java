@@ -5,12 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.os.Environment;
 
-import com.totsp.bookworm.R;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CacheMap;
 import com.totsp.bookworm.util.CoverImageUtil;
@@ -31,12 +29,9 @@ import java.util.HashMap;
 public class DataImageHelper {
 
    private final HashMap<String, Bitmap> imageCache = new CacheMap<String, Bitmap>(250);
-   private final Context context;
-
    private final boolean cacheEnabled;
 
    public DataImageHelper(final Context context, final boolean cacheEnabled) {
-      this.context = context;
       this.cacheEnabled = cacheEnabled;
    }
 
@@ -104,7 +99,7 @@ public class DataImageHelper {
             fos.close();
          }
 
-         if (this.cacheEnabled && bitmap != null) {
+         if (this.cacheEnabled && (bitmap != null)) {
             this.imageCache.put(name, bitmap);
          }
 
@@ -120,22 +115,20 @@ public class DataImageHelper {
       File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
       File file = new File(exportDir, name + ".jpg");
       File thumbFile = new File(exportDir, name + "-t.jpg");
-      if (file != null && file.exists() && file.canWrite()) {
+      if ((file != null) && file.exists() && file.canWrite()) {
          file.delete();
       }
-      if (thumbFile != null && thumbFile.exists() && thumbFile.canWrite()) {
+      if ((thumbFile != null) && thumbFile.exists() && thumbFile.canWrite()) {
          thumbFile.delete();
       }
    }
 
    public final void clearAllBitmapSourceFiles() {
       File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
-      if (!exportDir.exists()) {
-         exportDir.mkdirs();
-      }
-
-      for (File f : exportDir.listFiles()) {
-         f.delete();
+      if (exportDir.exists() && exportDir.canWrite()) {
+         for (File f : exportDir.listFiles()) {
+            f.delete();
+         }
       }
    }
 
@@ -146,7 +139,7 @@ public class DataImageHelper {
       }
    }
 
-   public Bitmap createCoverImage(final String title) {      
+   public Bitmap createCoverImage(final String title) {
       String[] words = title.split(" ");
       String line1 = this.parseLine(0, 15, words);
       String line2 = this.parseLine(line1.split(" ").length - 1, 15, words);
@@ -161,13 +154,13 @@ public class DataImageHelper {
       Bitmap bitmap = Bitmap.createBitmap(120, 183, Bitmap.Config.RGB_565);
       Canvas canvas = new Canvas(bitmap);
       canvas.drawARGB(100, 165, 42, 42);
-      
+
       Paint paint = new Paint();
       paint.setTextSize(13);
       paint.setColor(Color.WHITE);
       paint.setAntiAlias(true);
       paint.setStyle(Style.FILL);
-      
+
       canvas.drawText(line1, 3, 70, paint);
       if (line2.length() > 0) {
          canvas.drawText(line2, 3, 85, paint);
@@ -178,7 +171,7 @@ public class DataImageHelper {
       if (line4.length() > 0) {
          canvas.drawText(line4, 3, 115, paint);
       }
-      
+
       canvas.save();
       return bitmap;
    }

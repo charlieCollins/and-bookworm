@@ -35,14 +35,14 @@ public class DataXmlExporter {
 
    private static final String DATASUBDIRECTORY = "bookwormdata";
 
-   private SQLiteDatabase db;
+   private final SQLiteDatabase db;
    private XmlBuilder xmlBuilder;
 
-   public DataXmlExporter(SQLiteDatabase db) {
+   public DataXmlExporter(final SQLiteDatabase db) {
       this.db = db;
    }
 
-   public void export(String dbName, String exportFileNamePrefix) throws IOException {
+   public void export(final String dbName, final String exportFileNamePrefix) throws IOException {
       Log.i(Constants.LOG_TAG, "exporting database - " + dbName + " exportFileNamePrefix=" + exportFileNamePrefix);
 
       this.xmlBuilder = new XmlBuilder();
@@ -85,8 +85,8 @@ public class DataXmlExporter {
       this.xmlBuilder.closeTable();
    }
 
-   private void writeToFile(String xmlString, String exportFileName) throws IOException {
-      File dir = new File(Environment.getExternalStorageDirectory(), DATASUBDIRECTORY);
+   private void writeToFile(final String xmlString, final String exportFileName) throws IOException {
+      File dir = new File(Environment.getExternalStorageDirectory(), DataXmlExporter.DATASUBDIRECTORY);
       if (!dir.exists()) {
          dir.mkdirs();
       }
@@ -98,8 +98,9 @@ public class DataXmlExporter {
       try {
          channel.write(buff);
       } finally {
-         if (channel != null)
+         if (channel != null) {
             channel.close();
+         }
       }
 
       /*
@@ -144,34 +145,34 @@ public class DataXmlExporter {
          this.sb = new StringBuilder();
       }
 
-      void start(String dbName) {
-         this.sb.append(OPEN_XML_STANZA);
-         this.sb.append(DB_OPEN + dbName + CLOSE_WITH_TICK);
+      void start(final String dbName) {
+         this.sb.append(XmlBuilder.OPEN_XML_STANZA);
+         this.sb.append(XmlBuilder.DB_OPEN + dbName + XmlBuilder.CLOSE_WITH_TICK);
       }
 
       String end() throws IOException {
-         this.sb.append(DB_CLOSE);
+         this.sb.append(XmlBuilder.DB_CLOSE);
          return this.sb.toString();
       }
 
-      void openTable(String tableName) {
-         this.sb.append(TABLE_OPEN + tableName + CLOSE_WITH_TICK);
+      void openTable(final String tableName) {
+         this.sb.append(XmlBuilder.TABLE_OPEN + tableName + XmlBuilder.CLOSE_WITH_TICK);
       }
 
       void closeTable() {
-         this.sb.append(TABLE_CLOSE);
+         this.sb.append(XmlBuilder.TABLE_CLOSE);
       }
 
       void openRow() {
-         this.sb.append(ROW_OPEN);
+         this.sb.append(XmlBuilder.ROW_OPEN);
       }
 
       void closeRow() {
-         this.sb.append(ROW_CLOSE);
+         this.sb.append(XmlBuilder.ROW_CLOSE);
       }
 
       void addColumn(final String name, final String val) throws IOException {
-         this.sb.append(COL_OPEN + name + CLOSE_WITH_TICK + val + COL_CLOSE);
+         this.sb.append(XmlBuilder.COL_OPEN + name + XmlBuilder.CLOSE_WITH_TICK + val + XmlBuilder.COL_CLOSE);
       }
    }
 

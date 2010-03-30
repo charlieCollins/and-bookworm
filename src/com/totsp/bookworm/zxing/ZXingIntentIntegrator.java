@@ -86,8 +86,10 @@ public final class ZXingIntentIntegrator {
     * See {@link #initiateScan(Activity, String, String, String, String)} --
     * same, but uses default English labels.
     */
-   public static void initiateScan(Activity activity) {
-      initiateScan(activity, DEFAULT_TITLE, DEFAULT_MESSAGE, DEFAULT_YES, DEFAULT_NO);
+   public static void initiateScan(final Activity activity) {
+      ZXingIntentIntegrator.initiateScan(activity, ZXingIntentIntegrator.DEFAULT_TITLE,
+               ZXingIntentIntegrator.DEFAULT_MESSAGE, ZXingIntentIntegrator.DEFAULT_YES,
+               ZXingIntentIntegrator.DEFAULT_NO);
    }
 
    /**
@@ -95,10 +97,10 @@ public final class ZXingIntentIntegrator {
     * same, but takes string IDs which refer
     * to the {@link Activity}'s resource bundle entries.
     */
-   public static void initiateScan(Activity activity, int stringTitle, int stringMessage, int stringButtonYes,
-            int stringButtonNo) {
-      initiateScan(activity, activity.getString(stringTitle), activity.getString(stringMessage), activity
-               .getString(stringButtonYes), activity.getString(stringButtonNo));
+   public static void initiateScan(final Activity activity, final int stringTitle, final int stringMessage,
+            final int stringButtonYes, final int stringButtonNo) {
+      ZXingIntentIntegrator.initiateScan(activity, activity.getString(stringTitle), activity.getString(stringMessage),
+               activity.getString(stringButtonYes), activity.getString(stringButtonNo));
    }
 
    /**
@@ -113,32 +115,33 @@ public final class ZXingIntentIntegrator {
     * @return the contents of the barcode that was scanned, or null if none was found
     * @throws InterruptedException if timeout expires before a scan completes
     */
-   public static void initiateScan(Activity activity, String stringTitle, String stringMessage, String stringButtonYes,
-            String stringButtonNo) {
+   public static void initiateScan(final Activity activity, final String stringTitle, final String stringMessage,
+            final String stringButtonYes, final String stringButtonNo) {
       Intent intentScan = new Intent("com.google.zxing.client.android.SCAN");
       intentScan.putExtra("MODE", "PRODUCT_MODE");
       intentScan.addCategory(Intent.CATEGORY_DEFAULT);
       try {
-         activity.startActivityForResult(intentScan, REQUEST_CODE);
+         activity.startActivityForResult(intentScan, ZXingIntentIntegrator.REQUEST_CODE);
       } catch (ActivityNotFoundException e) {
-         showDownloadDialog(activity, stringTitle, stringMessage, stringButtonYes, stringButtonNo);
+         ZXingIntentIntegrator
+                  .showDownloadDialog(activity, stringTitle, stringMessage, stringButtonYes, stringButtonNo);
       }
    }
 
-   private static void showDownloadDialog(final Activity activity, String stringTitle, String stringMessage,
-            String stringButtonYes, String stringButtonNo) {
+   private static void showDownloadDialog(final Activity activity, final String stringTitle,
+            final String stringMessage, final String stringButtonYes, final String stringButtonNo) {
       AlertDialog.Builder downloadDialog = new AlertDialog.Builder(activity);
       downloadDialog.setTitle(stringTitle);
       downloadDialog.setMessage(stringMessage);
       downloadDialog.setPositiveButton(stringButtonYes, new DialogInterface.OnClickListener() {
-         public void onClick(DialogInterface dialogInterface, int i) {
+         public void onClick(final DialogInterface dialogInterface, final int i) {
             Uri uri = Uri.parse("market://search?q=pname:com.google.zxing.client.android");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             activity.startActivity(intent);
          }
       });
       downloadDialog.setNegativeButton(stringButtonNo, new DialogInterface.OnClickListener() {
-         public void onClick(DialogInterface dialogInterface, int i) {
+         public void onClick(final DialogInterface dialogInterface, final int i) {
          }
       });
       downloadDialog.show();
@@ -152,8 +155,8 @@ public final class ZXingIntentIntegrator {
     *  else an {@link IntentResult} containing the result of the scan. If the user cancelled scanning,
     *  the fields will be null.
     */
-   public static ZXingIntentResult parseActivityResult(int requestCode, int resultCode, Intent intent) {
-      if (requestCode == REQUEST_CODE) {
+   public static ZXingIntentResult parseActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+      if (requestCode == ZXingIntentIntegrator.REQUEST_CODE) {
          if (resultCode == Activity.RESULT_OK) {
             String contents = intent.getStringExtra("SCAN_RESULT");
             String formatName = intent.getStringExtra("SCAN_RESULT_FORMAT");
@@ -169,18 +172,20 @@ public final class ZXingIntentIntegrator {
     * See {@link #shareText(Activity, String, String, String, String, String)} --
     * same, but uses default English labels.
     */
-   public static void shareText(Activity activity, String text) {
-      shareText(activity, text, DEFAULT_TITLE, DEFAULT_MESSAGE, DEFAULT_YES, DEFAULT_NO);
+   public static void shareText(final Activity activity, final String text) {
+      ZXingIntentIntegrator.shareText(activity, text, ZXingIntentIntegrator.DEFAULT_TITLE,
+               ZXingIntentIntegrator.DEFAULT_MESSAGE, ZXingIntentIntegrator.DEFAULT_YES,
+               ZXingIntentIntegrator.DEFAULT_NO);
    }
 
    /**
     * See {@link #shareText(Activity, String, String, String, String, String)} --
     * same, but takes string IDs which refer to the {@link Activity}'s resource bundle entries.
     */
-   public static void shareText(Activity activity, String text, int stringTitle, int stringMessage,
-            int stringButtonYes, int stringButtonNo) {
-      shareText(activity, text, activity.getString(stringTitle), activity.getString(stringMessage), activity
-               .getString(stringButtonYes), activity.getString(stringButtonNo));
+   public static void shareText(final Activity activity, final String text, final int stringTitle,
+            final int stringMessage, final int stringButtonYes, final int stringButtonNo) {
+      ZXingIntentIntegrator.shareText(activity, text, activity.getString(stringTitle), activity
+               .getString(stringMessage), activity.getString(stringButtonYes), activity.getString(stringButtonNo));
    }
 
    /**
@@ -195,8 +200,8 @@ public final class ZXingIntentIntegrator {
     * @param stringButtonNo text of button user clicks when declining to download
     *  Barcode Scanner (e.g. "No")
     */
-   public static void shareText(Activity activity, String text, String stringTitle, String stringMessage,
-            String stringButtonYes, String stringButtonNo) {
+   public static void shareText(final Activity activity, final String text, final String stringTitle,
+            final String stringMessage, final String stringButtonYes, final String stringButtonNo) {
 
       Intent intent = new Intent();
       intent.setAction("com.google.zxing.client.android.ENCODE");
@@ -205,7 +210,8 @@ public final class ZXingIntentIntegrator {
       try {
          activity.startActivity(intent);
       } catch (ActivityNotFoundException e) {
-         showDownloadDialog(activity, stringTitle, stringMessage, stringButtonYes, stringButtonNo);
+         ZXingIntentIntegrator
+                  .showDownloadDialog(activity, stringTitle, stringMessage, stringButtonYes, stringButtonNo);
       }
    }
 

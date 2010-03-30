@@ -1,6 +1,5 @@
 package com.totsp.bookworm.zxing;
 
-
 /*
  * Copyright 2009 ZXing authors
  *
@@ -17,7 +16,6 @@ package com.totsp.bookworm.zxing;
  * limitations under the License.
  */
 
-
 /**
  * <p>Encapsulates the result of a barcode scan invoked through {@link IntentIntegrator}.</p>
  *
@@ -25,26 +23,26 @@ package com.totsp.bookworm.zxing;
  */
 public final class ZXingIntentResult {
 
-  private final String contents;
-  private final String formatName;
+   private final String contents;
+   private final String formatName;
 
-  ZXingIntentResult(String contents, String formatName) {
-    this.contents = contents;
-    this.formatName = formatName;
-  }
+   ZXingIntentResult(final String contents, final String formatName) {
+      this.contents = contents;
+      this.formatName = formatName;
+   }
 
-  /**
-   * @return raw content of barcode
-   */
-  public String getContents() {
-    return contents;
-  }
+   /**
+    * @return raw content of barcode
+    */
+   public String getContents() {
+      return this.contents;
+   }
 
-  /**
-   * @return name of format, like "QR_CODE", "UPC_A". See <code>BarcodeFormat</code> for more format names.
-   */
-  public String getFormatName() {
-    return formatName;
-  }
+   /**
+    * @return name of format, like "QR_CODE", "UPC_A". See <code>BarcodeFormat</code> for more format names.
+    */
+   public String getFormatName() {
+      return this.formatName;
+   }
 
 }

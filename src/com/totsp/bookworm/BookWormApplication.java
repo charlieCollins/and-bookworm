@@ -24,7 +24,7 @@ public class BookWormApplication extends Application {
    private DataImageHelper dataImageHelper;
 
    private Book selectedBook;
-   
+
    private String lastSearchTerm;
    private ArrayList<Book> bookCacheList;
 
@@ -104,12 +104,12 @@ public class BookWormApplication extends Application {
    public void establishSelectedBook(final long id) {
       this.selectedBook = this.dataHelper.selectBook(id);
    }
-   
+
    public ArrayList<Book> getBookCacheList() {
       return this.bookCacheList;
    }
-   
-   public void setBookCacheList(ArrayList<Book> list) {
+
+   public void setBookCacheList(final ArrayList<Book> list) {
       this.bookCacheList = list;
    }
 
@@ -117,7 +117,7 @@ public class BookWormApplication extends Application {
       return this.lastSearchTerm;
    }
 
-   public void setLastSearchTerm(String lastSearchTerm) {
+   public void setLastSearchTerm(final String lastSearchTerm) {
       this.lastSearchTerm = lastSearchTerm;
-   }   
+   }
 }

@@ -113,10 +113,10 @@ public class ManageData extends Activity {
 
    @Override
    public void onPause() {
-      if (this.exportDatabaseTask != null && this.exportDatabaseTask.dialog.isShowing()) {
+      if ((this.exportDatabaseTask != null) && this.exportDatabaseTask.dialog.isShowing()) {
          this.exportDatabaseTask.dialog.dismiss();
       }
-      if (this.importDatabaseTask != null && this.importDatabaseTask.dialog.isShowing()) {
+      if ((this.importDatabaseTask != null) && this.importDatabaseTask.dialog.isShowing()) {
          this.importDatabaseTask.dialog.dismiss();
       }
       super.onPause();

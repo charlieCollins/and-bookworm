@@ -44,7 +44,7 @@ public class BookDetail extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.setContentView(R.layout.bookdetail);
-      this.application = (BookWormApplication) this.getApplication();      
+      this.application = (BookWormApplication) this.getApplication();
 
       this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
       this.bookTitle = (TextView) this.findViewById(R.id.booktitle);

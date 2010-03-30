@@ -1,6 +1,6 @@
 package com.totsp.bookworm.data;
 
-public class DataConstants {   
+public class DataConstants {
    public static final String BOOKID = "bid";
    public static final String BOOKUSERDATAID = "budid";
    public static final String BOOKAUTHORID = "baid";
@@ -11,15 +11,15 @@ public class DataConstants {
    public static final String TITLE = "tit";
    public static final String SUBTITLE = "subtit";
    public static final String DATEPUB = "datepub";
-   public static final String NAME = "name";   
+   public static final String NAME = "name";
    public static final String RATING = "rat";
    public static final String READSTATUS = "rstat";
-   public static final String BLURB = "blurb";   
+   public static final String BLURB = "blurb";
    public static final String DESCRIPTION = "desc";
    public static final String PUBLISHER = "pub";
    public static final String FORMAT = "format";
-   public static final String SUBJECT = "subject";   
-   
-   private DataConstants() {      
+   public static final String SUBJECT = "subject";
+
+   private DataConstants() {
    }
 }

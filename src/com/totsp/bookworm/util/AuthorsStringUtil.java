@@ -7,7 +7,7 @@ import java.util.Set;
 
 public final class AuthorsStringUtil {
 
-   public static LinkedHashSet<Author> expandAuthors(String in) {
+   public static LinkedHashSet<Author> expandAuthors(final String in) {
       LinkedHashSet<Author> authors = new LinkedHashSet<Author>();
       if (in.contains(",")) {
          String[] authorsArray = in.split(",\\s*");
@@ -20,7 +20,7 @@ public final class AuthorsStringUtil {
       return authors;
    }
 
-   public static String contractAuthors(Set<Author> authors) {
+   public static String contractAuthors(final Set<Author> authors) {
       String result = null;
       if (authors.size() == 1) {
          result = authors.iterator().next().name;

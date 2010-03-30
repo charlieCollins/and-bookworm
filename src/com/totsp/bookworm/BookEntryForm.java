@@ -154,7 +154,7 @@ public class BookEntryForm extends Activity {
 
    @Override
    public void onPause() {
-      if (this.insertBookTask != null && this.insertBookTask.dialog.isShowing()) {
+      if ((this.insertBookTask != null) && this.insertBookTask.dialog.isShowing()) {
          this.insertBookTask.dialog.dismiss();
       }
       super.onPause();

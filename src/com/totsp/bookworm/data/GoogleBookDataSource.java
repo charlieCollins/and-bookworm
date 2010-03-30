@@ -23,23 +23,23 @@ public class GoogleBookDataSource implements IBookDataSource {
    // google books uses X FORWARDED FOR header to determine location and what book stuff user can "see"
    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
 
-   private GoogleBooksHandler saxHandler;
-   private HttpHelper httpHelper;
+   private final GoogleBooksHandler saxHandler;
+   private final HttpHelper httpHelper;
 
    public GoogleBookDataSource() {
       this.saxHandler = new GoogleBooksHandler();
       this.httpHelper = new HttpHelper();
    }
-   
+
    public String getProviderLoginUrl() {
       return "https://www.google.com/accounts/ClientLogin";
    }
-   
-   public Book getBook(String isbn) {
+
+   public Book getBook(final String isbn) {
       return this.getSingleBook(isbn);
    }
 
-   public ArrayList<Book> getBooks(String searchTerm, int startIndex) {
+   public ArrayList<Book> getBooks(final String searchTerm, int startIndex) {
       if (startIndex < 1) {
          // don't allow zero or neg, just set to 1
          startIndex = 1;
@@ -47,40 +47,41 @@ public class GoogleBookDataSource implements IBookDataSource {
       return this.getBooksFromSearch(searchTerm, startIndex);
    }
 
-   private Book getSingleBook(String isbn) {
-      String url = GDATA_BOOK_URL_PREFIX + isbn;
+   private Book getSingleBook(final String isbn) {
+      String url = GoogleBookDataSource.GDATA_BOOK_URL_PREFIX + isbn;
       HashMap<String, String> headers = new HashMap<String, String>();
-      headers.put(X_FORWARDED_FOR, NetworkUtil.getIpAddress());
+      headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = this.httpHelper.performGet(url, null, null, headers);
       if (Constants.LOCAL_LOGD) {
          Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
-      if (response == null || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
-         return null; 
+      if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
+         return null;
       }
       return this.parseResponse(response).get(0);
    }
 
-   private ArrayList<Book> getBooksFromSearch(String searchTerm, int startIndex) {
+   private ArrayList<Book> getBooksFromSearch(final String searchTerm, final int startIndex) {
       String url =
-               GDATA_BOOK_SEARCH_PREFIX + searchTerm + GDATA_BOOK_SEARCH_SUFFIX_PRE + startIndex
-                        + GDATA_BOOK_SEARCH_SUFFIX_POST;
+               GoogleBookDataSource.GDATA_BOOK_SEARCH_PREFIX + searchTerm
+                        + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_PRE + startIndex
+                        + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_POST;
       if (Constants.LOCAL_LOGD) {
          Log.d(Constants.LOG_TAG, "book search URL - " + url);
       }
       HashMap<String, String> headers = new HashMap<String, String>();
-      headers.put(X_FORWARDED_FOR, NetworkUtil.getIpAddress());
+      headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = this.httpHelper.performGet(url, null, null, headers);
       if (Constants.LOCAL_LOGD) {
          Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
-      if (response == null || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
-         return null; 
+      if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
+         return null;
       }
       return this.parseResponse(response);
    }
 
-   private ArrayList<Book> parseResponse(String response) {
+   private ArrayList<Book> parseResponse(final String response) {
       try {
          Xml.parse(new ByteArrayInputStream(response.getBytes("UTF-8")), Xml.Encoding.UTF_8, this.saxHandler);
       } catch (Exception e) {

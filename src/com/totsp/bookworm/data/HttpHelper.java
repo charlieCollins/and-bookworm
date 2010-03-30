@@ -56,7 +56,7 @@ import java.util.Map;
 public class HttpHelper {
 
    private static final String CLASSTAG = HttpHelper.class.getSimpleName();
-   
+
    private static final String CONTENT_TYPE = "Content-Type";
    private static final int POST_TYPE = 1;
    private static final int GET_TYPE = 2;
@@ -83,7 +83,7 @@ public class HttpHelper {
       client = new DefaultHttpClient(cm, params);
    }
 
-   private ResponseHandler<String> responseHandler;
+   private final ResponseHandler<String> responseHandler;
 
    /**
     * Constructor.
@@ -98,7 +98,7 @@ public class HttpHelper {
     * 
     */
    public String performGet(final String url) {
-      return performRequest(null, url, null, null, null, null, HttpHelper.GET_TYPE);
+      return this.performRequest(null, url, null, null, null, null, HttpHelper.GET_TYPE);
    }
 
    /**
@@ -107,7 +107,7 @@ public class HttpHelper {
     */
    public String performGet(final String url, final String user, final String pass,
             final Map<String, String> additionalHeaders) {
-      return performRequest(null, url, user, pass, additionalHeaders, null, HttpHelper.GET_TYPE);
+      return this.performRequest(null, url, user, pass, additionalHeaders, null, HttpHelper.GET_TYPE);
    }
 
    /**
@@ -115,7 +115,7 @@ public class HttpHelper {
     * 
     */
    public String performPost(final String url, final Map<String, String> params) {
-      return performRequest(HttpHelper.MIME_FORM_ENCODED, url, null, null, null, params, HttpHelper.POST_TYPE);
+      return this.performRequest(HttpHelper.MIME_FORM_ENCODED, url, null, null, null, params, HttpHelper.POST_TYPE);
    }
 
    /**
@@ -125,7 +125,7 @@ public class HttpHelper {
     */
    public String performPost(final String url, final String user, final String pass,
             final Map<String, String> additionalHeaders, final Map<String, String> params) {
-      return performRequest(HttpHelper.MIME_FORM_ENCODED, url, user, pass, additionalHeaders, params,
+      return this.performRequest(HttpHelper.MIME_FORM_ENCODED, url, user, pass, additionalHeaders, params,
                HttpHelper.POST_TYPE);
    }
 
@@ -135,7 +135,7 @@ public class HttpHelper {
     */
    public String performPost(final String contentType, final String url, final String user, final String pass,
             final Map<String, String> additionalHeaders, final Map<String, String> params) {
-      return performRequest(contentType, url, user, pass, additionalHeaders, params, HttpHelper.POST_TYPE);
+      return this.performRequest(contentType, url, user, pass, additionalHeaders, params, HttpHelper.POST_TYPE);
    }
 
    //
@@ -145,15 +145,16 @@ public class HttpHelper {
    private String performRequest(final String contentType, final String url, final String user, final String pass,
             final Map<String, String> headers, final Map<String, String> params, final int requestType) {
       if (Constants.LOCAL_LOGD) {
-         Log.d(CLASSTAG, "making HTTP request to url - " + url); 
+         Log.d(HttpHelper.CLASSTAG, "making HTTP request to url - " + url);
       }
 
       // add user and pass to client credentials if present
       if ((user != null) && (pass != null)) {
          if (Constants.LOCAL_LOGD) {
-            Log.d(CLASSTAG, "user and pass present, adding credentials to request");
-         }         
-         client.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, pass));
+            Log.d(HttpHelper.CLASSTAG, "user and pass present, adding credentials to request");
+         }
+         HttpHelper.client.getCredentialsProvider().setCredentials(AuthScope.ANY,
+                  new UsernamePasswordCredentials(user, pass));
       }
 
       // process headers using request interceptor
@@ -165,12 +166,12 @@ public class HttpHelper {
          sendHeaders.put(HttpHelper.CONTENT_TYPE, contentType);
       }
       if (sendHeaders.size() > 0) {
-         client.addRequestInterceptor(new HttpRequestInterceptor() {
+         HttpHelper.client.addRequestInterceptor(new HttpRequestInterceptor() {
             public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
                for (String key : sendHeaders.keySet()) {
                   if (!request.containsHeader(key)) {
                      if (Constants.LOCAL_LOGD) {
-                        Log.d(CLASSTAG, "adding header: " + key + " | " + sendHeaders.get(key));
+                        Log.d(HttpHelper.CLASSTAG, "adding header: " + key + " | " + sendHeaders.get(key));
                      }
                      request.addHeader(key, sendHeaders.get(key));
                   }
@@ -183,7 +184,7 @@ public class HttpHelper {
       HttpRequestBase method = null;
       if (requestType == HttpHelper.POST_TYPE) {
          if (Constants.LOCAL_LOGD) {
-            Log.d(CLASSTAG, "performRequest POST");
+            Log.d(HttpHelper.CLASSTAG, "performRequest POST");
          }
          method = new HttpPost(url);
          // data - name/value params
@@ -192,7 +193,7 @@ public class HttpHelper {
             nvps = new ArrayList<NameValuePair>();
             for (Map.Entry<String, String> entry : params.entrySet()) {
                if (Constants.LOCAL_LOGD) {
-                  Log.d(CLASSTAG, "adding param: " + entry.getKey() + " | " + entry.getValue());
+                  Log.d(HttpHelper.CLASSTAG, "adding param: " + entry.getKey() + " | " + entry.getValue());
                }
                nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
@@ -202,37 +203,37 @@ public class HttpHelper {
                HttpPost methodPost = (HttpPost) method;
                methodPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
             } catch (UnsupportedEncodingException e) {
-               Log.e(CLASSTAG, e.getMessage(), e);
+               Log.e(HttpHelper.CLASSTAG, e.getMessage(), e);
             }
          }
       } else if (requestType == HttpHelper.GET_TYPE) {
          if (Constants.LOCAL_LOGD) {
-            Log.d(CLASSTAG, "performRequest GET");
+            Log.d(HttpHelper.CLASSTAG, "performRequest GET");
          }
          method = new HttpGet(url);
       }
 
       // execute request
-      return execute(method);
-   } 
+      return this.execute(method);
+   }
 
-   private synchronized String execute(HttpRequestBase method) {
+   private synchronized String execute(final HttpRequestBase method) {
       if (Constants.LOCAL_LOGD) {
-         Log.d(CLASSTAG, "execute invoked");
+         Log.d(HttpHelper.CLASSTAG, "execute invoked");
       }
       String response = null;
       // execute method returns?!? (rather than async) - do it here sync, and wrap async elsewhere
       try {
-         response = client.execute(method, this.responseHandler);
+         response = HttpHelper.client.execute(method, this.responseHandler);
       } catch (ClientProtocolException e) {
-         response = HTTP_RESPONSE_ERROR + " - " +  e.getClass().getSimpleName() + " " + e.getMessage();
+         response = HttpHelper.HTTP_RESPONSE_ERROR + " - " + e.getClass().getSimpleName() + " " + e.getMessage();
          //e.printStackTrace();
       } catch (IOException e) {
-         response = HTTP_RESPONSE_ERROR + " - " +  e.getClass().getSimpleName() + " " + e.getMessage();
+         response = HttpHelper.HTTP_RESPONSE_ERROR + " - " + e.getClass().getSimpleName() + " " + e.getMessage();
          //e.printStackTrace();
       }
       if (Constants.LOCAL_LOGD) {
-         Log.d(CLASSTAG, "request completed");
+         Log.d(HttpHelper.CLASSTAG, "request completed");
       }
       return response;
    }
