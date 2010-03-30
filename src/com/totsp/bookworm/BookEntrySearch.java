@@ -35,13 +35,13 @@ public class BookEntrySearch extends Activity {
    private Button searchButton;
    private ListView searchResults;
    private TextView getMoreData;
-
-   private boolean footerViewShown;
+   
    private ArrayList<Book> parsedBooks;
    private ArrayAdapter<Book> adapter;  
 
    private SearchTask searchTask;
    
+   private boolean footerViewShown;
    private boolean fromEntryResult;
 
    @Override
@@ -125,6 +125,12 @@ public class BookEntrySearch extends Activity {
    }
 
    private void bindAdapter() {
+      // add footer view BEFORE setting adapter
+      if (!this.parsedBooks.isEmpty() && !this.footerViewShown) {
+         this.searchResults.addFooterView(this.getMoreData);
+         this.footerViewShown = true;
+      }
+      
       this.adapter =
                new ArrayAdapter<Book>(BookEntrySearch.this, R.layout.simple_list_item_1,
                         BookEntrySearch.this.parsedBooks);
@@ -175,13 +181,7 @@ public class BookEntrySearch extends Activity {
                if (((b.isbn10 != null) && !b.isbn10.equals("")) || ((b.isbn13 != null) && !b.isbn13.equals(""))) {
                   BookEntrySearch.this.parsedBooks.add(b);
                }
-            }
-
-            // add footer view BEFORE setting adapter
-            if (!BookEntrySearch.this.parsedBooks.isEmpty() && !BookEntrySearch.this.footerViewShown) {
-               BookEntrySearch.this.searchResults.addFooterView(BookEntrySearch.this.getMoreData);
-               BookEntrySearch.this.footerViewShown = true;
-            }
+            }            
 
             BookEntrySearch.this.bindAdapter();
             BookEntrySearch.this.getMoreData.setBackgroundResource(R.color.grey1);
