@@ -13,7 +13,7 @@
 			<ScrollView android:id="@+id/bookedittab1"
 				android:layout_width="fill_parent" android:layout_height="wrap_content">
 				<RelativeLayout android:orientation="vertical"
-					android:layout_width="fill_parent" android:layout_height="fill_parent"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
 					android:background="@drawable/book_bgrnd_noheader_textarea"
 					android:paddingBottom="40dp">
 					<TextView android:id="@+id/booktitlelabel"
