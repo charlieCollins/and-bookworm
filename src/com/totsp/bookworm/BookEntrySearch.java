@@ -184,7 +184,7 @@ public class BookEntrySearch extends Activity {
             }            
 
             BookEntrySearch.this.bindAdapter();
-            BookEntrySearch.this.getMoreData.setBackgroundResource(R.color.grey1);
+            BookEntrySearch.this.getMoreData.setBackgroundResource(android.R.color.transparent);
          }
       }
    }
