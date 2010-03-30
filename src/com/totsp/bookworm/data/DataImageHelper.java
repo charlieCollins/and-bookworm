@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.os.Environment;
 
 import com.totsp.bookworm.R;
@@ -144,16 +146,7 @@ public class DataImageHelper {
       }
    }
 
-   public Bitmap createCoverImage(final String title) {
-      Bitmap bitmap = Bitmap.createBitmap(120, 183, Bitmap.Config.ARGB_4444);
-      Canvas canvas = new Canvas(bitmap);
-      Bitmap bkgrnd = BitmapFactory.decodeResource(this.context.getResources(), R.drawable.book_bgrnd_small);
-      canvas.drawBitmap(bkgrnd, new Matrix(), null);
-      Paint paint = new Paint();
-      paint.setTextSize(13);
-      paint.setAlpha(255);
-      paint.setAntiAlias(true);
-
+   public Bitmap createCoverImage(final String title) {      
       String[] words = title.split(" ");
       String line1 = this.parseLine(0, 15, words);
       String line2 = this.parseLine(line1.split(" ").length - 1, 15, words);
@@ -165,19 +158,28 @@ public class DataImageHelper {
          line4 += "...";
       }
 
-      canvas.drawText(line1, 3, 70, new Paint());
+      Bitmap bitmap = Bitmap.createBitmap(120, 183, Bitmap.Config.RGB_565);
+      Canvas canvas = new Canvas(bitmap);
+      canvas.drawARGB(100, 165, 42, 42);
+      
+      Paint paint = new Paint();
+      paint.setTextSize(13);
+      paint.setColor(Color.WHITE);
+      paint.setAntiAlias(true);
+      paint.setStyle(Style.FILL);
+      
+      canvas.drawText(line1, 3, 70, paint);
       if (line2.length() > 0) {
-         canvas.drawText(line2, 3, 85, new Paint());
+         canvas.drawText(line2, 3, 85, paint);
       }
       if (line3.length() > 0) {
-         canvas.drawText(line3, 3, 100, new Paint());
+         canvas.drawText(line3, 3, 100, paint);
       }
       if (line4.length() > 0) {
-         canvas.drawText(line4, 3, 115, new Paint());
+         canvas.drawText(line4, 3, 115, paint);
       }
       
-      canvas.save();      
-
+      canvas.save();
       return bitmap;
    }
 

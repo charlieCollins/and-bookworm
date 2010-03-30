@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
@@ -424,7 +425,15 @@ public class DataHelper {
       if (blurb != null) {
          this.bookUserDataInsertStmt.bindString(4, blurb);
       }
-      return this.bookUserDataInsertStmt.executeInsert();
+      long id = 0L;
+      try {
+         id = this.bookUserDataInsertStmt.executeInsert();
+      } catch (SQLiteConstraintException e) {
+         // TODO sometimes constraint occurs, seems to be related to db versions, not sure
+         // for now catch and update instead (hack)
+         this.updateBookUserData(bookId, readStatus, rating, blurb);
+      }
+      return id;
    }
 
    public void updateBookUserData(final long bookId, final boolean readStatus, final int rating, final String blurb) {
