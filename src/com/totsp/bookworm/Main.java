@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -215,8 +216,7 @@ public class Main extends Activity {
       super.onPause();
    }
 
-   /*
-   // go to home on back from Main (cannot just "finish" because that will end up at Splash)
+   // go to home on back from Main (avoid loop with BookEntrySearch which comes here)
    @Override
    public boolean onKeyDown(int keyCode, KeyEvent event) {
       if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -227,7 +227,6 @@ public class Main extends Activity {
       }
       return super.onKeyDown(keyCode, event);
    }
-   */
 
    private void bindBookList(final String orderBy) {
       this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy);
