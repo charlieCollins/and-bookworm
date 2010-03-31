@@ -2,8 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<PreferenceCategory android:title="Application Preferences">
-       <CheckBoxPreference android:key="splashcheckpref"
-        android:title="Skip splash screen?" android:summary="Skip the startup splash screen?" />
+       <CheckBoxPreference 
+        android:title="Skip splash screen?" 
+        android:summary="Skip the startup splash screen?"
+        android:key="splashcheckpref" 
+        android:defaultValue="true"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Book Data Provider Preferences">

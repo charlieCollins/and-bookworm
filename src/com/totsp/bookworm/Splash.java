@@ -3,6 +3,7 @@ package com.totsp.bookworm;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
@@ -18,10 +19,19 @@ public class Splash extends Activity {
 
    private void checkSkip() {
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-      boolean skipSplash = prefs.getBoolean("splashcheckpref", false);
-      if (skipSplash) {
-         this.startActivity(new Intent(Splash.this, Main.class));
+      
+      boolean splashSeenOnce = prefs.getBoolean("splashseenonce", false);
+      if (!splashSeenOnce) {
+         // set splash seen once so that default will skip the splash but user can still override
+         Editor editor = prefs.edit();
+         editor.putBoolean("splashseenonce", true);
+         editor.commit();
       }
+      
+      boolean skipSplash = prefs.getBoolean("splashcheckpref", false);
+      if (skipSplash && splashSeenOnce) {         
+         this.startActivity(new Intent(Splash.this, Main.class));
+      }            
    }
 
    @Override
