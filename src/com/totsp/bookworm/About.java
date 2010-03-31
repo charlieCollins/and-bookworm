@@ -1,6 +1,8 @@
 package com.totsp.bookworm;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -9,6 +11,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 public class About extends Activity {
+
+   private static final int MENU_DETAIL = 0;
 
    TextView about;
 
@@ -50,19 +54,23 @@ public class About extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      ///menu.add(0, MENU_HELP, 0, "Help").setIcon(android.R.drawable.ic_menu_help);
+      menu.add(0, MENU_DETAIL, 0, "About Details").setIcon(android.R.drawable.ic_menu_info_details);
       return super.onCreateOptionsMenu(menu);
    }
 
    @Override
    public boolean onOptionsItemSelected(final MenuItem item) {
-      /*
       switch (item.getItemId()) {
-      case MENU_HELP:
-         this.startActivity(new Intent(Main.this, Help.class));
+      case MENU_DETAIL:
+         new AlertDialog.Builder(About.this).setTitle("About BookWorm: 1.0.2").setMessage(
+                  Html.fromHtml(this.getResources().getString(R.string.aboutdetail))).setNeutralButton("Dismiss",
+                  new DialogInterface.OnClickListener() {
+                     public void onClick(final DialogInterface d, final int i) {
+
+                     }
+                  }).show();
          return true;
       }
-      */
       return super.onOptionsItemSelected(item);
    }
 }

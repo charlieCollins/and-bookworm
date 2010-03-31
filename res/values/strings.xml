@@ -24,6 +24,20 @@
 		href="http://code.google.com/p/and-bookworm/"&gt;the
 		BookWorm project
 		site&lt;/a&gt;.
+		&lt;br /&gt;&lt;br /&gt;
+	</string>
+	<string name="aboutdetail">	
+	Changelog: 
+	&lt;br /&gt;
+	Fix issue 5 - reset cover image not persistent.
+	&lt;br /&gt;
+	Fix issue 4 - make Splash skip the default.
+	&lt;br /&gt; 
+	Additional small fixes, change detail menu logos, and add this about detail panel.
+	&lt;br /&gt;&lt;br /&gt;
+	Please let me know if you come across any issues, the project site issue tracker is where
+	currently known issues and enhancement plans are logged. Thanks! 
+	&lt;br /&gt;&lt;br /&gt; 
 	</string>
 	<string name="books_list_empty">You don't have any books in your list yet. Use the
 		Menu Add feature to add books.</string>

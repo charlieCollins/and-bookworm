@@ -84,20 +84,16 @@ public class DataImageHelper {
          FileOutputStream fos = null;
 
          File file = new File(exportDir, name + ".jpg");
-         boolean created = file.createNewFile();
-         if (created) {
-            fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.close();
-         }
+         file.createNewFile(); // ok if returns false, overwrite
+         fos = new FileOutputStream(file);
+         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+         fos.close();
 
          File fileThumb = new File(exportDir, name + "-t.jpg");
-         boolean thumbCreated = fileThumb.createNewFile();
-         if (thumbCreated) {
-            fos = new FileOutputStream(fileThumb);
-            bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.close();
-         }
+         fileThumb.createNewFile(); // ok if returns false, overwrite
+         fos = new FileOutputStream(fileThumb);
+         bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+         fos.close();
 
          if (this.cacheEnabled && (bitmap != null)) {
             this.imageCache.put(name, bitmap);

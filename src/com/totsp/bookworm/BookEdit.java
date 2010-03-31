@@ -114,18 +114,6 @@ public class BookEdit extends TabActivity {
       super.onPause();
    }
 
-   /*
-   // go back to main if back pressed here, in case path is multiple tabs, etc
-   @Override
-   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-      if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
-         BookEdit.this.startActivity(new Intent(BookEdit.this, Main.class));
-         return true;
-      }
-      return super.onKeyDown(keyCode, event);
-   }
-   */
-
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {

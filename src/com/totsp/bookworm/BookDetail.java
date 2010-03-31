@@ -162,8 +162,8 @@ public class BookDetail extends Activity {
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
       menu.add(0, BookDetail.MENU_EDIT, 0, "Edit").setIcon(android.R.drawable.ic_menu_edit);
-      menu.add(0, BookDetail.MENU_WEB_GOOGLE, 1, "Google Books page").setIcon(android.R.drawable.ic_menu_view);
-      menu.add(0, BookDetail.MENU_WEB_AMAZON, 2, "Amazon page").setIcon(android.R.drawable.ic_menu_view);
+      menu.add(0, BookDetail.MENU_WEB_GOOGLE, 1, null).setIcon(R.drawable.google);
+      menu.add(0, BookDetail.MENU_WEB_AMAZON, 2, null).setIcon(R.drawable.amazon);
       return super.onCreateOptionsMenu(menu);
    }
 
