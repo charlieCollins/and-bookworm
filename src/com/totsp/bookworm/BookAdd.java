@@ -48,9 +48,9 @@ public class BookAdd extends Activity {
          public void onClick(final View v) {
             BookAdd.this.startActivity(new Intent(BookAdd.this, BookEntryForm.class));
          }
-      });     
-   }   
-   
+      });
+   }
+
    @Override
    public void onStart() {
       super.onStart();
@@ -75,11 +75,11 @@ public class BookAdd extends Activity {
          this.startActivity(scanIntent);
       }
    }
-   
+
    private boolean connectionPresent() {
-      ConnectivityManager cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+      ConnectivityManager cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
       NetworkInfo netInfo = cMgr.getActiveNetworkInfo();
-      if (netInfo != null && netInfo.getState() != null) {
+      if ((netInfo != null) && (netInfo.getState() != null)) {
          return netInfo.getState().equals(State.CONNECTED);
       } else {
          return false;

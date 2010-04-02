@@ -54,7 +54,7 @@ public class About extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, MENU_DETAIL, 0, "About Details").setIcon(android.R.drawable.ic_menu_info_details);
+      menu.add(0, About.MENU_DETAIL, 0, "About Details").setIcon(android.R.drawable.ic_menu_info_details);
       return super.onCreateOptionsMenu(menu);
    }
 

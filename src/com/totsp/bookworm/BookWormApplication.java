@@ -18,6 +18,8 @@ public class BookWormApplication extends Application {
 
    private static final boolean IMAGE_CACHE_ENABLED = true;
 
+   private boolean debugEnabled;
+
    private SharedPreferences prefs;
    private IBookDataSource bookDataSource;
    private DataHelper dataHelper;
@@ -32,7 +34,7 @@ public class BookWormApplication extends Application {
    @Override
    public void onCreate() {
       super.onCreate();
-      if (Constants.isDebugEnabled()) {
+      if (this.debugEnabled) {
          Log.d(Constants.LOG_TAG, "APPLICATION onCreate");
       }
 
@@ -126,7 +128,15 @@ public class BookWormApplication extends Application {
       return this.lastSearchListPosition;
    }
 
-   public void setLastSearchListPosition(int lastSearchListPosition) {
+   public void setLastSearchListPosition(final int lastSearchListPosition) {
       this.lastSearchListPosition = lastSearchListPosition;
-   }   
+   }
+
+   public boolean isDebugEnabled() {
+      return this.debugEnabled;
+   }
+
+   public void setDebugEnabled(final boolean value) {
+      this.debugEnabled = value;
+   }
 }

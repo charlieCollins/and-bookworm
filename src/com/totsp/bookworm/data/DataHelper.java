@@ -108,9 +108,6 @@ public class DataHelper {
                "select book.bid as _id, book.tit, book.subtit, book.pub, book.datepub, book.format, "
                         + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb from book "
                         + "join bookuserdata on book.bid = bookuserdata.bid";
-      if (Constants.isDebugEnabled()) {
-         Log.d(Constants.LOG_TAG, "Main screen adapter cursor query - " + query);
-      }
       if ((orderBy != null) && (orderBy.length() > 0)) {
          query += " order by " + orderBy;
       }
@@ -157,9 +154,6 @@ public class DataHelper {
             this.bookInsertStmt.bindString(8, b.subject);
             this.bookInsertStmt.bindLong(9, b.datePubStamp);
             bookId = this.bookInsertStmt.executeInsert();
-            if (Constants.isDebugEnabled()) {
-               Log.d(Constants.LOG_TAG, "book id after insert - " + bookId);
-            }
 
             // insert bookauthors
             this.insertBookAuthorData(bookId, authorIds);
@@ -270,7 +264,7 @@ public class DataHelper {
          Book userData = this.selectBookUserData(id);
          if (userData != null) {
             b.read = (userData.read);
-            b.rating = (userData.rating);            
+            b.rating = (userData.rating);
          }
       }
       if ((c != null) && !c.isClosed()) {
@@ -586,10 +580,7 @@ public class DataHelper {
 
       @Override
       public void onCreate(final SQLiteDatabase db) {
-
-         if (Constants.isDebugEnabled()) {
-            Log.d(Constants.LOG_TAG, "onCreate DataHelper.OpenHelper");
-         }
+         Log.i(Constants.LOG_TAG, "BookWorm DataHelper.OpenHelper onCreate creating database bookworm.db");
 
          // using StringBuilder here because it is easier to read/reuse lines
          StringBuilder sb = new StringBuilder();

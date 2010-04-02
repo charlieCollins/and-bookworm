@@ -10,31 +10,33 @@ import android.view.MotionEvent;
 
 public class Splash extends Activity {
 
+   private BookWormApplication application;
+
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.setContentView(R.layout.splash);
+      this.application = (BookWormApplication) this.getApplication();
       this.initPrefs();
    }
 
    private void initPrefs() {
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-      
+
+      boolean debugEnabled = prefs.getBoolean("debugenabled", false);
+      this.application.setDebugEnabled(debugEnabled);
+
       boolean splashSeenOnce = prefs.getBoolean("splashseenonce", false);
       if (!splashSeenOnce) {
-         // set splash seen once so that default will skip the splash but user can still override
          Editor editor = prefs.edit();
          editor.putBoolean("splashseenonce", true);
          editor.commit();
       }
-      
-      boolean skipSplash = prefs.getBoolean("splashcheckpref", false);
-      if (skipSplash && splashSeenOnce) {         
+
+      boolean showSplash = prefs.getBoolean("showsplash", false);
+      if (!showSplash && splashSeenOnce) {
          this.startActivity(new Intent(Splash.this, Main.class));
       }
-      
-      boolean debugEnabled = prefs.getBoolean("debugenabled", false);
-      Constants.setDebugEnabled(debugEnabled);
    }
 
    @Override

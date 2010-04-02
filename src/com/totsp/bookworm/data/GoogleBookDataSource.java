@@ -26,9 +26,12 @@ public class GoogleBookDataSource implements IBookDataSource {
    private final GoogleBooksHandler saxHandler;
    private final HttpHelper httpHelper;
 
-   public GoogleBookDataSource() {
+   private final boolean debugEnabled;
+
+   public GoogleBookDataSource(final boolean debugEnabled) {
       this.saxHandler = new GoogleBooksHandler();
       this.httpHelper = new HttpHelper();
+      this.debugEnabled = debugEnabled;
    }
 
    public Book getBook(final String isbn) {
@@ -48,15 +51,15 @@ public class GoogleBookDataSource implements IBookDataSource {
       HashMap<String, String> headers = new HashMap<String, String>();
       headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = this.httpHelper.performGet(url, null, null, headers);
-      if (Constants.isDebugEnabled()) {
+      if (this.debugEnabled) {
          Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
       if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
          return null;
       }
-      
+
       ArrayList<Book> books = this.parseResponse(response);
-      if (books != null && !books.isEmpty()) {
+      if ((books != null) && !books.isEmpty()) {
          return books.get(0);
       }
       return null;
@@ -67,13 +70,13 @@ public class GoogleBookDataSource implements IBookDataSource {
                GoogleBookDataSource.GDATA_BOOK_SEARCH_PREFIX + searchTerm
                         + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_PRE + startIndex
                         + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_POST;
-      if (Constants.isDebugEnabled()) {
+      if (this.debugEnabled) {
          Log.d(Constants.LOG_TAG, "book search URL - " + url);
       }
       HashMap<String, String> headers = new HashMap<String, String>();
       headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = this.httpHelper.performGet(url, null, null, headers);
-      if (Constants.isDebugEnabled()) {
+      if (this.debugEnabled) {
          Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
       if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {

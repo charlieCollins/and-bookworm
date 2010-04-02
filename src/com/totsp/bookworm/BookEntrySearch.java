@@ -86,7 +86,7 @@ public class BookEntrySearch extends Activity {
       this.getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);
       this.getMoreData.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            int startIndex = BookEntrySearch.this.parsedBooks.size() + 1;            
+            int startIndex = BookEntrySearch.this.parsedBooks.size() + 1;
             new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String.valueOf(startIndex));
             v.setBackgroundResource(R.color.red1);
          }
@@ -100,7 +100,7 @@ public class BookEntrySearch extends Activity {
 
       // if search data exists after an orientation change, reload it
       Object lastNonConfig = this.getLastNonConfigurationInstance();
-      if (lastNonConfig != null && lastNonConfig instanceof Boolean) {
+      if ((lastNonConfig != null) && (lastNonConfig instanceof Boolean)) {
          this.restoreFromCache();
       }
    }
@@ -172,7 +172,8 @@ public class BookEntrySearch extends Activity {
    private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntrySearch.this);
 
-      private final GoogleBookDataSource gbs = new GoogleBookDataSource();
+      private final GoogleBookDataSource gbs =
+               new GoogleBookDataSource(BookEntrySearch.this.application.isDebugEnabled());
 
       protected void onPreExecute() {
          this.dialog.setMessage("Searching...");

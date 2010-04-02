@@ -3,10 +3,10 @@
 
 	<PreferenceCategory android:title="Application Preferences">
        <CheckBoxPreference 
-        android:title="Skip splash screen?" 
-        android:summary="Skip the startup splash screen?"
-        android:key="splashcheckpref" 
-        android:defaultValue="true"/>
+        android:title="Enable splash screen?" 
+        android:summary="By default Splash shown only once after install, enable here."
+        android:key="showsplash" 
+        android:defaultValue="false"/>
          <CheckBoxPreference 
         android:title="Enable debug logging?" 
         android:summary="By default debug logging is off, enable here."
@@ -17,14 +17,14 @@
     <PreferenceCategory android:title="Book Data Provider Preferences">
         <ListPreference
            android:title="Book Data Provider"
-           android:summary="Currently only Google Books (future additions planned)"
+           android:summary="Currently only Google Books (future additions planned)."
            android:key="dataproviderpref"
            android:defaultValue="com.totsp.bookworm.data.GoogleBookDataSource"
            android:entries="@array/bookdataprovidernames"
            android:entryValues="@array/bookdataproviderkeys" />   
          <ListPreference
            android:title="Book Cover Image Provider"
-           android:summary="Currently only OpenLibrary (future additions planned)"
+           android:summary="Currently only OpenLibrary (future additions planned)."
            android:key="coverimageproviderpref"
            android:defaultValue="2"
            android:entries="@array/bookcoverimageprovidernames"

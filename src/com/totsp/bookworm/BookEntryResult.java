@@ -132,10 +132,10 @@ public class BookEntryResult extends Activity {
                return b;
             } else {
                Log.e(Constants.LOG_TAG, "BookWorm GetBookDataTask book data source null, cannot add book.");
-            }            
+            }
          } else {
             Log.e(Constants.LOG_TAG, "BookWorm GetBookDataTask ISBN null, cannot add book.");
-         }   
+         }
          return null;
       }
 
@@ -157,12 +157,12 @@ public class BookEntryResult extends Activity {
             BookEntryResult.this.bookAuthors.setText(authors);
 
             if (b.coverImage != null) {
-               if (Constants.isDebugEnabled()) {
+               if (BookEntryResult.this.application.isDebugEnabled()) {
                   Log.d(Constants.LOG_TAG, "book cover bitmap present, set cover");
                }
                BookEntryResult.this.bookCover.setImageBitmap(b.coverImage);
             } else {
-               if (Constants.isDebugEnabled()) {
+               if (BookEntryResult.this.application.isDebugEnabled()) {
                   Log.d(Constants.LOG_TAG, "book cover not found, generate image");
                }
                Bitmap generatedCover = BookEntryResult.this.application.getDataImageHelper().createCoverImage(b.title);

@@ -33,7 +33,7 @@ public class GoogleBooksHandler extends DefaultHandler {
    }
 
    @Override
-   public void startDocument() throws SAXException {    
+   public void startDocument() throws SAXException {
       this.books = new ArrayList<Book>();
       this.sb = new StringBuilder();
    }

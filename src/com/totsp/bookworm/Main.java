@@ -53,7 +53,7 @@ public class Main extends Activity {
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
 
-   private BookWormApplication application;
+   BookWormApplication application;
 
    private SharedPreferences prefs;
 
@@ -99,7 +99,7 @@ public class Main extends Activity {
             int bookId = Main.this.cursor.getInt(Main.this.cursor.getColumnIndex("_id"));
             Book book = Main.this.application.getDataHelper().selectBook(bookId);
             if (book != null) {
-               if (Constants.isDebugEnabled()) {
+               if (Main.this.application.isDebugEnabled()) {
                   Log.d(Constants.LOG_TAG, "book selected - " + book.title);
                }
                Main.this.application.setSelectedBook(book);
@@ -218,8 +218,8 @@ public class Main extends Activity {
 
    // go to home on back from Main (avoid loop with BookEntrySearch which comes here)
    @Override
-   public boolean onKeyDown(int keyCode, KeyEvent event) {
-      if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+      if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
          Intent intent = new Intent(Intent.ACTION_MAIN);
          intent.addCategory(Intent.CATEGORY_HOME);
          this.startActivity(intent);
@@ -295,7 +295,7 @@ public class Main extends Activity {
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
 
-            if (Constants.isDebugEnabled()) {
+            if (Main.this.application.isDebugEnabled()) {
                Log.d(Constants.LOG_TAG, "book id from cursor - " + id);
                Log.d(Constants.LOG_TAG, "title from cursor - " + title);
             }
@@ -387,7 +387,7 @@ public class Main extends Activity {
          Main.this.application.getDataImageHelper().clearAllBitmapSourceFiles();
          HashSet<Book> books = Main.this.application.getDataHelper().selectAllBooks();
          for (Book b : books) {
-            if (Constants.isDebugEnabled()) {
+            if (Main.this.application.isDebugEnabled()) {
                Log.d(Constants.LOG_TAG, "resetting cover image for book - " + b.title);
             }
             this.publishProgress("processing: " + b.title);

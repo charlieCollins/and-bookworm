@@ -48,34 +48,27 @@ public final class Book {
       // this is the default display in a ListView, also used by Filter, etc, so make it significant/short/sweet
       return this.title;
    }
-   
+
    @Override
-   public boolean equals(Object obj) {
+   public boolean equals(final Object obj) {
       if (obj == this) {
          return true;
       }
       if (obj instanceof Book) {
-        Book lhs = (Book) obj;        
-        if ((lhs.id == this.id) &&
-        (lhs.isbn10.equals(this.isbn10)) &&
-        (lhs.isbn13.equals(this.isbn13)) &&
-        (lhs.title.equals(this.title)) &&
-        (lhs.subTitle.equals(this.subTitle)) &&
-        (lhs.authors.equals(this.authors)) &&
-        (lhs.publisher.equals(this.publisher)) &&
-        (lhs.description.equals(this.description)) &&
-        (lhs.format.equals(this.format)) &&
-        (lhs.subject.equals(this.subject)) &&
-        (lhs.datePubStamp == this.datePubStamp) &&
-        (lhs.rating == this.rating) &&
-        (lhs.read == this.read)) {
-           return true;
-        }        
-      }      
+         Book lhs = (Book) obj;
+         if ((lhs.id == this.id) && (lhs.isbn10.equals(this.isbn10)) && (lhs.isbn13.equals(this.isbn13))
+                  && (lhs.title.equals(this.title)) && (lhs.subTitle.equals(this.subTitle))
+                  && (lhs.authors.equals(this.authors)) && (lhs.publisher.equals(this.publisher))
+                  && (lhs.description.equals(this.description)) && (lhs.format.equals(this.format))
+                  && (lhs.subject.equals(this.subject)) && (lhs.datePubStamp == this.datePubStamp)
+                  && (lhs.rating == this.rating) && (lhs.read == this.read)) {
+            return true;
+         }
+      }
       return false;
    }
-   
-   @Override 
+
+   @Override
    public int hashCode() {
       int result = 31;
       result += this.id;
@@ -109,7 +102,7 @@ public final class Book {
       result += this.datePubStamp;
       result += this.rating;
       result += this.read ? 1 : 0;
-      
+
       return result;
    }
 
