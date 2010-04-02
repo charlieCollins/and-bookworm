@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.totsp.bookworm.data.IBookDataSource;
+import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CoverImageUtil;
@@ -103,11 +103,19 @@ public class BookEntryResult extends Activity {
    private void setViewsForInvalidEntry(final String isbn) {
       this.bookCover.setImageResource(R.drawable.book_invalid_isbn);
       if (isbn != null) {
-         this.bookAuthors.setText("Whoops, that entry didn't work (ISBN: " + isbn + " was not resolved). "
-                  + "Please try either another entry method, or another title.");
+         this.bookAuthors
+                  .setText("Whoops, that entry didn't work (ISBN: "
+                           + isbn
+                           + " was not resolved). "
+                           + "Please try either another entry method, or another title "
+                           + "(and if you are scanning, make sure you are not scanning a retailer's sticker, rather than the book's bar code, "
+                           + " if there are multiple bar codes, try the others).");
       } else {
-         this.bookAuthors.setText("Whoops, that entry didn't work (ISBN was not resolved). "
-                  + "Please try either another entry method, or another title.");
+         this.bookAuthors
+                  .setText("Whoops, that entry didn't work (ISBN was not resolved). "
+                           + "Please try either another entry method, or another title "
+                           + "(and if you are scanning, make sure you are not scanning a retailer's sticker, rather than the book's bar code, "
+                           + " if there are multiple bar codes, try the others).");
       }
    }
 
@@ -118,6 +126,15 @@ public class BookEntryResult extends Activity {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
 
       private String coverImageProviderKey;
+      // TODO hard coded to GoogleBookDataSource for now
+      private final GoogleBookDataSource gbs;
+
+      public GetBookDataTask() {
+         this.gbs = (GoogleBookDataSource) BookEntryResult.this.application.getBookDataSource();
+         if (BookEntryResult.this.application.isDebugEnabled() && this.gbs != null) {
+            gbs.setDebugEnabled(true);
+         }
+      }
 
       protected void onPreExecute() {
          this.dialog.setMessage("Retrieving book data..");
@@ -129,9 +146,8 @@ public class BookEntryResult extends Activity {
 
       protected Book doInBackground(final String... isbns) {
          if (isbns[0] != null) {
-            IBookDataSource dataSource = BookEntryResult.this.application.getBookDataSource();
-            if (dataSource != null) {
-               Book b = dataSource.getBook(isbns[0]);
+            if (this.gbs != null) {
+               Book b = this.gbs.getBook(isbns[0]);
                if (b == null) {
                   Log.e(Constants.LOG_TAG, "BookWorm GetBookDataTask book returned from data source (using ISBN - "
                            + isbns[0] + ") null, cannot add book.");

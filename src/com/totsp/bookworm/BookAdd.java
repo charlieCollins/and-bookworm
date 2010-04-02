@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -69,9 +70,29 @@ public class BookAdd extends Activity {
    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
       ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
       if (scanResult != null) {
+         String isbn = scanResult.getContents();
+         if (!scanResult.getFormatName().equals("EAN_13")) {
+            // if it's not EAN 13 we are likely gonna have issues 
+            // we are using PRODUCT_MODE which limits to UPC and EAN
+            // we *might* be able to parse ISBN from UPC, but pattern is not understood, yet
+            // if it's EAN-8 though, we are screwed
+            if (scanResult.getFormatName().equals("UPC")) {
+               isbn = scanResult.getContents();
+               if (isbn.length() == 12) {
+                  if (isbn.startsWith("0")) {
+                     isbn = isbn.substring(1, isbn.length());
+                  }
+                  if (isbn.endsWith("0")) {
+                     isbn = isbn.substring(0, isbn.length() - 1);
+                  }
+               }
+               Log.w(Constants.LOG_TAG, "Scan result was a UPC code (not an EAN code), parsed into ISBN:" + isbn);
+            }
+         }
+         
          // handle scan result
          Intent scanIntent = new Intent(this, BookEntryResult.class);
-         scanIntent.putExtra(Constants.ISBN, scanResult.getContents());
+         scanIntent.putExtra(Constants.ISBN, isbn);
          this.startActivity(scanIntent);
       }
    }

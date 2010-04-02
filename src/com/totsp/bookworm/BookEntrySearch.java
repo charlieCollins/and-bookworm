@@ -172,6 +172,7 @@ public class BookEntrySearch extends Activity {
    private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntrySearch.this);
 
+      // TODO hard coded to GoolgeBookDataSource for now
       private final GoogleBookDataSource gbs = new GoogleBookDataSource();
 
       public SearchTask() {
