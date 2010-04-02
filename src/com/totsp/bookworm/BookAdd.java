@@ -71,7 +71,7 @@ public class BookAdd extends Activity {
       ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
       if (scanResult != null) {
          String isbn = scanResult.getContents();
-         if (!scanResult.getFormatName().equals("EAN_13")) {
+         if (scanResult.getFormatName() != null && !scanResult.getFormatName().equals("EAN_13")) {
             // if it's not EAN 13 we are likely gonna have issues 
             // we are using PRODUCT_MODE which limits to UPC and EAN
             // we *might* be able to parse ISBN from UPC, but pattern is not understood, yet
