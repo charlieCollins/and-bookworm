@@ -15,10 +15,36 @@ public final class Author {
       this.name = name;
    }
 
+   @Override
    public String toString() {
       StringBuilder sb = new StringBuilder();
       sb.append("Author-");
       sb.append(" name:" + this.name);
       return sb.toString();
+   }
+   
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof Author) {
+        Author lhs = (Author) obj;        
+        if ((lhs.id == this.id) &&
+        (lhs.name.equals(this.name))) {
+           return true;
+        }        
+      }      
+      return false;
+   }
+   
+   @Override 
+   public int hashCode() {
+      int result = 31;
+      result += this.id;
+      if (this.name != null) {
+         result += this.name.hashCode();
+      }      
+      return result;
    }
 }

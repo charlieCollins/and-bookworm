@@ -26,6 +26,7 @@ public class BookWormApplication extends Application {
    private Book selectedBook;
 
    private String lastSearchTerm;
+   private int lastSearchListPosition;
    private ArrayList<Book> bookCacheList;
 
    @Override
@@ -120,4 +121,12 @@ public class BookWormApplication extends Application {
    public void setLastSearchTerm(final String lastSearchTerm) {
       this.lastSearchTerm = lastSearchTerm;
    }
+
+   public int getLastSearchListPosition() {
+      return this.lastSearchListPosition;
+   }
+
+   public void setLastSearchListPosition(int lastSearchListPosition) {
+      this.lastSearchListPosition = lastSearchListPosition;
+   }   
 }

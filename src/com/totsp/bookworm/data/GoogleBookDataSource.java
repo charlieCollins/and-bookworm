@@ -18,7 +18,7 @@ public class GoogleBookDataSource implements IBookDataSource {
    // web search term url
    private static final String GDATA_BOOK_SEARCH_PREFIX = "http://books.google.com/books/feeds/volumes?q=%22";
    private static final String GDATA_BOOK_SEARCH_SUFFIX_PRE = "%22&start-index=";
-   private static final String GDATA_BOOK_SEARCH_SUFFIX_POST = "&max-results=20";
+   private static final String GDATA_BOOK_SEARCH_SUFFIX_POST = "&max-results=10";
 
    // google books uses X FORWARDED FOR header to determine location and what book stuff user can "see"
    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
@@ -58,7 +58,12 @@ public class GoogleBookDataSource implements IBookDataSource {
       if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
          return null;
       }
-      return this.parseResponse(response).get(0);
+      
+      ArrayList<Book> books = this.parseResponse(response);
+      if (books != null && !books.isEmpty()) {
+         return books.get(0);
+      }
+      return null;
    }
 
    private ArrayList<Book> getBooksFromSearch(final String searchTerm, final int startIndex) {

@@ -154,7 +154,6 @@ public class BookEdit extends TabActivity {
          newBook.datePubStamp = cal.getTimeInMillis();
 
          // NOTE - properties not yet editable (will be in future)        
-         newBook.blurb = book.blurb;
          newBook.description = (book.description);
          newBook.format = (book.format);
          newBook.isbn13 = (book.isbn13);

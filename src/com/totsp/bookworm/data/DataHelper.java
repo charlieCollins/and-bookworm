@@ -165,7 +165,7 @@ public class DataHelper {
             this.insertBookAuthorData(bookId, authorIds);
 
             // insert bookuserdata
-            this.insertBookUserData(bookId, b.read, b.rating, b.blurb);
+            this.insertBookUserData(bookId, b.read, b.rating, null);
 
             this.db.setTransactionSuccessful();
          } catch (SQLException e) {
@@ -210,7 +210,7 @@ public class DataHelper {
 
             // update/insert book user data
             this.deleteBookUserData(b.id);
-            this.updateBookUserData(b.id, b.read, b.rating, b.blurb);
+            this.updateBookUserData(b.id, b.read, b.rating, null);
 
             // update book
             final ContentValues values = new ContentValues();
@@ -270,8 +270,7 @@ public class DataHelper {
          Book userData = this.selectBookUserData(id);
          if (userData != null) {
             b.read = (userData.read);
-            b.rating = (userData.rating);
-            b.blurb = (userData.blurb);
+            b.rating = (userData.rating);            
          }
       }
       if ((c != null) && !c.isClosed()) {
@@ -314,7 +313,6 @@ public class DataHelper {
             if (userData != null) {
                b.read = (userData.read);
                b.rating = (userData.rating);
-               b.blurb = (userData.blurb);
             }
 
             set.add(b);
@@ -409,7 +407,6 @@ public class DataHelper {
          passData = new Book();
          passData.read = (c.getInt(0) == 0 ? false : true);
          passData.rating = (c.getInt(1));
-         passData.blurb = (c.getString(2));
       }
       if ((c != null) && !c.isClosed()) {
          c.close();

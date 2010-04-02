@@ -25,7 +25,7 @@ public final class Book {
    // user data (stored sep from book itself, not modeled sep though, for now)
    public boolean read;
    public int rating;
-   public String blurb;
+   ///public String blurb;
 
    // not stored in db or serialized
    // (optionally returned from parser, but not stored, image Ids are stored after processing)
@@ -48,6 +48,70 @@ public final class Book {
       // this is the default display in a ListView, also used by Filter, etc, so make it significant/short/sweet
       return this.title;
    }
+   
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof Book) {
+        Book lhs = (Book) obj;        
+        if ((lhs.id == this.id) &&
+        (lhs.isbn10.equals(this.isbn10)) &&
+        (lhs.isbn13.equals(this.isbn13)) &&
+        (lhs.title.equals(this.title)) &&
+        (lhs.subTitle.equals(this.subTitle)) &&
+        (lhs.authors.equals(this.authors)) &&
+        (lhs.publisher.equals(this.publisher)) &&
+        (lhs.description.equals(this.description)) &&
+        (lhs.format.equals(this.format)) &&
+        (lhs.subject.equals(this.subject)) &&
+        (lhs.datePubStamp == this.datePubStamp) &&
+        (lhs.rating == this.rating) &&
+        (lhs.read == this.read)) {
+           return true;
+        }        
+      }      
+      return false;
+   }
+   
+   @Override 
+   public int hashCode() {
+      int result = 31;
+      result += this.id;
+      if (this.isbn10 != null) {
+         result += this.isbn10.hashCode();
+      }
+      if (this.isbn13 != null) {
+         result += this.isbn13.hashCode();
+      }
+      if (this.title != null) {
+         result += this.title.hashCode();
+      }
+      if (this.subTitle != null) {
+         result += this.subTitle.hashCode();
+      }
+      if (this.authors != null) {
+         result += this.authors.hashCode();
+      }
+      if (this.publisher != null) {
+         result += this.publisher.hashCode();
+      }
+      if (this.description != null) {
+         result += this.description.hashCode();
+      }
+      if (this.format != null) {
+         result += this.format.hashCode();
+      }
+      if (this.subject != null) {
+         result += this.subject.hashCode();
+      }
+      result += this.datePubStamp;
+      result += this.rating;
+      result += this.read ? 1 : 0;
+      
+      return result;
+   }
 
    public String toStringFull() {
       StringBuilder sb = new StringBuilder();
@@ -63,6 +127,8 @@ public final class Book {
       sb.append("\n format:" + this.format);
       sb.append("\n subject:" + this.subject);
       sb.append("\n datePubStamp:" + this.datePubStamp);
+      sb.append("\n read:" + this.read);
+      sb.append("\n rating:" + this.rating);
       return sb.toString();
    }
 }

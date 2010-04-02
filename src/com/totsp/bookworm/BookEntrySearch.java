@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,14 +30,14 @@ public class BookEntrySearch extends Activity {
 
    private BookWormApplication application;
 
-   private int startIndex = 1;
-
    private EditText searchInput;
    private Button searchButton;
    private ListView searchResults;
-   private TextView getMoreData;
+   TextView getMoreData;
+   ArrayList<Book> parsedBooks;
+   int prevParsedBooksSize = 0;
+   boolean lastSearchFoundValidResults;
 
-   private ArrayList<Book> parsedBooks;
    private ArrayAdapter<Book> adapter;
 
    private SearchTask searchTask;
@@ -86,18 +87,32 @@ public class BookEntrySearch extends Activity {
       this.getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);
       this.getMoreData.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookEntrySearch.this.startIndex += 15;
-            new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String
-                     .valueOf(BookEntrySearch.this.startIndex));
-            ///BookEntrySearch.this.searchResults.setSelection(BookEntrySearch.this.startIndex  - 15);
+            int startIndex = BookEntrySearch.this.parsedBooks.size() + 1;
+            if (!lastSearchFoundValidResults) {
+               startIndex += 9;
+            }
+            new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String.valueOf(startIndex));
             v.setBackgroundResource(R.color.red1);
          }
       });
 
+      // if returning to search from search result reload prev search data
       this.fromEntryResult = this.getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false);
       if (this.fromEntryResult) {
          this.restoreFromCache();
       }
+
+      // if search data exists after an orientation change, reload it
+      Object lastNonConfig = this.getLastNonConfigurationInstance();
+      if (lastNonConfig != null && lastNonConfig instanceof Boolean) {
+         this.restoreFromCache();
+      }
+   }
+
+   @Override
+   public Object onRetainNonConfigurationInstance() {
+      // never pass a View/Drawable/Adapter etc here or will leak Activity
+      return true;
    }
 
    @Override
@@ -110,6 +125,9 @@ public class BookEntrySearch extends Activity {
       }
       if (this.searchInput != null) {
          this.application.setLastSearchTerm(this.searchInput.getText().toString());
+      }
+      if (this.prevParsedBooksSize > 0) {
+         this.application.setLastSearchListPosition(this.prevParsedBooksSize);
       }
       super.onPause();
    }
@@ -135,11 +153,15 @@ public class BookEntrySearch extends Activity {
                new ArrayAdapter<Book>(BookEntrySearch.this, R.layout.simple_list_item_1,
                         BookEntrySearch.this.parsedBooks);
       this.searchResults.setAdapter(this.adapter);
+      if (this.prevParsedBooksSize > 1) {
+         this.searchResults.setSelection(this.prevParsedBooksSize);
+      }
    }
 
    private void restoreFromCache() {
       // use application object as quick/dirty cache for state      
       if (this.application.getBookCacheList() != null) {
+         this.prevParsedBooksSize = this.application.getLastSearchListPosition();
          this.parsedBooks = this.application.getBookCacheList();
          this.bindAdapter();
       }
@@ -176,11 +198,24 @@ public class BookEntrySearch extends Activity {
             this.dialog.dismiss();
          }
 
+         int booksAdded = 0;
          if ((books != null) && !books.isEmpty()) {
+            BookEntrySearch.this.prevParsedBooksSize = BookEntrySearch.this.parsedBooks.size();
             for (Book b : books) {
                if (((b.isbn10 != null) && !b.isbn10.equals("")) || ((b.isbn13 != null) && !b.isbn13.equals(""))) {
-                  BookEntrySearch.this.parsedBooks.add(b);
+                  if (!BookEntrySearch.this.parsedBooks.contains(b)) {
+                     booksAdded++;
+                     BookEntrySearch.this.parsedBooks.add(b);
+                  }
                }
+            }
+
+            // if booksAdded is zero, none of the results had isbns, to not get stuck
+            // on next request, indicate no valid results found, and caller can start from higher position
+            if (booksAdded == 0) {
+               BookEntrySearch.this.lastSearchFoundValidResults = false;
+            } else {
+               BookEntrySearch.this.lastSearchFoundValidResults = true;
             }
 
             BookEntrySearch.this.bindAdapter();
