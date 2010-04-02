@@ -135,6 +135,7 @@ public class BookEntryResult extends Activity {
                if (b == null) {
                   Log.e(Constants.LOG_TAG, "BookWorm GetBookDataTask book returned from data source (using ISBN - "
                            + isbns[0] + ") null, cannot add book.");
+                  return null;
                }
                if (b.isbn10 != null) {
                   Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);
