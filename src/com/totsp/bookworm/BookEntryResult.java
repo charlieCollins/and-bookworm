@@ -63,7 +63,7 @@ public class BookEntryResult extends Activity {
       String isbn = this.getIntent().getStringExtra(Constants.ISBN);
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          Log.e(Constants.LOG_TAG, "Invalid ISBN passed to BookEntryResult - " + isbn);
-         this.setViewsForInvalidEntry();
+         this.setViewsForInvalidEntry(isbn);
       } else {
          this.getBookDataTask = new GetBookDataTask();
          this.getBookDataTask.execute(isbn);
@@ -100,10 +100,15 @@ public class BookEntryResult extends Activity {
       }
    }
 
-   private void setViewsForInvalidEntry() {
+   private void setViewsForInvalidEntry(final String isbn) {
       this.bookCover.setImageResource(R.drawable.book_invalid_isbn);
-      this.bookAuthors
-               .setText("Whoops, that entry didn't work (ISBN was not resolved). Please try either another entry method, or another title.");
+      if (isbn != null) {
+         this.bookAuthors.setText("Whoops, that entry didn't work (ISBN: " + isbn + " was not resolved). "
+                  + "Please try either another entry method, or another title.");
+      } else {
+         this.bookAuthors.setText("Whoops, that entry didn't work (ISBN was not resolved). "
+                  + "Please try either another entry method, or another title.");
+      }
    }
 
    //
@@ -127,8 +132,17 @@ public class BookEntryResult extends Activity {
             IBookDataSource dataSource = BookEntryResult.this.application.getBookDataSource();
             if (dataSource != null) {
                Book b = dataSource.getBook(isbns[0]);
-               Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);
-               b.coverImage = (coverImageBitmap);
+               if (b == null) {
+                  Log.e(Constants.LOG_TAG, "BookWorm GetBookDataTask book returned from data source (using ISBN - "
+                           + isbns[0] + ") null, cannot add book.");
+               }
+               if (b.isbn10 != null) {
+                  Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);
+                  b.coverImage = (coverImageBitmap);
+               } else if (b.isbn13 != null) {
+                  Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn13);
+                  b.coverImage = (coverImageBitmap);
+               }
                return b;
             } else {
                Log.e(Constants.LOG_TAG, "BookWorm GetBookDataTask book data source null, cannot add book.");
@@ -173,7 +187,7 @@ public class BookEntryResult extends Activity {
             BookEntryResult.this.book = b;
             BookEntryResult.this.bookAddButton.setVisibility(View.VISIBLE);
          } else {
-            BookEntryResult.this.setViewsForInvalidEntry();
+            BookEntryResult.this.setViewsForInvalidEntry(null);
          }
       }
    }

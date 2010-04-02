@@ -172,12 +172,12 @@ public class BookEntrySearch extends Activity {
    private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntrySearch.this);
 
-      private final GoogleBookDataSource gbs = new GoogleBookDataSource();      
+      private final GoogleBookDataSource gbs = new GoogleBookDataSource();
 
       public SearchTask() {
          this.gbs.setDebugEnabled(BookEntrySearch.this.application.isDebugEnabled());
       }
-      
+
       protected void onPreExecute() {
          this.dialog.setMessage("Searching...");
          this.dialog.show();

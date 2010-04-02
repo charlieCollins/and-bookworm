@@ -39,11 +39,10 @@ public class BookWormApplication extends Application {
       }
 
       this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-      this.establishBookDataSourceFromProvider();
-
       this.dataHelper = new DataHelper(this);
       this.dataImageHelper = new DataImageHelper(this, BookWormApplication.IMAGE_CACHE_ENABLED);
+
+      this.establishBookDataSourceFromProvider();
    }
 
    private void establishBookDataSourceFromProvider() {

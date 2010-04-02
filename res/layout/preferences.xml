@@ -9,7 +9,7 @@
         android:defaultValue="false"/>
          <CheckBoxPreference 
         android:title="Enable debug logging?" 
-        android:summary="By default debug logging is off, enable here."
+        android:summary="Enable and then exit/restart app to get detailed logs."
         android:key="debugenabled" 
         android:defaultValue="false"/>
     </PreferenceCategory>

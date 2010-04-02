@@ -13,7 +13,7 @@ import java.net.URLConnection;
 
 public class CoverImageUtil {
 
-   public static Bitmap retrieveCoverImage(final String coverImageProviderKey, final String isbn10) {
+   public static Bitmap retrieveCoverImage(final String coverImageProviderKey, final String isbn) {
 
       Bitmap coverImageBitmap = null;
 
@@ -28,7 +28,7 @@ public class CoverImageUtil {
          // 2 = OpenLibrary
          // M is about 180x225
          // I scale to 120x150
-         imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbn10);
+         imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbn);
       }
 
       if ((imageUrl != null) && !imageUrl.equals("")) {

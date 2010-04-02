@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -98,6 +99,9 @@ public class BookDetail extends Activity {
    private void setViewData() {
       Book book = this.application.getSelectedBook();
       if (book != null) {
+         if (this.application.isDebugEnabled()) {
+            Log.d(Constants.LOG_TAG, "BookDetail book present, will be displayed: " + book.toStringFull());
+         }
          Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.title, book.id, false);
          if (coverImage != null) {
             this.bookCover.setImageBitmap(coverImage);
