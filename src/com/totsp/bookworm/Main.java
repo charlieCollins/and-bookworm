@@ -296,8 +296,7 @@ public class Main extends Activity {
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
 
             if (Main.this.application.isDebugEnabled()) {
-               Log.d(Constants.LOG_TAG, "book id from cursor - " + id);
-               Log.d(Constants.LOG_TAG, "title from cursor - " + title);
+               Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);
             }
 
             ImageView coverImage = holder.coverImage;
@@ -341,35 +340,6 @@ public class Main extends Activity {
          }
       }
    }
-
-   //
-   // AsyncTasks
-   //
-   /*
-   private class PopulateCoverImageTask extends AsyncTask<Integer, Void, Bitmap> {
-      private final ImageView v;
-
-      public PopulateCoverImageTask(final ImageView v) {
-         super();
-         this.v = v;
-      }
-
-      protected Bitmap doInBackground(final Integer... args) {
-         Bitmap bitmap = null;
-         int covImageId = args[0];
-         if (covImageId > 0) {
-            bitmap = Main.this.application.getDataImageHelper().getBitmap(covImageId);
-         }
-         return bitmap;
-      }
-
-      protected void onPostExecute(final Bitmap bitmap) {
-         if (bitmap != null) {
-            this.v.setImageBitmap(bitmap);
-         }
-      }
-   }
-   */
 
    private class ResetAllCoverImagesTask extends AsyncTask<Void, String, Void> {
       private final ProgressDialog dialog = new ProgressDialog(Main.this);
