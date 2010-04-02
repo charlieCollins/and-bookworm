@@ -108,14 +108,12 @@ public class BookEntryResult extends Activity {
                            + isbn
                            + " was not resolved). "
                            + "Please try either another entry method, or another title "
-                           + "(and if you are scanning, make sure you are not scanning a retailer's sticker, rather than the book's bar code, "
-                           + " if there are multiple bar codes, try the others).");
+                           + "(and if you are scanning, make sure you are not scanning a retailer's sticker, rather than the book's bar code).");
       } else {
          this.bookAuthors
                   .setText("Whoops, that entry didn't work (ISBN was not resolved). "
                            + "Please try either another entry method, or another title "
-                           + "(and if you are scanning, make sure you are not scanning a retailer's sticker, rather than the book's bar code, "
-                           + " if there are multiple bar codes, try the others).");
+                           + "(and if you are scanning, make sure you are not scanning a retailer's sticker, rather than the book's bar code.");
       }
    }
 

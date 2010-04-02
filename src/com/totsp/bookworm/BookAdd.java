@@ -76,7 +76,8 @@ public class BookAdd extends Activity {
             // we are using PRODUCT_MODE which limits to UPC and EAN
             // we *might* be able to parse ISBN from UPC, but pattern is not understood, yet
             // if it's EAN-8 though, we are screwed
-            if (scanResult.getFormatName().equals("UPC")) {
+            // for example UPC 008819265580
+            if (scanResult.getFormatName().startsWith("UPC")) {
                isbn = scanResult.getContents();
                if (isbn.length() == 12) {
                   if (isbn.startsWith("0")) {
