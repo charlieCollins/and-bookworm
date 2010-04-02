@@ -99,7 +99,7 @@ public class Main extends Activity {
             int bookId = Main.this.cursor.getInt(Main.this.cursor.getColumnIndex("_id"));
             Book book = Main.this.application.getDataHelper().selectBook(bookId);
             if (book != null) {
-               if (Constants.LOCAL_LOGD) {
+               if (Constants.isDebugEnabled()) {
                   Log.d(Constants.LOG_TAG, "book selected - " + book.title);
                }
                Main.this.application.setSelectedBook(book);
@@ -295,7 +295,7 @@ public class Main extends Activity {
             String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
             String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
 
-            if (Constants.LOCAL_LOGD) {
+            if (Constants.isDebugEnabled()) {
                Log.d(Constants.LOG_TAG, "book id from cursor - " + id);
                Log.d(Constants.LOG_TAG, "title from cursor - " + title);
             }
@@ -387,7 +387,7 @@ public class Main extends Activity {
          Main.this.application.getDataImageHelper().clearAllBitmapSourceFiles();
          HashSet<Book> books = Main.this.application.getDataHelper().selectAllBooks();
          for (Book b : books) {
-            if (Constants.LOCAL_LOGD) {
+            if (Constants.isDebugEnabled()) {
                Log.d(Constants.LOG_TAG, "resetting cover image for book - " + b.title);
             }
             this.publishProgress("processing: " + b.title);

@@ -31,7 +31,7 @@ public class CoverImageUtil {
          imageUrl = OpenLibraryUtil.getCoverUrlMedium(isbn10);
       }
 
-      if (Constants.LOCAL_LOGD) {
+      if (Constants.isDebugEnabled()) {
          Log.d(Constants.LOG_TAG, "book cover imageUrl - " + imageUrl);
       }
       if ((imageUrl != null) && !imageUrl.equals("")) {

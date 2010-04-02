@@ -14,10 +14,10 @@ public class Splash extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.setContentView(R.layout.splash);
-      this.checkSkip();
+      this.initPrefs();
    }
 
-   private void checkSkip() {
+   private void initPrefs() {
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
       
       boolean splashSeenOnce = prefs.getBoolean("splashseenonce", false);
@@ -31,7 +31,10 @@ public class Splash extends Activity {
       boolean skipSplash = prefs.getBoolean("splashcheckpref", false);
       if (skipSplash && splashSeenOnce) {         
          this.startActivity(new Intent(Splash.this, Main.class));
-      }            
+      }
+      
+      boolean debugEnabled = prefs.getBoolean("debugenabled", false);
+      Constants.setDebugEnabled(debugEnabled);
    }
 
    @Override

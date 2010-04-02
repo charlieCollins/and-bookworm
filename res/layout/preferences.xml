@@ -7,6 +7,11 @@
         android:summary="Skip the startup splash screen?"
         android:key="splashcheckpref" 
         android:defaultValue="true"/>
+         <CheckBoxPreference 
+        android:title="Enable debug logging?" 
+        android:summary="By default debug logging is off, enable here."
+        android:key="debuglogging" 
+        android:defaultValue="false"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Book Data Provider Preferences">

@@ -108,7 +108,7 @@ public class DataHelper {
                "select book.bid as _id, book.tit, book.subtit, book.pub, book.datepub, book.format, "
                         + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb from book "
                         + "join bookuserdata on book.bid = bookuserdata.bid";
-      if (Constants.LOCAL_LOGD) {
+      if (Constants.isDebugEnabled()) {
          Log.d(Constants.LOG_TAG, "Main screen adapter cursor query - " + query);
       }
       if ((orderBy != null) && (orderBy.length() > 0)) {
@@ -157,7 +157,7 @@ public class DataHelper {
             this.bookInsertStmt.bindString(8, b.subject);
             this.bookInsertStmt.bindLong(9, b.datePubStamp);
             bookId = this.bookInsertStmt.executeInsert();
-            if (Constants.LOCAL_LOGD) {
+            if (Constants.isDebugEnabled()) {
                Log.d(Constants.LOG_TAG, "book id after insert - " + bookId);
             }
 
@@ -587,7 +587,7 @@ public class DataHelper {
       @Override
       public void onCreate(final SQLiteDatabase db) {
 
-         if (Constants.LOCAL_LOGD) {
+         if (Constants.isDebugEnabled()) {
             Log.d(Constants.LOG_TAG, "onCreate DataHelper.OpenHelper");
          }
 

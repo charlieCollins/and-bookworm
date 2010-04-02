@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CoverImageUtil;
@@ -122,10 +123,20 @@ public class BookEntryResult extends Activity {
       }
 
       protected Book doInBackground(final String... isbns) {
-         Book b = BookEntryResult.this.application.getBookDataSource().getBook(isbns[0]);
-         Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);
-         b.coverImage = (coverImageBitmap);
-         return b;
+         if (isbns[0] != null) {
+            IBookDataSource dataSource = BookEntryResult.this.application.getBookDataSource();
+            if (dataSource != null) {
+               Book b = dataSource.getBook(isbns[0]);
+               Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);
+               b.coverImage = (coverImageBitmap);
+               return b;
+            } else {
+               Log.e(Constants.LOG_TAG, "BookWorm GetBookDataTask book data source null, cannot add book.");
+            }            
+         } else {
+            Log.e(Constants.LOG_TAG, "BookWorm GetBookDataTask ISBN null, cannot add book.");
+         }   
+         return null;
       }
 
       protected void onPostExecute(final Book b) {
@@ -146,12 +157,12 @@ public class BookEntryResult extends Activity {
             BookEntryResult.this.bookAuthors.setText(authors);
 
             if (b.coverImage != null) {
-               if (Constants.LOCAL_LOGD) {
+               if (Constants.isDebugEnabled()) {
                   Log.d(Constants.LOG_TAG, "book cover bitmap present, set cover");
                }
                BookEntryResult.this.bookCover.setImageBitmap(b.coverImage);
             } else {
-               if (Constants.LOCAL_LOGD) {
+               if (Constants.isDebugEnabled()) {
                   Log.d(Constants.LOG_TAG, "book cover not found, generate image");
                }
                Bitmap generatedCover = BookEntryResult.this.application.getDataImageHelper().createCoverImage(b.title);

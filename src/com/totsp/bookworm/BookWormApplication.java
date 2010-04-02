@@ -32,7 +32,7 @@ public class BookWormApplication extends Application {
    @Override
    public void onCreate() {
       super.onCreate();
-      if (Constants.LOCAL_LOGD) {
+      if (Constants.isDebugEnabled()) {
          Log.d(Constants.LOG_TAG, "APPLICATION onCreate");
       }
 

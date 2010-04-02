@@ -43,7 +43,7 @@ public class BookEntryForm extends Activity {
       @Override
       public void onPictureTaken(final byte[] arg0, final Camera arg1) {
          BookEntryForm.this.picBitmap = BitmapFactory.decodeByteArray(arg0, 0, arg0.length);
-         if (Constants.LOCAL_LOGD) {
+         if (Constants.isDebugEnabled()) {
             Log.d(Constants.LOG_TAG, "picBitmap size - " + BookEntryForm.this.picBitmap.getWidth() + " "
                      + BookEntryForm.this.picBitmap.getHeight());
          }
@@ -178,13 +178,13 @@ public class BookEntryForm extends Activity {
          book.authors = (AuthorsStringUtil.expandAuthors(args[1]));
          long bookId = BookEntryForm.this.application.getDataHelper().insertBook(book);
          if (BookEntryForm.this.picBitmap != null) {
-            if (Constants.LOCAL_LOGD) {
+            if (Constants.isDebugEnabled()) {
                Log.d(Constants.LOG_TAG, "picBitmap present in task, attempt image save");
             }
             BookEntryForm.this.application.getDataImageHelper().storeBitmap(BookEntryForm.this.picBitmap, book.title,
                      bookId);
          }
-         if (Constants.LOCAL_LOGD) {
+         if (Constants.isDebugEnabled()) {
             Log.d(Constants.LOG_TAG, "Created book, bookId - " + bookId);
          }
          return null;

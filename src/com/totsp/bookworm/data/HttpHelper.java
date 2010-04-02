@@ -144,13 +144,13 @@ public class HttpHelper {
 
    private String performRequest(final String contentType, final String url, final String user, final String pass,
             final Map<String, String> headers, final Map<String, String> params, final int requestType) {
-      if (Constants.LOCAL_LOGD) {
+      if (Constants.isDebugEnabled()) {
          Log.d(HttpHelper.CLASSTAG, "making HTTP request to url - " + url);
       }
 
       // add user and pass to client credentials if present
       if ((user != null) && (pass != null)) {
-         if (Constants.LOCAL_LOGD) {
+         if (Constants.isDebugEnabled()) {
             Log.d(HttpHelper.CLASSTAG, "user and pass present, adding credentials to request");
          }
          HttpHelper.client.getCredentialsProvider().setCredentials(AuthScope.ANY,
@@ -170,7 +170,7 @@ public class HttpHelper {
             public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
                for (String key : sendHeaders.keySet()) {
                   if (!request.containsHeader(key)) {
-                     if (Constants.LOCAL_LOGD) {
+                     if (Constants.isDebugEnabled()) {
                         Log.d(HttpHelper.CLASSTAG, "adding header: " + key + " | " + sendHeaders.get(key));
                      }
                      request.addHeader(key, sendHeaders.get(key));
@@ -183,7 +183,7 @@ public class HttpHelper {
       // handle POST or GET request respectively
       HttpRequestBase method = null;
       if (requestType == HttpHelper.POST_TYPE) {
-         if (Constants.LOCAL_LOGD) {
+         if (Constants.isDebugEnabled()) {
             Log.d(HttpHelper.CLASSTAG, "performRequest POST");
          }
          method = new HttpPost(url);
@@ -192,7 +192,7 @@ public class HttpHelper {
          if ((params != null) && (params.size() > 0)) {
             nvps = new ArrayList<NameValuePair>();
             for (Map.Entry<String, String> entry : params.entrySet()) {
-               if (Constants.LOCAL_LOGD) {
+               if (Constants.isDebugEnabled()) {
                   Log.d(HttpHelper.CLASSTAG, "adding param: " + entry.getKey() + " | " + entry.getValue());
                }
                nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
@@ -207,7 +207,7 @@ public class HttpHelper {
             }
          }
       } else if (requestType == HttpHelper.GET_TYPE) {
-         if (Constants.LOCAL_LOGD) {
+         if (Constants.isDebugEnabled()) {
             Log.d(HttpHelper.CLASSTAG, "performRequest GET");
          }
          method = new HttpGet(url);
@@ -218,7 +218,7 @@ public class HttpHelper {
    }
 
    private synchronized String execute(final HttpRequestBase method) {
-      if (Constants.LOCAL_LOGD) {
+      if (Constants.isDebugEnabled()) {
          Log.d(HttpHelper.CLASSTAG, "execute invoked");
       }
       String response = null;
@@ -232,7 +232,7 @@ public class HttpHelper {
          response = HttpHelper.HTTP_RESPONSE_ERROR + " - " + e.getClass().getSimpleName() + " " + e.getMessage();
          //e.printStackTrace();
       }
-      if (Constants.LOCAL_LOGD) {
+      if (Constants.isDebugEnabled()) {
          Log.d(HttpHelper.CLASSTAG, "request completed");
       }
       return response;
