@@ -22,6 +22,9 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
+
+import com.totsp.bookworm.Constants;
 
 /**
  * <p>A utility class which helps ease integration with Barcode Scanner via {@link Intent}s. This is a simple
@@ -123,6 +126,7 @@ public final class ZXingIntentIntegrator {
       try {
          activity.startActivityForResult(intentScan, ZXingIntentIntegrator.REQUEST_CODE);
       } catch (ActivityNotFoundException e) {
+         Log.w(Constants.LOG_TAG, "BarCode Scanner (com.google.zxing.client.android.SCAN) Intent not present.");
          ZXingIntentIntegrator
                   .showDownloadDialog(activity, stringTitle, stringMessage, stringButtonYes, stringButtonNo);
       }
@@ -162,6 +166,7 @@ public final class ZXingIntentIntegrator {
             String formatName = intent.getStringExtra("SCAN_RESULT_FORMAT");
             return new ZXingIntentResult(contents, formatName);
          } else {
+            Log.e(Constants.LOG_TAG, "Barcode Scanner returned invalid result.");
             return new ZXingIntentResult(null, null);
          }
       }

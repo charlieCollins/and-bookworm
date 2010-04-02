@@ -34,7 +34,7 @@ public class BookEntrySearch extends Activity {
    private ListView searchResults;
    TextView getMoreData;
    ArrayList<Book> parsedBooks;
-   int prevParsedBooksSize = 0;
+   int selectorPosition = 0;
 
    private ArrayAdapter<Book> adapter;
 
@@ -61,6 +61,7 @@ public class BookEntrySearch extends Activity {
       this.searchResults.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
             Book selected = BookEntrySearch.this.parsedBooks.get(index);
+            BookEntrySearch.this.selectorPosition = index + 1;
             Intent intent = new Intent(BookEntrySearch.this, BookEntryResult.class);
             // favor isbn 10, but use 13 if 10 missing
             if ((selected.isbn10 != null) && !selected.isbn10.equals("")) {
@@ -121,8 +122,8 @@ public class BookEntrySearch extends Activity {
       if (this.searchInput != null) {
          this.application.setLastSearchTerm(this.searchInput.getText().toString());
       }
-      if (this.prevParsedBooksSize > 0) {
-         this.application.setLastSearchListPosition(this.prevParsedBooksSize);
+      if (this.selectorPosition > 0) {
+         this.application.setLastSearchListPosition(this.selectorPosition);
       }
       super.onPause();
    }
@@ -148,15 +149,15 @@ public class BookEntrySearch extends Activity {
                new ArrayAdapter<Book>(BookEntrySearch.this, R.layout.simple_list_item_1,
                         BookEntrySearch.this.parsedBooks);
       this.searchResults.setAdapter(this.adapter);
-      if (this.prevParsedBooksSize > 1) {
-         this.searchResults.setSelection(this.prevParsedBooksSize);
+      if (this.selectorPosition > 2) {
+         this.searchResults.setSelection(this.selectorPosition - 1);
       }
    }
 
    private void restoreFromCache() {
       // use application object as quick/dirty cache for state      
       if (this.application.getBookCacheList() != null) {
-         this.prevParsedBooksSize = this.application.getLastSearchListPosition();
+         this.selectorPosition = this.application.getLastSearchListPosition();
          this.parsedBooks = this.application.getBookCacheList();
          this.bindAdapter();
       }
@@ -194,7 +195,7 @@ public class BookEntrySearch extends Activity {
          }
 
          if ((books != null) && !books.isEmpty()) {
-            BookEntrySearch.this.prevParsedBooksSize = BookEntrySearch.this.parsedBooks.size();
+            BookEntrySearch.this.selectorPosition = BookEntrySearch.this.parsedBooks.size();
             for (Book b : books) {
                if (!BookEntrySearch.this.parsedBooks.contains(b)) {
                   BookEntrySearch.this.parsedBooks.add(b);
