@@ -32,7 +32,7 @@
     &lt;br /&gt;
     *Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).
     &lt;br /&gt;
-    *Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.) Should decode many more books now, and should not force close even when cannot decode.
+    *Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.). Should decode many more books now, and should not force close even when cannot decode.
     &lt;br /&gt;&lt;br /&gt;
 	
 	Changelog version 1.0.3: 
