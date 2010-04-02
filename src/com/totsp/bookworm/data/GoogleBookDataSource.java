@@ -25,12 +25,15 @@ public class GoogleBookDataSource implements IBookDataSource {
 
    private final GoogleBooksHandler saxHandler;
    private final HttpHelper httpHelper;
+   
+   private boolean debugEnabled;
 
-   private final boolean debugEnabled;
-
-   public GoogleBookDataSource(final boolean debugEnabled) {
+   public GoogleBookDataSource() {
       this.saxHandler = new GoogleBooksHandler();
       this.httpHelper = new HttpHelper();
+   }
+   
+   public void setDebugEnabled(boolean debugEnabled) {
       this.debugEnabled = debugEnabled;
    }
 
@@ -52,9 +55,11 @@ public class GoogleBookDataSource implements IBookDataSource {
       headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = this.httpHelper.performGet(url, null, null, headers);
       if (this.debugEnabled) {
+         Log.d(Constants.LOG_TAG, "HTTP request to URL " + url);
          Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
       if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
+         Log.w(Constants.LOG_TAG, "HTTP request returned no data (null) - " + url);
          return null;
       }
 
@@ -77,9 +82,11 @@ public class GoogleBookDataSource implements IBookDataSource {
       headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = this.httpHelper.performGet(url, null, null, headers);
       if (this.debugEnabled) {
+         Log.d(Constants.LOG_TAG, "HTTP request to URL " + url);
          Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
       if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
+         Log.w(Constants.LOG_TAG, "HTTP request returned no data (null) - " + url);
          return null;
       }
       return this.parseResponse(response);
@@ -89,7 +96,7 @@ public class GoogleBookDataSource implements IBookDataSource {
       try {
          Xml.parse(new ByteArrayInputStream(response.getBytes("UTF-8")), Xml.Encoding.UTF_8, this.saxHandler);
       } catch (Exception e) {
-         throw new RuntimeException(e);
+         Log.e(Constants.LOG_TAG, "Error parsing book XML result", e);
       }
 
       ArrayList<Book> books = this.saxHandler.getBooks();
