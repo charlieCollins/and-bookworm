@@ -60,8 +60,8 @@ public class BookEntryResult extends Activity {
       // several other activites can populate this one
       // ISBN must be present as intent extra to proceed
       String isbn = this.getIntent().getStringExtra(Constants.ISBN);
-      Log.i(Constants.LOG_TAG, "ISBN on entry result - " + isbn);
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
+         Log.e(Constants.LOG_TAG, "Invalid ISBN passed to BookEntryResult - " + isbn);
          this.setViewsForInvalidEntry();
       } else {
          this.getBookDataTask = new GetBookDataTask();
@@ -101,8 +101,8 @@ public class BookEntryResult extends Activity {
 
    private void setViewsForInvalidEntry() {
       this.bookCover.setImageResource(R.drawable.book_invalid_isbn);
-      this.bookAuthors.setText("Whoops, that entry didn't work. Please try again"
-               + " (and if one method fails, such as scanning, try a search or direct entry).");
+      this.bookAuthors
+               .setText("Whoops, that entry didn't work (ISBN was not resolved). Please try either another entry method, or another title.");
    }
 
    //

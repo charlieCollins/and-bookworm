@@ -1,11 +1,16 @@
 package com.totsp.bookworm;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
@@ -43,7 +48,21 @@ public class BookAdd extends Activity {
          public void onClick(final View v) {
             BookAdd.this.startActivity(new Intent(BookAdd.this, BookEntryForm.class));
          }
-      });
+      });     
+   }   
+   
+   @Override
+   public void onStart() {
+      super.onStart();
+      if (this.connectionPresent()) {
+         this.scanButton.setEnabled(true);
+         this.searchButton.setEnabled(true);
+      } else {
+         this.scanButton.setEnabled(false);
+         this.searchButton.setEnabled(false);
+         Toast.makeText(BookAdd.this, "Network connection not present, cannot scan or search at this time.",
+                  Toast.LENGTH_LONG).show();
+      }
    }
 
    @Override
@@ -54,6 +73,16 @@ public class BookAdd extends Activity {
          Intent scanIntent = new Intent(this, BookEntryResult.class);
          scanIntent.putExtra(Constants.ISBN, scanResult.getContents());
          this.startActivity(scanIntent);
+      }
+   }
+   
+   private boolean connectionPresent() {
+      ConnectivityManager cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+      NetworkInfo netInfo = cMgr.getActiveNetworkInfo();
+      if (netInfo != null && netInfo.getState() != null) {
+         return netInfo.getState().equals(State.CONNECTED);
+      } else {
+         return false;
       }
    }
 }
