@@ -61,7 +61,7 @@ public class BookEntrySearch extends Activity {
       this.searchResults.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
             Book selected = BookEntrySearch.this.parsedBooks.get(index);
-            BookEntrySearch.this.selectorPosition = index + 1;
+            BookEntrySearch.this.selectorPosition = index - 1;
             Intent intent = new Intent(BookEntrySearch.this, BookEntryResult.class);
             // favor isbn 10, but use 13 if 10 missing
             if ((selected.isbn10 != null) && !selected.isbn10.equals("")) {
