@@ -27,7 +27,7 @@
 		&lt;br /&gt;&lt;br /&gt;
 	</string>
 	<string name="aboutdetail">	
-	Changelog: 
+	Changelog-1.0.2: 
 	&lt;br /&gt;
 	Fix issue 5 - reset cover image not persistent.
 	&lt;br /&gt;
@@ -35,7 +35,19 @@
 	&lt;br /&gt; 
 	Additional small fixes, change detail menu logos, and add this about detail panel.
 	&lt;br /&gt;&lt;br /&gt;
-	Please let me know if you come across any issues, the project site issue tracker is where
+	
+	Changelog-1.0.3: 
+    &lt;br /&gt;
+    Fix issue 7 - Search web screen repeated results.
+    &lt;br /&gt;
+	Fix issue 8 - Search web screen results not saved on orientation change.
+    &lt;br /&gt;
+    Fix issue 9 - Search screen remember position in list.
+    &lt;br /&gt;
+    Attempt Fix issue 10 - Force close after scan on some devices (this fix is not verified, as I can't really yet tell what is wrong, I test thoroughly on multiple devices and cannot recreate the problem).
+	&lt;br /&gt;&lt;br /&gt;
+
+	Please let me know if you come across any new issues, the project site issue tracker is where
 	currently known issues and enhancement plans are logged. Thanks! 
 	&lt;br /&gt;&lt;br /&gt; 
 	</string>

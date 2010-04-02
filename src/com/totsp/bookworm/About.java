@@ -62,7 +62,7 @@ public class About extends Activity {
    public boolean onOptionsItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
       case MENU_DETAIL:
-         new AlertDialog.Builder(About.this).setTitle("About BookWorm: 1.0.2").setMessage(
+         new AlertDialog.Builder(About.this).setTitle("About BookWorm").setMessage(
                   Html.fromHtml(this.getResources().getString(R.string.aboutdetail))).setNeutralButton("Dismiss",
                   new DialogInterface.OnClickListener() {
                      public void onClick(final DialogInterface d, final int i) {
