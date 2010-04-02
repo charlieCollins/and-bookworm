@@ -28,14 +28,14 @@
 	</string>
 	<string name="aboutdetail">	
 	
-	Changelog version 1.0.4: 
+Changelog version 1.0.4: 
     &lt;br /&gt;
     *Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).
     &lt;br /&gt;
     *Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.). Should decode many more books now, and should not force close even when cannot decode.
     &lt;br /&gt;&lt;br /&gt;
 	
-	Changelog version 1.0.3: 
+Changelog version 1.0.3: 
     &lt;br /&gt;
     *Fix issue 7 - Search web screen repeated results.
     &lt;br /&gt;
@@ -46,7 +46,7 @@
     *Attempt Fix issue 10 - Force close after scan on some devices (this fix is not verified, as I can't really yet tell what is wrong, I test thoroughly on multiple devices and cannot recreate the problem).
     &lt;br /&gt;&lt;br /&gt;
 	
-	Changelog version 1.0.2: 
+Changelog version 1.0.2: 
 	&lt;br /&gt;
 	*Fix issue 5 - reset cover image not persistent.
 	&lt;br /&gt;
@@ -55,7 +55,7 @@
 	*Additional small fixes, change detail menu logos, and add this about detail panel.
 	&lt;br /&gt;&lt;br /&gt;
 
-	Please let me know if you come across any new issues, the project site issue tracker is where
+Please let me know if you come across any new issues, the project site issue tracker is where
 	currently known issues and enhancement plans are logged. Thanks! 
 	&lt;br /&gt;
 	</string>
