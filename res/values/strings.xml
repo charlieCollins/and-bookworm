@@ -5,6 +5,7 @@
 		<b>By Charlie Collins</b>
 		\n
 	</string>
+	
 	<string name="aboutcontent">
 		<i>Use BookWorm to keep track of books you have read, and you intend
 			to read.
@@ -26,15 +27,33 @@
 		site&lt;/a&gt;.
 		&lt;br /&gt;&lt;br /&gt;
 	</string>
+	
+	<string name="scanningtips">    
+    *If the scanner works but recognizes a "product" rather than a "book" try looking for different bar code. 
+    Often books have multiple codes, sometimes the product code can be interpreted as an ISBN, other times it cannot. 
+    (The inside front cover may have another code that is different from the back, especially for older paperback books, the inside
+    cover code works more reliably.) 
+    &lt;br /&gt;&lt;br /&gt;
+    *Make sure you are not scanning a retailer's sticker that has been placed over the bar code. Many retailers do this, 
+    and the proprietary retailer codes will not scan.
+    &lt;br /&gt;&lt;br /&gt;
+    *Some books just don't scan. Product codes that cannot be interpreted as ISBNs will not work, in those cases try a 
+    web search for the title. It's still pretty quick, and it will likely work. 
+    </string>
+	
 	<string name="aboutdetail">	
 	
 Changelog version 1.0.4: 
     &lt;br /&gt;
     *Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).
     &lt;br /&gt;
+    *Enhancement - Add "Scanning Tips" menu option to no results found page.
+    &lt;br /&gt;
     *Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.). Should decode many more books now, and should not force close even when cannot decode.
     &lt;br /&gt;&lt;br /&gt;
-	
+    *Fix issue 13 - Changing a book's title orphans the cover image. 
+    &lt;br /&gt;&lt;br /&gt;   
+
 Changelog version 1.0.3: 
     &lt;br /&gt;
     *Fix issue 7 - Search web screen repeated results.
@@ -43,9 +62,9 @@ Changelog version 1.0.3:
     &lt;br /&gt;
     *Fix issue 9 - Search screen remember position in list.
     &lt;br /&gt;
-    *Attempt Fix issue 10 - Force close after scan on some devices (this fix is not verified, as I can't really yet tell what is wrong, I test thoroughly on multiple devices and cannot recreate the problem).
+    *Attempt Fix issue 10 - Force close after scan on some devices (this fix is not yet verified).
     &lt;br /&gt;&lt;br /&gt;
-	
+
 Changelog version 1.0.2: 
 	&lt;br /&gt;
 	*Fix issue 5 - reset cover image not persistent.

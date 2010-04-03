@@ -165,7 +165,13 @@ public class BookEdit extends TabActivity {
 
          newBook.id = (book.id);
          this.updateBookTask = new UpdateBookTask();
-         this.updateBookTask.execute(newBook);
+         this.updateBookTask.execute(newBook);   
+         
+         // rename the cover images too, if title changes
+         // TODO it's own AsyncTask here, or pass the oldName to UpdateBookTask and let it handle?
+         if (book.title != newBook.title) {
+            this.application.getDataImageHelper().renameBitmapSourceFile(book.title, newBook.title, book.id);
+         }
       }
    }
 

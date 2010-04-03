@@ -118,6 +118,20 @@ public class DataImageHelper {
          thumbFile.delete();
       }
    }
+   
+   public final void renameBitmapSourceFile(final String oldTitle, final String newTitle, final Long id) {
+      String oldName = this.getNameKey(oldTitle, id);
+      String newName = this.getNameKey(newTitle, id);
+      File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+      File file = new File(exportDir, oldName + ".jpg");
+      File thumbFile = new File(exportDir, oldName + "-t.jpg");
+      if ((file != null) && file.exists() && file.canWrite()) {
+         file.renameTo(new File(exportDir, newName + ".jpg"));
+      }
+      if ((thumbFile != null) && thumbFile.exists() && thumbFile.canWrite()) {
+         thumbFile.renameTo(new File(exportDir, newName + "-t.jpg"));
+      }
+   }
 
    public final void clearAllBitmapSourceFiles() {
       File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");

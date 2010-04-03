@@ -90,10 +90,11 @@ public class BookAdd extends Activity {
                Log.w(Constants.LOG_TAG, "Scan result was a UPC code (not an EAN code), parsed into ISBN:" + isbn);
             }
          }
-         
+
          // handle scan result
          Intent scanIntent = new Intent(this, BookEntryResult.class);
          scanIntent.putExtra(Constants.ISBN, isbn);
+         scanIntent.putExtra("FORMAT_NAME", scanResult.getFormatName());
          this.startActivity(scanIntent);
       }
    }
