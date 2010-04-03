@@ -29,7 +29,7 @@
 	</string>
 	
 	<string name="scanningtips">    
-    *If the scanner works but recognizes a "product" rather than a "book" try looking for a different bar code. 
+    *If the scanner works but recognizes a &quot;product&quot; rather than a &quot;book,&quot; try looking for a different bar code. 
     Books often have multiple codes. The inside front cover may have another code that is different from the back.
     Especially for older paperback books, the inside cover code works more reliably.
     &lt;br /&gt;&lt;br /&gt;
