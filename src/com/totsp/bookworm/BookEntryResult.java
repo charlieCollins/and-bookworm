@@ -139,10 +139,10 @@ public class BookEntryResult extends Activity {
       this.bookCover.setImageResource(R.drawable.book_invalid_isbn);
 
       StringBuilder sb = new StringBuilder();
-      sb.append("Whoops, that entry didn't work.");
-      sb.append("The product code/ISBN used (from scanner or search) was " + bean.code + ".");     
-      sb.append("Please try again, or use a different entry method.");
-      sb.append("(If you are having trouble scanning a book, try the Menu->Scanning Tips.)");
+      sb.append("Whoops, that entry didn't work. ");
+      sb.append("The product code/ISBN used (from scanner or search) was " + bean.code + ". ");     
+      sb.append("Please try again, or use a different entry method. ");
+      sb.append("(If you are having trouble scanning a book, check out the Menu->Scanning Tips.)");
       this.bookAuthors.setText(sb.toString());
    }
 
