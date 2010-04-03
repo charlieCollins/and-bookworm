@@ -2,4 +2,4 @@
 	android:id="@+id/text1" android:layout_marginTop="5dp"
 	android:layout_marginBottom="5dp" android:padding="3dp"
 	android:layout_width="fill_parent" android:layout_height="wrap_content"
-    android:minHeight="55dp" style="@style/blackmedbold" /> 
+	android:minHeight="55dp" style="@style/blackmedbold" /> 
