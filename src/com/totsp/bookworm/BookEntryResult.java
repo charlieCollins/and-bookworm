@@ -42,7 +42,6 @@ public class BookEntryResult extends Activity {
    Book book;
 
    boolean fromSearch;
-   private String scanFormatName;
 
    private GetBookDataTask getBookDataTask;
 
@@ -69,7 +68,6 @@ public class BookEntryResult extends Activity {
       // several other activites can populate this one
       // ISBN must be present as intent extra to proceed
       String isbn = this.getIntent().getStringExtra(Constants.ISBN);
-      this.scanFormatName = this.getIntent().getStringExtra("FORMAT_NAME");
       if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
          Log
                   .e(Constants.LOG_TAG, "Invalid product code/ISBN passed to BookEntryResult (may not be an ISBN?) - "

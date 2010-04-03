@@ -18,7 +18,7 @@ import com.totsp.bookworm.zxing.ZXingIntentResult;
 
 public class BookAdd extends Activity {
 
-   ///private BookWormApplication application;
+   private BookWormApplication application;
 
    private Button scanButton;
    private Button searchButton;
@@ -28,7 +28,7 @@ public class BookAdd extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.setContentView(R.layout.bookadd);
-      ///this.application = (BookWormApplication) this.getApplication();      
+      this.application = (BookWormApplication) this.getApplication();      
 
       this.scanButton = (Button) this.findViewById(R.id.bookaddscanbutton);
       this.scanButton.setOnClickListener(new OnClickListener() {
@@ -71,6 +71,10 @@ public class BookAdd extends Activity {
       ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
       if (scanResult != null) {
          String isbn = scanResult.getContents();
+         if (this.application.isDebugEnabled()) {
+            Log.d(Constants.LOG_TAG, "Scan result format was - " + scanResult.getFormatName());
+            Log.d(Constants.LOG_TAG, "Scan result contents are - " + scanResult.getContents());
+         }
          if (scanResult.getFormatName() != null && !scanResult.getFormatName().equals("EAN_13")) {
             // if it's not EAN 13 we are likely gonna have issues 
             // we are using PRODUCT_MODE which limits to UPC and EAN
@@ -94,7 +98,6 @@ public class BookAdd extends Activity {
          // handle scan result
          Intent scanIntent = new Intent(this, BookEntryResult.class);
          scanIntent.putExtra(Constants.ISBN, isbn);
-         scanIntent.putExtra("FORMAT_NAME", scanResult.getFormatName());
          this.startActivity(scanIntent);
       }
    }
