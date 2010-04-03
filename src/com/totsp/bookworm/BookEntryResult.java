@@ -177,23 +177,21 @@ public class BookEntryResult extends Activity {
          BookMessageBean bean = new BookMessageBean();
          if (isbns[0] != null) {
             bean.code = isbns[0];
-            if (this.gbs != null) {
+            if (this.gbs != null) {               
                Book b = this.gbs.getBook(isbns[0]);
+               bean.book = b;
                if (b == null) {
                   Log.e(Constants.LOG_TAG,
                            "GetBookDataTask book returned from data source null (using product code/ISBN - " + isbns[0]
                                     + ").");
-                  bean.message = "Book not found using ISBN/product code " + isbns[0] + " (may not be an ISBN?).";
-                  return null;
-               }
-               if (b.isbn10 != null) {
+                  bean.message = "Book not found using ISBN/product code " + isbns[0] + " (may not be an ISBN?).";                  
+               } else if (b.isbn10 != null) {
                   Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);
                   b.coverImage = (coverImageBitmap);
                } else if (b.isbn13 != null) {
                   Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn13);
                   b.coverImage = (coverImageBitmap);
-               }
-               bean.book = b;
+               }               
             } else {
                Log.e(Constants.LOG_TAG, "GetBookDataTask book data source null, cannot add book.");
                bean.message = "Book data source not found, internal error, or networking issue..";
