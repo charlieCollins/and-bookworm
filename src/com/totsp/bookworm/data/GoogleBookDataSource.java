@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class GoogleBookDataSource implements IBookDataSource {
 
    // web identifier search url http://books.google.com/books?isbn=
-   private static final String GDATA_BOOK_URL_PREFIX = "http://books.google.com/books/feeds/volumes?q=isbn:";
+   private static final String GDATA_BOOK_URL_PREFIX = "http://books.google.com/books/feeds/volumes?as_pt=BOOKS&q=isbn:";
    // web search term url
    private static final String GDATA_BOOK_SEARCH_PREFIX = "http://books.google.com/books/feeds/volumes?q=%22";
    private static final String GDATA_BOOK_SEARCH_SUFFIX_PRE = "%22&start-index=";
