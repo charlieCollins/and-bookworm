@@ -29,14 +29,14 @@
 	</string>
 	
 	<string name="scanningtips">    
-    *If the scanner works but recognizes a &quot;product&quot; rather than a &quot;book,&quot; try looking for a different bar code. 
+    *If the scanner works but recognizes a product rather than a book, try looking for a different bar code. 
     Books often have multiple codes. The inside front cover may have another code that is different from the back.
     Especially for older paperback books, the inside cover code works more reliably.
     &lt;br /&gt;&lt;br /&gt;
-    *Make sure you are not scanning a retailer's sticker that has been placed over the bar code. Many retailers do this, 
+    *Make sure you are not scanning sticker that has been placed over the bar code by a retailer. Many retailers do this, 
     and the proprietary retailer codes will not scan.
     &lt;br /&gt;&lt;br /&gt;
-    *Some books just don't scan. Product codes that cannot be interpreted as ISBNs will not work. In those cases try a 
+    *Some books just do not scan. Product codes that cannot be interpreted as ISBNs will not work. In those cases try a 
     web search for the title. It's still pretty quick, and it will likely work. 
     </string>
 	
