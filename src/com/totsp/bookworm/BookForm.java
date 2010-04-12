@@ -1,11 +1,15 @@
 package com.totsp.bookworm;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -15,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TabHost.OnTabChangeListener;
 
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.AuthorsStringUtil;
@@ -22,6 +27,8 @@ import com.totsp.bookworm.util.AuthorsStringUtil;
 import java.util.Calendar;
 
 public class BookForm extends TabActivity {
+
+   private static final int SELECT_IMAGE = 0;
 
    private BookWormApplication application;
 
@@ -40,7 +47,8 @@ public class BookForm extends TabActivity {
    private EditText bookPublisher;
 
    private Button saveButton;
-   private Button resetCoverButton;
+   private Button selectCoverButton;
+   private Button retrieveCoverButton;
    private Button generateCoverButton;
 
    // keep handle to AsyncTasks so cleanup in onPause can be done (else would just create new during usage)
@@ -48,8 +56,7 @@ public class BookForm extends TabActivity {
    private GenerateCoverImageTask generateCoverImageTask;
    private SaveBookTask saveBookTask;
 
-   // NOTE - future allow use to select an image from gallery/sdcard to use as cover
-   // TODO make this same activity work for edit existing, or enter new
+   // TODO allow use to select an image from gallery/sdcard to use as cover
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -62,11 +69,27 @@ public class BookForm extends TabActivity {
       this.saveBookTask = null;
 
       this.tabHost = this.getTabHost();
-      this.tabHost.addTab(this.tabHost.newTabSpec("tabs").setIndicator("Edit Book Details",
+      this.tabHost.addTab(this.tabHost.newTabSpec("tab1").setIndicator("Edit Book Details",
                this.getResources().getDrawable(android.R.drawable.ic_menu_edit)).setContent(R.id.bookformtab1));
-      this.tabHost.addTab(this.tabHost.newTabSpec("tabs").setIndicator("Manage Cover Image",
+      this.tabHost.addTab(this.tabHost.newTabSpec("tab2").setIndicator("Manage Cover Image",
                this.getResources().getDrawable(android.R.drawable.ic_menu_crop)).setContent(R.id.bookformtab2));
       this.tabHost.setCurrentTab(0);
+
+      // make sure if user is ADDing a new book, and title/authors not set, they cannot go to Manage Cover Image tab
+      // (we have to have a book first, before we can manage cover image)
+      this.tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+         public void onTabChanged(final String tabName) {
+            ///Log.i(Constants.LOG_TAG, "tabName - " + tabName);
+            ///Log.i(Constants.LOG_TAG, "selectedBook - " + BookForm.this.application.getSelectedBook());
+            if (tabName.equals("tab2") && (BookForm.this.application.getSelectedBook() == null)) {
+               Toast.makeText(
+                        BookForm.this,
+                        "Please save book (with minimum of title and author(s)) "
+                                 + "before attempting to manage cover image.", Toast.LENGTH_LONG).show();
+               tabHost.setCurrentTab(0);
+            }
+         }
+      });
 
       this.bookEnterEditLabel = (TextView) this.findViewById(R.id.bookentereditlabel);
       this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
@@ -87,8 +110,22 @@ public class BookForm extends TabActivity {
          }
       });
 
-      this.resetCoverButton = (Button) this.findViewById(R.id.bookformresetcoverbutton);
-      this.resetCoverButton.setOnClickListener(new OnClickListener() {
+      this.selectCoverButton = (Button) this.findViewById(R.id.bookformselectcoverbutton);
+      this.selectCoverButton.setOnClickListener(new OnClickListener() {
+         public void onClick(final View v) {
+            try {
+               BookForm.this.startActivityForResult(new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), SELECT_IMAGE);
+            } catch (ActivityNotFoundException e) {
+               Toast.makeText(BookForm.this, "No activity found to handle Gallery selection, cannot use this method.",
+                        Toast.LENGTH_LONG).show();
+            }
+
+         }
+      });
+
+      this.retrieveCoverButton = (Button) this.findViewById(R.id.bookformretrievecoverbutton);
+      this.retrieveCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookForm.this.resetCoverImageTask = new ResetCoverImageTask();
             BookForm.this.resetCoverImageTask.execute(BookForm.this.application.getSelectedBook());
@@ -127,6 +164,18 @@ public class BookForm extends TabActivity {
       super.onPause();
    }
 
+   @Override
+   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+      super.onActivityResult(requestCode, resultCode, data);
+      if (requestCode == SELECT_IMAGE) {
+         if (resultCode == Activity.RESULT_OK) {
+           
+            Uri selectedImage = data.getData();
+            Log.i(Constants.LOG_TAG, "DATA - " + selectedImage);
+         }
+      }
+   }
+
    private void setExistingViewData() {
       Book book = this.application.getSelectedBook();
       Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.title, book.id, false);
@@ -151,7 +200,6 @@ public class BookForm extends TabActivity {
    }
 
    private void saveEdits() {
-
       // establish newBook
       Book newBook = new Book();
       newBook.title = (this.bookTitleFormTab.getText().toString());
@@ -188,7 +236,7 @@ public class BookForm extends TabActivity {
       }
 
       this.saveBookTask = new SaveBookTask();
-      this.saveBookTask.execute(newBook);      
+      this.saveBookTask.execute(newBook);
    }
 
    @Override
@@ -217,6 +265,8 @@ public class BookForm extends TabActivity {
    private class SaveBookTask extends AsyncTask<Book, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
 
+      private boolean newBook;
+
       protected void onPreExecute() {
          this.dialog.setMessage("Saving book info...");
          this.dialog.show();
@@ -224,11 +274,12 @@ public class BookForm extends TabActivity {
 
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
-         if (book != null && book.id > 0) {
+         if ((book != null) && (book.id > 0)) {
             BookForm.this.application.getDataHelper().updateBook(book);
             BookForm.this.application.establishSelectedBook(book.id);
             return true;
-         } else if (book != null && book.id == 0) {
+         } else if ((book != null) && (book.id == 0)) {
+            this.newBook = true;
             long bookId = BookForm.this.application.getDataHelper().insertBook(book);
             BookForm.this.application.establishSelectedBook(bookId);
             return true;
@@ -245,9 +296,11 @@ public class BookForm extends TabActivity {
                      Toast.LENGTH_LONG).show();
          } else {
             Toast.makeText(BookForm.this, "Book saved", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(BookForm.this, BookDetail.class);
-            intent.putExtra("RELOAD_AFTER_EDIT", true);
-            BookForm.this.startActivity(intent);
+            if (!this.newBook) {
+               Intent intent = new Intent(BookForm.this, BookDetail.class);
+               intent.putExtra("RELOAD_AFTER_EDIT", true);
+               BookForm.this.startActivity(intent);
+            }
          }
       }
    }
@@ -264,7 +317,7 @@ public class BookForm extends TabActivity {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
             BookForm.this.application.getDataImageHelper().resetCoverImage(BookForm.this.application.getDataHelper(),
-                     "2", book);
+                     book);
             return true;
          }
          return false;

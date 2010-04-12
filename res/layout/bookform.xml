@@ -136,23 +136,34 @@
 						android:layout_height="wrap_content" android:layout_marginTop="10dp"
 						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 						android:gravity="center_horizontal" style="@style/blacksmall"
-						android:text="Try to retrieve cover image from web:" />
-					<Button android:id="@+id/bookformresetcoverbutton"
+						android:text="Select image from Gallery:" />
+					<Button android:id="@+id/bookformselectcoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginTop="2dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitle"
-						android:text="Reset cover image" style="@style/blacksmall" />
+						android:layout_marginRight="10dp" android:text="Select image"
+						style="@style/blacksmall" />
+
+					<TextView android:layout_width="fill_parent"
+						android:layout_height="wrap_content" android:layout_marginTop="10dp"
+						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+						android:gravity="center_horizontal" style="@style/blacksmall"
+						android:text="Attempt to retrieve image from web:" />
+					<Button android:id="@+id/bookformretrievecoverbutton"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:layout_marginTop="2dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp" android:text="Retrieve image"
+						style="@style/blacksmall" />
 
 					<TextView android:layout_width="fill_parent"
 						android:layout_height="wrap_content" android:layout_marginTop="15dp"
 						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 						android:gravity="center_horizontal" style="@style/blacksmall"
-						android:text="Generate default cover image using title:" />
+						android:text="Generate image using title:" />
 					<Button android:id="@+id/bookformgeneratecoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitle"
-						android:text="Generate cover image" style="@style/blacksmall" />
+						android:layout_marginRight="10dp" android:text="Generate image"
+						style="@style/blacksmall" />
 				</LinearLayout>
 			</ScrollView>
 		</FrameLayout>

@@ -361,7 +361,7 @@ public class Main extends Activity {
                Log.d(Constants.LOG_TAG, "resetting cover image for book - " + b.title);
             }
             this.publishProgress("processing: " + b.title);
-            Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), "2", b);
+            Main.this.application.getDataImageHelper().resetCoverImage(Main.this.application.getDataHelper(), b);
          }
          return null;
       }

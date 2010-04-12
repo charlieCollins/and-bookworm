@@ -8,10 +8,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.os.Environment;
+import android.util.Log;
 
+import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CacheMap;
 import com.totsp.bookworm.util.CoverImageUtil;
+import com.totsp.bookworm.util.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +31,7 @@ import java.util.HashMap;
  */
 public class DataImageHelper {
 
+   private static final String IMAGES_LOCATION = "bookwormdata/images/";
    private final HashMap<String, Bitmap> imageThumbCache = new CacheMap<String, Bitmap>(250);
    private final boolean thumbCacheEnabled;
 
@@ -43,6 +47,37 @@ public class DataImageHelper {
       this.imageThumbCache.remove(item);
    }
 
+   public void copyOverImages() {
+      // this method is used to copy over images from bookwormdata/images 
+      // into bookwormdata/.images
+      // this is needed to because 1.0.5 is changing the images path in order to hide them
+      try {
+         File newDir = new File(Environment.getExternalStorageDirectory(), DataImageHelper.IMAGES_LOCATION);
+         if (!newDir.exists()) {
+            newDir.mkdirs();
+         }
+
+         File oldDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+         if (oldDir.exists() && oldDir.canRead()) {
+            for (File s : oldDir.listFiles()) {
+               File d = new File(newDir.getAbsolutePath() + File.separator + s.getName());
+               FileUtil.copyFile(s, d);
+               s.delete();
+            }
+         }
+
+         // delete old dir itself too
+         oldDir.delete();
+
+      } catch (IOException e) {
+         Log.e(Constants.LOG_TAG, e.getMessage(), e);
+      }
+   }
+
+   public final void clearAllOLDBitmapSourceFiles() {
+
+   }
+
    public final Bitmap retrieveBitmap(final String title, final Long id, final boolean thumb) {
       String name = this.getNameKey(title, id);
 
@@ -52,7 +87,7 @@ public class DataImageHelper {
 
       Bitmap bitmap = null;
 
-      File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+      File exportDir = new File(Environment.getExternalStorageDirectory(), DataImageHelper.IMAGES_LOCATION);
       File file = null;
       if (!thumb) {
          file = new File(exportDir, name + ".jpg");
@@ -76,7 +111,7 @@ public class DataImageHelper {
       Bitmap bitmapThumb = DataImageHelper.resizeBitmap(source, 55, 70);
 
       try {
-         File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+         File exportDir = new File(Environment.getExternalStorageDirectory(), DataImageHelper.IMAGES_LOCATION);
          if (!exportDir.exists()) {
             exportDir.mkdirs();
          }
@@ -108,7 +143,7 @@ public class DataImageHelper {
 
    public final void deleteBitmapSourceFile(final String title, final Long id) {
       String name = this.getNameKey(title, id);
-      File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+      File exportDir = new File(Environment.getExternalStorageDirectory(), DataImageHelper.IMAGES_LOCATION);
       File file = new File(exportDir, name + ".jpg");
       File thumbFile = new File(exportDir, name + "-t.jpg");
       if ((file != null) && file.exists() && file.canWrite()) {
@@ -118,11 +153,11 @@ public class DataImageHelper {
          thumbFile.delete();
       }
    }
-   
+
    public final void renameBitmapSourceFile(final String oldTitle, final String newTitle, final Long id) {
       String oldName = this.getNameKey(oldTitle, id);
       String newName = this.getNameKey(newTitle, id);
-      File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+      File exportDir = new File(Environment.getExternalStorageDirectory(), DataImageHelper.IMAGES_LOCATION);
       File file = new File(exportDir, oldName + ".jpg");
       File thumbFile = new File(exportDir, oldName + "-t.jpg");
       if ((file != null) && file.exists() && file.canWrite()) {
@@ -134,7 +169,7 @@ public class DataImageHelper {
    }
 
    public final void clearAllBitmapSourceFiles() {
-      File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
+      File exportDir = new File(Environment.getExternalStorageDirectory(), DataImageHelper.IMAGES_LOCATION);
       if (exportDir.exists() && exportDir.canWrite()) {
          for (File f : exportDir.listFiles()) {
             f.delete();
@@ -142,8 +177,9 @@ public class DataImageHelper {
       }
    }
 
-   public void resetCoverImage(final DataHelper dataHelper, final String coverImageProviderKey, final Book b) {
-      Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(coverImageProviderKey, b.isbn10);
+   public void resetCoverImage(final DataHelper dataHelper, final Book b) {
+      // for now hard code provider to 2, OpenLibrary (future use pref here, etc, to establish)
+      Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage("2", b.isbn10);
       if (coverImageBitmap != null) {
          this.storeBitmap(coverImageBitmap, b.title, b.id);
       }
