@@ -44,7 +44,8 @@ public class BookWormApplication extends Application {
 
       this.establishBookDataSourceFromProvider();
       
-      // NOTE - after sufficient time REMOVE this
+      // move images from bookwormdata/images to bookwormdata/.images to hide from gallery
+      // NOTE - after sufficient time (a few revisions?) REMOVE this
       this.dataImageHelper.copyOverImages();
    }
 
