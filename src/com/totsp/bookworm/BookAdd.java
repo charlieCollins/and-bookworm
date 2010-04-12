@@ -47,7 +47,8 @@ public class BookAdd extends Activity {
       this.formButton = (Button) this.findViewById(R.id.bookaddformbutton);
       this.formButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookAdd.this.startActivity(new Intent(BookAdd.this, BookEntryForm.class));
+            BookAdd.this.application.setSelectedBook(null);
+            BookAdd.this.startActivity(new Intent(BookAdd.this, BookForm.class));
          }
       });
    }

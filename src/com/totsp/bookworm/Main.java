@@ -187,7 +187,7 @@ public class Main extends Activity {
       switch (item.getItemId()) {
       case MENU_CONTEXT_EDIT:
          Main.this.application.setSelectedBook(b);
-         Main.this.startActivity(new Intent(Main.this, BookEdit.class));
+         Main.this.startActivity(new Intent(Main.this, BookForm.class));
          return true;
       case MENU_CONTEXT_DELETE:
          new AlertDialog.Builder(Main.this).setTitle("Delete book?").setMessage(b.title).setPositiveButton(

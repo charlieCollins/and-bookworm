@@ -28,26 +28,26 @@ import java.util.HashMap;
  */
 public class DataImageHelper {
 
-   private final HashMap<String, Bitmap> imageCache = new CacheMap<String, Bitmap>(250);
-   private final boolean cacheEnabled;
+   private final HashMap<String, Bitmap> imageThumbCache = new CacheMap<String, Bitmap>(250);
+   private final boolean thumbCacheEnabled;
 
-   public DataImageHelper(final Context context, final boolean cacheEnabled) {
-      this.cacheEnabled = cacheEnabled;
+   public DataImageHelper(final Context context, final boolean thumbCacheEnabled) {
+      this.thumbCacheEnabled = thumbCacheEnabled;
    }
 
-   public void clearCache() {
-      this.imageCache.clear();
+   public void clearThumbCache() {
+      this.imageThumbCache.clear();
    }
 
-   public void clearCache(final String item) {
-      this.imageCache.remove(item);
+   public void clearThumbCache(final String item) {
+      this.imageThumbCache.remove(item);
    }
 
    public final Bitmap retrieveBitmap(final String title, final Long id, final boolean thumb) {
       String name = this.getNameKey(title, id);
 
-      if (this.cacheEnabled && this.imageCache.containsKey(name)) {
-         return this.imageCache.get(name);
+      if (thumb && this.thumbCacheEnabled && this.imageThumbCache.containsKey(name)) {
+         return this.imageThumbCache.get(name);
       }
 
       Bitmap bitmap = null;
@@ -95,8 +95,8 @@ public class DataImageHelper {
          bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
          fos.close();
 
-         if (this.cacheEnabled && (bitmap != null)) {
-            this.imageCache.put(name, bitmap);
+         if (this.thumbCacheEnabled && (bitmapThumb != null)) {
+            this.imageThumbCache.put(name, bitmapThumb);
          }
 
       } catch (FileNotFoundException e) {

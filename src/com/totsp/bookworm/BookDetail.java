@@ -176,7 +176,7 @@ public class BookDetail extends Activity {
       Uri uri = null;
       switch (item.getItemId()) {
       case MENU_EDIT:
-         this.startActivity(new Intent(this, BookEdit.class));
+         this.startActivity(new Intent(this, BookForm.class));
          return true;
       case MENU_WEB_GOOGLE:
          // TODO add fallback book isbn13 support
