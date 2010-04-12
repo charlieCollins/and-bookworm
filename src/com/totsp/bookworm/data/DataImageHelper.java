@@ -31,7 +31,7 @@ import java.util.HashMap;
  */
 public class DataImageHelper {
 
-   private static final String IMAGES_LOCATION = "bookwormdata/images/";
+   private static final String IMAGES_LOCATION = "bookwormdata/.images/";
    private final HashMap<String, Bitmap> imageThumbCache = new CacheMap<String, Bitmap>(250);
    private final boolean thumbCacheEnabled;
 

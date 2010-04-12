@@ -45,7 +45,7 @@ public class BookWormApplication extends Application {
       this.establishBookDataSourceFromProvider();
       
       // NOTE - after sufficient time REMOVE this
-      ///this.dataImageHelper.copyOverImages();
+      this.dataImageHelper.copyOverImages();
    }
 
    private void establishBookDataSourceFromProvider() {
