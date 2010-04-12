@@ -188,7 +188,7 @@ public class BookForm extends TabActivity {
       }
 
       this.saveBookTask = new SaveBookTask();
-      this.saveBookTask.execute(newBook);
+      this.saveBookTask.execute(newBook);      
    }
 
    @Override
@@ -229,10 +229,9 @@ public class BookForm extends TabActivity {
             BookForm.this.application.establishSelectedBook(book.id);
             return true;
          } else if (book != null && book.id == 0) {
-            BookForm.this.application.getDataHelper().insertBook(book);
-            BookForm.this.application.establishSelectedBook(book.id);
+            long bookId = BookForm.this.application.getDataHelper().insertBook(book);
+            BookForm.this.application.establishSelectedBook(bookId);
             return true;
-
          }
          return false;
       }
