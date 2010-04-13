@@ -116,6 +116,7 @@ public class BookForm extends TabActivity {
       this.selectCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             try {
+               BookForm.this.tabHost.setCurrentTab(0); 
                BookForm.this.startActivityForResult(new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), BookForm.SELECT_IMAGE);
             } catch (ActivityNotFoundException e) {
