@@ -58,7 +58,7 @@ public class BookForm extends TabActivity {
    // keep handle to AsyncTasks so cleanup in onPause can be done (else would just create new during usage)
    private RetrieveCoverImageTask RetrieveCoverImageTask;
    private GenerateCoverImageTask generateCoverImageTask;
-   private SelectCoverImageTask selectCoverImageTask;
+   ///private SelectCoverImageTask selectCoverImageTask;
    private SaveBookTask saveBookTask;
 
    @Override
@@ -69,7 +69,7 @@ public class BookForm extends TabActivity {
 
       this.RetrieveCoverImageTask = null;
       this.generateCoverImageTask = null;
-      this.selectCoverImageTask = null;
+      ///this.selectCoverImageTask = null;
       this.saveBookTask = null;
 
       this.tabHost = this.getTabHost();
@@ -118,6 +118,7 @@ public class BookForm extends TabActivity {
       this.selectCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             try {
+               Log.i(Constants.LOG_TAG, "startActivityForResult - select image");
                BookForm.this.startActivityForResult(new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), BookForm.SELECT_IMAGE);
             } catch (ActivityNotFoundException e) {
@@ -152,6 +153,11 @@ public class BookForm extends TabActivity {
          this.bookEnterEditLabel.setText("Add Book");
       }
    }
+   
+   @Override
+   public void onStart() {
+      super.onStart();      
+   }
 
    @Override
    public void onPause() {
@@ -162,9 +168,9 @@ public class BookForm extends TabActivity {
       if ((this.RetrieveCoverImageTask != null) && this.RetrieveCoverImageTask.dialog.isShowing()) {
          this.RetrieveCoverImageTask.dialog.dismiss();
       }
-      if ((this.selectCoverImageTask != null) && this.selectCoverImageTask.dialog.isShowing()) {
-         this.selectCoverImageTask.dialog.dismiss();
-      }
+      ///if ((this.selectCoverImageTask != null) && this.selectCoverImageTask.dialog.isShowing()) {
+      ///   this.selectCoverImageTask.dialog.dismiss();
+      ///}
       if ((this.saveBookTask != null) && this.saveBookTask.dialog.isShowing()) {
          this.saveBookTask.dialog.dismiss();
       }
@@ -174,15 +180,61 @@ public class BookForm extends TabActivity {
    @Override
    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
+      Log.i(Constants.LOG_TAG, "onActivityResult");
       if (requestCode == BookForm.SELECT_IMAGE) {
          if (resultCode == Activity.RESULT_OK) {
-            Uri selectedImageUri = data.getData();
+            // intentionally do NOT use an AsyncTask (confusing for UI, returns onActResult too fast)
+            Uri selectedImageUri = data.getData();            
+            InputStream is = null;
+            try {
+               is = BookForm.this.getContentResolver().openInputStream(selectedImageUri);
+               Bitmap bitmap = BitmapFactory.decodeStream(is);
+               Book book = BookForm.this.application.getSelectedBook();
+               if ((bitmap != null) && (book != null)) {
+                  BookForm.this.application.getDataImageHelper().storeBitmap(bitmap, book.title, book.id);                  
+               }
+            } catch (FileNotFoundException e) {
+               Log.e(Constants.LOG_TAG, e.getMessage(), e);
+            } finally {
+               if (is != null) {
+                  try {
+                     is.close();
+                  } catch (IOException e) {
+                     // swallow
+                  }
+               }
+            }
+            
+            Toast.makeText(BookForm.this, "Book updated", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(BookForm.this, BookDetail.class);
+            BookForm.this.startActivity(intent);
+            
             ///Log.i(Constants.LOG_TAG, "DATA - " + selectedImageUri);
             ///Log.i(Constants.LOG_TAG, "path - " + selectedImageUri.getPath());
-            this.selectCoverImageTask = new SelectCoverImageTask();
-            this.selectCoverImageTask.execute(selectedImageUri);
+            ///this.selectCoverImageTask = new SelectCoverImageTask();
+            ///this.selectCoverImageTask.execute(selectedImageUri);
          }
       }
+   }
+   
+   @Override
+   protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      if (this.application.getSelectedBook() == null) {
+         long bookId = savedInstanceState.getLong(Constants.BOOK_ID, 0L);
+         if (bookId > 0) {
+            this.application.establishSelectedBook(bookId);
+            this.setExistingViewData();
+         }
+      }
+   }
+
+   @Override
+   protected void onSaveInstanceState(final Bundle saveState) {
+      if (this.application.getSelectedBook() != null) {
+         saveState.putLong(Constants.BOOK_ID, this.application.getSelectedBook().id);
+      }
+      super.onSaveInstanceState(saveState);
    }
 
    private void setExistingViewData() {
@@ -246,27 +298,7 @@ public class BookForm extends TabActivity {
 
       this.saveBookTask = new SaveBookTask();
       this.saveBookTask.execute(newBook);
-   }
-
-   @Override
-   protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-      super.onRestoreInstanceState(savedInstanceState);
-      if (this.application.getSelectedBook() == null) {
-         long bookId = savedInstanceState.getLong(Constants.BOOK_ID, 0L);
-         if (bookId > 0) {
-            this.application.establishSelectedBook(bookId);
-            this.setExistingViewData();
-         }
-      }
-   }
-
-   @Override
-   protected void onSaveInstanceState(final Bundle saveState) {
-      if (this.application.getSelectedBook() != null) {
-         saveState.putLong(Constants.BOOK_ID, this.application.getSelectedBook().id);
-      }
-      super.onSaveInstanceState(saveState);
-   }
+   }  
 
    //
    // AsyncTasks
@@ -380,6 +412,7 @@ public class BookForm extends TabActivity {
       }
    }
 
+   /*
    private class SelectCoverImageTask extends AsyncTask<Uri, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
 
@@ -429,5 +462,6 @@ public class BookForm extends TabActivity {
          }
       }
    }
+   */
 
 }
