@@ -46,7 +46,7 @@ public class BookSearch extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.bookentrysearch);
+      this.setContentView(R.layout.booksearch);
       this.application = (BookWormApplication) this.getApplication();
 
       this.searchTask = null;

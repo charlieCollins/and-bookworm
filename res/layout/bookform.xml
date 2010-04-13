@@ -115,7 +115,8 @@
 				android:layout_width="fill_parent" android:layout_height="wrap_content">
 				<LinearLayout android:orientation="vertical"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:gravity="center_horizontal" android:background="@drawable/book_bgrnd_noheader_textarea">
+					android:gravity="center_horizontal" android:background="@drawable/book_bgrnd_noheader_textarea"
+					android:paddingBottom="40dp">
 					<TextView android:id="@+id/booktitlecover"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="15dp" android:layout_marginLeft="10dp"

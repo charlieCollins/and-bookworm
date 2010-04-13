@@ -6,6 +6,9 @@
 		\n
 	</string>
 	
+	<string name="books_list_empty">You don't have any books in your list yet. Use the
+        Menu Add feature to add books.</string>
+	
 	<string name="aboutcontent">
 		<i>Use BookWorm to keep track of books you have read, and you intend
 			to read.
@@ -40,43 +43,32 @@
     web search for the title. It's still pretty quick, and it will likely work. 
     </string>
 	
-	<string name="aboutdetail">	
-	
-Changelog version 1.0.4: 
-    &lt;br /&gt;
-    *Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).
-    &lt;br /&gt;
-    *Enhancement - Add "Scanning Tips" menu option to no results found page.
-    &lt;br /&gt;
-    *Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.). Should decode many more books now, and should not force close even when cannot decode.
-    &lt;br /&gt;&lt;br /&gt;
-    *Fix issue 13 - Changing a book's title orphans the cover image. 
-    &lt;br /&gt;&lt;br /&gt;   
-
-Changelog version 1.0.3: 
-    &lt;br /&gt;
-    *Fix issue 7 - Search web screen repeated results.
-    &lt;br /&gt;
-    *Fix issue 8 - Search web screen results not saved on orientation change.
-    &lt;br /&gt;
-    *Fix issue 9 - Search screen remember position in list.
-    &lt;br /&gt;
-    *Attempt Fix issue 10 - Force close after scan on some devices (this fix is not yet verified).
-    &lt;br /&gt;&lt;br /&gt;
-
-Changelog version 1.0.2: 
-	&lt;br /&gt;
-	*Fix issue 5 - reset cover image not persistent.
-	&lt;br /&gt;
-	*Fix issue 4 - make Splash skip the default.
-	&lt;br /&gt; 
-	*Additional small fixes, change detail menu logos, and add this about detail panel.
-	&lt;br /&gt;&lt;br /&gt;
-
-Please let me know if you come across any new issues, the project site issue tracker is where
+	<string name="aboutdetail">		
+	Current version 1.0.5
+	\n
+	Changelog version 1.0.5:
+	<li>TODO</li>\n
+	\n
+    Changelog version 1.0.4:
+    <li>Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).</li>\n    
+    <li>*Enhancement - Add "Scanning Tips" menu option to no results found page.</li>\n
+    <li>*Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.). Should decode many more books now, and should not force close even when cannot decode.</li>\n
+    <li>*Fix issue 13 - Changing a book's title orphans the cover image.</li>\n  
+    \n
+    Changelog version 1.0.3: 
+    <li>*Fix issue 7 - Search web screen repeated results.</li>\n
+    <li>*Fix issue 8 - Search web screen results not saved on orientation change.</li>\n
+    <li>*Fix issue 9 - Search screen remember position in list.</li>\n
+    <li>*Attempt Fix issue 10 - Force close after scan on some devices (this fix is not yet verified).</li>\n
+    \n
+    Changelog version 1.0.2:
+	<li>*Fix issue 5 - reset cover image not persistent.</li>\n
+	<li>*Fix issue 4 - make Splash skip the default.</li>\n 
+	<li>*Additional small fixes, change detail menu logos, and add this about detail panel.</li>\n
+    \n
+    Please let me know if you come across any new issues, the project site issue tracker is where
 	currently known issues and enhancement plans are logged. Thanks! 
-	&lt;br /&gt;
 	</string>
-	<string name="books_list_empty">You don't have any books in your list yet. Use the
-		Menu Add feature to add books.</string>
+	
+	
 </resources>

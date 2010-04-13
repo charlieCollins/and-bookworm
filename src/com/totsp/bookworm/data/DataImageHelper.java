@@ -31,7 +31,7 @@ import java.util.HashMap;
  */
 public class DataImageHelper {
 
-   private static final String IMAGES_LOCATION = "bookwormdata/.images/";
+   private static final String IMAGES_LOCATION = "bookwormdata/images/";
    private final HashMap<String, Bitmap> imageThumbCache = new CacheMap<String, Bitmap>(250);
    private final boolean thumbCacheEnabled;
 
@@ -47,6 +47,11 @@ public class DataImageHelper {
       this.imageThumbCache.remove(item);
    }
 
+   // TODO could be used (with change path name to .images above) to remove old images dir
+   // in order to hide from gallery - but gallery 1.5+ expects it and deals with it
+   // and logs errors about files missing if files deleted without also removing from ContentProvider
+   // might be more trouble than worth to "hide" 
+   /*
    public void copyOverImages() {
       // this method is used to copy over images from bookwormdata/images 
       // into bookwormdata/.images
@@ -73,10 +78,7 @@ public class DataImageHelper {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
       }
    }
-
-   public final void clearAllOLDBitmapSourceFiles() {
-
-   }
+   */
 
    public final Bitmap retrieveBitmap(final String title, final Long id, final boolean thumb) {
       String name = this.getNameKey(title, id);

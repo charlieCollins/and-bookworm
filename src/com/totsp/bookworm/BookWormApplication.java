@@ -42,11 +42,7 @@ public class BookWormApplication extends Application {
       this.dataHelper = new DataHelper(this);
       this.dataImageHelper = new DataImageHelper(this, BookWormApplication.IMAGE_CACHE_ENABLED);
 
-      this.establishBookDataSourceFromProvider();
-      
-      // move images from bookwormdata/images to bookwormdata/.images to hide from gallery
-      // NOTE - after sufficient time (a few revisions?) REMOVE this
-      this.dataImageHelper.copyOverImages();
+      this.establishBookDataSourceFromProvider();     
    }
 
    private void establishBookDataSourceFromProvider() {
