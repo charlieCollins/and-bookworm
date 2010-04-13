@@ -44,28 +44,28 @@
     </string>
 	
 	<string name="aboutdetail">		
-	Current version 1.0.5
+	Current version 1.0.5\n
 	\n
-	Changelog version 1.0.5:
-	<li>TODO</li>\n
+	Changelog version 1.0.5:\n
+	*TODO\n
 	\n
-    Changelog version 1.0.4:
-    <li>Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).</li>\n    
-    <li>*Enhancement - Add "Scanning Tips" menu option to no results found page.</li>\n
-    <li>*Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.). Should decode many more books now, and should not force close even when cannot decode.</li>\n
-    <li>*Fix issue 13 - Changing a book's title orphans the cover image.</li>\n  
+    Changelog version 1.0.4:\n
+    *Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).\n    
+    *Enhancement - Add "Scanning Tips" menu option to no results found page.\n
+    *Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.). Should decode many more books now, and should not force close even when cannot decode.\n
+    *Fix issue 13 - Changing a book's title orphans the cover image.\n  
     \n
-    Changelog version 1.0.3: 
-    <li>*Fix issue 7 - Search web screen repeated results.</li>\n
-    <li>*Fix issue 8 - Search web screen results not saved on orientation change.</li>\n
-    <li>*Fix issue 9 - Search screen remember position in list.</li>\n
-    <li>*Attempt Fix issue 10 - Force close after scan on some devices (this fix is not yet verified).</li>\n
+    Changelog version 1.0.3:\n
+    *Fix issue 7 - Search web screen repeated results.\n
+    *Fix issue 8 - Search web screen results not saved on orientation change.\n
+    *Fix issue 9 - Search screen remember position in list.\n
+    *Attempt Fix issue 10 - Force close after scan on some devices (this fix is not yet verified).\n
     \n
-    Changelog version 1.0.2:
-	<li>*Fix issue 5 - reset cover image not persistent.</li>\n
-	<li>*Fix issue 4 - make Splash skip the default.</li>\n 
-	<li>*Additional small fixes, change detail menu logos, and add this about detail panel.</li>\n
-    \n
+    Changelog version 1.0.2:\n
+	*Fix issue 5 - reset cover image not persistent.\n
+	*Fix issue 4 - make Splash skip the default.\n 
+	*Additional small fixes, change detail menu logos, and add this about detail panel.\n
+    \n\n
     Please let me know if you come across any new issues, the project site issue tracker is where
 	currently known issues and enhancement plans are logged. Thanks! 
 	</string>
