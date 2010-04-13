@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -78,6 +79,16 @@ public class BookDetail extends Activity {
    public void onPause() {
       this.bookTitle = null;
       super.onPause();
+   }
+   
+   // go back to Main on back from here
+   @Override
+   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+      if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
+         this.startActivity(new Intent(BookDetail.this, Main.class));
+         return true;
+      }
+      return super.onKeyDown(keyCode, event);
    }
 
    private void saveRatingEdit() {
