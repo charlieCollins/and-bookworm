@@ -20,7 +20,7 @@
 		<activity android:name="BookAdd" />      
 		<activity android:name="BookForm" />      
 		<activity android:name="BookDetail" />      
-		<activity android:name="BookEntrySearch" />            
+		<activity android:name="BookSearch" />            
 		<activity android:name="BookEntryResult" />      
 		<activity android:name="Preferences" />      
 		<activity android:name="ManageData" />      

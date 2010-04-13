@@ -6,6 +6,7 @@ import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.AuthorsStringUtil;
 
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 
 public class BookForm extends TabActivity {
@@ -52,11 +54,10 @@ public class BookForm extends TabActivity {
    private Button generateCoverButton;
 
    // keep handle to AsyncTasks so cleanup in onPause can be done (else would just create new during usage)
-   private ResetCoverImageTask resetCoverImageTask;
+   private RetrieveCoverImageTask RetrieveCoverImageTask;
    private GenerateCoverImageTask generateCoverImageTask;
+   private SelectCoverImageTask selectCoverImageTask;
    private SaveBookTask saveBookTask;
-
-   // TODO allow use to select an image from gallery/sdcard to use as cover
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -64,8 +65,9 @@ public class BookForm extends TabActivity {
       this.setContentView(R.layout.bookform);
       this.application = (BookWormApplication) this.getApplication();
 
-      this.resetCoverImageTask = null;
+      this.RetrieveCoverImageTask = null;
       this.generateCoverImageTask = null;
+      this.selectCoverImageTask = null;
       this.saveBookTask = null;
 
       this.tabHost = this.getTabHost();
@@ -127,8 +129,8 @@ public class BookForm extends TabActivity {
       this.retrieveCoverButton = (Button) this.findViewById(R.id.bookformretrievecoverbutton);
       this.retrieveCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookForm.this.resetCoverImageTask = new ResetCoverImageTask();
-            BookForm.this.resetCoverImageTask.execute(BookForm.this.application.getSelectedBook());
+            BookForm.this.RetrieveCoverImageTask = new RetrieveCoverImageTask();
+            BookForm.this.RetrieveCoverImageTask.execute(BookForm.this.application.getSelectedBook());
          }
       });
 
@@ -155,8 +157,11 @@ public class BookForm extends TabActivity {
       if ((this.generateCoverImageTask != null) && this.generateCoverImageTask.dialog.isShowing()) {
          this.generateCoverImageTask.dialog.dismiss();
       }
-      if ((this.resetCoverImageTask != null) && this.resetCoverImageTask.dialog.isShowing()) {
-         this.resetCoverImageTask.dialog.dismiss();
+      if ((this.RetrieveCoverImageTask != null) && this.RetrieveCoverImageTask.dialog.isShowing()) {
+         this.RetrieveCoverImageTask.dialog.dismiss();
+      }
+      if ((this.selectCoverImageTask != null) && this.selectCoverImageTask.dialog.isShowing()) {
+         this.selectCoverImageTask.dialog.dismiss();
       }
       if ((this.saveBookTask != null) && this.saveBookTask.dialog.isShowing()) {
          this.saveBookTask.dialog.dismiss();
@@ -169,9 +174,11 @@ public class BookForm extends TabActivity {
       super.onActivityResult(requestCode, resultCode, data);
       if (requestCode == SELECT_IMAGE) {
          if (resultCode == Activity.RESULT_OK) {
-           
-            Uri selectedImage = data.getData();
-            Log.i(Constants.LOG_TAG, "DATA - " + selectedImage);
+            Uri selectedImageUri = data.getData();
+            ///Log.i(Constants.LOG_TAG, "DATA - " + selectedImageUri);
+            ///Log.i(Constants.LOG_TAG, "path - " + selectedImageUri.getPath());
+            this.selectCoverImageTask = new SelectCoverImageTask();
+            this.selectCoverImageTask.execute(selectedImageUri);
          }
       }
    }
@@ -305,11 +312,11 @@ public class BookForm extends TabActivity {
       }
    }
 
-   private class ResetCoverImageTask extends AsyncTask<Book, Void, Boolean> {
+   private class RetrieveCoverImageTask extends AsyncTask<Book, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
 
       protected void onPreExecute() {
-         this.dialog.setMessage("Resetting cover image...");
+         this.dialog.setMessage("Retrieving cover image...");
          this.dialog.show();
       }
 
@@ -328,7 +335,7 @@ public class BookForm extends TabActivity {
             this.dialog.dismiss();
          }
          if (!b) {
-            Toast.makeText(BookForm.this, "Error updating book, book information not present, or ID null.",
+            Toast.makeText(BookForm.this, "Error retrieving cover image, book information not present, or ID null.",
                      Toast.LENGTH_LONG).show();
          } else {
             Toast.makeText(BookForm.this, "Book updated", Toast.LENGTH_SHORT).show();
@@ -362,6 +369,45 @@ public class BookForm extends TabActivity {
          }
          if (!b) {
             Toast.makeText(BookForm.this, "Error generating cover image, book information not present, or ID null.",
+                     Toast.LENGTH_LONG).show();
+         } else {
+            Toast.makeText(BookForm.this, "Book updated", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(BookForm.this, BookDetail.class);
+            BookForm.this.startActivity(intent);
+         }
+      }
+   }
+   
+   private class SelectCoverImageTask extends AsyncTask<Uri, Void, Boolean> {
+      private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
+ 
+      
+      protected void onPreExecute() {
+         this.dialog.setMessage("Saving selected cover image...");
+         this.dialog.show();
+      }
+
+      protected Boolean doInBackground(final Uri... args) {
+         Uri selectedImageUri = args[0];
+         try {
+            Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImageUri));
+            Book book = application.getSelectedBook();
+            if (bitmap != null && book != null) {
+               application.getDataImageHelper().storeBitmap(bitmap, book.title, book.id);               
+               return true;
+            }
+         } catch (FileNotFoundException e) {
+            Log.e(Constants.LOG_TAG, e.getMessage(), e);
+         }         
+         return false;
+      }
+
+      protected void onPostExecute(final Boolean b) {
+         if (this.dialog.isShowing()) {
+            this.dialog.dismiss();
+         }
+         if (!b) {
+            Toast.makeText(BookForm.this, "Error saving selected cover image, book information not present, or ID null.",
                      Toast.LENGTH_LONG).show();
          } else {
             Toast.makeText(BookForm.this, "Book updated", Toast.LENGTH_SHORT).show();

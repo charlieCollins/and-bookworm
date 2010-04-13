@@ -81,7 +81,7 @@ public class BookEntryResult extends Activity {
          this.getBookDataTask.execute(isbn);
       }
 
-      this.fromSearch = this.getIntent().getBooleanExtra(BookEntrySearch.FROM_SEARCH, false);
+      this.fromSearch = this.getIntent().getBooleanExtra(BookSearch.FROM_SEARCH, false);
    }
 
    @Override
@@ -127,7 +127,7 @@ public class BookEntryResult extends Activity {
       }
       if (this.fromSearch) {
          // if from search results, return to search
-         Intent intent = new Intent(BookEntryResult.this, BookEntrySearch.class);
+         Intent intent = new Intent(BookEntryResult.this, BookSearch.class);
          intent.putExtra(BookEntryResult.FROM_RESULT, true);
          this.startActivity(intent);
       } else {

@@ -23,7 +23,7 @@ import com.totsp.bookworm.model.Book;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-public class BookEntrySearch extends Activity {
+public class BookSearch extends Activity {
 
    public static final String FROM_SEARCH = "FROM_SEARCH";
 
@@ -60,25 +60,25 @@ public class BookEntrySearch extends Activity {
       this.searchResults.setTextFilterEnabled(true);
       this.searchResults.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-            Book selected = BookEntrySearch.this.parsedBooks.get(index);
-            BookEntrySearch.this.selectorPosition = index - 1;
-            Intent intent = new Intent(BookEntrySearch.this, BookEntryResult.class);
+            Book selected = BookSearch.this.parsedBooks.get(index);
+            BookSearch.this.selectorPosition = index - 1;
+            Intent intent = new Intent(BookSearch.this, BookEntryResult.class);
             // favor isbn 10, but use 13 if 10 missing
             if ((selected.isbn10 != null) && !selected.isbn10.equals("")) {
                intent.putExtra(Constants.ISBN, selected.isbn10);
             } else if ((selected.isbn13 != null) && !selected.isbn13.equals("")) {
                intent.putExtra(Constants.ISBN, selected.isbn13);
             }
-            intent.putExtra(BookEntrySearch.FROM_SEARCH, true);
-            BookEntrySearch.this.startActivity(intent);
+            intent.putExtra(BookSearch.FROM_SEARCH, true);
+            BookSearch.this.startActivity(intent);
          }
       });
 
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookEntrySearch.this.parsedBooks = new ArrayList<Book>();
-            BookEntrySearch.this.searchTask = new SearchTask();
-            BookEntrySearch.this.searchTask.execute(BookEntrySearch.this.searchInput.getText().toString(), "1");
+            BookSearch.this.parsedBooks = new ArrayList<Book>();
+            BookSearch.this.searchTask = new SearchTask();
+            BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), "1");
          }
       });
 
@@ -86,8 +86,8 @@ public class BookEntrySearch extends Activity {
       this.getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);
       this.getMoreData.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            int startIndex = BookEntrySearch.this.parsedBooks.size() + 1;
-            new SearchTask().execute(BookEntrySearch.this.searchInput.getText().toString(), String.valueOf(startIndex));
+            int startIndex = BookSearch.this.parsedBooks.size() + 1;
+            new SearchTask().execute(BookSearch.this.searchInput.getText().toString(), String.valueOf(startIndex));
             v.setBackgroundResource(R.color.red1);
          }
       });
@@ -132,7 +132,7 @@ public class BookEntrySearch extends Activity {
    @Override
    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
       if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
-         this.startActivity(new Intent(BookEntrySearch.this, Main.class));
+         this.startActivity(new Intent(BookSearch.this, Main.class));
          return true;
       }
       return super.onKeyDown(keyCode, event);
@@ -146,8 +146,8 @@ public class BookEntrySearch extends Activity {
       }
 
       this.adapter =
-               new ArrayAdapter<Book>(BookEntrySearch.this, R.layout.simple_list_item_1,
-                        BookEntrySearch.this.parsedBooks);
+               new ArrayAdapter<Book>(BookSearch.this, R.layout.simple_list_item_1,
+                        BookSearch.this.parsedBooks);
       this.searchResults.setAdapter(this.adapter);
       if (this.selectorPosition > 2) {
          this.searchResults.setSelection(this.selectorPosition - 1);
@@ -170,13 +170,13 @@ public class BookEntrySearch extends Activity {
    // AsyncTasks
    //
    private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
-      private final ProgressDialog dialog = new ProgressDialog(BookEntrySearch.this);
+      private final ProgressDialog dialog = new ProgressDialog(BookSearch.this);
 
       // TODO hard coded to GoolgeBookDataSource for now
       private final GoogleBookDataSource gbs = new GoogleBookDataSource();
 
       public SearchTask() {
-         this.gbs.setDebugEnabled(BookEntrySearch.this.application.isDebugEnabled());
+         this.gbs.setDebugEnabled(BookSearch.this.application.isDebugEnabled());
       }
 
       protected void onPreExecute() {
@@ -200,15 +200,15 @@ public class BookEntrySearch extends Activity {
          }
 
          if ((books != null) && !books.isEmpty()) {
-            BookEntrySearch.this.selectorPosition = BookEntrySearch.this.parsedBooks.size();
+            BookSearch.this.selectorPosition = BookSearch.this.parsedBooks.size();
             for (Book b : books) {
-               if (!BookEntrySearch.this.parsedBooks.contains(b)) {
-                  BookEntrySearch.this.parsedBooks.add(b);
+               if (!BookSearch.this.parsedBooks.contains(b)) {
+                  BookSearch.this.parsedBooks.add(b);
                }
             }
 
-            BookEntrySearch.this.bindAdapter();
-            BookEntrySearch.this.getMoreData.setBackgroundResource(android.R.color.transparent);
+            BookSearch.this.bindAdapter();
+            BookSearch.this.getMoreData.setBackgroundResource(android.R.color.transparent);
          }
       }
    }

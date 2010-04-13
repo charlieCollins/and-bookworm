@@ -40,7 +40,7 @@ public class BookAdd extends Activity {
       this.searchButton = (Button) this.findViewById(R.id.bookaddsearchbutton);
       this.searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookAdd.this.startActivity(new Intent(BookAdd.this, BookEntrySearch.class));
+            BookAdd.this.startActivity(new Intent(BookAdd.this, BookSearch.class));
          }
       });
 
