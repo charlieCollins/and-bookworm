@@ -77,7 +77,21 @@ public class BookForm extends TabActivity {
                this.getResources().getDrawable(android.R.drawable.ic_menu_edit)).setContent(R.id.bookformtab1));
       this.tabHost.addTab(this.tabHost.newTabSpec("tab2").setIndicator("Manage Cover Image",
                this.getResources().getDrawable(android.R.drawable.ic_menu_crop)).setContent(R.id.bookformtab2));
-      this.tabHost.setCurrentTab(0);      
+      this.tabHost.setCurrentTab(0);   
+      
+      // make sure if user is ADDing a new book, and title/authors not set, they cannot go to Manage Cover Image tab
+      // (we have to have a book first, before we can manage cover image)
+      this.tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+         public void onTabChanged(final String tabName) {            
+            if (tabName.equals("tab2") && (BookForm.this.application.getSelectedBook() == null)) {
+               Toast.makeText(
+                        BookForm.this,
+                        "Please save book (with minimum of title and author(s)) "
+                                 + "before attempting to manage cover image.", Toast.LENGTH_LONG).show();
+               BookForm.this.tabHost.setCurrentTab(0);
+            }
+         }
+      });
 
       this.bookEnterEditLabel = (TextView) this.findViewById(R.id.bookentereditlabel);
       this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
@@ -108,7 +122,6 @@ public class BookForm extends TabActivity {
                Toast.makeText(BookForm.this, "No activity found to handle Gallery selection, cannot use this method.",
                         Toast.LENGTH_LONG).show();
             }
-
          }
       });
 
@@ -139,20 +152,7 @@ public class BookForm extends TabActivity {
    
    @Override
    public void onStart() {
-      super.onStart(); 
-      // make sure if user is ADDing a new book, and title/authors not set, they cannot go to Manage Cover Image tab
-      // (we have to have a book first, before we can manage cover image)
-      this.tabHost.setOnTabChangedListener(new OnTabChangeListener() {
-         public void onTabChanged(final String tabName) {            
-            if (tabName.equals("tab2") && (BookForm.this.application.getSelectedBook() == null)) {
-               Toast.makeText(
-                        BookForm.this,
-                        "Please save book (with minimum of title and author(s)) "
-                                 + "before attempting to manage cover image.", Toast.LENGTH_LONG).show();
-               BookForm.this.tabHost.setCurrentTab(0);
-            }
-         }
-      });
+      super.onStart();      
    }
 
    @Override
@@ -219,7 +219,7 @@ public class BookForm extends TabActivity {
             this.application.establishSelectedBook(bookId);
             this.setExistingViewData();
          }
-      }
+      }      
    }
 
    @Override
