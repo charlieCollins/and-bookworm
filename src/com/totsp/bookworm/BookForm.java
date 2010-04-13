@@ -77,23 +77,7 @@ public class BookForm extends TabActivity {
                this.getResources().getDrawable(android.R.drawable.ic_menu_edit)).setContent(R.id.bookformtab1));
       this.tabHost.addTab(this.tabHost.newTabSpec("tab2").setIndicator("Manage Cover Image",
                this.getResources().getDrawable(android.R.drawable.ic_menu_crop)).setContent(R.id.bookformtab2));
-      this.tabHost.setCurrentTab(0);
-
-      // make sure if user is ADDing a new book, and title/authors not set, they cannot go to Manage Cover Image tab
-      // (we have to have a book first, before we can manage cover image)
-      this.tabHost.setOnTabChangedListener(new OnTabChangeListener() {
-         public void onTabChanged(final String tabName) {
-            Log.i(Constants.LOG_TAG, "tabName - " + tabName);
-            Log.i(Constants.LOG_TAG, "selectedBook - " + BookForm.this.application.getSelectedBook());
-            if (tabName.equals("tab2") && (BookForm.this.application.getSelectedBook() == null)) {
-               Toast.makeText(
-                        BookForm.this,
-                        "Please save book (with minimum of title and author(s)) "
-                                 + "before attempting to manage cover image.", Toast.LENGTH_LONG).show();
-               BookForm.this.tabHost.setCurrentTab(0);
-            }
-         }
-      });
+      this.tabHost.setCurrentTab(0);      
 
       this.bookEnterEditLabel = (TextView) this.findViewById(R.id.bookentereditlabel);
       this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
@@ -118,7 +102,6 @@ public class BookForm extends TabActivity {
       this.selectCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             try {
-               Log.i(Constants.LOG_TAG, "startActivityForResult - select image");
                BookForm.this.startActivityForResult(new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), BookForm.SELECT_IMAGE);
             } catch (ActivityNotFoundException e) {
@@ -156,7 +139,20 @@ public class BookForm extends TabActivity {
    
    @Override
    public void onStart() {
-      super.onStart();      
+      super.onStart(); 
+      // make sure if user is ADDing a new book, and title/authors not set, they cannot go to Manage Cover Image tab
+      // (we have to have a book first, before we can manage cover image)
+      this.tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+         public void onTabChanged(final String tabName) {            
+            if (tabName.equals("tab2") && (BookForm.this.application.getSelectedBook() == null)) {
+               Toast.makeText(
+                        BookForm.this,
+                        "Please save book (with minimum of title and author(s)) "
+                                 + "before attempting to manage cover image.", Toast.LENGTH_LONG).show();
+               BookForm.this.tabHost.setCurrentTab(0);
+            }
+         }
+      });
    }
 
    @Override
@@ -180,7 +176,6 @@ public class BookForm extends TabActivity {
    @Override
    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
-      Log.i(Constants.LOG_TAG, "onActivityResult");
       if (requestCode == BookForm.SELECT_IMAGE) {
          if (resultCode == Activity.RESULT_OK) {
             // intentionally do NOT use an AsyncTask (confusing for UI, returns onActResult too fast)
@@ -209,8 +204,6 @@ public class BookForm extends TabActivity {
             Intent intent = new Intent(BookForm.this, BookDetail.class);
             BookForm.this.startActivity(intent);
             
-            ///Log.i(Constants.LOG_TAG, "DATA - " + selectedImageUri);
-            ///Log.i(Constants.LOG_TAG, "path - " + selectedImageUri.getPath());
             ///this.selectCoverImageTask = new SelectCoverImageTask();
             ///this.selectCoverImageTask.execute(selectedImageUri);
          }
