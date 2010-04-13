@@ -234,38 +234,15 @@ public class DataHelper {
 
    public Book selectBook(final long id) {
       Book b = null;
-      // TODO add join to bookuserdata - rather than sep query
       Cursor c =
                this.db.query(DataHelper.BOOK_TABLE,
-                        new String[] { DataConstants.ISBN10, DataConstants.ISBN13, DataConstants.TITLE,
-                                 DataConstants.SUBTITLE, DataConstants.PUBLISHER, DataConstants.DESCRIPTION,
-                                 DataConstants.FORMAT, DataConstants.SUBJECT, DataConstants.DATEPUB },
-                        DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) }, null, null, null, "1");
+                        new String[] { DataConstants.BOOKID, DataConstants.ISBN10, DataConstants.ISBN13,
+                                 DataConstants.TITLE, DataConstants.SUBTITLE, DataConstants.PUBLISHER,
+                                 DataConstants.DESCRIPTION, DataConstants.FORMAT, DataConstants.SUBJECT,
+                                 DataConstants.DATEPUB }, DataConstants.BOOKID + " = ?", new String[] { String
+                                 .valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
-         b = new Book();
-         b.id = id;
-         try {
-            b.isbn10 = (c.getString(0));
-         } catch (IllegalArgumentException e) {
-         }
-         try {
-            b.isbn13 = (c.getString(1));
-         } catch (IllegalArgumentException e) {
-         }
-         b.title = (c.getString(2));
-         b.subTitle = (c.getString(3));
-         b.publisher = (c.getString(4));
-         b.description = (c.getString(5));
-         b.format = (c.getString(6));
-         b.subject = (c.getString(7));
-         b.datePubStamp = (c.getLong(8));
-         b.authors = (this.selectAuthorsByBookId(id));
-
-         Book userData = this.selectBookUserData(id);
-         if (userData != null) {
-            b.read = (userData.read);
-            b.rating = (userData.rating);
-         }
+         b = this.buildBookFromFullQueryCursor(c);
       }
       if ((c != null) && !c.isClosed()) {
          c.close();
@@ -275,7 +252,6 @@ public class DataHelper {
 
    public HashSet<Book> selectAllBooks() {
       HashSet<Book> set = new HashSet<Book>();
-      // NOTE - add join to bookuserdata - rather than sep query
       Cursor c =
                this.db.query(DataHelper.BOOK_TABLE,
                         new String[] { DataConstants.BOOKID, DataConstants.ISBN10, DataConstants.ISBN13,
@@ -284,31 +260,7 @@ public class DataHelper {
                                  DataConstants.DATEPUB }, null, null, null, null, DataConstants.TITLE + " desc", null);
       if (c.moveToFirst()) {
          do {
-            Book b = new Book();
-            b.id = (c.getLong(0));
-            try {
-               b.isbn10 = (c.getString(1));
-            } catch (IllegalArgumentException e) {
-            }
-            try {
-               b.isbn13 = (c.getString(2));
-            } catch (IllegalArgumentException e) {
-            }
-            b.title = (c.getString(3));
-            b.subTitle = (c.getString(4));
-            b.publisher = (c.getString(5));
-            b.description = (c.getString(6));
-            b.format = (c.getString(7));
-            b.subject = (c.getString(8));
-            b.datePubStamp = (c.getLong(9));
-            b.authors = (this.selectAuthorsByBookId(b.id));
-
-            Book userData = this.selectBookUserData(b.id);
-            if (userData != null) {
-               b.read = (userData.read);
-               b.rating = (userData.rating);
-            }
-
+            Book b = this.buildBookFromFullQueryCursor(c);
             set.add(b);
          } while (c.moveToNext());
       }
@@ -327,6 +279,7 @@ public class DataHelper {
                            DataConstants.AUTHORID + " = ?", new String[] { String.valueOf(a.id) }, null, null, null);
          if (c.moveToFirst()) {
             do {
+               // makes an addtl query for every name, not the best approach here
                Book b = this.selectBook(c.getLong(0));
                set.add(b);
             } while (c.moveToNext());
@@ -334,6 +287,25 @@ public class DataHelper {
          if ((c != null) && !c.isClosed()) {
             c.close();
          }
+      }
+      return set;
+   }
+
+   public HashSet<Book> selectAllBooksByTitle(final String title) {
+      HashSet<Book> set = new HashSet<Book>();
+      Cursor c =
+               this.db.query(DataHelper.BOOK_TABLE, new String[] { DataConstants.BOOKID },
+                        DataConstants.TITLE + " = ?", new String[] { title }, null, null,
+                        DataConstants.TITLE + " desc", null);
+      if (c.moveToFirst()) {
+         do {
+            // makes an addtl query for every title, not the best approach here
+            Book b = this.selectBook(c.getLong(0));
+            set.add(b);
+         } while (c.moveToNext());
+      }
+      if ((c != null) && !c.isClosed()) {
+         c.close();
       }
       return set;
    }
@@ -369,6 +341,38 @@ public class DataHelper {
             }
          }
       }
+   }
+
+   private Book buildBookFromFullQueryCursor(Cursor c) {
+      Book b = null;
+      if (c != null && !c.isClosed()) {
+         b = new Book();
+         b.id = c.getLong(0);
+         try {
+            b.isbn10 = (c.getString(1));
+         } catch (IllegalArgumentException e) {
+         }
+         try {
+            b.isbn13 = (c.getString(2));
+         } catch (IllegalArgumentException e) {
+         }
+         b.title = (c.getString(3));
+         b.subTitle = (c.getString(4));
+         b.publisher = (c.getString(5));
+         b.description = (c.getString(6));
+         b.format = (c.getString(7));
+         b.subject = (c.getString(8));
+         b.datePubStamp = (c.getLong(9));
+         b.authors = (this.selectAuthorsByBookId(b.id));
+
+         // TODO add join to bookuserdata - rather than sep query
+         Book userData = this.selectBookUserData(b.id);
+         if (userData != null) {
+            b.read = (userData.read);
+            b.rating = (userData.rating);
+         }
+      }
+      return b;
    }
 
    //

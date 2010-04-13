@@ -16,8 +16,6 @@ public class BookWormApplication extends Application {
 
    public static final String APP_NAME = "BookWorm";
 
-   private static final boolean IMAGE_CACHE_ENABLED = true;
-
    private boolean debugEnabled;
 
    private SharedPreferences prefs;
@@ -40,7 +38,7 @@ public class BookWormApplication extends Application {
 
       this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
       this.dataHelper = new DataHelper(this);
-      this.dataImageHelper = new DataImageHelper(this, BookWormApplication.IMAGE_CACHE_ENABLED);
+      this.dataImageHelper = new DataImageHelper(this);
 
       this.establishBookDataSourceFromProvider();     
    }
@@ -51,7 +49,7 @@ public class BookWormApplication extends Application {
       Log.i(Constants.LOG_TAG, "establishing book data provider using class name - " + className);
       try {
          Class<?> clazz = Class.forName(className);
-         // TODO validate that clazz is of IBookDataSource type?
+         // NOTE - validate that clazz is of IBookDataSource type?
          this.bookDataSource = (IBookDataSource) clazz.newInstance();
       } catch (ClassNotFoundException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);

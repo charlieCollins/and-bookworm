@@ -8,19 +8,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.os.Environment;
-import android.util.Log;
 
-import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.CacheMap;
 import com.totsp.bookworm.util.CoverImageUtil;
-import com.totsp.bookworm.util.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Util class to use Android external storage to store and retrieve images with
@@ -32,19 +27,8 @@ import java.util.HashMap;
 public class DataImageHelper {
 
    private static final String IMAGES_LOCATION = "bookwormdata/images/";
-   private final HashMap<String, Bitmap> imageThumbCache = new CacheMap<String, Bitmap>(250);
-   private final boolean thumbCacheEnabled;
 
-   public DataImageHelper(final Context context, final boolean thumbCacheEnabled) {
-      this.thumbCacheEnabled = thumbCacheEnabled;
-   }
-
-   public void clearThumbCache() {
-      this.imageThumbCache.clear();
-   }
-
-   public void clearThumbCache(final String item) {
-      this.imageThumbCache.remove(item);
+   public DataImageHelper(final Context context) {
    }
 
    // TODO could be used (with change path name to .images above) to remove old images dir
@@ -82,10 +66,6 @@ public class DataImageHelper {
 
    public final Bitmap retrieveBitmap(final String title, final Long id, final boolean thumb) {
       String name = this.getNameKey(title, id);
-
-      if (thumb && this.thumbCacheEnabled && this.imageThumbCache.containsKey(name)) {
-         return this.imageThumbCache.get(name);
-      }
 
       Bitmap bitmap = null;
 
@@ -131,11 +111,6 @@ public class DataImageHelper {
          fos = new FileOutputStream(fileThumb);
          bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
          fos.close();
-
-         if (this.thumbCacheEnabled && (bitmapThumb != null)) {
-            this.imageThumbCache.put(name, bitmapThumb);
-         }
-
       } catch (FileNotFoundException e) {
          e.printStackTrace();
       } catch (IOException e) {

@@ -77,12 +77,12 @@ public class BookForm extends TabActivity {
                this.getResources().getDrawable(android.R.drawable.ic_menu_edit)).setContent(R.id.bookformtab1));
       this.tabHost.addTab(this.tabHost.newTabSpec("tab2").setIndicator("Manage Cover Image",
                this.getResources().getDrawable(android.R.drawable.ic_menu_crop)).setContent(R.id.bookformtab2));
-      this.tabHost.setCurrentTab(0);   
-      
+      this.tabHost.setCurrentTab(0);
+
       // make sure if user is ADDing a new book, and title/authors not set, they cannot go to Manage Cover Image tab
       // (we have to have a book first, before we can manage cover image)
       this.tabHost.setOnTabChangedListener(new OnTabChangeListener() {
-         public void onTabChanged(final String tabName) {            
+         public void onTabChanged(final String tabName) {
             if (tabName.equals("tab2") && (BookForm.this.application.getSelectedBook() == null)) {
                Toast.makeText(
                         BookForm.this,
@@ -116,7 +116,7 @@ public class BookForm extends TabActivity {
       this.selectCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             try {
-               BookForm.this.tabHost.setCurrentTab(0); 
+               BookForm.this.tabHost.setCurrentTab(0);
                BookForm.this.startActivityForResult(new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), BookForm.SELECT_IMAGE);
             } catch (ActivityNotFoundException e) {
@@ -150,10 +150,10 @@ public class BookForm extends TabActivity {
          this.bookEnterEditLabel.setText("Add Book");
       }
    }
-   
+
    @Override
    public void onStart() {
-      super.onStart();      
+      super.onStart();
    }
 
    @Override
@@ -180,14 +180,14 @@ public class BookForm extends TabActivity {
       if (requestCode == BookForm.SELECT_IMAGE) {
          if (resultCode == Activity.RESULT_OK) {
             // intentionally do NOT use an AsyncTask (confusing for UI, returns onActResult too fast)
-            Uri selectedImageUri = data.getData();            
+            Uri selectedImageUri = data.getData();
             InputStream is = null;
             try {
                is = BookForm.this.getContentResolver().openInputStream(selectedImageUri);
                Bitmap bitmap = BitmapFactory.decodeStream(is);
                Book book = BookForm.this.application.getSelectedBook();
                if ((bitmap != null) && (book != null)) {
-                  BookForm.this.application.getDataImageHelper().storeBitmap(bitmap, book.title, book.id);                  
+                  BookForm.this.application.getDataImageHelper().storeBitmap(bitmap, book.title, book.id);
                }
             } catch (FileNotFoundException e) {
                Log.e(Constants.LOG_TAG, e.getMessage(), e);
@@ -200,17 +200,17 @@ public class BookForm extends TabActivity {
                   }
                }
             }
-            
+
             Toast.makeText(BookForm.this, "Book updated", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookForm.this, BookDetail.class);
             BookForm.this.startActivity(intent);
-            
+
             ///this.selectCoverImageTask = new SelectCoverImageTask();
             ///this.selectCoverImageTask.execute(selectedImageUri);
          }
       }
    }
-   
+
    @Override
    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
@@ -220,7 +220,7 @@ public class BookForm extends TabActivity {
             this.application.establishSelectedBook(bookId);
             this.setExistingViewData();
          }
-      }      
+      }
    }
 
    @Override
@@ -292,7 +292,7 @@ public class BookForm extends TabActivity {
 
       this.saveBookTask = new SaveBookTask();
       this.saveBookTask.execute(newBook);
-   }  
+   }
 
    //
    // AsyncTasks
@@ -317,6 +317,9 @@ public class BookForm extends TabActivity {
             this.newBook = true;
             long bookId = BookForm.this.application.getDataHelper().insertBook(book);
             BookForm.this.application.establishSelectedBook(bookId);
+            // also auto store generated cover with new form based book insert
+            Bitmap generatedCover = BookForm.this.application.getDataImageHelper().createCoverImage(book.title);
+            BookForm.this.application.getDataImageHelper().storeBitmap(generatedCover, book.title, book.id);
             return true;
          }
          return false;
