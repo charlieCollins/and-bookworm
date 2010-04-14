@@ -40,7 +40,7 @@ public class BookWormApplication extends Application {
       this.dataHelper = new DataHelper(this);
       this.dataImageHelper = new DataImageHelper(this);
 
-      this.establishBookDataSourceFromProvider();     
+      this.establishBookDataSourceFromProvider();
    }
 
    private void establishBookDataSourceFromProvider() {

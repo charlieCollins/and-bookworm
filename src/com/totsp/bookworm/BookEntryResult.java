@@ -97,7 +97,8 @@ public class BookEntryResult extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, MENU_SCANNING_TIPS, 0, "Scanning Tips").setIcon(android.R.drawable.ic_menu_info_details);
+      menu.add(0, BookEntryResult.MENU_SCANNING_TIPS, 0, "Scanning Tips").setIcon(
+               android.R.drawable.ic_menu_info_details);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -161,8 +162,8 @@ public class BookEntryResult extends Activity {
 
       public GetBookDataTask() {
          this.gbs = (GoogleBookDataSource) BookEntryResult.this.application.getBookDataSource();
-         if (BookEntryResult.this.application.isDebugEnabled() && this.gbs != null) {
-            gbs.setDebugEnabled(true);
+         if (BookEntryResult.this.application.isDebugEnabled() && (this.gbs != null)) {
+            this.gbs.setDebugEnabled(true);
          }
       }
 

@@ -80,7 +80,7 @@ public class BookDetail extends Activity {
       this.bookTitle = null;
       super.onPause();
    }
-   
+
    // go back to Main on back from here
    @Override
    public boolean onKeyDown(final int keyCode, final KeyEvent event) {

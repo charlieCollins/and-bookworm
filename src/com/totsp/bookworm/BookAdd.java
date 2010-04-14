@@ -28,7 +28,7 @@ public class BookAdd extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.setContentView(R.layout.bookadd);
-      this.application = (BookWormApplication) this.getApplication();      
+      this.application = (BookWormApplication) this.getApplication();
 
       this.scanButton = (Button) this.findViewById(R.id.bookaddscanbutton);
       this.scanButton.setOnClickListener(new OnClickListener() {
@@ -76,7 +76,7 @@ public class BookAdd extends Activity {
             Log.d(Constants.LOG_TAG, "Scan result format was - " + scanResult.getFormatName());
             Log.d(Constants.LOG_TAG, "Scan result contents are - " + scanResult.getContents());
          }
-         if (scanResult.getFormatName() != null && !scanResult.getFormatName().equals("EAN_13")) {
+         if ((scanResult.getFormatName() != null) && !scanResult.getFormatName().equals("EAN_13")) {
             // if it's not EAN 13 we are likely gonna have issues 
             // we are using PRODUCT_MODE which limits to UPC and EAN
             // we *might* be able to parse ISBN from UPC, but pattern is not understood, yet

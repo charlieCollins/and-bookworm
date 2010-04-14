@@ -145,9 +145,7 @@ public class BookSearch extends Activity {
          this.footerViewShown = true;
       }
 
-      this.adapter =
-               new ArrayAdapter<Book>(BookSearch.this, R.layout.simple_list_item_1,
-                        BookSearch.this.parsedBooks);
+      this.adapter = new ArrayAdapter<Book>(BookSearch.this, R.layout.simple_list_item_1, BookSearch.this.parsedBooks);
       this.searchResults.setAdapter(this.adapter);
       if (this.selectorPosition > 2) {
          this.searchResults.setSelection(this.selectorPosition - 1);

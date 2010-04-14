@@ -343,9 +343,9 @@ public class DataHelper {
       }
    }
 
-   private Book buildBookFromFullQueryCursor(Cursor c) {
+   private Book buildBookFromFullQueryCursor(final Cursor c) {
       Book b = null;
-      if (c != null && !c.isClosed()) {
+      if ((c != null) && !c.isClosed()) {
          b = new Book();
          b.id = c.getLong(0);
          try {
