@@ -47,7 +47,12 @@
 	Current version 1.0.5\n
 	\n
 	Changelog version 1.0.5:\n
-	*TODO\n
+	*Fix issue 12 - Force close on some devices with input form (Camera causing issues), use new form, see enh-14.\n
+	*Enhancement 14 - Switch to new entry form, and allow user to select image for cover from gallery (for new, and existing books).\n
+	*Fix issue 15 - Remove HTML from this about/detail dialog. Formatting lost, but better than random (more work to do for this).\n
+	*Fix issue 24 - Make ISBN editable. This allows users to enter correct ISBN, which then can be used to retrieve cover images.\n
+	*Enhancement 25 - Warn on the book add page if the current DB/list already has same book (whether scan or search).\n
+	*Enhancement 26 - Make compatible with Android 1.5 for users still running older release (future may split). 
 	\n
     Changelog version 1.0.4:\n
     *Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).\n    
@@ -65,7 +70,7 @@
 	*Fix issue 5 - reset cover image not persistent.\n
 	*Fix issue 4 - make Splash skip the default.\n 
 	*Additional small fixes, change detail menu logos, and add this about detail panel.\n
-    \n\n
+    \n
     Please let me know if you come across any new issues, the project site issue tracker is where
 	currently known issues and enhancement plans are logged. Thanks! 
 	</string>
