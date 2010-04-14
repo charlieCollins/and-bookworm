@@ -204,7 +204,6 @@ public class BookForm extends TabActivity {
             Toast.makeText(BookForm.this, "Book updated", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookForm.this, BookDetail.class);
             BookForm.this.startActivity(intent);
-
             ///this.selectCoverImageTask = new SelectCoverImageTask();
             ///this.selectCoverImageTask.execute(selectedImageUri);
          }
@@ -338,6 +337,8 @@ public class BookForm extends TabActivity {
                Intent intent = new Intent(BookForm.this, BookDetail.class);
                intent.putExtra("RELOAD_AFTER_EDIT", true);
                BookForm.this.startActivity(intent);
+            } else {
+               BookForm.this.setExistingViewData();
             }
          }
       }
