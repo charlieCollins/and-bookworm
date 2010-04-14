@@ -318,8 +318,9 @@ public class BookForm extends TabActivity {
             long bookId = BookForm.this.application.getDataHelper().insertBook(book);
             BookForm.this.application.establishSelectedBook(bookId);
             // also auto store generated cover with new form based book insert
+            Log.i(Constants.LOG_TAG, "generating cover image with new book save");
             Bitmap generatedCover = BookForm.this.application.getDataImageHelper().createCoverImage(book.title);
-            BookForm.this.application.getDataImageHelper().storeBitmap(generatedCover, book.title, book.id);
+            BookForm.this.application.getDataImageHelper().storeBitmap(generatedCover, book.title, bookId);
             return true;
          }
          return false;
