@@ -50,7 +50,7 @@ Current version 1.0.5 Changelog:\n
 *Fix issue 15 - Remove HTML from this about/detail dialog. Formatting lost, but better than random (more work to do for this).\n
 *Fix issue 24 - Make ISBN editable. This allows users to enter correct ISBN, which then can be used to retrieve cover images.\n
 *Enhancement 25 - Warn on the book add page if the current DB/list already has same book (whether scan or search).\n
-*Enhancement 26 - Make compatible with Android 1.5 for users still running older release (future may split).\n 
+*Enhancement 26 - Make compatible with Android 1.5 for users still running older release (current version still 1.6, will make separate 1.5 app name/release).\n 
 \n
 Version 1.0.4 Changelog:\n
 *Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).\n
