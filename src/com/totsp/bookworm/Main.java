@@ -154,11 +154,11 @@ public class Main extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, Main.MENU_SORT, 1, "Sort List").setIcon(android.R.drawable.ic_menu_sort_by_size);
+      menu.add(0, Main.MENU_SORT, 1, "Sort Books").setIcon(android.R.drawable.ic_menu_sort_by_size);
       menu.add(0, Main.MENU_BOOKADD, 2, "Add Book").setIcon(android.R.drawable.ic_menu_add);
-      menu.add(0, Main.MENU_SEND, 4, "Send List").setIcon(android.R.drawable.ic_menu_send);
-      menu.add(0, Main.MENU_ABOUT, 3, "About").setIcon(android.R.drawable.ic_menu_help);
-      menu.add(0, Main.MENU_PREFS, 4, "Prefs").setIcon(android.R.drawable.ic_menu_preferences);
+      menu.add(0, Main.MENU_SEND, 3, "Send Books").setIcon(android.R.drawable.ic_menu_send);
+      menu.add(0, Main.MENU_ABOUT, 4, "About").setIcon(android.R.drawable.ic_menu_help);
+      menu.add(0, Main.MENU_PREFS, 5, "Prefs").setIcon(android.R.drawable.ic_menu_preferences);
       menu.add(0, Main.MENU_MANAGE, 6, "Manage Database").setIcon(android.R.drawable.ic_menu_manage);
       menu.add(0, Main.MENU_RESET_COVER_IMAGES, 7, "Reset Cover Images").setIcon(android.R.drawable.ic_menu_gallery);
       return super.onCreateOptionsMenu(menu);

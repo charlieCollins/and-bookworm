@@ -108,6 +108,7 @@ public class DataHelper {
    //
    // book
    //   
+   // TODO with cols at the top, the result of this query is basically what we need for the "send" option
    public Cursor getSelectBookJoinCursor(final String orderBy) {
       // note that query MUST have a column named _id     
       String query =
