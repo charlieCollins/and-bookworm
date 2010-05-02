@@ -36,18 +36,21 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.model.BookListStats;
 
 import java.util.HashSet;
 
 public class Main extends Activity {
 
-   private static final int MENU_ABOUT = 0;
-   private static final int MENU_PREFS = 1;
+   private static final int MENU_SORT = 1;
    private static final int MENU_BOOKADD = 2;
-   private static final int MENU_SORT = 3;
-   private static final int MENU_SEND = 4;
-   private static final int MENU_MANAGE = 5;
-   private static final int MENU_RESET_COVER_IMAGES = 6;
+   private static final int MENU_STATS = 3;
+   private static final int MENU_ABOUT = 4;
+   private static final int MENU_PREFS = 5;
+   // after first 5 next items go in "more" selection
+   private static final int MENU_SEND = 6;
+   private static final int MENU_MANAGE = 7;
+   private static final int MENU_RESET_COVER_IMAGES = 8;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -69,8 +72,9 @@ public class Main extends Activity {
    private Bitmap star5;
 
    private ResetAllCoverImagesTask resetAllCoverImagesTask;
-   
-   private AlertDialog.Builder sortDialog;   
+
+   private AlertDialog.Builder sortDialog;
+   private AlertDialog.Builder statsDialog;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -111,33 +115,42 @@ public class Main extends Activity {
             }
          }
       });
-      
+
       this.sortDialog = new AlertDialog.Builder(this);
-      sortDialog.setTitle("Sort by");
-      sortDialog.setItems(new CharSequence[] { "Title", "Author(s)", "Rating", "Read", "Publisher" }, new DialogInterface.OnClickListener() {
-         public void onClick(DialogInterface d, int selected) {
-            switch (selected) {
-            case 0:               
-               Main.this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
-               break;
-            case 1: 
-               Main.this.saveSortOrder(DataHelper.ORDER_BY_AUTHORS_ASC);                  
-               break;
-            case 2:                  
-               Main.this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
-               break;
-            case 3:
-               Main.this.saveSortOrder(DataHelper.ORDER_BY_READ_DESC);
-               break;
-            case 4:
-               Main.this.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
-               break;
-            }
-            Main.this.bindBookList();
-         }
+      this.sortDialog.setTitle("Sort by");
+      this.sortDialog.setItems(new CharSequence[] { "Title", "Author(s)", "Rating", "Read", "Publisher" },
+               new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface d, int selected) {
+                     switch (selected) {
+                     case 0:
+                        Main.this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
+                        break;
+                     case 1:
+                        Main.this.saveSortOrder(DataHelper.ORDER_BY_AUTHORS_ASC);
+                        break;
+                     case 2:
+                        Main.this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
+                        break;
+                     case 3:
+                        Main.this.saveSortOrder(DataHelper.ORDER_BY_READ_DESC);
+                        break;
+                     case 4:
+                        Main.this.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
+                        break;
+                     }
+                     Main.this.bindBookList();
+                  }
+               });
+      this.sortDialog.create();
+
+      this.statsDialog = new AlertDialog.Builder(this);
+      this.statsDialog.setTitle("Book List Stats");
+      this.statsDialog.setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+         public void onClick(DialogInterface d, int i) {
+         };
       });
-      this.sortDialog.create();      
-      
+      this.statsDialog.create();
+
       this.registerForContextMenu(this.bookListView);
 
       this.bindBookList();
@@ -152,31 +165,50 @@ public class Main extends Activity {
    public boolean onCreateOptionsMenu(final Menu menu) {
       menu.add(0, Main.MENU_SORT, 1, "Sort Books").setIcon(android.R.drawable.ic_menu_sort_by_size);
       menu.add(0, Main.MENU_BOOKADD, 2, "Add Book").setIcon(android.R.drawable.ic_menu_add);
-      menu.add(0, Main.MENU_SEND, 3, "Send Books").setIcon(android.R.drawable.ic_menu_send);
+      menu.add(0, Main.MENU_STATS, 3, "List Stats").setIcon(android.R.drawable.ic_menu_info_details);
       menu.add(0, Main.MENU_ABOUT, 4, "About").setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 5, "Prefs").setIcon(android.R.drawable.ic_menu_preferences);
-      menu.add(0, Main.MENU_MANAGE, 6, "Manage Database").setIcon(android.R.drawable.ic_menu_manage);
-      menu.add(0, Main.MENU_RESET_COVER_IMAGES, 7, "Reset Cover Images").setIcon(android.R.drawable.ic_menu_gallery);
+      menu.add(0, Main.MENU_SEND, 6, "Send Book List").setIcon(android.R.drawable.ic_menu_send);
+      menu.add(0, Main.MENU_MANAGE, 7, "Manage Database").setIcon(android.R.drawable.ic_menu_manage);
+      menu.add(0, Main.MENU_RESET_COVER_IMAGES, 8, "Reset Cover Images").setIcon(android.R.drawable.ic_menu_gallery);
       return super.onCreateOptionsMenu(menu);
    }
 
    @Override
    public boolean onOptionsItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
+      case MENU_SORT:
+         this.sortDialog.show();
+         return true;
+      case MENU_BOOKADD:
+         this.startActivity(new Intent(Main.this, BookAdd.class));
+         return true;
+      case MENU_STATS:
+         BookListStats stats = this.application.getDataHelper().getStats();
+         StringBuilder sb = new StringBuilder();
+         sb.append("Total books: " + stats.totalBooks + "\n");
+         sb.append("Total authors: " + stats.totalAuthors + "\n");
+         sb.append("Read books: " + stats.readBooks + "\n");
+         sb.append("5 star books: " + stats.fiveStarBooks + "\n");
+         sb.append("4 star books: " + stats.fourStarBooks + "\n");
+         sb.append("3 star books: " + stats.threeStarBooks + "\n");
+         sb.append("2 star books: " + stats.twoStarBooks + "\n");
+         sb.append("1 star books: " + stats.oneStarBooks + "\n");
+         sb.append("Unrated books: "
+                  + (stats.totalBooks - (stats.fiveStarBooks + stats.fourStarBooks + stats.threeStarBooks
+                           + stats.twoStarBooks + stats.oneStarBooks)) + "\n");
+         this.statsDialog.setMessage(sb.toString());
+         this.statsDialog.show();
+         return true;
       case MENU_ABOUT:
          this.startActivity(new Intent(Main.this, About.class));
          return true;
       case MENU_PREFS:
          this.startActivity(new Intent(Main.this, Preferences.class));
          return true;
-      case MENU_BOOKADD:
-         this.startActivity(new Intent(Main.this, BookAdd.class));
-         return true;
-      case MENU_SORT:         
-         this.sortDialog.show();
-         return true;
+         // below first 5 are "more" options
       case MENU_SEND:
-         Toast.makeText(this, "TODO send as CSV or HTML or TEXT", Toast.LENGTH_SHORT).show();         
+         Toast.makeText(this, "TODO send as CSV or HTML or TEXT", Toast.LENGTH_SHORT).show();
          return true;
       case MENU_MANAGE:
          this.startActivity(new Intent(Main.this, ManageData.class));
@@ -221,7 +253,7 @@ public class Main extends Activity {
                   "Yes, I'm Sure", new DialogInterface.OnClickListener() {
                      public void onClick(final DialogInterface d, final int i) {
                         Main.this.application.getDataImageHelper().deleteBitmapSourceFile(b.title, b.id);
-                        Main.this.application.getDataHelper().deleteBook(b.id);                        
+                        Main.this.application.getDataHelper().deleteBook(b.id);
                         Main.this.bindBookList();
                         ///Main.this.startActivity(Main.this.getIntent());
                         ///Main.this.finish();
@@ -319,8 +351,8 @@ public class Main extends Activity {
          ViewHolder holder = (ViewHolder) v.getTag();
 
          if ((c != null) && !c.isClosed()) {
-            long id = c.getLong(0);           
-            
+            long id = c.getLong(0);
+
             // TODO investigate, may need to file Android/SQLite bug
             // Log.i(Constants.LOG_TAG, "COLUMN INDEX rating - " + c.getColumnIndex(DataConstants.RATING));
             // as soon as query has group by or group_concat the getColumnIndex fails? (explicit works)
@@ -336,7 +368,7 @@ public class Main extends Activity {
             blurb = 8
             authors = 9
              */
-            
+
             int rating = c.getInt(7);
             int readStatus = c.getInt(6);
             String title = c.getString(1);

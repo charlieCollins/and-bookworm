@@ -13,6 +13,7 @@ import android.util.Log;
 import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.model.BookListStats;
 
 import java.util.HashSet;
 
@@ -572,6 +573,38 @@ public class DataHelper {
          this.db.endTransaction();
       }
       this.db.execSQL("vacuum");
+   }
+   
+   // stats specific
+   public BookListStats getStats() {
+      BookListStats stats = new BookListStats();
+      
+      ///HashSet<Book> books = this.selectAllBooks();
+      ///HashSet<Author> authors = this.selectAllAuthors();
+      
+      stats.totalBooks = this.getCountFromTable(DataHelper.BOOK_TABLE, "");
+      stats.totalAuthors = this.getCountFromTable(DataHelper.AUTHOR_TABLE, "");
+      stats.readBooks = this.getCountFromTable(DataHelper.BOOKUSERDATA_TABLE, "where bookuserdata.rstat = 1");
+      stats.fiveStarBooks = this.getCountFromTable(DataHelper.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 5");
+      stats.fourStarBooks = this.getCountFromTable(DataHelper.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 4");
+      stats.threeStarBooks = this.getCountFromTable(DataHelper.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 3");
+      stats.twoStarBooks = this.getCountFromTable(DataHelper.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 2");
+      stats.oneStarBooks = this.getCountFromTable(DataHelper.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 1");
+      
+      return stats;
+   } 
+   
+   private int getCountFromTable(final String table, final String whereClause) {
+      int result = 0;
+      Cursor c =
+         this.db.rawQuery("select count(*) from " + table + " " + whereClause, null);
+      if (c.moveToFirst()) {
+        result = c.getInt(0);
+      }
+      if ((c != null) && !c.isClosed()) {
+         c.close();
+      }  
+      return result;
    }
 
    //

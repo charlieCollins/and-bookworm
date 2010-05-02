@@ -244,7 +244,6 @@ public class BookEntryResult extends Activity {
             HashSet<Book> potentialDupes =
                      BookEntryResult.this.application.getDataHelper().selectAllBooksByTitle(bean.book.title);
             if (potentialDupes != null) {
-               Log.i(Constants.LOG_TAG, "potentialDupes size - " + potentialDupes.size());
                boolean dupe = false;
                for (Book b : potentialDupes) {
                   if (b.title.equals(bean.book.title)
@@ -253,7 +252,6 @@ public class BookEntryResult extends Activity {
                      break;
                   }
                }
-               Log.i(Constants.LOG_TAG, "dupe status - " + dupe);
                if (dupe) {
                   BookEntryResult.this.warnDupe.setVisibility(View.VISIBLE);
                }
