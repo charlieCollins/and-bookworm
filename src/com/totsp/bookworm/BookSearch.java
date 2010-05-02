@@ -178,7 +178,7 @@ public class BookSearch extends Activity {
       }
 
       protected void onPreExecute() {
-         this.dialog.setMessage("Searching...");
+         this.dialog.setMessage(BookSearch.this.getString(R.string.msgSearching));
          this.dialog.show();
       }
 

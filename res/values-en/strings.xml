@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">BookWorm</string>
+	<string name="by"><b>By Charlie Collins</b>\n</string>
+	<string name="aboutcontent">
+        <i>Use BookWorm to keep track of books you have read, and you intend
+            to read.
+            Maintain a log of books that you can quickly view, sort, and
+            rate.</i>
+        &lt;br /&gt;&lt;br /&gt;
+        For more
+        information, and to comment or report
+        issues,
+        please visit &lt;a
+        href="http://code.google.com/p/and-bookworm/"&gt;the
+        BookWorm project
+        site&lt;/a&gt;.
+        &lt;br /&gt;&lt;br /&gt;
+    </string>
+	
+	<string name="menuScanTips">Scanning Tips</string>
+	<string name="menuEdit">Edit</string>
+	<string name="menuEditBook">Edit Book</string>
+	<string name="menuAddBook">Add Book</string>
+	<string name="menuDeleteBook">Delete Book</string>
+	<string name="menuEditBookDetails">Edit Book Details</string>
+	<string name="menuManageCoverImage">Manage Cover Image</string>
+	<string name="menuSortBooks">Sort Books</string>
+	<string name="menuListStats">List Stats</string>
+	<string name="menuAbout">About</string>
+	<string name="menuPrefs">Prefs</string>
+	<string name="menuManageData">Manage Data</string>
+	<string name="menuResetCoverImages">Reset Cover Images</string>
+	
+	<string name="dialogYes">Yes</string>
+	<string name="dialogNo">No</string>
+	<string name="dialogCancel">Cancel</string>
+	<string name="dialogDismiss">Dismiss</string>
+	<string name="dialogSortBy">Sort By</string>		
+	
+	<string name="msgInvalidISBN">ISBN format invalid (not ISBN 10 or ISBN 13), cannot retrieve result.</string>	
+	<string name="msgFindError">Book not found using ISBN/product code %s (may not be an ISBN?).</string>	
+	<string name="msgRetrievingBookData">Retrieving book data ...</string>	
+	<string name="msgBooksListEmpty">You don't have any books in your list yet. Use the Menu Add feature to add books.</string>
+	<string name="msgScanError">Whoops, that entry didn't work. The product code/ISBN result was %s. Please try again, or use a different entry method. (If you are having trouble scanning a book, check out Menu->Scanning Tips.)</string>
+	<string name="msgDataSourceError">Book data source not found, internal error, or networking issue.</string>
+	<string name="msgISBNError">Book ISBN/product code not present.</string>    
+    <string name="msgScanningtips">*If the scanner works but recognizes a product rather than a book, try looking for a different bar code. Books often have multiple codes. The inside front cover may have another code that is different from the back. Especially for older paperback books, the inside cover code works more reliably.  &lt;br /&gt;&lt;br /&gt; *Make sure you are not scanning sticker that has been placed over the bar code by a retailer. Many retailers do this, and the proprietary retailer codes will not scan. &lt;br /&gt;&lt;br /&gt; *Some books just do not scan. Product codes that cannot be interpreted as ISBNs will not work. In those cases try a web search for the title. It's still pretty quick, and it will likely work.</string>
+    <string name="msgMinimumSave">Please save book (with minimum of title and author(s)) before attempting to manage cover image.</string>
+    <string name="msgNoActivityGalleryError">No activity found to handle Gallery selection, cannot use this method.</string>
+    <string name="msgBookUpdated">"Book updated</string>
+    <string name="msgSavingBookInfo">Saving book info...</string>
+    <string name="msgBookSaved">Book saved</string>
+    <string name="msgBookSaveError">Error saving book, book information not present, or ID null.</string>
+    <string name="msgRetrieveCoverImage">Retrieving cover image...</string>
+    <string name="msgRetrieveCoverImageError">Error retrieving cover image, book information not present, or ID null.</string>
+    <string name="msgGenerateCoverImage">Generating cover image...</string>
+    <string name="msgGenerateCoverImageError">Error generating cover image, book information not present, or ID null.</string>
+    <string name="msgSearching">Searching...</string>
+    <string name="msgReplaceExistingExport">Are you sure (this will replace any existing prior export)?</string>
+    <string name="msgReplaceExistingData">Are you sure (this will replace any existing current data)?"</string>
+    <string name="msgDeleteAllData">Are you sure (this will delete all data from database)?</string>
+    <string name="msgExternalStorageNAError">External storage is not available, unable to export data.</string>
+    <string name="msgDataDeleted">Data deleted</string>
+    <string name="msgExportingData">Exporting database...</string>
+    <string name="msgExportSuccess">Export successful!</string>
+    <string name="msgExportError">Export failed</string>
+    <string name="msgImportingData">Importing database...</string>
+    <string name="msgImportSuccess">Import successful!</string>
+    <string name="msgImportError">Import failed</string>
+    <string name="msgImportFileMissingError">Database backup file does not exist, cannot import.</string>
+    <string name="msgImportFileNonReadableError">Database backup file exists, but is not readable, cannot import.</string>
+    <string name="msgSelectBookError">Unrecoverable error selecting book.</string>
+    <string name="msgBookListStats">Book List Stats</string>
+    <string name="msgResetAllCoverImages">Reset all cover images?</string>
+    <string name="msgResetAllCoverImagesExplain">This will use the network to try to find and replace all cover images.</string>
+    <string name="msgResetCoverImagesWarnTime">Resetting cover images, this could take a few minutes...</string>
+    <string name="msgProcessingBookX">Processing book: %s.</string>
+    
+    
+    <string name="title">Title</string>
+    <string name="subtitle">Subtitle</string>
+    <string name="authors">Author(s)</string>
+    <string name="rating">Rating</string>
+    <string name="publisher">Publisher</string>
+    <string name="readstatus">Read status</string>
+	
+	
+	
+		
+	
+</resources>

@@ -22,7 +22,7 @@ public class About extends Activity {
       this.setContentView(R.layout.about);
 
       this.about = (TextView) this.findViewById(R.id.aboutcontent);
-      this.about.setText(Html.fromHtml(this.getResources().getString(R.string.aboutcontent)),
+      this.about.setText(Html.fromHtml(this.getString(R.string.aboutcontent)),
                TextView.BufferType.SPANNABLE);
       this.about.setMovementMethod(LinkMovementMethod.getInstance());
 

@@ -77,7 +77,7 @@ public class BookEntryResult extends Activity {
                   + isbn);
          BookMessageBean bean = new BookMessageBean();
          bean.code = isbn;
-         bean.message = "ISBN format invalid (not ISBN 10 or ISBN 13), cannot retrieve result.";
+         bean.message = this.getString(R.string.msgInvalidISBN);
          this.setViewsForInvalidEntry(bean);
       } else {
          this.getBookDataTask = new GetBookDataTask();
@@ -97,7 +97,7 @@ public class BookEntryResult extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, BookEntryResult.MENU_SCANNING_TIPS, 0, "Scanning Tips").setIcon(
+      menu.add(0, BookEntryResult.MENU_SCANNING_TIPS, 0, this.getResources().getString(R.string.menuScanTips)).setIcon(
                android.R.drawable.ic_menu_info_details);
       return super.onCreateOptionsMenu(menu);
    }
@@ -106,13 +106,13 @@ public class BookEntryResult extends Activity {
    public boolean onOptionsItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
       case MENU_SCANNING_TIPS:
-         new AlertDialog.Builder(BookEntryResult.this).setTitle("Scanning Tips").setMessage(
-                  Html.fromHtml(this.getResources().getString(R.string.scanningtips))).setNeutralButton("Dismiss",
-                  new DialogInterface.OnClickListener() {
-                     public void onClick(final DialogInterface d, final int i) {
+         new AlertDialog.Builder(BookEntryResult.this).setTitle(this.getResources().getString(R.string.menuScanTips))
+                  .setMessage(Html.fromHtml(this.getString(R.string.msgScanningtips))).setNeutralButton(
+                           this.getResources().getString(R.string.dialogDismiss), new DialogInterface.OnClickListener() {
+                              public void onClick(final DialogInterface d, final int i) {
 
-                     }
-                  }).show();
+                              }
+                           }).show();
          return true;
       }
       return super.onOptionsItemSelected(item);
@@ -141,13 +141,7 @@ public class BookEntryResult extends Activity {
 
    private void setViewsForInvalidEntry(final BookMessageBean bean) {
       this.bookCover.setImageResource(R.drawable.book_invalid_isbn);
-
-      StringBuilder sb = new StringBuilder();
-      sb.append("Whoops, that entry didn't work. ");
-      sb.append("The product code/ISBN used (from scanner or search) was " + bean.code + ". ");
-      sb.append("Please try again, or use a different entry method. ");
-      sb.append("(If you are having trouble scanning a book, check out the Menu->Scanning Tips.)");
-      this.bookAuthors.setText(sb.toString());
+      this.bookAuthors.setText(String.format(this.getString(R.string.msgScanError), bean.code));
    }
 
    //
@@ -168,7 +162,7 @@ public class BookEntryResult extends Activity {
       }
 
       protected void onPreExecute() {
-         this.dialog.setMessage("Retrieving book data..");
+         this.dialog.setMessage(BookEntryResult.this.getString(R.string.msgRetrievingBookData));
          this.dialog.show();
          SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BookEntryResult.this);
          // default to OpenLibrary(2) for cover image provider - for now (doesn't require login)
@@ -186,7 +180,7 @@ public class BookEntryResult extends Activity {
                   Log.e(Constants.LOG_TAG,
                            "GetBookDataTask book returned from data source null (using product code/ISBN - " + isbns[0]
                                     + ").");
-                  bean.message = "Book not found using ISBN/product code " + isbns[0] + " (may not be an ISBN?).";
+                  bean.message = String.format(BookEntryResult.this.getString(R.string.msgFindError), isbns[0]);
                } else if (b.isbn10 != null) {
                   Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, b.isbn10);
                   b.coverImage = (coverImageBitmap);
@@ -196,11 +190,11 @@ public class BookEntryResult extends Activity {
                }
             } else {
                Log.e(Constants.LOG_TAG, "GetBookDataTask book data source null, cannot add book.");
-               bean.message = "Book data source not found, internal error, or networking issue..";
+               bean.message = BookEntryResult.this.getString(R.string.msgDataSourceError);
             }
          } else {
             Log.e(Constants.LOG_TAG, "GetBookDataTask product code/ISBN null, cannot add book.");
-            bean.message = "Book ISBN/product code not present.";
+            bean.message = BookEntryResult.this.getString(R.string.msgISBNError);
          }
          return bean;
       }

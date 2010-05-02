@@ -176,7 +176,7 @@ public class BookDetail extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, BookDetail.MENU_EDIT, 0, "Edit").setIcon(android.R.drawable.ic_menu_edit);
+      menu.add(0, BookDetail.MENU_EDIT, 0, this.getString(R.string.menuEdit)).setIcon(android.R.drawable.ic_menu_edit);
       menu.add(0, BookDetail.MENU_WEB_GOOGLE, 1, null).setIcon(R.drawable.google);
       menu.add(0, BookDetail.MENU_WEB_AMAZON, 2, null).setIcon(R.drawable.amazon);
       return super.onCreateOptionsMenu(menu);
@@ -191,11 +191,11 @@ public class BookDetail extends Activity {
          return true;
       case MENU_WEB_GOOGLE:
          // TODO add fallback book isbn13 support
+         // TODO other Locales?
          uri = Uri.parse("http://books.google.com/books?isbn=" + this.application.getSelectedBook().isbn10);
          this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
          return true;
       case MENU_WEB_AMAZON:
-         // TODO add fallback book isbn13 support
          uri =
                   Uri.parse("http://www.amazon.com/gp/search?keywords=" + this.application.getSelectedBook().isbn10
                            + "&index=books");

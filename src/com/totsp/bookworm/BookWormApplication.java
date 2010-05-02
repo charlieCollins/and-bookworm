@@ -14,8 +14,6 @@ import java.util.ArrayList;
 
 public class BookWormApplication extends Application {
 
-   public static final String APP_NAME = "BookWorm";
-
    private boolean debugEnabled;
 
    private SharedPreferences prefs;
