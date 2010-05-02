@@ -48,7 +48,7 @@ public class Main extends Activity {
    private static final int MENU_ABOUT = 4;
    private static final int MENU_PREFS = 5;
    // after first 5 next items go in "more" selection
-   private static final int MENU_SEND = 6;
+   ///private static final int MENU_SEND = 6;
    private static final int MENU_MANAGE = 7;
    private static final int MENU_RESET_COVER_IMAGES = 8;
 
@@ -167,7 +167,7 @@ public class Main extends Activity {
       menu.add(0, Main.MENU_STATS, 3, "List Stats").setIcon(android.R.drawable.ic_menu_info_details);
       menu.add(0, Main.MENU_ABOUT, 4, "About").setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 5, "Prefs").setIcon(android.R.drawable.ic_menu_preferences);
-      menu.add(0, Main.MENU_SEND, 6, "Send Book List").setIcon(android.R.drawable.ic_menu_send);
+      ///menu.add(0, Main.MENU_SEND, 6, "Send Book List").setIcon(android.R.drawable.ic_menu_send);
       menu.add(0, Main.MENU_MANAGE, 7, "Manage Database").setIcon(android.R.drawable.ic_menu_manage);
       menu.add(0, Main.MENU_RESET_COVER_IMAGES, 8, "Reset Cover Images").setIcon(android.R.drawable.ic_menu_gallery);
       return super.onCreateOptionsMenu(menu);
@@ -206,9 +206,11 @@ public class Main extends Activity {
          this.startActivity(new Intent(Main.this, Preferences.class));
          return true;
          // below first 5 are "more" options
+         /*
       case MENU_SEND:
          Toast.makeText(this, "TODO send as CSV or HTML or TEXT", Toast.LENGTH_SHORT).show();
          return true;
+         */
       case MENU_MANAGE:
          this.startActivity(new Intent(Main.this, ManageData.class));
          return true;
