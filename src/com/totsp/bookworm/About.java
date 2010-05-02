@@ -1,20 +1,20 @@
 package com.totsp.bookworm;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class About extends Activity {
 
-   private static final int MENU_DETAIL = 0;
-
-   TextView about;
+   private TextView about;
+   private Button aboutDetails;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -25,6 +25,14 @@ public class About extends Activity {
       this.about.setText(Html.fromHtml(this.getResources().getString(R.string.aboutcontent)),
                TextView.BufferType.SPANNABLE);
       this.about.setMovementMethod(LinkMovementMethod.getInstance());
+
+      this.aboutDetails = (Button) this.findViewById(R.id.aboutdetails);
+      this.aboutDetails.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release_notes.html"),
+                     About.this, HTMLActivity.class));
+         }
+      });
    }
 
    @Override
@@ -50,27 +58,5 @@ public class About extends Activity {
    @Override
    protected void onSaveInstanceState(final Bundle saveState) {
       super.onSaveInstanceState(saveState);
-   }
-
-   @Override
-   public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, About.MENU_DETAIL, 0, "About Details").setIcon(android.R.drawable.ic_menu_info_details);
-      return super.onCreateOptionsMenu(menu);
-   }
-
-   @Override
-   public boolean onOptionsItemSelected(final MenuItem item) {
-      switch (item.getItemId()) {
-      case MENU_DETAIL:
-         new AlertDialog.Builder(About.this).setTitle("About BookWorm").setMessage(
-                  this.getResources().getString(R.string.aboutdetail)).setNeutralButton("Dismiss",
-                  new DialogInterface.OnClickListener() {
-                     public void onClick(final DialogInterface d, final int i) {
-
-                     }
-                  }).show();
-         return true;
-      }
-      return super.onOptionsItemSelected(item);
    }
 }

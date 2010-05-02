@@ -45,8 +45,8 @@ public class Main extends Activity {
    private static final int MENU_ABOUT = 0;
    private static final int MENU_PREFS = 1;
    private static final int MENU_BOOKADD = 2;
-   private static final int MENU_SORT_RATING = 3;
-   private static final int MENU_SORT_ALPHA = 4;
+   private static final int MENU_SORT = 3;
+   private static final int MENU_SEND = 4;
    private static final int MENU_MANAGE = 5;
    private static final int MENU_RESET_COVER_IMAGES = 6;
 
@@ -122,8 +122,8 @@ public class Main extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, Main.MENU_SORT_RATING, 0, "Sort|Rating").setIcon(android.R.drawable.ic_menu_sort_by_size);
-      menu.add(0, Main.MENU_SORT_ALPHA, 1, "Sort|Alpha").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
+      menu.add(0, Main.MENU_SORT, 1, "Sort").setIcon(android.R.drawable.ic_menu_sort_by_size);
+      menu.add(0, Main.MENU_SEND, 4, "Send").setIcon(android.R.drawable.ic_menu_send);      
       menu.add(0, Main.MENU_BOOKADD, 2, "Add Book").setIcon(android.R.drawable.ic_menu_add);
       menu.add(0, Main.MENU_ABOUT, 3, "About").setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 4, "Prefs").setIcon(android.R.drawable.ic_menu_preferences);
@@ -144,13 +144,14 @@ public class Main extends Activity {
       case MENU_BOOKADD:
          this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
-      case MENU_SORT_RATING:
-         this.bindBookList(DataHelper.ORDER_BY_RATING_DESC);
-         this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
+      case MENU_SORT:
+         ///this.bindBookList(DataHelper.ORDER_BY_RATING_DESC);
+         //this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
          return true;
-      case MENU_SORT_ALPHA:
-         this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
-         this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
+      case MENU_SEND:
+         Toast.makeText(this, "TODO send as CSV or HTML or TEXT", Toast.LENGTH_SHORT).show();
+         ///this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
+         ///this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
          return true;
       case MENU_MANAGE:
          this.startActivity(new Intent(Main.this, ManageData.class));

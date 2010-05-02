@@ -1,0 +1,41 @@
+<html>
+<style>
+* { font-family: sans-serif; color:white; }
+body { background: black;}
+</style>
+<body>
+
+<h2>BookWorm Details</h2>
+
+<p>BookWorm is an app for organizing your book collection. 
+Future plans are to add the ability to sync with multiple
+online book sources (import/export) and include book reviews
+and social features (in the works).</p>
+
+<p>Please let me know if you come across any new issues, 
+the <a href="http://code.google.com/p/and-bookworm/issues/list">project site issue tracker</a> 
+is where currently known issues and enhancement plans are logged. Thanks!</p>
+
+<h3>Current Version: 1.0.6</h3>
+<p>TODO</p>
+
+<h3>Previous Version: 1.0.5</h3>
+<ul>
+<li>Fix issue 12 - Force close on some devices with input form (Camera causing issues), use new form, see enh-14.</li>
+<li>Enhancement 14 - Switch to new entry form, and allow user to select image for cover from gallery (for new, and existing books).</li>
+<li>Fix issue 15 - Remove HTML from this about/detail dialog. Formatting lost, but better than random (more work to do for this).</li>
+<li>Fix issue 24 - Make ISBN editable. This allows users to enter correct ISBN, which then can be used to retrieve cover images.</li>
+<li>Enhancement 25 - Warn on the book add page if the current DB/list already has same book (whether scan or search).</li>
+<li>Enhancement 26 - Make compatible with Android 1.5 for users still running older release (current version still 1.6, will make separate 1.5 app name/release).</li>
+</ul>
+
+<h3>Previous Version: 1.0.4</h3>
+<ul>
+<li>Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).</li>
+<li>Enhancement - Add "Scanning Tips" menu option to no results found page.</li>
+<li>Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.). Should decode many more books now, and should not force close even when cannot decode.</li>
+<li>Fix issue 13 - Changing a book's title orphans the cover image.</li>
+</ul>
+
+</body>
+</html>

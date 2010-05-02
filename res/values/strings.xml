@@ -15,12 +15,6 @@
 			Maintain a log of books that you can quickly view, sort, and
 			rate.</i>
 		&lt;br /&gt;&lt;br /&gt;
-		In the future this application will also be
-		able to synchronize
-		(import/export) with
-		online book sources, and will include more features
-		such as book reviews (in the works).\n
-		&lt;br /&gt;&lt;br /&gt;
 		For more
 		information, and to comment or report
 		issues,
@@ -41,25 +35,6 @@
     &lt;br /&gt;&lt;br /&gt;
     *Some books just do not scan. Product codes that cannot be interpreted as ISBNs will not work. In those cases try a 
     web search for the title. It's still pretty quick, and it will likely work. 
-    </string>
-	
-	<string name="aboutdetail">		
-Current version 1.0.5 Changelog:\n	
-*Fix issue 12 - Force close on some devices with input form (Camera causing issues), use new form, see enh-14.\n
-*Enhancement 14 - Switch to new entry form, and allow user to select image for cover from gallery (for new, and existing books).\n
-*Fix issue 15 - Remove HTML from this about/detail dialog. Formatting lost, but better than random (more work to do for this).\n
-*Fix issue 24 - Make ISBN editable. This allows users to enter correct ISBN, which then can be used to retrieve cover images.\n
-*Enhancement 25 - Warn on the book add page if the current DB/list already has same book (whether scan or search).\n
-*Enhancement 26 - Make compatible with Android 1.5 for users still running older release (current version still 1.6, will make separate 1.5 app name/release).\n 
-\n
-Version 1.0.4 Changelog:\n
-*Enhancement - Add "enable debug logging" option in prefs (to try to help figure out other issues if they arise).\n
-*Enhancement - Add "Scanning Tips" menu option to no results found page.\n
-*Fix issue 10 - Force close after scan due to bar code format differences (EAN vs UPC, etc.). Should decode many more books now, and should not force close even when cannot decode.\n
-*Fix issue 13 - Changing a book's title orphans the cover image.\n
-
-Please let me know if you come across any new issues, the project site issue tracker is where currently known issues and enhancement plans are logged. Thanks!
-</string>
-	
+    </string>	
 	
 </resources>
