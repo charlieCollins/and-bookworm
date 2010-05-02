@@ -253,9 +253,9 @@ public class Main extends Activity {
                      public void onClick(final DialogInterface d, final int i) {
                         Main.this.application.getDataImageHelper().deleteBitmapSourceFile(b.title, b.id);
                         Main.this.application.getDataHelper().deleteBook(b.id);
-                        Main.this.bindBookList();
-                        ///Main.this.startActivity(Main.this.getIntent());
-                        ///Main.this.finish();
+                        ///Main.this.bindBookList();
+                        // restarting just as fast and elimates issues with deleting last item in list
+                        Main.this.startActivity(Main.this.getIntent());
                      }
                   }).setNegativeButton("No, Cancel", new DialogInterface.OnClickListener() {
             public void onClick(final DialogInterface d, final int i) {
@@ -294,7 +294,10 @@ public class Main extends Activity {
          this.startManagingCursor(this.cursor);
          this.adapter = new BookCursorAdapter(this.cursor);
          this.bookListView.setAdapter(this.adapter);
-         this.bookListView.setSelection(this.application.getLastMainListPosition());
+         int lastMainPos = this.application.getLastMainListPosition();
+         if ((lastMainPos - 1) < this.adapter.getCount()) {
+            this.bookListView.setSelection(this.application.getLastMainListPosition() - 1);
+         }        
       }
    }
 
