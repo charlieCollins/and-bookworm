@@ -26,7 +26,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
-import android.widget.Filterable;
+import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,8 +56,7 @@ public class Main extends Activity {
    private static final int MENU_CONTEXT_DELETE = 1;
 
    BookWormApplication application;
-
-   private SharedPreferences prefs;
+   SharedPreferences prefs;
 
    private ListView bookListView;
    private CursorAdapter adapter;
@@ -290,7 +289,7 @@ public class Main extends Activity {
 
    private void bindBookList() {
       String orderBy = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
-      this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy);
+      this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy, null);
       if ((this.cursor != null) && (this.cursor.getCount() > 0)) {
          this.startManagingCursor(this.cursor);
          this.adapter = new BookCursorAdapter(this.cursor);
@@ -317,14 +316,29 @@ public class Main extends Activity {
    //
    // BookCursorAdapter
    //
-   private class BookCursorAdapter extends CursorAdapter implements Filterable {
+   private class BookCursorAdapter extends CursorAdapter implements FilterQueryProvider {
 
       LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+      
       public BookCursorAdapter(final Cursor c) {
          super(Main.this, c, true);
+         this.setFilterQueryProvider(this);
       }
 
+      // FilterQueryProvider impl
+      public Cursor runQuery(CharSequence constraint) {
+         ///Log.i(Constants.LOG_TAG, "RUN QUERY - " + constraint);
+         Cursor c = null;
+         if (constraint == null || constraint.length() == 0) {            
+             c = this.getCursor();
+         } else {
+            String pattern = "'%" + constraint + "%'";
+            String orderBy = Main.this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
+            c = Main.this.application.getDataHelper().getSelectBookJoinCursor(orderBy, "where book.tit like " + pattern);
+         }         
+         return c;        
+     }
+      
       @Override
       public void bindView(final View v, final Context context, final Cursor c) {
          this.populateView(v, c);
@@ -417,7 +431,7 @@ public class Main extends Activity {
                holder.readStatus.setChecked(false);
             }
          }
-      }
+      }      
    }
 
    private class ResetAllCoverImagesTask extends AsyncTask<Void, String, Void> {

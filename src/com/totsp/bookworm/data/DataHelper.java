@@ -108,19 +108,27 @@ public class DataHelper {
 
    //
    // book
-   //   
+   // 
+   private static final String CURSOR_QUERY_PREFIX = 
+      "select book.bid as _id, book.tit, book.subtit, book.pub, book.datepub, book.format, "
+      + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb, group_concat(author.name) as authors "
+      + "from book join bookuserdata on book.bid = bookuserdata.bid "
+      + "join bookauthor on bookauthor.bid = book.bid join author on author.aid = bookauthor.aid";
    // TODO with cols at the top, the result of this query is basically what we need for the "send" option
-   public Cursor getSelectBookJoinCursor(final String orderBy) {
-      // note that query MUST have a column named _id     
-      String query =
-               "select book.bid as _id, book.tit, book.subtit, book.pub, book.datepub, book.format, "
-                        + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb, group_concat(author.name) as authors "
-                        + "from book join bookuserdata on book.bid = bookuserdata.bid "
-                        + "join bookauthor on bookauthor.bid = book.bid join author on author.aid = bookauthor.aid group by book.bid";
-      if ((orderBy != null) && (orderBy.length() > 0)) {
-         query += " order by " + orderBy;
-      }      
-      return this.db.rawQuery(query, null);
+   public Cursor getSelectBookJoinCursor(final String orderBy, final String whereClauseLimit) {
+      // note that query MUST have a column named _id  
+      
+      StringBuilder sb = new StringBuilder();
+      sb.append(CURSOR_QUERY_PREFIX);
+      if (whereClauseLimit != null && whereClauseLimit.length() > 0) {
+         sb.append(" " + whereClauseLimit);
+      }
+      sb.append(" group by book.bid");
+      if (orderBy != null && orderBy.length() > 0) {
+         sb.append(" order by " + orderBy);
+      }     
+     
+      return this.db.rawQuery(sb.toString(), null);
    }
 
    public long insertBook(final Book b) {
