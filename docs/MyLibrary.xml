@@ -62,7 +62,7 @@
       <labels />
     </book>
   </books>
-  <add_token>ACfU3U25ktCOj1KJ2I-HYQ8s-O9CAAQLeA</add_token>
-  <remove_token>ACfU3U3UNbKNLSkuyKYe1RuqatZoFfQ7Wg</remove_token>
-  <ack_token>ACfU3U3CbLQtwUihdHg95SEAhZ-S0aoKJg</ack_token>
+  <add_token>TOK</add_token>
+  <remove_token>TOK</remove_token>
+  <ack_token>TOK</ack_token>
 </library>
