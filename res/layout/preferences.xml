@@ -4,7 +4,7 @@
 	<PreferenceCategory android:title="Application Preferences">
        <CheckBoxPreference 
         android:title="Enable splash screen?" 
-        android:summary="By default Splash is shown only once after install, enable here to show at each start."
+        android:summary="By default Splash shown once after install, enable to show at each start."
         android:key="showsplash" 
         android:defaultValue="false"/>        
         <CheckBoxPreference 
