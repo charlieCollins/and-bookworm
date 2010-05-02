@@ -195,7 +195,6 @@ public class Main extends Activity {
          // TODO this stringbuilder is NOT i18n'd
          StringBuilder sb = new StringBuilder();
          sb.append("Total books: " + stats.totalBooks + "\n");
-         sb.append("Total authors: " + stats.totalAuthors + "\n");
          sb.append("Read books: " + stats.readBooks + "\n");
          sb.append("5 star books: " + stats.fiveStarBooks + "\n");
          sb.append("4 star books: " + stats.fourStarBooks + "\n");
