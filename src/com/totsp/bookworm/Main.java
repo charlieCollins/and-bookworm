@@ -137,6 +137,7 @@ public class Main extends Activity {
                         Main.this.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
                         break;
                      }
+                     Main.this.application.setLastMainListPosition(0);
                      Main.this.bindBookList();
                   }
                });
