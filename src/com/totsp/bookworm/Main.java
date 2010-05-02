@@ -103,6 +103,7 @@ public class Main extends Activity {
                if (Main.this.application.isDebugEnabled()) {
                   Log.d(Constants.LOG_TAG, "book selected - " + book.title);
                }
+               Main.this.application.setLastMainListPosition(index);
                Main.this.application.setSelectedBook(book);
                Main.this.startActivity(new Intent(Main.this, BookDetail.class));
             } else {
@@ -116,35 +117,30 @@ public class Main extends Activity {
       sortDialog.setItems(new CharSequence[] { "Title", "Author(s)", "Rating", "Read", "Publisher" }, new DialogInterface.OnClickListener() {
          public void onClick(DialogInterface d, int selected) {
             switch (selected) {
-            case 0:
-               Main.this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
+            case 0:               
                Main.this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
                break;
             case 1: 
-               Main.this.bindBookList(DataHelper.ORDER_BY_AUTHORS_ASC);
                Main.this.saveSortOrder(DataHelper.ORDER_BY_AUTHORS_ASC);                  
                break;
             case 2:                  
-               Main.this.bindBookList(DataHelper.ORDER_BY_RATING_DESC);
                Main.this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
                break;
             case 3:
-               Main.this.bindBookList(DataHelper.ORDER_BY_READ_DESC);
                Main.this.saveSortOrder(DataHelper.ORDER_BY_READ_DESC);
                break;
             case 4:
-               Main.this.bindBookList(DataHelper.ORDER_BY_PUB_ASC);
                Main.this.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
                break;
             }
+            Main.this.bindBookList();
          }
       });
       this.sortDialog.create();      
       
       this.registerForContextMenu(this.bookListView);
 
-      String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
-      this.bindBookList(sortOrder);
+      this.bindBookList();
    }
 
    @Override
@@ -214,6 +210,7 @@ public class Main extends Activity {
       AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
       long bookId = info.id;
       final Book b = this.application.getDataHelper().selectBook(bookId);
+      Main.this.application.setLastMainListPosition(info.position);
       switch (item.getItemId()) {
       case MENU_CONTEXT_EDIT:
          Main.this.application.setSelectedBook(b);
@@ -224,9 +221,10 @@ public class Main extends Activity {
                   "Yes, I'm Sure", new DialogInterface.OnClickListener() {
                      public void onClick(final DialogInterface d, final int i) {
                         Main.this.application.getDataImageHelper().deleteBitmapSourceFile(b.title, b.id);
-                        Main.this.application.getDataHelper().deleteBook(b.id);
-                        Main.this.startActivity(Main.this.getIntent());
-                        Main.this.finish();
+                        Main.this.application.getDataHelper().deleteBook(b.id);                        
+                        Main.this.bindBookList();
+                        ///Main.this.startActivity(Main.this.getIntent());
+                        ///Main.this.finish();
                      }
                   }).setNegativeButton("No, Cancel", new DialogInterface.OnClickListener() {
             public void onClick(final DialogInterface d, final int i) {
@@ -258,12 +256,14 @@ public class Main extends Activity {
       return super.onKeyDown(keyCode, event);
    }
 
-   private void bindBookList(final String orderBy) {
+   private void bindBookList() {
+      String orderBy = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
       this.cursor = this.application.getDataHelper().getSelectBookJoinCursor(orderBy);
       if ((this.cursor != null) && (this.cursor.getCount() > 0)) {
          this.startManagingCursor(this.cursor);
          this.adapter = new BookCursorAdapter(this.cursor);
          this.bookListView.setAdapter(this.adapter);
+         this.bookListView.setSelection(this.application.getLastMainListPosition());
       }
    }
 
@@ -414,7 +414,7 @@ public class Main extends Activity {
       }
 
       protected void onPostExecute(final Void v) {
-         Main.this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
+         Main.this.bindBookList();
          if (this.dialog.isShowing()) {
             this.dialog.dismiss();
          }

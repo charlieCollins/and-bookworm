@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 
-public class HTMLActivity extends Activity {
+public class HTMLScreen extends Activity {
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class HTMLActivity extends Activity {
       done.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
-            HTMLActivity.this.finish();
+            HTMLScreen.this.finish();
          }
       });
    }
