@@ -335,7 +335,8 @@ public class Main extends Activity {
             String pattern = "'%" + constraint + "%'";
             String orderBy = Main.this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
             c = Main.this.application.getDataHelper().getSelectBookJoinCursor(orderBy, "where book.tit like " + pattern);
-         }         
+         }  
+         Main.this.cursor = c;
          return c;        
      }
       
