@@ -34,7 +34,6 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.model.Book;
 
@@ -70,6 +69,8 @@ public class Main extends Activity {
    private Bitmap star5;
 
    private ResetAllCoverImagesTask resetAllCoverImagesTask;
+   
+   private AlertDialog.Builder sortDialog;   
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -109,6 +110,37 @@ public class Main extends Activity {
             }
          }
       });
+      
+      this.sortDialog = new AlertDialog.Builder(this);
+      sortDialog.setTitle("Sort by");
+      sortDialog.setItems(new CharSequence[] { "Title", "Author(s)", "Rating", "Read", "Publisher" }, new DialogInterface.OnClickListener() {
+         public void onClick(DialogInterface d, int selected) {
+            switch (selected) {
+            case 0:
+               Main.this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
+               Main.this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
+               break;
+            case 1: 
+               Main.this.bindBookList(DataHelper.ORDER_BY_AUTHORS_ASC);
+               Main.this.saveSortOrder(DataHelper.ORDER_BY_AUTHORS_ASC);                  
+               break;
+            case 2:                  
+               Main.this.bindBookList(DataHelper.ORDER_BY_RATING_DESC);
+               Main.this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
+               break;
+            case 3:
+               Main.this.bindBookList(DataHelper.ORDER_BY_READ_DESC);
+               Main.this.saveSortOrder(DataHelper.ORDER_BY_READ_DESC);
+               break;
+            case 4:
+               Main.this.bindBookList(DataHelper.ORDER_BY_PUB_ASC);
+               Main.this.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
+               break;
+            }
+         }
+      });
+      this.sortDialog.create();      
+      
       this.registerForContextMenu(this.bookListView);
 
       String sortOrder = this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataHelper.ORDER_BY_TITLE_ASC);
@@ -122,9 +154,9 @@ public class Main extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, Main.MENU_SORT, 1, "Sort").setIcon(android.R.drawable.ic_menu_sort_by_size);
-      menu.add(0, Main.MENU_SEND, 4, "Send").setIcon(android.R.drawable.ic_menu_send);      
+      menu.add(0, Main.MENU_SORT, 1, "Sort List").setIcon(android.R.drawable.ic_menu_sort_by_size);
       menu.add(0, Main.MENU_BOOKADD, 2, "Add Book").setIcon(android.R.drawable.ic_menu_add);
+      menu.add(0, Main.MENU_SEND, 4, "Send List").setIcon(android.R.drawable.ic_menu_send);
       menu.add(0, Main.MENU_ABOUT, 3, "About").setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 4, "Prefs").setIcon(android.R.drawable.ic_menu_preferences);
       menu.add(0, Main.MENU_MANAGE, 6, "Manage Database").setIcon(android.R.drawable.ic_menu_manage);
@@ -144,14 +176,11 @@ public class Main extends Activity {
       case MENU_BOOKADD:
          this.startActivity(new Intent(Main.this, BookAdd.class));
          return true;
-      case MENU_SORT:
-         ///this.bindBookList(DataHelper.ORDER_BY_RATING_DESC);
-         //this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
+      case MENU_SORT:         
+         this.sortDialog.show();
          return true;
       case MENU_SEND:
-         Toast.makeText(this, "TODO send as CSV or HTML or TEXT", Toast.LENGTH_SHORT).show();
-         ///this.bindBookList(DataHelper.ORDER_BY_TITLE_ASC);
-         ///this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
+         Toast.makeText(this, "TODO send as CSV or HTML or TEXT", Toast.LENGTH_SHORT).show();         
          return true;
       case MENU_MANAGE:
          this.startActivity(new Intent(Main.this, ManageData.class));
@@ -290,11 +319,28 @@ public class Main extends Activity {
          ViewHolder holder = (ViewHolder) v.getTag();
 
          if ((c != null) && !c.isClosed()) {
-            long id = c.getLong(c.getColumnIndex("_id"));
-            int rating = c.getInt(c.getColumnIndex(DataConstants.RATING));
-            int readStatus = c.getInt(c.getColumnIndex(DataConstants.READSTATUS));
-            String title = c.getString(c.getColumnIndex(DataConstants.TITLE));
-            String subTitle = c.getString(c.getColumnIndex(DataConstants.SUBTITLE));
+            long id = c.getLong(0);           
+            
+            // TODO investigate, may need to file Android/SQLite bug
+            // Log.i(Constants.LOG_TAG, "COLUMN INDEX rating - " + c.getColumnIndex(DataConstants.RATING));
+            // as soon as query has group by or group_concat the getColumnIndex fails? (explicit works)
+            /*
+            bid = 0
+            tit = 1
+            subtit = 2
+            pub = 3
+            datepub = 4
+            format = 5
+            rstat = 6
+            rat = 7
+            blurb = 8
+            authors = 9
+             */
+            
+            int rating = c.getInt(7);
+            int readStatus = c.getInt(6);
+            String title = c.getString(1);
+            String subTitle = c.getString(2);
 
             if (Main.this.application.isDebugEnabled()) {
                Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);

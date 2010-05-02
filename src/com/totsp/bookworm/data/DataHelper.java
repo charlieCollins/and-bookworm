@@ -25,10 +25,16 @@ import java.util.HashSet;
  */
 public class DataHelper {
 
+   public static final String ORDER_BY_AUTHORS_ASC = "authors asc, book.tit asc";
+   public static final String ORDER_BY_AUTHORS_DESC = "authors desc, book.tit asc";
    public static final String ORDER_BY_TITLE_ASC = "book.tit asc";
    public static final String ORDER_BY_TITLE_DESC = "book.tit desc";
    public static final String ORDER_BY_RATING_ASC = "bookuserdata.rat asc, book.tit asc";
    public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc, book.tit asc";
+   public static final String ORDER_BY_READ_ASC = "bookuserdata.rstat asc, book.tit asc";
+   public static final String ORDER_BY_READ_DESC = "bookuserdata.rstat desc, book.tit asc";
+   public static final String ORDER_BY_PUB_ASC = "book.pub asc, book.tit asc";
+   public static final String ORDER_BY_PUB_DESC = "book.pub desc, book.tit asc";
 
    private static final String DATABASE_NAME = "bookworm.db";
    private static final int DATABASE_VERSION = 10;
@@ -103,14 +109,15 @@ public class DataHelper {
    // book
    //   
    public Cursor getSelectBookJoinCursor(final String orderBy) {
-      // note that query MUST have a column named _id
+      // note that query MUST have a column named _id     
       String query =
                "select book.bid as _id, book.tit, book.subtit, book.pub, book.datepub, book.format, "
-                        + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb from book "
-                        + "join bookuserdata on book.bid = bookuserdata.bid";
+                        + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb, group_concat(author.name) as authors "
+                        + "from book join bookuserdata on book.bid = bookuserdata.bid "
+                        + "join bookauthor on bookauthor.bid = book.bid join author on author.aid = bookauthor.aid group by book.bid";
       if ((orderBy != null) && (orderBy.length() > 0)) {
          query += " order by " + orderBy;
-      }
+      }      
       return this.db.rawQuery(query, null);
    }
 
