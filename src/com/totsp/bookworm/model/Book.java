@@ -32,21 +32,22 @@ public final class Book {
    public transient Bitmap coverImage;
 
    public Book() {
-      this.authors = new LinkedHashSet<Author>();
+      authors = new LinkedHashSet<Author>();
    }
 
    public Book(final String title) {
       if ((title == null) || (title.length() < 1)) {
-         throw new IllegalArgumentException("Error, book must have a title (minimum size 1)");
+         throw new IllegalArgumentException(
+                  "Error, book must have a title (minimum size 1)");
       }
-      this.authors = new LinkedHashSet<Author>();
+      authors = new LinkedHashSet<Author>();
       this.title = title;
    }
 
    @Override
    public String toString() {
       // this is the default display in a ListView, also used by Filter, etc, so make it significant/short/sweet
-      return this.title;
+      return title;
    }
 
    @Override
@@ -56,12 +57,16 @@ public final class Book {
       }
       if (obj instanceof Book) {
          Book lhs = (Book) obj;
-         if ((lhs.id == this.id) && (lhs.isbn10.equals(this.isbn10)) && (lhs.isbn13.equals(this.isbn13))
-                  && (lhs.title.equals(this.title)) && (lhs.subTitle.equals(this.subTitle))
-                  && (lhs.authors.equals(this.authors)) && (lhs.publisher.equals(this.publisher))
-                  && (lhs.description.equals(this.description)) && (lhs.format.equals(this.format))
-                  && (lhs.subject.equals(this.subject)) && (lhs.datePubStamp == this.datePubStamp)
-                  && (lhs.rating == this.rating) && (lhs.read == this.read)) {
+         if ((lhs.id == id) && (lhs.isbn10.equals(isbn10))
+                  && (lhs.isbn13.equals(isbn13)) && (lhs.title.equals(title))
+                  && (lhs.subTitle.equals(subTitle))
+                  && (lhs.authors.equals(authors))
+                  && (lhs.publisher.equals(publisher))
+                  && (lhs.description.equals(description))
+                  && (lhs.format.equals(format))
+                  && (lhs.subject.equals(subject))
+                  && (lhs.datePubStamp == datePubStamp)
+                  && (lhs.rating == rating) && (lhs.read == read)) {
             return true;
          }
       }
@@ -71,37 +76,37 @@ public final class Book {
    @Override
    public int hashCode() {
       int result = 31;
-      result += this.id;
-      if (this.isbn10 != null) {
-         result += this.isbn10.hashCode();
+      result += id;
+      if (isbn10 != null) {
+         result += isbn10.hashCode();
       }
-      if (this.isbn13 != null) {
-         result += this.isbn13.hashCode();
+      if (isbn13 != null) {
+         result += isbn13.hashCode();
       }
-      if (this.title != null) {
-         result += this.title.hashCode();
+      if (title != null) {
+         result += title.hashCode();
       }
-      if (this.subTitle != null) {
-         result += this.subTitle.hashCode();
+      if (subTitle != null) {
+         result += subTitle.hashCode();
       }
-      if (this.authors != null) {
-         result += this.authors.hashCode();
+      if (authors != null) {
+         result += authors.hashCode();
       }
-      if (this.publisher != null) {
-         result += this.publisher.hashCode();
+      if (publisher != null) {
+         result += publisher.hashCode();
       }
-      if (this.description != null) {
-         result += this.description.hashCode();
+      if (description != null) {
+         result += description.hashCode();
       }
-      if (this.format != null) {
-         result += this.format.hashCode();
+      if (format != null) {
+         result += format.hashCode();
       }
-      if (this.subject != null) {
-         result += this.subject.hashCode();
+      if (subject != null) {
+         result += subject.hashCode();
       }
-      result += this.datePubStamp;
-      result += this.rating;
-      result += this.read ? 1 : 0;
+      result += datePubStamp;
+      result += rating;
+      result += read ? 1 : 0;
 
       return result;
    }
@@ -109,19 +114,19 @@ public final class Book {
    public String toStringFull() {
       StringBuilder sb = new StringBuilder();
       sb.append("Book-");
-      sb.append("\n id:" + this.id);
-      sb.append("\n title:" + this.title);
-      sb.append("\n subTitle:" + this.subTitle);
-      sb.append("\n isbn10:" + this.isbn10);
-      sb.append("\n isbn13:" + this.isbn13);
-      sb.append("\n authors:" + this.authors);
-      sb.append("\n publisher:" + this.publisher);
-      sb.append("\n description:" + this.description);
-      sb.append("\n format:" + this.format);
-      sb.append("\n subject:" + this.subject);
-      sb.append("\n datePubStamp:" + this.datePubStamp);
-      sb.append("\n read:" + this.read);
-      sb.append("\n rating:" + this.rating);
+      sb.append("\n id:" + id);
+      sb.append("\n title:" + title);
+      sb.append("\n subTitle:" + subTitle);
+      sb.append("\n isbn10:" + isbn10);
+      sb.append("\n isbn13:" + isbn13);
+      sb.append("\n authors:" + authors);
+      sb.append("\n publisher:" + publisher);
+      sb.append("\n description:" + description);
+      sb.append("\n format:" + format);
+      sb.append("\n subject:" + subject);
+      sb.append("\n datePubStamp:" + datePubStamp);
+      sb.append("\n read:" + read);
+      sb.append("\n rating:" + rating);
       return sb.toString();
    }
 }

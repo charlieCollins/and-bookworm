@@ -27,7 +27,7 @@ public class BookSearch extends Activity {
 
    public static final String FROM_SEARCH = "FROM_SEARCH";
 
-   private BookWormApplication application;
+   BookWormApplication application;
 
    private EditText searchInput;
    private Button searchButton;
@@ -46,20 +46,21 @@ public class BookSearch extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.booksearch);
-      this.application = (BookWormApplication) this.getApplication();
+      setContentView(R.layout.booksearch);
+      application = (BookWormApplication) getApplication();
 
-      this.searchTask = null;
-      this.parsedBooks = null;
-      this.adapter = null;
+      searchTask = null;
+      parsedBooks = null;
+      adapter = null;
 
-      this.searchInput = (EditText) this.findViewById(R.id.bookentrysearchinput);
-      this.searchButton = (Button) this.findViewById(R.id.bookentrysearchbutton);
+      searchInput = (EditText) findViewById(R.id.bookentrysearchinput);
+      searchButton = (Button) findViewById(R.id.bookentrysearchbutton);
 
-      this.searchResults = (ListView) this.findViewById(R.id.bookentrysearchresultlist);
-      this.searchResults.setTextFilterEnabled(true);
-      this.searchResults.setOnItemClickListener(new OnItemClickListener() {
-         public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
+      searchResults = (ListView) findViewById(R.id.bookentrysearchresultlist);
+      searchResults.setTextFilterEnabled(true);
+      searchResults.setOnItemClickListener(new OnItemClickListener() {
+         public void onItemClick(final AdapterView<?> parent, final View v,
+                  final int index, final long id) {
             Book selected = BookSearch.this.parsedBooks.get(index);
             BookSearch.this.selectorPosition = index - 1;
             Intent intent = new Intent(BookSearch.this, BookEntryResult.class);
@@ -74,34 +75,38 @@ public class BookSearch extends Activity {
          }
       });
 
-      this.searchButton.setOnClickListener(new OnClickListener() {
+      searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookSearch.this.parsedBooks = new ArrayList<Book>();
             BookSearch.this.searchTask = new SearchTask();
-            BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), "1");
+            BookSearch.this.searchTask.execute(BookSearch.this.searchInput
+                     .getText().toString(), "1");
          }
       });
 
-      LayoutInflater li = this.getLayoutInflater();
-      this.getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);
-      this.getMoreData.setOnClickListener(new OnClickListener() {
+      LayoutInflater li = getLayoutInflater();
+      getMoreData =
+               (TextView) li.inflate(R.layout.search_listview_footer, null);
+      getMoreData.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             int startIndex = BookSearch.this.parsedBooks.size() + 1;
-            new SearchTask().execute(BookSearch.this.searchInput.getText().toString(), String.valueOf(startIndex));
+            new SearchTask().execute(BookSearch.this.searchInput.getText()
+                     .toString(), String.valueOf(startIndex));
             v.setBackgroundResource(R.color.red1);
          }
       });
 
       // if returning to search from search result reload prev search data
-      this.fromEntryResult = this.getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false);
-      if (this.fromEntryResult) {
-         this.restoreFromCache();
+      fromEntryResult =
+               getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false);
+      if (fromEntryResult) {
+         restoreFromCache();
       }
 
       // if search data exists after an orientation change, reload it
-      Object lastNonConfig = this.getLastNonConfigurationInstance();
+      Object lastNonConfig = getLastNonConfigurationInstance();
       if ((lastNonConfig != null) && (lastNonConfig instanceof Boolean)) {
-         this.restoreFromCache();
+         restoreFromCache();
       }
    }
 
@@ -113,17 +118,17 @@ public class BookSearch extends Activity {
 
    @Override
    public void onPause() {
-      if ((this.searchTask != null) && this.searchTask.dialog.isShowing()) {
-         this.searchTask.dialog.dismiss();
+      if ((searchTask != null) && searchTask.dialog.isShowing()) {
+         searchTask.dialog.dismiss();
       }
-      if (this.parsedBooks != null) {
-         this.application.setBookCacheList(this.parsedBooks);
+      if (parsedBooks != null) {
+         application.bookCacheList = parsedBooks;
       }
-      if (this.searchInput != null) {
-         this.application.setLastSearchTerm(this.searchInput.getText().toString());
+      if (searchInput != null) {
+         application.lastSearchTerm = searchInput.getText().toString();
       }
-      if (this.selectorPosition > 0) {
-         this.application.setLastSearchListPosition(this.selectorPosition);
+      if (selectorPosition > 0) {
+         application.lastSearchListPosition = selectorPosition;
       }
       super.onPause();
    }
@@ -132,7 +137,7 @@ public class BookSearch extends Activity {
    @Override
    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
       if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
-         this.startActivity(new Intent(BookSearch.this, Main.class));
+         startActivity(new Intent(BookSearch.this, Main.class));
          return true;
       }
       return super.onKeyDown(keyCode, event);
@@ -140,27 +145,30 @@ public class BookSearch extends Activity {
 
    private void bindAdapter() {
       // add footer view BEFORE setting adapter
-      if (!this.parsedBooks.isEmpty() && !this.footerViewShown) {
-         this.searchResults.addFooterView(this.getMoreData);
-         this.footerViewShown = true;
+      if (!parsedBooks.isEmpty() && !footerViewShown) {
+         searchResults.addFooterView(getMoreData);
+         footerViewShown = true;
       }
 
-      this.adapter = new ArrayAdapter<Book>(BookSearch.this, R.layout.simple_list_item_1, BookSearch.this.parsedBooks);
-      this.searchResults.setAdapter(this.adapter);
-      if (this.selectorPosition > 2) {
-         this.searchResults.setSelection(this.selectorPosition - 1);
+      adapter =
+               new ArrayAdapter<Book>(BookSearch.this,
+                        R.layout.simple_list_item_1,
+                        BookSearch.this.parsedBooks);
+      searchResults.setAdapter(adapter);
+      if (selectorPosition > 2) {
+         searchResults.setSelection(selectorPosition - 1);
       }
    }
 
    private void restoreFromCache() {
       // use application object as quick/dirty cache for state      
-      if (this.application.getBookCacheList() != null) {
-         this.selectorPosition = this.application.getLastSearchListPosition();
-         this.parsedBooks = this.application.getBookCacheList();
-         this.bindAdapter();
+      if (application.bookCacheList != null) {
+         selectorPosition = application.lastSearchListPosition;
+         parsedBooks = application.bookCacheList;
+         bindAdapter();
       }
-      if (this.application.getLastSearchTerm() != null) {
-         this.searchInput.setText(this.application.getLastSearchTerm());
+      if (application.lastSearchTerm != null) {
+         searchInput.setText(application.lastSearchTerm);
       }
    }
 
@@ -174,31 +182,35 @@ public class BookSearch extends Activity {
       private final GoogleBookDataSource gbs = new GoogleBookDataSource();
 
       public SearchTask() {
-         this.gbs.setDebugEnabled(BookSearch.this.application.isDebugEnabled());
+         gbs.setDebugEnabled(BookSearch.this.application.debugEnabled);
       }
 
+      @Override
       protected void onPreExecute() {
-         this.dialog.setMessage(BookSearch.this.getString(R.string.msgSearching));
-         this.dialog.show();
+         dialog.setMessage(BookSearch.this.getString(R.string.msgSearching));
+         dialog.show();
       }
 
+      @Override
       protected ArrayList<Book> doInBackground(final String... args) {
          String searchTerm = args[0];
          int startIndex = Integer.valueOf(args[1]);
          if (searchTerm != null) {
             searchTerm = URLEncoder.encode(searchTerm);
-            return this.gbs.getBooks(searchTerm, startIndex);
+            return gbs.getBooks(searchTerm, startIndex);
          }
          return null;
       }
 
+      @Override
       protected void onPostExecute(final ArrayList<Book> books) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
 
          if ((books != null) && !books.isEmpty()) {
-            BookSearch.this.selectorPosition = BookSearch.this.parsedBooks.size();
+            BookSearch.this.selectorPosition =
+                     BookSearch.this.parsedBooks.size();
             for (Book b : books) {
                if (!BookSearch.this.parsedBooks.contains(b)) {
                   BookSearch.this.parsedBooks.add(b);
@@ -206,7 +218,8 @@ public class BookSearch extends Activity {
             }
 
             BookSearch.this.bindAdapter();
-            BookSearch.this.getMoreData.setBackgroundResource(android.R.color.transparent);
+            BookSearch.this.getMoreData
+                     .setBackgroundResource(android.R.color.transparent);
          }
       }
    }

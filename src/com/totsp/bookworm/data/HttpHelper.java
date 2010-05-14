@@ -59,7 +59,8 @@ public class HttpHelper {
    private static final int POST_TYPE = 1;
    private static final int GET_TYPE = 2;
 
-   public static final String MIME_FORM_ENCODED = "application/x-www-form-urlencoded";
+   public static final String MIME_FORM_ENCODED =
+            "application/x-www-form-urlencoded";
    public static final String MIME_TEXT_PLAIN = "text/plain";
    public static final String HTTP_RESPONSE = "HTTP_RESPONSE";
    public static final String HTTP_RESPONSE_ERROR = "HTTP_RESPONSE_ERROR";
@@ -69,15 +70,20 @@ public class HttpHelper {
    private static final DefaultHttpClient client;
    static {
       HttpParams params = new BasicHttpParams();
-      params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+      params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+               HttpVersion.HTTP_1_1);
       params.setParameter(CoreProtocolPNames.HTTP_CONTENT_CHARSET, HTTP.UTF_8);
-      params.setParameter(CoreProtocolPNames.USER_AGENT, "Apache-HttpClient/Android");
+      params.setParameter(CoreProtocolPNames.USER_AGENT,
+               "Apache-HttpClient/Android");
       params.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 15000);
       params.setParameter(CoreConnectionPNames.STALE_CONNECTION_CHECK, false);
       SchemeRegistry schemeRegistry = new SchemeRegistry();
-      schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-      schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
-      ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+      schemeRegistry.register(new Scheme("http", PlainSocketFactory
+               .getSocketFactory(), 80));
+      schemeRegistry.register(new Scheme("https", SSLSocketFactory
+               .getSocketFactory(), 443));
+      ThreadSafeClientConnManager cm =
+               new ThreadSafeClientConnManager(params, schemeRegistry);
       client = new DefaultHttpClient(cm, params);
    }
 
@@ -88,7 +94,7 @@ public class HttpHelper {
     * 
     */
    public HttpHelper() {
-      this.responseHandler = new BasicResponseHandler();
+      responseHandler = new BasicResponseHandler();
    }
 
    /**
@@ -96,16 +102,18 @@ public class HttpHelper {
     * 
     */
    public String performGet(final String url) {
-      return this.performRequest(null, url, null, null, null, null, HttpHelper.GET_TYPE);
+      return performRequest(null, url, null, null, null, null,
+               HttpHelper.GET_TYPE);
    }
 
    /**
     * Perform an HTTP GET operation with user/pass and headers.
     * 
     */
-   public String performGet(final String url, final String user, final String pass,
-            final Map<String, String> additionalHeaders) {
-      return this.performRequest(null, url, user, pass, additionalHeaders, null, HttpHelper.GET_TYPE);
+   public String performGet(final String url, final String user,
+            final String pass, final Map<String, String> additionalHeaders) {
+      return performRequest(null, url, user, pass, additionalHeaders, null,
+               HttpHelper.GET_TYPE);
    }
 
    /**
@@ -113,7 +121,8 @@ public class HttpHelper {
     * 
     */
    public String performPost(final String url, final Map<String, String> params) {
-      return this.performRequest(HttpHelper.MIME_FORM_ENCODED, url, null, null, null, params, HttpHelper.POST_TYPE);
+      return performRequest(HttpHelper.MIME_FORM_ENCODED, url, null, null,
+               null, params, HttpHelper.POST_TYPE);
    }
 
    /**
@@ -121,32 +130,38 @@ public class HttpHelper {
     * and a default content-type of "application/x-www-form-urlencoded."
     * 
     */
-   public String performPost(final String url, final String user, final String pass,
-            final Map<String, String> additionalHeaders, final Map<String, String> params) {
-      return this.performRequest(HttpHelper.MIME_FORM_ENCODED, url, user, pass, additionalHeaders, params,
-               HttpHelper.POST_TYPE);
+   public String performPost(final String url, final String user,
+            final String pass, final Map<String, String> additionalHeaders,
+            final Map<String, String> params) {
+      return performRequest(HttpHelper.MIME_FORM_ENCODED, url, user, pass,
+               additionalHeaders, params, HttpHelper.POST_TYPE);
    }
 
    /**
     * Perform an HTTP POST operation with flexible parameters (the complicated/flexible version of the method).
     * 
     */
-   public String performPost(final String contentType, final String url, final String user, final String pass,
-            final Map<String, String> additionalHeaders, final Map<String, String> params) {
-      return this.performRequest(contentType, url, user, pass, additionalHeaders, params, HttpHelper.POST_TYPE);
+   public String performPost(final String contentType, final String url,
+            final String user, final String pass,
+            final Map<String, String> additionalHeaders,
+            final Map<String, String> params) {
+      return performRequest(contentType, url, user, pass, additionalHeaders,
+               params, HttpHelper.POST_TYPE);
    }
 
    //
    // private methods
    //
 
-   private String performRequest(final String contentType, final String url, final String user, final String pass,
-            final Map<String, String> headers, final Map<String, String> params, final int requestType) {
+   private String performRequest(final String contentType, final String url,
+            final String user, final String pass,
+            final Map<String, String> headers,
+            final Map<String, String> params, final int requestType) {
 
       // add user and pass to client credentials if present
       if ((user != null) && (pass != null)) {
-         HttpHelper.client.getCredentialsProvider().setCredentials(AuthScope.ANY,
-                  new UsernamePasswordCredentials(user, pass));
+         HttpHelper.client.getCredentialsProvider().setCredentials(
+                  AuthScope.ANY, new UsernamePasswordCredentials(user, pass));
       }
 
       // process headers using request interceptor
@@ -159,7 +174,9 @@ public class HttpHelper {
       }
       if (sendHeaders.size() > 0) {
          HttpHelper.client.addRequestInterceptor(new HttpRequestInterceptor() {
-            public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
+            public void process(final HttpRequest request,
+                     final HttpContext context) throws HttpException,
+               IOException {
                for (String key : sendHeaders.keySet()) {
                   if (!request.containsHeader(key)) {
                      request.addHeader(key, sendHeaders.get(key));
@@ -178,7 +195,9 @@ public class HttpHelper {
          if ((params != null) && (params.size() > 0)) {
             nvps = new ArrayList<NameValuePair>();
             for (Map.Entry<String, String> entry : params.entrySet()) {
-               nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+               nvps
+                        .add(new BasicNameValuePair(entry.getKey(), entry
+                                 .getValue()));
             }
          }
          if (nvps != null) {
@@ -194,19 +213,25 @@ public class HttpHelper {
       }
 
       // execute request
-      return this.execute(method);
+      return execute(method);
    }
 
    private synchronized String execute(final HttpRequestBase method) {
       String response = null;
       // execute method returns?!? (rather than async) - do it here sync, and wrap async elsewhere
       try {
-         response = HttpHelper.client.execute(method, this.responseHandler);
+         response = HttpHelper.client.execute(method, responseHandler);
       } catch (ClientProtocolException e) {
-         response = HttpHelper.HTTP_RESPONSE_ERROR + " - " + e.getClass().getSimpleName() + " " + e.getMessage();
+         response =
+                  HttpHelper.HTTP_RESPONSE_ERROR + " - "
+                           + e.getClass().getSimpleName() + " "
+                           + e.getMessage();
          //e.printStackTrace();
       } catch (IOException e) {
-         response = HttpHelper.HTTP_RESPONSE_ERROR + " - " + e.getClass().getSimpleName() + " " + e.getMessage();
+         response =
+                  HttpHelper.HTTP_RESPONSE_ERROR + " - "
+                           + e.getClass().getSimpleName() + " "
+                           + e.getMessage();
          //e.printStackTrace();
       }
       return response;

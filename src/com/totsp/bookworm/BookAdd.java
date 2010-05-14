@@ -27,28 +27,31 @@ public class BookAdd extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.bookadd);
-      this.application = (BookWormApplication) this.getApplication();
+      setContentView(R.layout.bookadd);
+      application = (BookWormApplication) getApplication();
 
-      this.scanButton = (Button) this.findViewById(R.id.bookaddscanbutton);
-      this.scanButton.setOnClickListener(new OnClickListener() {
+      scanButton = (Button) findViewById(R.id.bookaddscanbutton);
+      scanButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            ZXingIntentIntegrator.initiateScan(BookAdd.this, "Scan Book", "message", "Yes", "No");
+            ZXingIntentIntegrator.initiateScan(BookAdd.this, "Scan Book",
+                     "message", "Yes", "No");
          }
       });
 
-      this.searchButton = (Button) this.findViewById(R.id.bookaddsearchbutton);
-      this.searchButton.setOnClickListener(new OnClickListener() {
+      searchButton = (Button) findViewById(R.id.bookaddsearchbutton);
+      searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookAdd.this.startActivity(new Intent(BookAdd.this, BookSearch.class));
+            BookAdd.this.startActivity(new Intent(BookAdd.this,
+                     BookSearch.class));
          }
       });
 
-      this.formButton = (Button) this.findViewById(R.id.bookaddformbutton);
-      this.formButton.setOnClickListener(new OnClickListener() {
+      formButton = (Button) findViewById(R.id.bookaddformbutton);
+      formButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookAdd.this.application.setSelectedBook(null);
-            BookAdd.this.startActivity(new Intent(BookAdd.this, BookForm.class));
+            BookAdd.this.application.selectedBook = null;
+            BookAdd.this
+                     .startActivity(new Intent(BookAdd.this, BookForm.class));
          }
       });
    }
@@ -56,27 +59,36 @@ public class BookAdd extends Activity {
    @Override
    public void onStart() {
       super.onStart();
-      if (this.connectionPresent()) {
-         this.scanButton.setEnabled(true);
-         this.searchButton.setEnabled(true);
+      if (connectionPresent()) {
+         scanButton.setEnabled(true);
+         searchButton.setEnabled(true);
       } else {
-         this.scanButton.setEnabled(false);
-         this.searchButton.setEnabled(false);
-         Toast.makeText(BookAdd.this, "Network connection not present, cannot scan or search at this time.",
-                  Toast.LENGTH_LONG).show();
+         scanButton.setEnabled(false);
+         searchButton.setEnabled(false);
+         Toast
+                  .makeText(
+                           BookAdd.this,
+                           "Network connection not present, cannot scan or search at this time.",
+                           Toast.LENGTH_LONG).show();
       }
    }
 
    @Override
-   public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-      ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+   public void onActivityResult(final int requestCode, final int resultCode,
+            final Intent intent) {
+      ZXingIntentResult scanResult =
+               ZXingIntentIntegrator.parseActivityResult(requestCode,
+                        resultCode, intent);
       if (scanResult != null) {
          String isbn = scanResult.getContents();
-         if (this.application.isDebugEnabled()) {
-            Log.d(Constants.LOG_TAG, "Scan result format was - " + scanResult.getFormatName());
-            Log.d(Constants.LOG_TAG, "Scan result contents are - " + scanResult.getContents());
+         if (application.debugEnabled) {
+            Log.d(Constants.LOG_TAG, "Scan result format was - "
+                     + scanResult.getFormatName());
+            Log.d(Constants.LOG_TAG, "Scan result contents are - "
+                     + scanResult.getContents());
          }
-         if ((scanResult.getFormatName() != null) && !scanResult.getFormatName().equals("EAN_13")) {
+         if ((scanResult.getFormatName() != null)
+                  && !scanResult.getFormatName().equals("EAN_13")) {
             // if it's not EAN 13 we are likely gonna have issues 
             // we are using PRODUCT_MODE which limits to UPC and EAN
             // we *might* be able to parse ISBN from UPC, but pattern is not understood, yet
@@ -92,19 +104,23 @@ public class BookAdd extends Activity {
                      isbn = isbn.substring(0, isbn.length() - 1);
                   }
                }
-               Log.w(Constants.LOG_TAG, "Scan result was a UPC code (not an EAN code), parsed into ISBN:" + isbn);
+               Log.w(Constants.LOG_TAG,
+                        "Scan result was a UPC code (not an EAN code), parsed into ISBN:"
+                                 + isbn);
             }
          }
 
          // handle scan result
          Intent scanIntent = new Intent(this, BookEntryResult.class);
          scanIntent.putExtra(Constants.ISBN, isbn);
-         this.startActivity(scanIntent);
+         startActivity(scanIntent);
       }
    }
 
    private boolean connectionPresent() {
-      ConnectivityManager cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+      ConnectivityManager cMgr =
+               (ConnectivityManager) this
+                        .getSystemService(Context.CONNECTIVITY_SERVICE);
       NetworkInfo netInfo = cMgr.getActiveNetworkInfo();
       if ((netInfo != null) && (netInfo.getState() != null)) {
          return netInfo.getState().equals(State.CONNECTED);

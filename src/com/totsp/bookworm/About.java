@@ -19,17 +19,18 @@ public class About extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.about);
+      setContentView(R.layout.about);
 
-      this.about = (TextView) this.findViewById(R.id.aboutcontent);
-      this.about.setText(Html.fromHtml(this.getString(R.string.aboutcontent)),
+      about = (TextView) findViewById(R.id.aboutcontent);
+      about.setText(Html.fromHtml(getString(R.string.aboutcontent)),
                TextView.BufferType.SPANNABLE);
-      this.about.setMovementMethod(LinkMovementMethod.getInstance());
+      about.setMovementMethod(LinkMovementMethod.getInstance());
 
-      this.aboutDetails = (Button) this.findViewById(R.id.aboutdetails);
-      this.aboutDetails.setOnClickListener(new OnClickListener() {
+      aboutDetails = (Button) findViewById(R.id.aboutdetails);
+      aboutDetails.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release_notes.html"),
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri
+                     .parse("file:///android_asset/release_notes.html"),
                      About.this, HTMLScreen.class));
          }
       });

@@ -14,42 +14,45 @@ import java.util.ArrayList;
 
 public class BookWormApplication extends Application {
 
-   private boolean debugEnabled;
+   boolean debugEnabled;
 
-   private SharedPreferences prefs;
-   private IBookDataSource bookDataSource;
-   private DataHelper dataHelper;
-   private DataImageHelper dataImageHelper;
+   SharedPreferences prefs;
+   IBookDataSource bookDataSource;
+   DataHelper dataHelper;
+   DataImageHelper dataImageHelper;
 
-   private Book selectedBook;
+   Book selectedBook;
 
-   private String lastSearchTerm;
-   private int lastSearchListPosition;
-   private int lastMainListPosition;
-   private ArrayList<Book> bookCacheList;
+   String lastSearchTerm;
+   int lastSearchListPosition;
+   int lastMainListPosition;
+   ArrayList<Book> bookCacheList;
 
    @Override
    public void onCreate() {
       super.onCreate();
-      if (this.debugEnabled) {
+      if (debugEnabled) {
          Log.d(Constants.LOG_TAG, "APPLICATION onCreate");
       }
 
-      this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-      this.dataHelper = new DataHelper(this);
-      this.dataImageHelper = new DataImageHelper(this);
+      prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      dataHelper = new DataHelper(this);
+      dataImageHelper = new DataImageHelper(this);
 
-      this.establishBookDataSourceFromProvider();
+      establishBookDataSourceFromProvider();
    }
 
    private void establishBookDataSourceFromProvider() {
-
-      String className = this.prefs.getString("dataproviderpref", "com.totsp.bookworm.data.GoogleBookDataSource");
-      Log.i(Constants.LOG_TAG, "establishing book data provider using class name - " + className);
+      String className =
+               prefs.getString("dataproviderpref",
+                        "com.totsp.bookworm.data.GoogleBookDataSource");
+      Log.i(Constants.LOG_TAG,
+               "establishing book data provider using class name - "
+                        + className);
       try {
          Class<?> clazz = Class.forName(className);
          // NOTE - validate that clazz is of IBookDataSource type?
-         this.bookDataSource = (IBookDataSource) clazz.newInstance();
+         bookDataSource = (IBookDataSource) clazz.newInstance();
       } catch (ClassNotFoundException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
       } catch (IllegalAccessException e) {
@@ -59,88 +62,16 @@ public class BookWormApplication extends Application {
       }
    }
 
+   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved title
+   public void establishSelectedBook(final long id) {
+      selectedBook = dataHelper.selectBook(id);
+   }
+
    @Override
    public void onTerminate() {
       // not guaranteed to be called
-      this.dataHelper.cleanup();
-      this.selectedBook = null;
+      dataHelper.cleanup();
+      selectedBook = null;
       super.onTerminate();
-   }
-
-   public IBookDataSource getBookDataSource() {
-      return this.bookDataSource;
-   }
-
-   public void setBookDataSource(final IBookDataSource bookDataSource) {
-      this.bookDataSource = bookDataSource;
-   }
-
-   public DataHelper getDataHelper() {
-      return this.dataHelper;
-   }
-
-   public void setDataHelper(final DataHelper dataHelper) {
-      this.dataHelper = dataHelper;
-   }
-
-   public DataImageHelper getDataImageHelper() {
-      return this.dataImageHelper;
-   }
-
-   public void setDataImageHelper(final DataImageHelper dataImageHelper) {
-      this.dataImageHelper = dataImageHelper;
-   }
-
-   public Book getSelectedBook() {
-      return this.selectedBook;
-   }
-
-   public void setSelectedBook(final Book selectedBook) {
-      this.selectedBook = selectedBook;
-   }
-
-   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved title
-   public void establishSelectedBook(final long id) {
-      this.selectedBook = this.dataHelper.selectBook(id);
-   }
-
-   public ArrayList<Book> getBookCacheList() {
-      return this.bookCacheList;
-   }
-
-   public void setBookCacheList(final ArrayList<Book> list) {
-      this.bookCacheList = list;
-   }
-
-   public String getLastSearchTerm() {
-      return this.lastSearchTerm;
-   }
-
-   public void setLastSearchTerm(final String lastSearchTerm) {
-      this.lastSearchTerm = lastSearchTerm;
-   }
-
-   public int getLastSearchListPosition() {
-      return this.lastSearchListPosition;
-   }
-
-   public int getLastMainListPosition() {
-      return this.lastMainListPosition;
-   }
-
-   public void setLastMainListPosition(final int lastMainListPosition) {
-      this.lastMainListPosition = lastMainListPosition;
-   }
-
-   public void setLastSearchListPosition(final int lastSearchListPosition) {
-      this.lastSearchListPosition = lastSearchListPosition;
-   }
-
-   public boolean isDebugEnabled() {
-      return this.debugEnabled;
-   }
-
-   public void setDebugEnabled(final boolean value) {
-      this.debugEnabled = value;
    }
 }

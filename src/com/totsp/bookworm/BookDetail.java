@@ -45,39 +45,41 @@ public class BookDetail extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.bookdetail);
-      this.application = (BookWormApplication) this.getApplication();
+      setContentView(R.layout.bookdetail);
+      application = (BookWormApplication) getApplication();
 
-      this.bookCover = (ImageView) this.findViewById(R.id.bookcover);
-      this.bookTitle = (TextView) this.findViewById(R.id.booktitle);
-      this.bookSubTitle = (TextView) this.findViewById(R.id.booksubtitle);
-      this.bookAuthors = (TextView) this.findViewById(R.id.bookauthors);
-      this.bookSubject = (TextView) this.findViewById(R.id.booksubject);
-      this.bookDatePub = (TextView) this.findViewById(R.id.bookdatepub);
-      this.bookPublisher = (TextView) this.findViewById(R.id.bookpublisher);
+      bookCover = (ImageView) findViewById(R.id.bookcover);
+      bookTitle = (TextView) findViewById(R.id.booktitle);
+      bookSubTitle = (TextView) findViewById(R.id.booksubtitle);
+      bookAuthors = (TextView) findViewById(R.id.bookauthors);
+      bookSubject = (TextView) findViewById(R.id.booksubject);
+      bookDatePub = (TextView) findViewById(R.id.bookdatepub);
+      bookPublisher = (TextView) findViewById(R.id.bookpublisher);
 
-      this.readStatus = (CheckBox) this.findViewById(R.id.bookreadstatus);
-      this.ratingBar = (RatingBar) this.findViewById(R.id.bookrating);
+      readStatus = (CheckBox) findViewById(R.id.bookreadstatus);
+      ratingBar = (RatingBar) findViewById(R.id.bookrating);
 
-      this.readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-         public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
+      readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+         public void onCheckedChanged(final CompoundButton button,
+                  final boolean isChecked) {
             // NOTE not sure why change listener fires when onCreate is init, but does
             BookDetail.this.saveReadStatusEdit();
          }
       });
 
-      this.ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
-         public void onRatingChanged(final RatingBar rb, final float val, final boolean b) {
+      ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+         public void onRatingChanged(final RatingBar rb, final float val,
+                  final boolean b) {
             BookDetail.this.saveRatingEdit();
          }
       });
 
-      this.setViewData();
+      setViewData();
    }
 
    @Override
    public void onPause() {
-      this.bookTitle = null;
+      bookTitle = null;
       super.onPause();
    }
 
@@ -85,43 +87,47 @@ public class BookDetail extends Activity {
    @Override
    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
       if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
-         this.startActivity(new Intent(BookDetail.this, Main.class));
+         startActivity(new Intent(BookDetail.this, Main.class));
          return true;
       }
       return super.onKeyDown(keyCode, event);
    }
 
    private void saveRatingEdit() {
-      Book book = this.application.getSelectedBook();
+      Book book = application.selectedBook;
       if (book != null) {
-         book.rating = (Math.round(this.ratingBar.getRating()));
-         BookDetail.this.application.getDataHelper().updateBook(book);
+         book.rating = (Math.round(ratingBar.getRating()));
+         BookDetail.this.application.dataHelper.updateBook(book);
       }
    }
 
    private void saveReadStatusEdit() {
-      Book book = this.application.getSelectedBook();
+      Book book = application.selectedBook;
       if (book != null) {
-         book.read = (this.readStatus.isChecked());
-         BookDetail.this.application.getDataHelper().updateBook(book);
+         book.read = (readStatus.isChecked());
+         BookDetail.this.application.dataHelper.updateBook(book);
       }
    }
 
    private void setViewData() {
-      Book book = this.application.getSelectedBook();
+      Book book = application.selectedBook;
       if (book != null) {
-         if (this.application.isDebugEnabled()) {
-            Log.d(Constants.LOG_TAG, "BookDetail book present, will be displayed: " + book.toStringFull());
+         if (application.debugEnabled) {
+            Log.d(Constants.LOG_TAG,
+                     "BookDetail book present, will be displayed: "
+                              + book.toStringFull());
          }
-         Bitmap coverImage = this.application.getDataImageHelper().retrieveBitmap(book.title, book.id, false);
+         Bitmap coverImage =
+                  application.dataImageHelper.retrieveBitmap(book.title,
+                           book.id, false);
          if (coverImage != null) {
-            this.bookCover.setImageBitmap(coverImage);
+            bookCover.setImageBitmap(coverImage);
          } else {
-            this.bookCover.setImageResource(R.drawable.book_cover_missing);
+            bookCover.setImageResource(R.drawable.book_cover_missing);
          }
 
-         this.bookTitle.setText(book.title);
-         this.bookSubTitle.setText(book.subTitle);
+         bookTitle.setText(book.title);
+         bookSubTitle.setText(book.subTitle);
 
          String authors = null;
          for (Author a : book.authors) {
@@ -132,18 +138,18 @@ public class BookDetail extends Activity {
             }
          }
 
-         this.ratingBar.setRating(book.rating);
-         this.readStatus.setChecked(book.read);
-         this.bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
-         this.bookAuthors.setText(authors);
+         ratingBar.setRating(book.rating);
+         readStatus.setChecked(book.read);
+         bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
+         bookAuthors.setText(authors);
 
          // we leave publisher and subject out of landscape layout         
-         if (this.bookSubject != null) {
-            this.bookSubject.setText(book.subject);
+         if (bookSubject != null) {
+            bookSubject.setText(book.subject);
          }
 
-         if (this.bookPublisher != null) {
-            this.bookPublisher.setText(book.publisher);
+         if (bookPublisher != null) {
+            bookPublisher.setText(book.publisher);
          }
       }
    }
@@ -151,34 +157,37 @@ public class BookDetail extends Activity {
    @Override
    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
-      if (this.application.getSelectedBook() == null) {
+      if (application.selectedBook == null) {
          Long id = savedInstanceState.getLong(Constants.BOOK_ID);
          if (id != null) {
-            this.application.establishSelectedBook(id);
-            if (this.application.getSelectedBook() != null) {
-               this.setViewData();
+            application.establishSelectedBook(id);
+            if (application.selectedBook != null) {
+               setViewData();
             } else {
-               this.startActivity(new Intent(this, Main.class));
+               startActivity(new Intent(this, Main.class));
             }
          } else {
-            this.startActivity(new Intent(this, Main.class));
+            startActivity(new Intent(this, Main.class));
          }
       }
    }
 
    @Override
    protected void onSaveInstanceState(final Bundle saveState) {
-      if (this.application.getSelectedBook() != null) {
-         saveState.putLong(Constants.BOOK_ID, this.application.getSelectedBook().id);
+      if (application.selectedBook != null) {
+         saveState.putLong(Constants.BOOK_ID, application.selectedBook.id);
       }
       super.onSaveInstanceState(saveState);
    }
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, BookDetail.MENU_EDIT, 0, this.getString(R.string.menuEdit)).setIcon(android.R.drawable.ic_menu_edit);
-      menu.add(0, BookDetail.MENU_WEB_GOOGLE, 1, null).setIcon(R.drawable.google);
-      menu.add(0, BookDetail.MENU_WEB_AMAZON, 2, null).setIcon(R.drawable.amazon);
+      menu.add(0, BookDetail.MENU_EDIT, 0, getString(R.string.menuEdit))
+               .setIcon(android.R.drawable.ic_menu_edit);
+      menu.add(0, BookDetail.MENU_WEB_GOOGLE, 1, null).setIcon(
+               R.drawable.google);
+      menu.add(0, BookDetail.MENU_WEB_AMAZON, 2, null).setIcon(
+               R.drawable.amazon);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -186,23 +195,26 @@ public class BookDetail extends Activity {
    public boolean onOptionsItemSelected(final MenuItem item) {
       Uri uri = null;
       switch (item.getItemId()) {
-      case MENU_EDIT:
-         this.startActivity(new Intent(this, BookForm.class));
-         return true;
-      case MENU_WEB_GOOGLE:
-         // TODO add fallback book isbn13 support
-         // TODO other Locales?
-         uri = Uri.parse("http://books.google.com/books?isbn=" + this.application.getSelectedBook().isbn10);
-         this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-         return true;
-      case MENU_WEB_AMAZON:
-         uri =
-                  Uri.parse("http://www.amazon.com/gp/search?keywords=" + this.application.getSelectedBook().isbn10
-                           + "&index=books");
-         this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-         return true;
-      default:
-         return super.onOptionsItemSelected(item);
+         case MENU_EDIT:
+            startActivity(new Intent(this, BookForm.class));
+            return true;
+         case MENU_WEB_GOOGLE:
+            // TODO add fallback book isbn13 support
+            // TODO other Locales?
+            uri =
+                     Uri.parse("http://books.google.com/books?isbn="
+                              + application.selectedBook.isbn10);
+            startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            return true;
+         case MENU_WEB_AMAZON:
+            uri =
+                     Uri.parse("http://www.amazon.com/gp/search?keywords="
+                              + application.selectedBook.isbn10
+                              + "&index=books");
+            startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            return true;
+         default:
+            return super.onOptionsItemSelected(item);
       }
    }
 }

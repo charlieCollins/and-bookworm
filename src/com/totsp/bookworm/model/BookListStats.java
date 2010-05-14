@@ -1,6 +1,5 @@
 package com.totsp.bookworm.model;
 
-
 public class BookListStats {
    public int totalBooks;
    public int readBooks;
@@ -10,9 +9,10 @@ public class BookListStats {
    public int twoStarBooks;
    public int oneStarBooks;
    public int totalAuthors;
+
    // TODO more involved stats/charts/etc
    ///public ArrayList<String> topAuthors; 
-   
-   public BookListStats() {      
+
+   public BookListStats() {
    }
 }

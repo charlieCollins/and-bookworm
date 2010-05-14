@@ -15,16 +15,17 @@ public class Splash extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.splash);
-      this.application = (BookWormApplication) this.getApplication();
-      this.initPrefs();
+      setContentView(R.layout.splash);
+      application = (BookWormApplication) getApplication();
+      initPrefs();
    }
 
    private void initPrefs() {
-      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      SharedPreferences prefs =
+               PreferenceManager.getDefaultSharedPreferences(this);
 
       boolean debugEnabled = prefs.getBoolean("debugenabled", false);
-      this.application.setDebugEnabled(debugEnabled);
+      application.debugEnabled = debugEnabled;
 
       boolean splashSeenOnce = prefs.getBoolean("splashseenonce", false);
       if (!splashSeenOnce) {
@@ -35,14 +36,14 @@ public class Splash extends Activity {
 
       boolean showSplash = prefs.getBoolean("showsplash", false);
       if (!showSplash && splashSeenOnce) {
-         this.startActivity(new Intent(Splash.this, Main.class));
+         startActivity(new Intent(Splash.this, Main.class));
       }
    }
 
    @Override
    public boolean onTouchEvent(final MotionEvent e) {
       if (e.getAction() == MotionEvent.ACTION_DOWN) {
-         this.startActivity(new Intent(Splash.this, Main.class));
+         startActivity(new Intent(Splash.this, Main.class));
       }
       return true;
    }

@@ -11,7 +11,7 @@ public final class Author {
    }
 
    public Author(final String name) {
-      this.id = 0L;
+      id = 0L;
       this.name = name;
    }
 
@@ -19,7 +19,7 @@ public final class Author {
    public String toString() {
       StringBuilder sb = new StringBuilder();
       sb.append("Author-");
-      sb.append(" name:" + this.name);
+      sb.append(" name:" + name);
       return sb.toString();
    }
 
@@ -30,7 +30,7 @@ public final class Author {
       }
       if (obj instanceof Author) {
          Author lhs = (Author) obj;
-         if ((lhs.id == this.id) && (lhs.name.equals(this.name))) {
+         if ((lhs.id == id) && (lhs.name.equals(this.name))) {
             return true;
          }
       }
@@ -40,9 +40,9 @@ public final class Author {
    @Override
    public int hashCode() {
       int result = 31;
-      result += this.id;
-      if (this.name != null) {
-         result += this.name.hashCode();
+      result += id;
+      if (name != null) {
+         result += name.hashCode();
       }
       return result;
    }
