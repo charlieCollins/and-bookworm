@@ -1,0 +1,372 @@
+<resources>
+	<string name="app_name">
+		BookWorm
+  </string>
+	<string name="by"><b>Mit Charlie Collins</b>\n</string>
+	<string name="aboutcontent">
+		<i>
+			Verwenden BookWorm zu verfolgen Bücher, die Sie gelesen haben, und
+			Sie	beabsichtigen, zu lesen. Pflegen Sie ein Protokoll der Bücher, die
+			Sie schnell anzeigen, sortieren, filtern und bewerten.
+    </i>
+		&lt;br /&gt; Weitere Informationen &lt;br /&gt; und zu kommentieren
+		oder Probleme zu melden, besuchen Sie bitte die &lt;a
+		href=&quot;http://code.google.com/p/and-bookworm/&quot;&gt; BookWorm
+		Projekt-Website &lt;/ a&gt;. &lt;br /&gt; &lt;br /&gt;
+	</string>
+	<string name="menuScanTips">
+		Tipps zum Scannen
+  </string>
+	<string name="menuEdit">
+		Bearbeiten
+  </string>
+	<string name="menuEditBook">
+		Edit Book
+  </string>
+	<string name="menuAddBook">
+		Add Book
+  </string>
+	<string name="menuDeleteBook">
+		Löschen Book
+  </string>
+	<string name="menuEditBookDetails">
+		Edit Buchen Details
+  </string>
+	<string name="menuManageCoverImage">
+		Verwalten Cover Image
+  </string>
+	<string name="menuSortBooks">
+		Sortieren Bücher
+  </string>
+	<string name="menuListStats">
+		Liste Statistik:
+  </string>
+	<string name="menuAbout">
+		Über
+  </string>
+	<string name="menuPrefs">
+		Prefs
+  </string>
+	<string name="menuManageData">
+		Datenbank verwalten
+  </string>
+	<string name="menuResetCoverImages">
+		Reset Cover-Bilder
+  </string>
+	<string name="btnYes">
+		Ja
+  </string>
+	<string name="btnNo">
+		Nicht
+  </string>
+	<string name="btnCancel">
+		Stornieren
+  </string>
+	<string name="btnDismiss">
+		Entlassen
+  </string>
+	<string name="btnDetails">
+		Details
+  </string>
+	<string name="btnAddBook">
+		Add Book
+  </string>
+	<string name="btnSortBy">
+		Sortiert nach
+  </string>
+	<string name="btnScanCode">
+		Scan Produkt-Code
+  </string>
+	<string name="btnSearchWeb">
+		Suche im Web
+  </string>
+	<string name="btnSearch">
+		Suche
+  </string>
+	<string name="btnUseForm">
+		Verwenden Form
+  </string>
+	<string name="btnSave">
+		Sparen
+  </string>
+	<string name="btnSelectImage">
+		Wählen Sie ein Bild
+  </string>
+	<string name="btnRetrieveImage">
+		Abrufen Bild
+  </string>
+	<string name="btnGenerateImage">
+		Bild generieren
+  </string>
+	<string name="btnExportData">
+		DB Export auf SD-Karte
+  </string>
+	<string name="btnImportData">
+		DB Import von SD-Karte
+  </string>
+	<string name="btnDeleteData">
+		Löschen Sie alle Daten aus DB
+  </string>
+	<string name="labelTitle">
+		Titel
+  </string>
+	<string name="labelSubtitle">
+		Untertitel
+  </string>
+	<string name="labelSubject">
+		Gegenstand
+  </string>
+	<string name="labelIsbn10">
+		ISBN 10
+  </string>
+	<string name="labelIsbn13">
+		ISBN 13
+  </string>
+	<string name="labelAuthors">
+		Autor (en) (Komma getrennt)
+  </string>
+	<string name="labelAuthorsShort">
+		Autor (en)
+  </string>
+	<string name="labelRating">
+		Rating
+  </string>
+	<string name="labelDatepub">
+		Erscheinungsdatum
+  </string>
+	<string name="labelPublisher">
+		Herausgeber
+  </string>
+	<string name="labelReadstatus">
+		Lesen Sie den Status
+  </string>
+	<string name="labelAddBook">
+		Add Book
+  </string>
+	<string name="labelCurrentCover">
+		Aktuelle Cover Image
+  </string>
+	<string name="labelHaveRead">
+		Haben Sie gelesen?
+  </string>
+	<string name="labelSearchTerms">
+		Suchbegriff eingeben (s)
+  </string>
+	<string name="labelMoreResults">
+		- Weitere Ergebnisse -
+  </string>
+	<string name="msgInvalidISBN">
+		ISBN-Format ungültig (nicht 10 oder ISBN ISBN 13),
+		nicht abrufen können die Folge
+		sein.
+  </string>
+	<string name="msgFindError">
+		Buchen Sie nicht gefunden mit ISBN / Produkt-Code%
+		s (darf nicht eine ISBN
+		sein?).
+  </string>
+	<string name="msgRetrievingBookData">
+		Abrufen von Daten Buches ...
+  </string>
+	<string name="msgBooksListEmpty">
+		Sie haben noch keine Bücher in Ihrer Liste an.
+		Verwenden Sie die
+		Menü-Add-Funktion, um Bücher hinzufügen.
+  </string>
+	<string name="msgScanError">
+		Hoppla, dieser Eintrag hat nicht funktioniert. Das
+		Produkt-Code / ISBN
+		Ergebnis war% s. Bitte versuchen Sie es erneut,
+		oder verwenden Sie
+		eine andere Eingabemethode. (Wenn Sie Probleme beim
+		Scannen ein Buch,
+		lesen Sie in Menü-&gt; Tipps zum Scannen.)
+  </string>
+	<string name="msgDataSourceError">
+		Buchen Datenquelle nicht gefunden, interner Fehler
+		oder Netzwerkproblem.
+	</string>
+	<string name="msgISBNError">
+		Book ISBN / Produkt-Code nicht vorhanden ist.
+	</string>
+	<string name="msgScanningtips">
+		* Wenn der Scanner funktioniert, aber erkennt ein
+		Produkt als ein Buch,
+		versuchen Sie einen anderen Barcode suchen.
+		Bücher haben oft mehrere
+		Codes. Die Umschlagseite möglicherweise einen
+		anderen Code, der sich
+		von der Rückseite ist. Besonders für ältere
+		Taschenbuch Bücher, Werke
+		der inneren Umschlagseite Code mehr
+		zuverlässig. &lt;br /&gt; &lt;br
+		/&gt; * Vergewissern Sie sich nicht,
+		dass das Scannen eines Aufklebers
+		auf der Bar-Code wurde von einem
+		Händler gebracht. Viele Einzelhändler
+		dies zu tun, und die proprietären
+		Codes Einzelhändler nicht scannen.
+		&lt;br /&gt; &lt;br /&gt; * Einige
+		Bücher einfach nicht scannen.
+		Product Codes, die nicht als ISBNs wird
+		nicht funktionieren,
+		interpretiert werden können. In diesen Fällen
+		versuchen, eine
+		Web-Suche auf den Titel. Es ist immer noch ziemlich
+		schnell, und es
+		wird wahrscheinlich funktionieren.
+  </string>
+	<string name="msgMinimumSave">
+		Bitte speichern Buch (mit einem Mindestbetrag von
+		Titel und Autor (en)),
+		bevor Sie verwalten Titelbild.
+  </string>
+	<string name="msgNoActivityGalleryError">
+		Keine Aktivität festgestellt Gallery Auswahl Griff,
+		kann diese Methode
+		nicht verwenden.
+  </string>
+	<string name="msgBookUpdated">
+		&quot;Book aktualisiert
+  </string>
+	<string name="msgSavingBookInfo">
+		Saving Buch info ...
+  </string>
+	<string name="msgBookSaved">
+		Book gespeichert
+  </string>
+	<string name="msgBookSaveError">
+		Fehler beim Speichern buchen, buchen Informationen
+		nicht vorhanden, oder ID
+		null.
+  </string>
+	<string name="msgRetrieveCoverImage">
+		Suchen Titelbild ...
+  </string>
+	<string name="msgRetrieveCoverImageError">
+		Fehler beim Abrufen der Cover-Bild,
+		Buch-Informationen nicht vorhanden, oder
+		ID null.
+  </string>
+	<string name="msgGenerateCoverImage">
+		Generating Titelbild ...
+  </string>
+	<string name="msgGenerateCoverImageError">
+		Fehler beim Erzeugen Titelbild, Buch-Informationen
+		nicht vorhanden, oder ID
+		null.
+  </string>
+	<string name="msgSearching">
+		Searching ...
+  </string>
+	<string name="msgReplaceExistingExport">
+		Sind Sie sicher (dies wird bestehende ältere
+		Export) zu ersetzen?
+  </string>
+	<string name="msgReplaceExistingData">
+		Sind Sie sicher (dieser wird alle vorhandenen
+		aktuellen Daten) zu
+		ersetzen? &quot; </string>
+	<string name="msgDeleteAllData">
+		Sind Sie sicher (diese werden alle Daten aus der
+		Datenbank löschen)?
+	</string>
+	<string name="msgExternalStorageNAError">
+		Externe Speicher nicht verfügbar ist, nicht in der
+		Lage, Daten zu
+		exportieren.
+  </string>
+	<string name="msgDataDeleted">
+		Daten gelöscht
+  </string>
+	<string name="msgExportingData">
+		Exportieren der Datenbank ...
+  </string>
+	<string name="msgExportSuccess">
+		Export erfolgreich!
+  </string>
+	<string name="msgExportError">
+		Export fehlgeschlagen
+  </string>
+	<string name="msgImportingData">
+		Importieren der Datenbank ...
+  </string>
+	<string name="msgImportSuccess">
+		Import erfolgreich!
+  </string>
+	<string name="msgImportError">
+		Import fehlgeschlagen
+  </string>
+	<string name="msgImportFileMissingError">
+		Datenbank-Backup-Datei nicht existiert, kann nicht
+		importieren.
+  </string>
+	<string name="msgImportFileNonReadableError">
+		Datenbank-Backup-Datei existiert, aber nicht lesbar
+		ist, kann nicht importieren.
+  </string>
+	<string name="msgSelectBookError">
+		Nicht behebbarer Fehler Auswahl Buch.
+  </string>
+	<string name="msgBookListStats">
+		Buchliste Statistik
+  </string>
+	<string name="msgResetAllCoverImages">
+		Setzen Sie alle Cover-Bilder?
+  </string>
+	<string name="msgResetAllCoverImagesExplain">
+		Dadurch wird das Netzwerk nutzen, um zu versuchen
+		zu finden und ersetzen alle
+		Cover-Bilder.
+  </string>
+	<string name="msgResetCoverImagesWarnTime">
+		Zurücksetzen Cover-Bilder, könnte dies einige
+		Minuten dauern ...
+  </string>
+	<string name="msgProcessingBookX">
+		Prozessing-Buch:% s.
+  </string>
+	<string name="msgWarnDupe">
+		Achtung, Ihre Liste enthält bereits ein Buch mit
+		dem gleichen Titel und die
+		ISBN wie dieser.
+  </string>
+	<string name="msgTapToBegin">
+		Tippen, um zu beginnen
+  </string>
+	<string name="prefSectApp">
+		Application Preferences
+  </string>
+	<string name="prefTitleSplash">
+		Enable Splash-Screen?
+  </string>
+	<string name="prefSumSplash">
+		Standardmäßig Splash gezeigt, einmal nach der
+		Installation aktivieren, um bei jedem
+		Start zeigen.
+  </string>
+	<string name="prefTitleDebugLog">
+		Aktivieren Sie die Debug-Protokollierung?
+  </string>
+	<string name="prefSumDebugLog">
+		Aktivieren und dann exit / app starten, um
+		detaillierte Protokolle.
+  </string>
+	<string name="prefSectDataProvider">
+		Data Provider-Einstellungen
+  </string>
+	<string name="prefTitleBookData">
+		Book Data Provider
+  </string>
+	<string name="prefSumBookData">
+		Derzeit werden nur Google Books (zukünftige
+		Erweiterungen geplant).
+  </string>
+	<string name="prefTitleCoverImage">
+		Book Cover Image Provider
+  </string>
+	<string name="prefSumCoverImage">
+		Derzeit werden nur OpenLibrary (zukünftige
+		Erweiterungen geplant).
+  </string>
+</resources>

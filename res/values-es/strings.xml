@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">
+		BookWorm
+    </string>
+	<string name="by"><b>Por Charlie Collins</b>\n</string>
+	<string name="aboutcontent">
+		<i>
+			Utilice BookWorm para realizar un seguimiento de los libros que ha
+			leído, y tiene la intención de leer. Mantener un registro de libros
+			que usted puede ver, ordenar, filtrar y tasa.
+        </i>
+		&lt;br /&gt; &lt;br /&gt; Para más información y hacer comentarios o
+		informar de problemas, por favor visite la página &lt;a
+		href=&quot;http://code.google.com/p/and-bookworm/&quot;&gt; el sitio
+		del proyecto BookWorm &lt;/ a&gt;. &lt;br /&gt; &lt;br /&gt;
+	</string>
+	<string name="menuScanTips">
+		Consejos de escaneo
+  </string>
+	<string name="menuEdit">
+		Editar
+  </string>
+	<string name="menuEditBook">
+		Edición Libro
+  </string>
+	<string name="menuAddBook">
+		Añadir libro
+  </string>
+	<string name="menuDeleteBook">
+		Eliminar Libro
+  </string>
+	<string name="menuEditBookDetails">
+		Editar Detalles del libro
+  </string>
+	<string name="menuManageCoverImage">
+		Administrar Cover Image
+  </string>
+	<string name="menuSortBooks">
+		Ordenar Libros
+  </string>
+	<string name="menuListStats">
+		Estadisticas
+  </string>
+	<string name="menuAbout">
+		Sobre
+  </string>
+	<string name="menuPrefs">
+		Preferencias
+  </string>
+	<string name="menuManageData">
+		Administrar la base de datos
+  </string>
+	<string name="menuResetCoverImages">
+		Perdí imágenes de la cubierta
+  </string>
+	<string name="btnYes">
+		Sí
+  </string>
+	<string name="btnNo">
+		No
+  </string>
+	<string name="btnCancel">
+		Cancelar
+  </string>
+	<string name="btnDismiss">
+		Despedir
+  </string>
+	<string name="btnDetails">
+		Detalles
+  </string>
+	<string name="btnAddBook">
+		Añadir libro
+  </string>
+	<string name="btnSortBy">
+		Hab.
+  </string>
+	<string name="btnScanCode">
+		Escanear código de producto
+  </string>
+	<string name="btnSearchWeb">
+		Buscar en la Web
+  </string>
+	<string name="btnSearch">
+		Búsqueda
+  </string>
+	<string name="btnUseForm">
+		Utilice el formulario
+  </string>
+	<string name="btnSave">
+		Guardar
+  </string>
+	<string name="btnSelectImage">
+		Selecciona la imagen
+  </string>
+	<string name="btnRetrieveImage">
+		Recuperar la imagen
+  </string>
+	<string name="btnGenerateImage">
+		Generar imagen
+  </string>
+	<string name="btnExportData">
+		Exportar DB en una tarjeta SD
+  </string>
+	<string name="btnImportData">
+		Importación de DB para tarjetas SD
+  </string>
+	<string name="btnDeleteData">
+		Eliminar todos los datos de DB
+  </string>
+	<string name="labelTitle">
+		Título
+  </string>
+	<string name="labelSubtitle">
+		Subtítulo
+  </string>
+	<string name="labelSubject">
+		Tema
+  </string>
+	<string name="labelIsbn10">
+		ISBN 10
+  </string>
+	<string name="labelIsbn13">
+		ISBN 13
+  </string>
+	<string name="labelAuthors">
+		Autor (s) (separados por comas)
+  </string>
+	<string name="labelAuthorsShort">
+		Autor (s)
+  </string>
+	<string name="labelRating">
+		Clasificación
+  </string>
+	<string name="labelDatepub">
+		Fecha de publicación
+  </string>
+	<string name="labelPublisher">
+		Editor
+  </string>
+	<string name="labelReadstatus">
+		Lee el estado
+  </string>
+	<string name="labelAddBook">
+		Añadir libro
+  </string>
+	<string name="labelCurrentCover">
+		Imagen de la cubierta actual
+  </string>
+	<string name="labelHaveRead">
+		Ha leído?
+  </string>
+	<string name="labelSearchTerms">
+		Ingrese el término de búsqueda (s)
+  </string>
+	<string name="labelMoreResults">
+		- Obtener más resultados -
+  </string>
+	<string name="msgInvalidISBN">
+		ISBN formato no válido (no ISBN ISBN 10 o 13), no
+		puede recuperar
+		resultado.
+  </string>
+	<string name="msgFindError">
+		Libro que no se encuentra con ISBN /% s código de
+		producto (puede no ser un
+		ISBN?).
+  </string>
+	<string name="msgRetrievingBookData">
+		Recuperación de datos del libro de ...
+  </string>
+	<string name="msgBooksListEmpty">
+		Usted no tiene ningún libro en su lista todavía.
+		Utilice el menú Agregar
+		función para añadir libros.
+  </string>
+	<string name="msgScanError">
+		¡Vaya, que la entrada no funcionaba. El código de
+		producto / resultado fue
+		ISBN% s. Por favor, inténtelo de nuevo o usar
+		un método de entrada
+		diferente. (Si tienes problemas para digitalizar
+		un libro, echa un
+		vistazo a Menú-&gt; Consejos de exploración.)
+	</string>
+	<string name="msgDataSourceError">
+		Libro de origen de datos no encontrado, error
+		interno, o un problema de
+		red.
+  </string>
+	<string name="msgISBNError">
+		Libro ISBN / código de producto no está presente.
+	</string>
+	<string name="msgScanningtips">
+		* Si el escáner funciona, pero reconoce un producto
+		en lugar de un
+		libro, intenta buscar un código de barras diferentes.
+		Libros a menudo
+		tienen múltiples códigos. El interior de la portada
+		puede tener otro
+		código que es diferente de la espalda. Especialmente
+		para los más
+		viejos libros de bolsillo, el código de cubierta interior
+		obras más
+		confiable. &lt;br /&gt; &lt;br /&gt; * Asegúrese de que no
+		está
+		escaneando una calcomanía que se ha colocado sobre el código de
+		barras
+		por un minorista. Muchos minoristas ello, y los códigos
+		minorista de
+		propiedad no escanea. &lt;br /&gt; &lt;br /&gt; * Algunos
+		libros
+		simplemente no escanear. códigos de productos que no se puede
+		interpretar como los números ISBN, no funcionará. En estos casos
+		intenta realizar una búsqueda web para el título. Todavía es bastante
+		rápido, y funcionará probable.
+  </string>
+	<string name="msgMinimumSave">
+		Por favor, guarde libro (con un mínimo de título y
+		el autor (s)) antes de
+		intentar manejar imagen de la cubierta.
+  </string>
+	<string name="msgNoActivityGalleryError">
+		No hay actividad encontrado para manejar la
+		selección de fotos, no puede
+		utilizar este método.
+  </string>
+	<string name="msgBookUpdated">
+		&quot;Libro de actualización
+  </string>
+	<string name="msgSavingBookInfo">
+		Guardar información sobre el libro ...
+  </string>
+	<string name="msgBookSaved">
+		Libro guardado
+  </string>
+	<string name="msgBookSaveError">
+		Error al guardar el libro, el libro de la
+		información no está presente, o
+		nula identificación.
+  </string>
+	<string name="msgRetrieveCoverImage">
+		Recuperación de imagen de la cubierta ...
+  </string>
+	<string name="msgRetrieveCoverImageError">
+		Error al recuperar la cubierta de la imagen, el
+		libro de la información no
+		está presente, o nula identificación.
+	</string>
+	<string name="msgGenerateCoverImage">
+		Generación de imagen de la cubierta ...
+  </string>
+	<string name="msgGenerateCoverImageError">
+		generar un error, imagen de la cubierta, el libro
+		de información no está
+		presente, o nula identificación.
+  </string>
+	<string name="msgSearching">
+		Buscando ...
+  </string>
+	<string name="msgReplaceExistingExport">
+		¿Estás seguro (esto sustituye a la exportación
+		antes existentes)?
+  </string>
+	<string name="msgReplaceExistingData">
+		¿Estás seguro (esto sustituye a los datos actuales
+		existentes)? &quot; </string>
+	<string name="msgDeleteAllData">
+		¿Estás seguro (esto borrará todos los datos de base
+		de datos)?
+  </string>
+	<string name="msgExternalStorageNAError">
+		Almacenamiento externo no está disponible, no puede
+		exportar datos.
+  </string>
+	<string name="msgDataDeleted">
+		Datos eliminado
+  </string>
+	<string name="msgExportingData">
+		Exportar base de datos ...
+  </string>
+	<string name="msgExportSuccess">
+		Exportación de éxito!
+  </string>
+	<string name="msgExportError">
+		Fallo de Exportación
+  </string>
+	<string name="msgImportingData">
+		Importar base de datos ...
+  </string>
+	<string name="msgImportSuccess">
+		Importación de éxito!
+  </string>
+	<string name="msgImportError">
+		La importación ha fallado
+  </string>
+	<string name="msgImportFileMissingError">
+		Archivo de copia de seguridad de base de datos no
+		existe, no puede importar.
+	</string>
+	<string name="msgImportFileNonReadableError">
+		Archivo de copia de seguridad de base de datos
+		existe, pero no se puede leer,
+		no puede importar.
+  </string>
+	<string name="msgSelectBookError">
+		Error irrecuperable selección de libros.
+  </string>
+	<string name="msgBookListStats">
+		Lista de libros Estadísticas
+  </string>
+	<string name="msgResetAllCoverImages">
+		Reinicie todas las imágenes de la cubierta?
+	</string>
+	<string name="msgResetAllCoverImagesExplain">
+		Esto utilizar la red para tratar de encontrar y
+		reemplazar todas las
+		imágenes de la cubierta.
+  </string>
+	<string name="msgResetCoverImagesWarnTime">
+		Restablecimiento de imágenes de la cubierta, esto
+		podría tomar unos minutos ...
+	</string>
+	<string name="msgProcessingBookX">
+		libro de procesamiento:% s.
+  </string>
+	<string name="msgWarnDupe">
+		Atención, su lista ya contiene un libro con el
+		mismo título e ISBN como éste.
+	</string>
+	<string name="msgTapToBegin">
+		Pulse para comenzar
+  </string>
+	<string name="prefSectApp">
+		Preferencias de la aplicación
+  </string>
+	<string name="prefTitleSplash">
+		pantalla de bienvenida Activar?
+  </string>
+	<string name="prefSumSplash">
+		Por Splash defecto que se muestra una vez después
+		de instalar, permite
+		mostrar en cada inicio.
+  </string>
+	<string name="prefTitleDebugLog">
+		Habilitar el registro de depuración?
+  </string>
+	<string name="prefSumDebugLog">
+		Habilitar y luego salir / reiniciar la aplicación
+		para obtener registros
+		detallados.
+  </string>
+	<string name="prefSectDataProvider">
+		Preferencias de Datos de Proveedores
+  </string>
+	<string name="prefTitleBookData">
+		Libro de Datos de Proveedores
+  </string>
+	<string name="prefSumBookData">
+		Actualmente, sólo Google Libros (adiciones futuro
+		previsto).
+  </string>
+	<string name="prefTitleCoverImage">
+		Book Cover proveedor de imágenes
+  </string>
+	<string name="prefSumCoverImage">
+		Actualmente, sólo OpenLibrary (adiciones planeada
+		en el futuro).
+  </string>
+</resources>
