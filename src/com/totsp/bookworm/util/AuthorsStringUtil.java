@@ -47,7 +47,7 @@ public final class AuthorsStringUtil {
             if (i == 0) {
                sb.append(authorsArray[i]);
             } else {
-               sb.append(" ," + authorsArray[i]);
+               sb.append(", " + authorsArray[i]);
             }
          }
       } else {
