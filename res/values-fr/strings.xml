@@ -362,17 +362,17 @@
 		obtenir des logs détaillés.
 	</string>
 	<string name="prefSectDataProvider">
-		Préférences Data Provider
+		Réserver des Préférences de Fournisseur de Données
   </string>
 	<string name="prefTitleBookData">
-		Réservez Data Provider
+		Réserver du Fournisseur de Données
   </string>
 	<string name="prefSumBookData">
 		Actuellement, seuls Google Livres (ajouts futurs
 		prévus).
   </string>
 	<string name="prefTitleCoverImage">
-		Book Cover Image fournisseur
+		Réserver la Couverture Image Fournisseur
   </string>
 	<string name="prefSumCoverImage">
 		Actuellement, seuls OpenLibrary (ajouts futurs
