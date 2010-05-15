@@ -29,7 +29,7 @@
 	<string name="menuListStats">List Stats</string>
 	<string name="menuAbout">About</string>
 	<string name="menuPrefs">Prefs</string>
-	<string name="menuManageData">Manage Data</string>
+	<string name="menuManageData">Manage Database</string>
 	<string name="menuResetCoverImages">Reset Cover Images</string>
 	
 	<string name="dialogYes">Yes</string>
