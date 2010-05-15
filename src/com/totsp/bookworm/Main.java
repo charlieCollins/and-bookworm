@@ -142,7 +142,7 @@ public class Main extends Activity {
       this.sortDialog.setTitle(this.getString(R.string.btnSortBy));
       this.sortDialog.setItems(new CharSequence[] {
                this.getString(R.string.labelTitle),
-               this.getString(R.string.labelAuthors),
+               this.getString(R.string.labelAuthorsShort),
                this.getString(R.string.labelRating),
                this.getString(R.string.labelReadstatus),
                this.getString(R.string.labelDatepub),

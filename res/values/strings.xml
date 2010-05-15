@@ -57,6 +57,7 @@
     <string name="labelIsbn10">ISBN 10</string>
     <string name="labelIsbn13">ISBN 13</string>
     <string name="labelAuthors">Author(s) (comma separated)</string>
+    <string name="labelAuthorsShort">Author(s)</string>
     <string name="labelRating">Rating</string>
     <string name="labelDatepub">Publication Date</string>
     <string name="labelPublisher">Publisher</string>
