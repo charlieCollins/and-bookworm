@@ -6,11 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -45,7 +45,7 @@ public class BookSearch extends Activity {
 
    private SearchTask searchTask;
    
-   private InputMethodManager imm;
+   ///private InputMethodManager imm;
 
    private boolean footerViewShown;
    private boolean fromEntryResult;
@@ -54,7 +54,7 @@ public class BookSearch extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       
-      imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); 
+      ///imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); 
       
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
@@ -112,13 +112,17 @@ public class BookSearch extends Activity {
       Object lastNonConfig = getLastNonConfigurationInstance();
       if ((lastNonConfig != null) && (lastNonConfig instanceof Boolean)) {
          restoreFromCache();
-      }    
+      }
+      
+      // do not enable the soft keyboard unless user explicitly selects textedit
+      // Android seems to have an IMM bug concerning this on devices with only soft keyboard
+      // http://code.google.com/p/android/issues/detail?id=7115
+      getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
    }
    
    @Override 
    public void onStart() {
       super.onStart(); 
-      ///imm.hideSoftInputFromWindow(searchInput.getWindowToken(), 0); 
    }
 
    @Override
@@ -173,10 +177,8 @@ public class BookSearch extends Activity {
    }
 
    private void restoreFromCache() {
-      ///Log.d(Constants.LOG_TAG, "restoreFromCache invoked");
       // use application object as quick/dirty cache for state      
       if (application.bookCacheList != null) {
-         ///Log.d(Constants.LOG_TAG, "bookCacheList NOT NULL");
          selectorPosition = application.lastSearchListPosition;
          parsedBooks = application.bookCacheList;
          bindAdapter();
