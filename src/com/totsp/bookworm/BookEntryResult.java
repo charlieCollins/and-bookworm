@@ -244,14 +244,16 @@ public class BookEntryResult extends Activity {
          }
 
          // handle cover image either way
-         if (bean.book.isbn10 != null) {
-            bean.book.coverImage =
-                     CoverImageUtil.retrieveCoverImage(
-                              this.coverImageProviderKey, bean.book.isbn10);
-         } else if (bean.book.isbn13 != null) {
-            bean.book.coverImage =
-                     CoverImageUtil.retrieveCoverImage(
-                              this.coverImageProviderKey, bean.book.isbn13);
+         if (bean.book != null) {
+            if (bean.book.isbn10 != null) {
+               bean.book.coverImage =
+                        CoverImageUtil.retrieveCoverImage(
+                                 this.coverImageProviderKey, bean.book.isbn10);
+            } else if (bean.book.isbn13 != null) {
+               bean.book.coverImage =
+                        CoverImageUtil.retrieveCoverImage(
+                                 this.coverImageProviderKey, bean.book.isbn13);
+            }
          }
 
          return bean;
