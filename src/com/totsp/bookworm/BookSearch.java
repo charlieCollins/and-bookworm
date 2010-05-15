@@ -12,13 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
+import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
@@ -44,7 +45,7 @@ public class BookSearch extends Activity {
    private ArrayAdapter<Book> adapter;
 
    private SearchTask searchTask;
-   
+
    ///private InputMethodManager imm;
 
    private boolean footerViewShown;
@@ -53,9 +54,9 @@ public class BookSearch extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      
+
       ///imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); 
-      
+
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
 
@@ -64,6 +65,21 @@ public class BookSearch extends Activity {
       adapter = null;
 
       searchInput = (EditText) findViewById(R.id.bookentrysearchinput);
+      // if user hits "enter" on keyboard, go ahead and submit, no need for newlines in the search box
+      searchInput.setOnKeyListener(new OnKeyListener() {
+         public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN)
+                     && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+               BookSearch.this.parsedBooks = new ArrayList<Book>();
+               BookSearch.this.searchTask = new SearchTask();
+               BookSearch.this.searchTask.execute(BookSearch.this.searchInput
+                        .getText().toString(), "1");
+               return true;
+            }
+            return false;
+         }
+      });
+
       searchButton = (Button) findViewById(R.id.bookentrysearchbutton);
 
       searchResults = (ListView) findViewById(R.id.bookentrysearchresultlist);
@@ -72,9 +88,10 @@ public class BookSearch extends Activity {
          public void onItemClick(final AdapterView<?> parent, final View v,
                   final int index, final long id) {
             // don't redo the search, you have the BOOK itself (don't pass the ISBN, use the Book)
-            application.selectedBook = BookSearch.this.parsedBooks.get(index);;
+            application.selectedBook = BookSearch.this.parsedBooks.get(index);
+            ;
             BookSearch.this.selectorPosition = index - 1;
-            Intent intent = new Intent(BookSearch.this, BookEntryResult.class);            
+            Intent intent = new Intent(BookSearch.this, BookEntryResult.class);
             intent.putExtra(BookSearch.FROM_SEARCH, true);
             BookSearch.this.startActivity(intent);
          }
@@ -113,16 +130,17 @@ public class BookSearch extends Activity {
       if ((lastNonConfig != null) && (lastNonConfig instanceof Boolean)) {
          restoreFromCache();
       }
-      
+
       // do not enable the soft keyboard unless user explicitly selects textedit
       // Android seems to have an IMM bug concerning this on devices with only soft keyboard
       // http://code.google.com/p/android/issues/detail?id=7115
-      getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+      getWindow().setSoftInputMode(
+               WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
    }
-   
-   @Override 
+
+   @Override
    public void onStart() {
-      super.onStart(); 
+      super.onStart();
    }
 
    @Override
@@ -158,8 +176,8 @@ public class BookSearch extends Activity {
       return super.onKeyDown(keyCode, event);
    }
 
-   private void bindAdapter() {     
-      
+   private void bindAdapter() {
+
       // add footer view BEFORE setting adapter
       if (!parsedBooks.isEmpty() && !footerViewShown) {
          searchResults.addFooterView(getMoreData);
@@ -172,8 +190,7 @@ public class BookSearch extends Activity {
       if (selectorPosition > 2) {
          searchResults.setSelection(selectorPosition - 1);
       }
-      
-      
+
    }
 
    private void restoreFromCache() {
@@ -189,15 +206,15 @@ public class BookSearch extends Activity {
    }
 
    // static and package access as an Android optimization (used in inner class)
-   static class ViewHolder {     
+   static class ViewHolder {
       TextView text1;
       TextView text2;
    }
-   
+
    // BookSearchAdapter
    private class BookSearchAdapter extends ArrayAdapter<Book> {
       private ArrayList<Book> books;
-      
+
       LayoutInflater vi =
                (LayoutInflater) BookSearch.this
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -215,14 +232,17 @@ public class BookSearch extends Activity {
             item = vi.inflate(R.layout.search_list_item, parent, false);
             // use ViewHolder pattern to avoid extra trips to findViewById         
             ViewHolder holder = new ViewHolder();
-            holder.text1 = (TextView) item.findViewById(R.id.search_item_text_1);
-            holder.text2 = (TextView) item.findViewById(R.id.search_item_text_2);
+            holder.text1 =
+                     (TextView) item.findViewById(R.id.search_item_text_1);
+            holder.text2 =
+                     (TextView) item.findViewById(R.id.search_item_text_2);
             item.setTag(holder);
-         }         
-         
+         }
+
          ViewHolder holder = (ViewHolder) item.getTag();
          holder.text1.setText(books.get(position).title);
-         holder.text2.setText(AuthorsStringUtil.contractAuthors(books.get(position).authors));
+         holder.text2.setText(AuthorsStringUtil.contractAuthors(books
+                  .get(position).authors));
          return item;
       }
    }
