@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -65,15 +64,10 @@ public class BookSearch extends Activity {
       searchResults.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v,
                   final int index, final long id) {
-            Book selected = BookSearch.this.parsedBooks.get(index);
+            // don't redo the search, you have the BOOK itself (don't pass the ISBN, use the Book)
+            application.selectedBook = BookSearch.this.parsedBooks.get(index);;
             BookSearch.this.selectorPosition = index - 1;
-            Intent intent = new Intent(BookSearch.this, BookEntryResult.class);
-            // favor isbn 10, but use 13 if 10 missing
-            if ((selected.isbn10 != null) && !selected.isbn10.equals("")) {
-               intent.putExtra(Constants.ISBN, selected.isbn10);
-            } else if ((selected.isbn13 != null) && !selected.isbn13.equals("")) {
-               intent.putExtra(Constants.ISBN, selected.isbn13);
-            }
+            Intent intent = new Intent(BookSearch.this, BookEntryResult.class);            
             intent.putExtra(BookSearch.FROM_SEARCH, true);
             BookSearch.this.startActivity(intent);
          }
@@ -154,11 +148,6 @@ public class BookSearch extends Activity {
          footerViewShown = true;
       }
 
-      ///adapter =
-      ///         new ArrayAdapter<Book>(BookSearch.this,
-      ///                  R.layout.search_list_item,
-      ///                  BookSearch.this.parsedBooks);
-      // TODO set adapter here
       adapter = new BookSearchAdapter(BookSearch.this.parsedBooks);
 
       searchResults.setAdapter(adapter);
@@ -179,9 +168,14 @@ public class BookSearch extends Activity {
       }
    }
 
-   // TODO GH
+   // static and package access as an Android optimization (used in inner class)
+   static class ViewHolder {     
+      TextView text1;
+      TextView text2;
+   }
+   
+   // BookSearchAdapter
    private class BookSearchAdapter extends ArrayAdapter<Book> {
-
       private ArrayList<Book> books;
       
       LayoutInflater vi =
@@ -199,13 +193,16 @@ public class BookSearch extends Activity {
 
          if (item == null) {
             item = vi.inflate(R.layout.search_list_item, parent, false);
-         }
-
-         TextView text1 = (TextView) item.findViewById(R.id.search_item_text_1);
-         text1.setText(books.get(position).title);
-         TextView text2 = (TextView) item.findViewById(R.id.search_item_text_2);
-         text2.setText(AuthorsStringUtil.contractAuthors(books.get(position).authors));
-
+            // use ViewHolder pattern to avoid extra trips to findViewById         
+            ViewHolder holder = new ViewHolder();
+            holder.text1 = (TextView) item.findViewById(R.id.search_item_text_1);
+            holder.text2 = (TextView) item.findViewById(R.id.search_item_text_2);
+            item.setTag(holder);
+         }         
+         
+         ViewHolder holder = (ViewHolder) item.getTag();
+         holder.text1.setText(books.get(position).title);
+         holder.text2.setText(AuthorsStringUtil.contractAuthors(books.get(position).authors));
          return item;
       }
    }

@@ -21,8 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
-import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.AuthorsStringUtil;
 import com.totsp.bookworm.util.CoverImageUtil;
 
 import java.util.HashSet;
@@ -46,7 +46,7 @@ public class BookEntryResult extends Activity {
 
    boolean fromSearch;
 
-   private GetBookDataTask getBookDataTask;
+   private SetupBookResultTask setupBookResultTask;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class BookEntryResult extends Activity {
       setContentView(R.layout.bookentryresult);
       application = (BookWormApplication) getApplication();
 
-      getBookDataTask = null;
+      setupBookResultTask = null;
 
       bookTitle = (TextView) findViewById(R.id.bookentrytitle);
       bookCover = (ImageView) findViewById(R.id.bookentrycover);
@@ -69,28 +69,38 @@ public class BookEntryResult extends Activity {
          }
       });
 
-      // several other activites can populate this one
-      // ISBN must be present as intent extra to proceed
-      String isbn = getIntent().getStringExtra(Constants.ISBN);
-      if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
-         Log.e(Constants.LOG_TAG, "Invalid product code/ISBN passed "
-                  + "to BookEntryResult (may not be an ISBN?) - " + isbn);
-         BookMessageBean bean = new BookMessageBean();
-         bean.code = isbn;
-         bean.message = getString(R.string.msgInvalidISBN);
-         setViewsForInvalidEntry(bean);
+      fromSearch = getIntent().getBooleanExtra(BookSearch.FROM_SEARCH, false);
+
+      // several other activities can populate this one
+      // *EITHER* use application.selectedBook (if from SEARCH)
+      // or ISBN must be present as intent extra to proceed
+      if (fromSearch && application.selectedBook != null) {
+         setupBookResultTask =
+                  new SetupBookResultTask(application.selectedBook);
+         setupBookResultTask.execute(null);
       } else {
-         getBookDataTask = new GetBookDataTask();
-         getBookDataTask.execute(isbn);
+
+         String isbn = getIntent().getStringExtra(Constants.ISBN);
+         if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
+            Log.e(Constants.LOG_TAG, "Invalid product code/ISBN passed "
+                     + "to BookEntryResult (may not be an ISBN?) - " + isbn);
+            BookMessageBean bean = new BookMessageBean();
+            bean.code = isbn;
+            bean.message = getString(R.string.msgInvalidISBN);
+            setViewsForInvalidEntry(bean);
+         } else {
+            setupBookResultTask = new SetupBookResultTask();
+            setupBookResultTask.execute(isbn);
+         }
       }
 
-      fromSearch = getIntent().getBooleanExtra(BookSearch.FROM_SEARCH, false);
    }
 
    @Override
    public void onPause() {
-      if ((getBookDataTask != null) && getBookDataTask.dialog.isShowing()) {
-         getBookDataTask.dialog.dismiss();
+      if ((setupBookResultTask != null)
+               && setupBookResultTask.dialog.isShowing()) {
+         setupBookResultTask.dialog.dismiss();
       }
       super.onPause();
    }
@@ -155,21 +165,27 @@ public class BookEntryResult extends Activity {
    //
    // AsyncTasks
    //
-   private class GetBookDataTask extends
+   private class SetupBookResultTask extends
             AsyncTask<String, Void, BookMessageBean> {
       private final ProgressDialog dialog =
                new ProgressDialog(BookEntryResult.this);
 
+      private Book book;
       private String coverImageProviderKey;
       // TODO hard coded to GoogleBookDataSource for now
       private final GoogleBookDataSource gbs;
 
-      public GetBookDataTask() {
+      public SetupBookResultTask() {
          gbs =
                   (GoogleBookDataSource) BookEntryResult.this.application.bookDataSource;
          if (BookEntryResult.this.application.debugEnabled && (gbs != null)) {
             gbs.setDebugEnabled(true);
          }
+      }
+
+      public SetupBookResultTask(final Book book) {
+         this();
+         this.book = book;
       }
 
       @Override
@@ -187,48 +203,58 @@ public class BookEntryResult extends Activity {
       @Override
       protected BookMessageBean doInBackground(final String... isbns) {
          BookMessageBean bean = new BookMessageBean();
-         if (isbns[0] != null) {
-            bean.code = isbns[0];
-            if (gbs != null) {
-               Book b = gbs.getBook(isbns[0]);
-               bean.book = b;
-               if (b == null) {
+
+         // if we have the book (it was passed in), use it
+         if (this.book != null) {
+            bean.book = this.book;
+         }
+         // else, use the isbn to retrieve the data and create the book
+         else {
+
+            if (isbns[0] != null) {
+               bean.code = isbns[0];
+               if (gbs != null) {
+                  this.book = gbs.getBook(isbns[0]);
+                  bean.book = this.book;
+                  if (bean.book == null) {
+                     Log
+                              .e(
+                                       Constants.LOG_TAG,
+                                       "GetBookDataTask book returned from data source null (using product code/ISBN - "
+                                                + isbns[0] + ").");
+                     bean.message =
+                              String.format(BookEntryResult.this
+                                       .getString(R.string.msgFindError),
+                                       isbns[0]);
+                  }
+               } else {
                   Log
-                           .e(
-                                    Constants.LOG_TAG,
-                                    "GetBookDataTask book returned from data source null (using product code/ISBN - "
-                                             + isbns[0] + ").");
+                           .e(Constants.LOG_TAG,
+                                    "GetBookDataTask book data source null, cannot add book.");
                   bean.message =
-                           String
-                                    .format(BookEntryResult.this
-                                             .getString(R.string.msgFindError),
-                                             isbns[0]);
-               } else if (b.isbn10 != null) {
-                  Bitmap coverImageBitmap =
-                           CoverImageUtil.retrieveCoverImage(
-                                    coverImageProviderKey, b.isbn10);
-                  b.coverImage = (coverImageBitmap);
-               } else if (b.isbn13 != null) {
-                  Bitmap coverImageBitmap =
-                           CoverImageUtil.retrieveCoverImage(
-                                    coverImageProviderKey, b.isbn13);
-                  b.coverImage = (coverImageBitmap);
+                           BookEntryResult.this
+                                    .getString(R.string.msgDataSourceError);
                }
             } else {
                Log
                         .e(Constants.LOG_TAG,
-                                 "GetBookDataTask book data source null, cannot add book.");
+                                 "GetBookDataTask product code/ISBN null, cannot add book.");
                bean.message =
-                        BookEntryResult.this
-                                 .getString(R.string.msgDataSourceError);
+                        BookEntryResult.this.getString(R.string.msgISBNError);
             }
-         } else {
-            Log
-                     .e(Constants.LOG_TAG,
-                              "GetBookDataTask product code/ISBN null, cannot add book.");
-            bean.message =
-                     BookEntryResult.this.getString(R.string.msgISBNError);
          }
+
+         // handle cover image either way
+         if (bean.book.isbn10 != null) {
+            bean.book.coverImage =
+                     CoverImageUtil.retrieveCoverImage(
+                              this.coverImageProviderKey, bean.book.isbn10);
+         } else if (bean.book.isbn13 != null) {
+            bean.book.coverImage =
+                     CoverImageUtil.retrieveCoverImage(
+                              this.coverImageProviderKey, bean.book.isbn13);
+         }
+
          return bean;
       }
 
@@ -240,15 +266,8 @@ public class BookEntryResult extends Activity {
 
          if (bean.book != null) {
             BookEntryResult.this.bookTitle.setText(bean.book.title);
-            String authors = null;
-            for (Author a : bean.book.authors) {
-               if (authors == null) {
-                  authors = a.name;
-               } else {
-                  authors += ", " + a.name;
-               }
-            }
-            BookEntryResult.this.bookAuthors.setText(authors);
+            BookEntryResult.this.bookAuthors.setText(AuthorsStringUtil
+                     .contractAuthors(bean.book.authors));
 
             if (bean.book.coverImage != null) {
                if (BookEntryResult.this.application.debugEnabled) {
