@@ -37,6 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.totsp.bookworm.data.DataHelper;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
+import com.totsp.bookworm.util.AuthorsStringUtil;
 
 import java.util.HashSet;
 
@@ -395,8 +396,8 @@ public class Main extends Activity {
    static class ViewHolder {
       ImageView coverImage;
       ImageView ratingImage;
-      TextView textAbove;
-      TextView textBelow;
+      TextView text1;
+      TextView text2;
       CheckBox readStatus;
    }
 
@@ -449,11 +450,10 @@ public class Main extends Activity {
                   (ImageView) v.findViewById(R.id.list_items_item_image);
          holder.ratingImage =
                   (ImageView) v.findViewById(R.id.list_items_item_rating_image);
-         holder.textAbove =
-                  (TextView) v.findViewById(R.id.list_items_item_textabove);
-         ;
-         holder.textBelow =
-                  (TextView) v.findViewById(R.id.list_items_item_textbelow);
+         holder.text1 =
+                  (TextView) v.findViewById(R.id.list_items_item_text1);         
+         holder.text2 =
+                  (TextView) v.findViewById(R.id.list_items_item_text2);         
          holder.readStatus =
                   (CheckBox) v.findViewById(R.id.list_items_item_read_status);
          v.setTag(holder);
@@ -487,7 +487,8 @@ public class Main extends Activity {
             int rating = c.getInt(7);
             int readStatus = c.getInt(6);
             String title = c.getString(1);
-            String subTitle = c.getString(2);
+            //String subTitle = c.getString(2);
+            String authors = c.getString(9);
 
             if (Main.this.application.debugEnabled) {
                Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id
@@ -526,9 +527,9 @@ public class Main extends Activity {
                   break;
             }
 
-            holder.textAbove.setText(title);
-            holder.textBelow.setText(subTitle);
-
+            holder.text1.setText(title);
+            holder.text2.setText(AuthorsStringUtil.addSpacesToCSVString(authors));
+            
             if (readStatus == 1) {
                holder.readStatus.setChecked(true);
             } else {

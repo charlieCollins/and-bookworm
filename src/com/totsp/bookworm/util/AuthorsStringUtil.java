@@ -37,5 +37,23 @@ public final class AuthorsStringUtil {
       }
       return result;
    }
+   
+   public static String addSpacesToCSVString(final String in) {
+      StringBuilder sb = null;
+      if (in.contains(",")) {
+         sb = new StringBuilder();
+         String[] authorsArray = in.split(",\\s*");
+         for (int i = 0; i < authorsArray.length; i++) {
+            if (i == 0) {
+               sb.append(authorsArray[i]);
+            } else {
+               sb.append(" ," + authorsArray[i]);
+            }
+         }
+      } else {
+         return in;
+      }
+      return sb.toString();
+   }
 
 }
