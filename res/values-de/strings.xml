@@ -21,19 +21,19 @@
 		Bearbeiten
   </string>
 	<string name="menuEditBook">
-		Edit Book
+		Bearbeiten Buch
   </string>
 	<string name="menuAddBook">
-		Add Book
+		Fügen Sie Buch hinzu
   </string>
 	<string name="menuDeleteBook">
-		Löschen Book
+		Löschen Sie Buch
   </string>
 	<string name="menuEditBookDetails">
-		Edit Buchen Details
+		Bearbeiten Buch Detailliert
   </string>
 	<string name="menuManageCoverImage">
-		Verwalten Cover Image
+		Verwalten Sie Einband Kunst
   </string>
 	<string name="menuSortBooks">
 		Sortieren Bücher
@@ -42,16 +42,16 @@
 		Liste Statistik:
   </string>
 	<string name="menuAbout">
-		Über
+		Um
   </string>
 	<string name="menuPrefs">
-		Prefs
+		Vorzüge
   </string>
 	<string name="menuManageData">
-		Datenbank verwalten
+		Verwalten Sie Daten
   </string>
 	<string name="menuResetCoverImages">
-		Reset Cover-Bilder
+		Stellen Sie Decke Kunst nach
   </string>
 	<string name="btnYes">
 		Ja
@@ -66,10 +66,10 @@
 		Entlassen
   </string>
 	<string name="btnDetails">
-		Details
+		Detaillierte Informationen
   </string>
 	<string name="btnAddBook">
-		Add Book
+		Fügen Sie Buch hinzu
   </string>
 	<string name="btnSortBy">
 		Sortiert nach
@@ -141,7 +141,7 @@
 		Lesen Sie den Status
   </string>
 	<string name="labelAddBook">
-		Add Book
+		Fügen Sie Buch hinzu
   </string>
 	<string name="labelCurrentCover">
 		Aktuelle Cover Image
@@ -161,12 +161,12 @@
 		sein.
   </string>
 	<string name="msgFindError">
-		Buchen Sie nicht gefunden mit ISBN / Produkt-Code%
+		Buch Sie nicht gefunden mit ISBN / Produkt-Code%
 		s (darf nicht eine ISBN
 		sein?).
   </string>
 	<string name="msgRetrievingBookData">
-		Abrufen von Daten Buches ...
+		Abrufen von Daten Buches...
   </string>
 	<string name="msgBooksListEmpty">
 		Sie haben noch keine Bücher in Ihrer Liste an.
@@ -183,11 +183,11 @@
 		lesen Sie in Menü-&gt; Tipps zum Scannen.)
   </string>
 	<string name="msgDataSourceError">
-		Buchen Datenquelle nicht gefunden, interner Fehler
+		Buch Datenquelle nicht gefunden, interner Fehler
 		oder Netzwerkproblem.
 	</string>
 	<string name="msgISBNError">
-		Book ISBN / Produkt-Code nicht vorhanden ist.
+		Buch ISBN / Produkt-Code nicht vorhanden ist.
 	</string>
 	<string name="msgScanningtips">
 		* Wenn der Scanner funktioniert, aber erkennt ein
@@ -227,13 +227,13 @@
 		nicht verwenden.
   </string>
 	<string name="msgBookUpdated">
-		&quot;Book aktualisiert
+		&quot;Buch aktualisiert
   </string>
 	<string name="msgSavingBookInfo">
-		Saving Buch info ...
+		Sparen von Buch Informationen...
   </string>
 	<string name="msgBookSaved">
-		Book gespeichert
+		Buch gespeichert
   </string>
 	<string name="msgBookSaveError">
 		Fehler beim Speichern buchen, buchen Informationen
@@ -241,7 +241,7 @@
 		null.
   </string>
 	<string name="msgRetrieveCoverImage">
-		Suchen Titelbild ...
+		Suchen Titelbild...
   </string>
 	<string name="msgRetrieveCoverImageError">
 		Fehler beim Abrufen der Cover-Bild,
@@ -249,7 +249,7 @@
 		ID null.
   </string>
 	<string name="msgGenerateCoverImage">
-		Generating Titelbild ...
+		Erzeugen Sie Decke Kunst...
   </string>
 	<string name="msgGenerateCoverImageError">
 		Fehler beim Erzeugen Titelbild, Buch-Informationen
@@ -257,7 +257,7 @@
 		null.
   </string>
 	<string name="msgSearching">
-		Searching ...
+		Suchen...
   </string>
 	<string name="msgReplaceExistingExport">
 		Sind Sie sicher (dies wird bestehende ältere
@@ -280,22 +280,22 @@
 		Daten gelöscht
   </string>
 	<string name="msgExportingData">
-		Exportieren der Datenbank ...
+		Exportieren der Datenbank...
   </string>
 	<string name="msgExportSuccess">
-		Export erfolgreich!
+		Exportieren erfolgreich!
   </string>
 	<string name="msgExportError">
-		Export fehlgeschlagen
+		Exportieren fehlgeschlagen
   </string>
 	<string name="msgImportingData">
-		Importieren der Datenbank ...
+		Importieren der Datenbank...
   </string>
 	<string name="msgImportSuccess">
-		Import erfolgreich!
+		Importieren erfolgreich!
   </string>
 	<string name="msgImportError">
-		Import fehlgeschlagen
+		Importieren fehlgeschlagen
   </string>
 	<string name="msgImportFileMissingError">
 		Datenbank-Backup-Datei nicht existiert, kann nicht
@@ -321,7 +321,7 @@
   </string>
 	<string name="msgResetCoverImagesWarnTime">
 		Zurücksetzen Cover-Bilder, könnte dies einige
-		Minuten dauern ...
+		Minuten dauern...
   </string>
 	<string name="msgProcessingBookX">
 		Prozessing-Buch:% s.
@@ -335,10 +335,10 @@
 		Tippen, um zu beginnen
   </string>
 	<string name="prefSectApp">
-		Application Preferences
+		Anwendungsvorzüge
   </string>
 	<string name="prefTitleSplash">
-		Enable Splash-Screen?
+		Ermöglichen Sie Spritzer-schirm? 
   </string>
 	<string name="prefSumSplash">
 		Standardmäßig Splash gezeigt, einmal nach der
@@ -353,17 +353,17 @@
 		detaillierte Protokolle.
   </string>
 	<string name="prefSectDataProvider">
-		Data Provider-Einstellungen
+		Datenversorgervorzüge
   </string>
 	<string name="prefTitleBookData">
-		Book Data Provider
+		Buchen Sie Daten Versorger
   </string>
 	<string name="prefSumBookData">
 		Derzeit werden nur Google Books (zukünftige
 		Erweiterungen geplant).
   </string>
 	<string name="prefTitleCoverImage">
-		Book Cover Image Provider
+		Buchen Sie Decke Bildnis Versorger
   </string>
 	<string name="prefSumCoverImage">
 		Derzeit werden nur OpenLibrary (zukünftige

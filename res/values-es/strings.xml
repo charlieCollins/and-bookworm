@@ -167,7 +167,7 @@
 		ISBN?).
   </string>
 	<string name="msgRetrievingBookData">
-		Recuperación de datos del libro de ...
+		Recuperación de datos del libro...
   </string>
 	<string name="msgBooksListEmpty">
 		Usted no tiene ningún libro en su lista todavía.
@@ -229,7 +229,7 @@
 		&quot;Libro de actualización
   </string>
 	<string name="msgSavingBookInfo">
-		Guardar información sobre el libro ...
+		Guardar información sobre el libro...
   </string>
 	<string name="msgBookSaved">
 		Libro guardado
@@ -240,7 +240,7 @@
 		nula identificación.
   </string>
 	<string name="msgRetrieveCoverImage">
-		Recuperación de imagen de la cubierta ...
+		Recuperación de imagen de la cubierta...
   </string>
 	<string name="msgRetrieveCoverImageError">
 		Error al recuperar la cubierta de la imagen, el
@@ -248,7 +248,7 @@
 		está presente, o nula identificación.
 	</string>
 	<string name="msgGenerateCoverImage">
-		Generación de imagen de la cubierta ...
+		Generación de imagen de la cubierta...
   </string>
 	<string name="msgGenerateCoverImageError">
 		generar un error, imagen de la cubierta, el libro
@@ -256,7 +256,7 @@
 		presente, o nula identificación.
   </string>
 	<string name="msgSearching">
-		Buscando ...
+		Buscando...
   </string>
 	<string name="msgReplaceExistingExport">
 		¿Estás seguro (esto sustituye a la exportación
@@ -277,7 +277,7 @@
 		Datos eliminado
   </string>
 	<string name="msgExportingData">
-		Exportar base de datos ...
+		Exportar base de datos...
   </string>
 	<string name="msgExportSuccess">
 		Exportación de éxito!
@@ -286,7 +286,7 @@
 		Fallo de Exportación
   </string>
 	<string name="msgImportingData">
-		Importar base de datos ...
+		Importar base de datos...
   </string>
 	<string name="msgImportSuccess">
 		Importación de éxito!
@@ -319,10 +319,10 @@
   </string>
 	<string name="msgResetCoverImagesWarnTime">
 		Restablecimiento de imágenes de la cubierta, esto
-		podría tomar unos minutos ...
+		podría tomar unos minutos...
 	</string>
 	<string name="msgProcessingBookX">
-		libro de procesamiento:% s.
+		Libro de procesamiento:% s.
   </string>
 	<string name="msgWarnDupe">
 		Atención, su lista ya contiene un libro con el
@@ -361,7 +361,7 @@
 		previsto).
   </string>
 	<string name="prefTitleCoverImage">
-		Book Cover proveedor de imágenes
+		Libro de Tapa de Proveedores
   </string>
 	<string name="prefSumCoverImage">
 		Actualmente, sólo OpenLibrary (adiciones planeada
