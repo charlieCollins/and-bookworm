@@ -48,7 +48,7 @@ public class ManageData extends Activity {
                      ManageData.this
                               .getString(R.string.msgReplaceExistingExport))
                      .setPositiveButton(
-                              ManageData.this.getString(R.string.dialogYes),
+                              ManageData.this.getString(R.string.btnYes),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(
                                           final DialogInterface arg0,
@@ -64,7 +64,7 @@ public class ManageData extends Activity {
                                              ManageData.this, Main.class));
                                  }
                               }).setNegativeButton(
-                              ManageData.this.getString(R.string.dialogNo),
+                              ManageData.this.getString(R.string.btnNo),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(
                                           final DialogInterface arg0,
@@ -83,7 +83,7 @@ public class ManageData extends Activity {
                               ManageData.this
                                        .getString(R.string.msgReplaceExistingData))
                      .setPositiveButton(
-                              ManageData.this.getString(R.string.dialogYes),
+                              ManageData.this.getString(R.string.btnYes),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(
                                           final DialogInterface arg0,
@@ -119,7 +119,7 @@ public class ManageData extends Activity {
                                     }
                                  }
                               }).setNegativeButton(
-                              ManageData.this.getString(R.string.dialogNo),
+                              ManageData.this.getString(R.string.btnNo),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(
                                           final DialogInterface arg0,
@@ -135,7 +135,7 @@ public class ManageData extends Activity {
             new AlertDialog.Builder(ManageData.this).setMessage(
                      ManageData.this.getString(R.string.msgDeleteAllData))
                      .setPositiveButton(
-                              ManageData.this.getString(R.string.dialogYes),
+                              ManageData.this.getString(R.string.btnYes),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(
                                           final DialogInterface arg0,
@@ -157,7 +157,7 @@ public class ManageData extends Activity {
                                              ManageData.this, Main.class));
                                  }
                               }).setNegativeButton(
-                              ManageData.this.getString(R.string.dialogNo),
+                              ManageData.this.getString(R.string.btnNo),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(
                                           final DialogInterface arg0,

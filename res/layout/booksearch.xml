@@ -8,7 +8,7 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
 		style="@style/subsubtitledkred" android:gravity="center_horizontal"
-		android:text="Enter search term(s)" />
+		android:text="@string/labelSearchTerms" />
 
 	<LinearLayout android:orientation="horizontal"
 		android:layout_width="fill_parent" android:layout_height="wrap_content">
@@ -22,7 +22,7 @@
 			android:layout_marginTop="5dp" android:layout_marginBottom="8dp"
 			android:layout_marginLeft="5dp" android:layout_marginRight="10dp"
 			android:layout_gravity="center_horizontal" style="@style/black"
-			android:text="Search" />
+			android:text="@string/btnSearch" />
 	</LinearLayout>
 
 	<ListView android:id="@+id/bookentrysearchresultlist"

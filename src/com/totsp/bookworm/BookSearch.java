@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -42,6 +44,8 @@ public class BookSearch extends Activity {
    private ArrayAdapter<Book> adapter;
 
    private SearchTask searchTask;
+   
+   private InputMethodManager imm;
 
    private boolean footerViewShown;
    private boolean fromEntryResult;
@@ -49,6 +53,9 @@ public class BookSearch extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      
+      imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); 
+      
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
 
@@ -105,7 +112,13 @@ public class BookSearch extends Activity {
       Object lastNonConfig = getLastNonConfigurationInstance();
       if ((lastNonConfig != null) && (lastNonConfig instanceof Boolean)) {
          restoreFromCache();
-      }
+      }    
+   }
+   
+   @Override 
+   public void onStart() {
+      super.onStart(); 
+      ///imm.hideSoftInputFromWindow(searchInput.getWindowToken(), 0); 
    }
 
    @Override
@@ -141,7 +154,8 @@ public class BookSearch extends Activity {
       return super.onKeyDown(keyCode, event);
    }
 
-   private void bindAdapter() {
+   private void bindAdapter() {     
+      
       // add footer view BEFORE setting adapter
       if (!parsedBooks.isEmpty() && !footerViewShown) {
          searchResults.addFooterView(getMoreData);
@@ -154,11 +168,15 @@ public class BookSearch extends Activity {
       if (selectorPosition > 2) {
          searchResults.setSelection(selectorPosition - 1);
       }
+      
+      
    }
 
    private void restoreFromCache() {
+      ///Log.d(Constants.LOG_TAG, "restoreFromCache invoked");
       // use application object as quick/dirty cache for state      
       if (application.bookCacheList != null) {
+         ///Log.d(Constants.LOG_TAG, "bookCacheList NOT NULL");
          selectorPosition = application.lastSearchListPosition;
          parsedBooks = application.bookCacheList;
          bindAdapter();

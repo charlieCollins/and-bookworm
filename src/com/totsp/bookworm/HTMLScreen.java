@@ -19,7 +19,6 @@ public class HTMLScreen extends Activity {
       webview.loadUrl(u.toString());
       Button done = (Button) this.findViewById(R.id.closeButton);
       done.setOnClickListener(new OnClickListener() {
-
          public void onClick(final View v) {
             HTMLScreen.this.finish();
          }

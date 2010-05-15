@@ -79,7 +79,6 @@ public class BookEntryResult extends Activity {
                   new SetupBookResultTask(application.selectedBook);
          setupBookResultTask.execute(null);
       } else {
-
          String isbn = getIntent().getStringExtra(Constants.ISBN);
          if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
             Log.e(Constants.LOG_TAG, "Invalid product code/ISBN passed "
@@ -123,7 +122,7 @@ public class BookEntryResult extends Activity {
                               Html.fromHtml(this
                                        .getString(R.string.msgScanningtips)))
                      .setNeutralButton(
-                              getResources().getString(R.string.dialogDismiss),
+                              getResources().getString(R.string.btnDismiss),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(final DialogInterface d,
                                           final int i) {

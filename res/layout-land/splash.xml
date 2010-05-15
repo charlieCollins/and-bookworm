@@ -14,6 +14,6 @@
 	<TextView android:id="@+id/splashtap" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:layout_toRightOf="@id/splashlogo"
 		android:layout_marginBottom="20dp" android:layout_marginRight="20dp"
-		android:gravity="right|bottom" android:text="Tap to begin" style="@style/whitebold" />
+		android:gravity="right|bottom" android:text="@string/msgTapToBegin" style="@style/whitebold" />
 </RelativeLayout>
 

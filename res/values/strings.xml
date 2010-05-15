@@ -32,11 +32,40 @@
 	<string name="menuManageData">Manage Database</string>
 	<string name="menuResetCoverImages">Reset Cover Images</string>
 	
-	<string name="dialogYes">Yes</string>
-	<string name="dialogNo">No</string>
-	<string name="dialogCancel">Cancel</string>
-	<string name="dialogDismiss">Dismiss</string>
-	<string name="dialogSortBy">Sort By</string>		
+	<string name="btnYes">Yes</string>
+	<string name="btnNo">No</string>
+	<string name="btnCancel">Cancel</string>
+	<string name="btnDismiss">Dismiss</string>
+	<string name="btnDetails">Details</string>
+	<string name="btnAddBook">Add Book</string> 
+	<string name="btnSortBy">Sort By</string>	
+	<string name="btnScanCode">Scan product code</string>   
+    <string name="btnSearchWeb">Search the web</string>   
+    <string name="btnSearch">Search</string>   
+    <string name="btnUseForm">Use form</string>   
+    <string name="btnSave">Save</string>   
+    <string name="btnSelectImage">Select image</string>   
+    <string name="btnRetrieveImage">Retrieve image</string>   
+    <string name="btnGenerateImage">Generate image</string>
+    <string name="btnExportData">Export DB to SD card</string>
+    <string name="btnImportData">Import DB from SD card</string>
+    <string name="btnDeleteData">Delete all data from DB</string>    
+    
+    <string name="labelTitle">Title</string>
+    <string name="labelSubtitle">Subtitle</string>
+    <string name="labelSubject">Subject</string>
+    <string name="labelIsbn10">ISBN 10</string>
+    <string name="labelIsbn13">ISBN 13</string>
+    <string name="labelAuthors">Author(s) (comma separated)</string>
+    <string name="labelRating">Rating</string>
+    <string name="labelDatepub">Publication Date</string>
+    <string name="labelPublisher">Publisher</string>
+    <string name="labelReadstatus">Read status</string>
+    <string name="labelAddBook">Add Book</string>     
+    <string name="labelCurrentCover">Current Cover Image</string>
+    <string name="labelHaveRead">Have read?</string>   
+    <string name="labelSearchTerms">Enter search term(s)</string>	
+    <string name="labelMoreResults">-- Get more results --</string>	
 	
 	<string name="msgInvalidISBN">ISBN format invalid (not ISBN 10 or ISBN 13), cannot retrieve result.</string>	
 	<string name="msgFindError">Book not found using ISBN/product code %s (may not be an ISBN?).</string>	
@@ -75,14 +104,20 @@
     <string name="msgResetAllCoverImages">Reset all cover images?</string>
     <string name="msgResetAllCoverImagesExplain">This will use the network to try to find and replace all cover images.</string>
     <string name="msgResetCoverImagesWarnTime">Resetting cover images, this could take a few minutes...</string>
-    <string name="msgProcessingBookX">Processing book: %s.</string>    
+    <string name="msgProcessingBookX">Processing book: %s.</string>   
+    <string name="msgWarnDupe">Warning, your list already contains a book with the same title and ISBN as this one.</string>
+    <string name="msgTapToBegin">Tap to begin</string> 
     
-    <string name="title">Title</string>
-    <string name="subtitle">Subtitle</string>
-    <string name="authors">Author(s)</string>
-    <string name="rating">Rating</string>
-    <string name="datepub">Date Published</string>
-    <string name="publisher">Publisher</string>
-    <string name="readstatus">Read status</string>		
+    <string name="prefSectApp">Application Preferences</string>
+    <string name="prefTitleSplash">Enable splash screen?</string>
+    <string name="prefSumSplash">By default Splash shown once after install, enable to show at each start.</string>
+    <string name="prefTitleDebugLog">Enable debug logging?</string>
+    <string name="prefSumDebugLog">Enable and then exit/restart app to get detailed logs.</string>    
+    <string name="prefSectDataProvider">Data Provider Preferences</string>
+    <string name="prefTitleBookData">Book Data Provider</string>
+    <string name="prefSumBookData">Currently only Google Books (future additions planned).</string>
+    <string name="prefTitleCoverImage">Book Cover Image Provider</string>
+    <string name="prefSumCoverImage">Currently only OpenLibrary (future additions planned).</string>
+
 	
 </resources>

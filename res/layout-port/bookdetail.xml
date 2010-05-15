@@ -45,7 +45,7 @@
 		android:layout_marginTop="12dp" android:layout_marginLeft="5dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
 		android:layout_toRightOf="@id/bookcover" android:gravity="right"
-		android:text="Have read?:" style="@style/blacksmall" />
+		android:text="@string/labelHaveRead" style="@style/blacksmall" />
 	<CheckBox android:id="@+id/bookreadstatus"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_marginTop="1dp" android:layout_marginRight="2dp"

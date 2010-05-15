@@ -139,14 +139,14 @@ public class Main extends Activity {
       });
 
       this.sortDialog = new AlertDialog.Builder(this);
-      this.sortDialog.setTitle(this.getString(R.string.dialogSortBy));
+      this.sortDialog.setTitle(this.getString(R.string.btnSortBy));
       this.sortDialog.setItems(new CharSequence[] {
-               this.getString(R.string.title),
-               this.getString(R.string.authors),
-               this.getString(R.string.rating),
-               this.getString(R.string.readstatus),
-               this.getString(R.string.datepub),
-               this.getString(R.string.publisher) },
+               this.getString(R.string.labelTitle),
+               this.getString(R.string.labelAuthors),
+               this.getString(R.string.labelRating),
+               this.getString(R.string.labelReadstatus),
+               this.getString(R.string.labelDatepub),
+               this.getString(R.string.labelPublisher) },
                new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface d, int selected) {
                      switch (selected) {
@@ -181,7 +181,7 @@ public class Main extends Activity {
 
       this.statsDialog = new AlertDialog.Builder(this);
       this.statsDialog.setTitle(this.getString(R.string.msgBookListStats));
-      this.statsDialog.setNeutralButton(this.getString(R.string.dialogDismiss),
+      this.statsDialog.setNeutralButton(this.getString(R.string.btnDismiss),
                new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface d, int i) {
                   };
@@ -271,7 +271,7 @@ public class Main extends Activity {
                               Main.this
                                        .getString(R.string.msgResetAllCoverImagesExplain))
                      .setPositiveButton(
-                              Main.this.getString(R.string.dialogYes),
+                              Main.this.getString(R.string.btnYes),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(final DialogInterface d,
                                           final int i) {
@@ -280,7 +280,7 @@ public class Main extends Activity {
                                     Main.this.resetAllCoverImagesTask.execute();
                                  }
                               }).setNegativeButton(
-                              Main.this.getString(R.string.dialogNo),
+                              Main.this.getString(R.string.btnNo),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(final DialogInterface d,
                                           final int i) {
@@ -318,7 +318,7 @@ public class Main extends Activity {
             new AlertDialog.Builder(Main.this).setTitle(
                      Main.this.getString(R.string.menuDeleteBook)).setMessage(
                      b.title).setPositiveButton(
-                     Main.this.getString(R.string.dialogYes),
+                     Main.this.getString(R.string.btnYes),
                      new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface d, final int i) {
                            Main.this.application.dataImageHelper
@@ -329,7 +329,7 @@ public class Main extends Activity {
                            Main.this.startActivity(Main.this.getIntent());
                         }
                      }).setNegativeButton(
-                     Main.this.getString(R.string.dialogNo),
+                     Main.this.getString(R.string.btnNo),
                      new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface d, final int i) {
                         }

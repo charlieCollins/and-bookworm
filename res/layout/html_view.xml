@@ -2,15 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-	<LinearLayout android:id="@+id/buttons"
+	<WebView android:id="@+id/webkit" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" />
+
+	<LinearLayout android:id="@+id/webLayout"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true" android:padding="5dp"
-		android:background="#CCC" android:gravity="center"> <!-- center_vertical|right -->
+		android:layout_alignParentBottom="true" android:layout_below="@id/webkit"
+		android:padding="5dp" android:background="#CCC" android:gravity="center"> <!-- center_vertical|right -->
 		<Button android:id="@+id/closeButton" android:layout_width="80dp"
-			android:layout_height="wrap_content" android:text="Done" />
+			android:layout_height="wrap_content" android:text="@string/btnDismiss" />
 	</LinearLayout>
 
-	<WebView android:id="@+id/webkit" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:layout_above="@id/buttons" />
+
 
 </RelativeLayout>
