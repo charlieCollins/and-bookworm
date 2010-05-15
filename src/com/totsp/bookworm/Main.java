@@ -144,6 +144,7 @@ public class Main extends Activity {
                this.getString(R.string.authors),
                this.getString(R.string.rating),
                this.getString(R.string.readstatus),
+               this.getString(R.string.datepub),
                this.getString(R.string.publisher) },
                new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface d, int selected) {
@@ -165,6 +166,9 @@ public class Main extends Activity {
                                     .saveSortOrder(DataHelper.ORDER_BY_READ_DESC);
                            break;
                         case 4:
+                           Main.this.saveSortOrder(DataHelper.ORDER_BY_DATE_PUB_DESC);
+                           break;
+                        case 5:
                            Main.this.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
                            break;
                      }

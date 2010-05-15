@@ -2,11 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.totsp.bookworm" android:versionCode="7"
 	android:versionName="1.0.6">
-	<uses-sdk android:minSdkVersion="4" />
+	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4"/>
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.CAMERA" /> 
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<supports-screens largeScreens="false" />
 	<application android:name="BookWormApplication" android:icon="@drawable/books48"
 		android:label="@string/app_name">
 		<activity android:name=".Splash" android:label="@string/app_name">

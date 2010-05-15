@@ -75,18 +75,14 @@
     <string name="msgResetAllCoverImages">Reset all cover images?</string>
     <string name="msgResetAllCoverImagesExplain">This will use the network to try to find and replace all cover images.</string>
     <string name="msgResetCoverImagesWarnTime">Resetting cover images, this could take a few minutes...</string>
-    <string name="msgProcessingBookX">Processing book: %s.</string>
-    
+    <string name="msgProcessingBookX">Processing book: %s.</string>    
     
     <string name="title">Title</string>
     <string name="subtitle">Subtitle</string>
     <string name="authors">Author(s)</string>
     <string name="rating">Rating</string>
+    <string name="datepub">Date Published</string>
     <string name="publisher">Publisher</string>
-    <string name="readstatus">Read status</string>
-	
-	
-	
-		
+    <string name="readstatus">Read status</string>		
 	
 </resources>

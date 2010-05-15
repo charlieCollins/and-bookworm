@@ -10,16 +10,20 @@
 		style="@style/subsubtitledkred" android:gravity="center_horizontal"
 		android:text="Enter search term(s)" />
 
-	<EditText android:id="@+id/bookentrysearchinput"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-		android:layout_marginRight="10dp" />
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<EditText android:id="@+id/bookentrysearchinput"
+			android:layout_width="200dp" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:layout_marginBottom="8dp"
+			android:layout_marginLeft="10dp" android:layout_marginRight="1dp" />
 
-	<Button android:id="@+id/bookentrysearchbutton"
-		android:layout_width="120dp" android:layout_height="wrap_content"
-		android:layout_marginTop="3dp" android:layout_marginBottom="10dp"
-		android:layout_marginLeft="10dp" android:layout_gravity="center_horizontal"
-		style="@style/black" android:text="Search" />
+		<Button android:id="@+id/bookentrysearchbutton"
+			android:layout_width="90dp" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:layout_marginBottom="8dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="10dp"
+			android:layout_gravity="center_horizontal" style="@style/black"
+			android:text="Search" />
+	</LinearLayout>
 
 	<ListView android:id="@+id/bookentrysearchresultlist"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"

@@ -2,23 +2,27 @@ package com.totsp.bookworm;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.AuthorsStringUtil;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -150,10 +154,13 @@ public class BookSearch extends Activity {
          footerViewShown = true;
       }
 
-      adapter =
-               new ArrayAdapter<Book>(BookSearch.this,
-                        R.layout.simple_list_item_1,
-                        BookSearch.this.parsedBooks);
+      ///adapter =
+      ///         new ArrayAdapter<Book>(BookSearch.this,
+      ///                  R.layout.search_list_item,
+      ///                  BookSearch.this.parsedBooks);
+      // TODO set adapter here
+      adapter = new BookSearchAdapter(BookSearch.this.parsedBooks);
+
       searchResults.setAdapter(adapter);
       if (selectorPosition > 2) {
          searchResults.setSelection(selectorPosition - 1);
@@ -169,6 +176,37 @@ public class BookSearch extends Activity {
       }
       if (application.lastSearchTerm != null) {
          searchInput.setText(application.lastSearchTerm);
+      }
+   }
+
+   // TODO GH
+   private class BookSearchAdapter extends ArrayAdapter<Book> {
+
+      private ArrayList<Book> books;
+      
+      LayoutInflater vi =
+               (LayoutInflater) BookSearch.this
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+      BookSearchAdapter(ArrayList<Book> books) {
+         super(BookSearch.this, R.layout.search_list_item, books);
+         this.books = books;
+      }
+
+      public View getView(int position, View convertView, ViewGroup parent) {
+
+         View item = convertView;
+
+         if (item == null) {
+            item = vi.inflate(R.layout.search_list_item, parent, false);
+         }
+
+         TextView text1 = (TextView) item.findViewById(R.id.search_item_text_1);
+         text1.setText(books.get(position).title);
+         TextView text2 = (TextView) item.findViewById(R.id.search_item_text_2);
+         text2.setText(AuthorsStringUtil.contractAuthors(books.get(position).authors));
+
+         return item;
       }
    }
 

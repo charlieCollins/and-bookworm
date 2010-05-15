@@ -42,6 +42,8 @@ public class DataHelper {
             "bookuserdata.rstat desc, book.tit asc";
    public static final String ORDER_BY_PUB_ASC = "book.pub asc, book.tit asc";
    public static final String ORDER_BY_PUB_DESC = "book.pub desc, book.tit asc";
+   public static final String ORDER_BY_DATE_PUB_ASC = "book.datepub asc, book.tit asc";
+   public static final String ORDER_BY_DATE_PUB_DESC = "book.datepub desc, book.tit asc";
 
    private static final String DATABASE_NAME = "bookworm.db";
    private static final int DATABASE_VERSION = 10;
@@ -632,10 +634,6 @@ public class DataHelper {
    // stats specific
    public BookListStats getStats() {
       BookListStats stats = new BookListStats();
-
-      ///HashSet<Book> books = selectAllBooks();
-      ///HashSet<Author> authors = selectAllAuthors();
-
       stats.totalBooks = getCountFromTable(DataHelper.BOOK_TABLE, "");
       stats.totalAuthors = getCountFromTable(DataHelper.AUTHOR_TABLE, "");
       stats.readBooks =
@@ -656,7 +654,6 @@ public class DataHelper {
       stats.oneStarBooks =
                getCountFromTable(DataHelper.BOOKUSERDATA_TABLE,
                         "where bookuserdata.rat = 1");
-
       return stats;
    }
 
