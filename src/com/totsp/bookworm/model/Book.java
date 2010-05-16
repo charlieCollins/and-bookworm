@@ -2,8 +2,7 @@ package com.totsp.bookworm.model;
 
 import android.graphics.Bitmap;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 public final class Book {
 
@@ -20,7 +19,7 @@ public final class Book {
    public String format = "";
    public String subject = "";
    public long datePubStamp = 0L;
-   public Set<Author> authors;
+   public ArrayList<Author> authors;
 
    // user data (stored sep from book itself, not modeled sep though, for now)
    public boolean read;
@@ -32,7 +31,7 @@ public final class Book {
    public transient Bitmap coverImage;
 
    public Book() {
-      authors = new LinkedHashSet<Author>();
+      authors = new ArrayList<Author>();
    }
 
    public Book(final String title) {
@@ -40,7 +39,7 @@ public final class Book {
          throw new IllegalArgumentException(
                   "Error, book must have a title (minimum size 1)");
       }
-      authors = new LinkedHashSet<Author>();
+      authors = new ArrayList<Author>();
       this.title = title;
    }
 

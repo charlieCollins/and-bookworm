@@ -25,7 +25,7 @@ import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.AuthorsStringUtil;
 import com.totsp.bookworm.util.CoverImageUtil;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class BookEntryResult extends Activity {
 
@@ -74,7 +74,7 @@ public class BookEntryResult extends Activity {
       // several other activities can populate this one
       // *EITHER* use application.selectedBook (if from SEARCH)
       // or ISBN must be present as intent extra to proceed
-      if (fromSearch && application.selectedBook != null) {
+      if (fromSearch && (application.selectedBook != null)) {
          setupBookResultTask =
                   new SetupBookResultTask(application.selectedBook);
          setupBookResultTask.execute(null);
@@ -293,12 +293,14 @@ public class BookEntryResult extends Activity {
             BookEntryResult.this.bookAddButton.setVisibility(View.VISIBLE);
 
             // check for dupes and warn if title and either isbn match
-            HashSet<Book> potentialDupes =
+            ArrayList<Book> potentialDupes =
                      BookEntryResult.this.application.dataHelper
                               .selectAllBooksByTitle(bean.book.title);
             if (potentialDupes != null) {
                boolean dupe = false;
-               for (Book b : potentialDupes) {
+               // TODO move this to datahelper, do it with query
+               for (int i = 0; i < potentialDupes.size(); i++) {
+                  Book b = potentialDupes.get(i);
                   if (b.title.equals(bean.book.title)
                            && (b.isbn10.equals(bean.book.isbn10) || b.isbn13
                                     .equals(bean.book.isbn13))) {

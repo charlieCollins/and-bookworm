@@ -39,7 +39,7 @@ import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.AuthorsStringUtil;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class Main extends Activity {
 
@@ -145,6 +145,7 @@ public class Main extends Activity {
                this.getString(R.string.labelAuthorsShort),
                this.getString(R.string.labelRating),
                this.getString(R.string.labelReadstatus),
+               this.getString(R.string.labelSubject),
                this.getString(R.string.labelDatepub),
                this.getString(R.string.labelPublisher) },
                new DialogInterface.OnClickListener() {
@@ -167,9 +168,14 @@ public class Main extends Activity {
                                     .saveSortOrder(DataHelper.ORDER_BY_READ_DESC);
                            break;
                         case 4:
-                           Main.this.saveSortOrder(DataHelper.ORDER_BY_DATE_PUB_DESC);
+                           Main.this
+                                    .saveSortOrder(DataHelper.ORDER_BY_SUBJECT_DESC);
                            break;
                         case 5:
+                           Main.this
+                                    .saveSortOrder(DataHelper.ORDER_BY_DATE_PUB_DESC);
+                           break;
+                        case 6:
                            Main.this.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
                            break;
                      }
@@ -231,6 +237,7 @@ public class Main extends Activity {
          case MENU_STATS:
             BookListStats stats = this.application.dataHelper.getStats();
             // TODO this stringbuilder is NOT i18n'd
+            // use string.format and resource strings
             StringBuilder sb = new StringBuilder();
             sb.append("Total books: " + stats.totalBooks + "\n");
             sb.append("Read books: " + stats.readBooks + "\n");
@@ -270,8 +277,7 @@ public class Main extends Activity {
                      .setMessage(
                               Main.this
                                        .getString(R.string.msgResetAllCoverImagesExplain))
-                     .setPositiveButton(
-                              Main.this.getString(R.string.btnYes),
+                     .setPositiveButton(Main.this.getString(R.string.btnYes),
                               new DialogInterface.OnClickListener() {
                                  public void onClick(final DialogInterface d,
                                           final int i) {
@@ -324,12 +330,9 @@ public class Main extends Activity {
                            Main.this.application.dataImageHelper
                                     .deleteBitmapSourceFile(b.title, b.id);
                            Main.this.application.dataHelper.deleteBook(b.id);
-                           ///Main.this.bindBookList();
-                           // restarting just as fast and eliminates issues with deleting last item in list
                            Main.this.startActivity(Main.this.getIntent());
                         }
-                     }).setNegativeButton(
-                     Main.this.getString(R.string.btnNo),
+                     }).setNegativeButton(Main.this.getString(R.string.btnNo),
                      new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface d, final int i) {
                         }
@@ -450,10 +453,8 @@ public class Main extends Activity {
                   (ImageView) v.findViewById(R.id.list_items_item_image);
          holder.ratingImage =
                   (ImageView) v.findViewById(R.id.list_items_item_rating_image);
-         holder.text1 =
-                  (TextView) v.findViewById(R.id.list_items_item_text1);         
-         holder.text2 =
-                  (TextView) v.findViewById(R.id.list_items_item_text2);         
+         holder.text1 = (TextView) v.findViewById(R.id.list_items_item_text1);
+         holder.text2 = (TextView) v.findViewById(R.id.list_items_item_text2);
          holder.readStatus =
                   (CheckBox) v.findViewById(R.id.list_items_item_read_status);
          v.setTag(holder);
@@ -528,8 +529,9 @@ public class Main extends Activity {
             }
 
             holder.text1.setText(title);
-            holder.text2.setText(AuthorsStringUtil.addSpacesToCSVString(authors));
-            
+            holder.text2.setText(AuthorsStringUtil
+                     .addSpacesToCSVString(authors));
+
             if (readStatus == 1) {
                holder.readStatus.setChecked(true);
             } else {
@@ -557,9 +559,10 @@ public class Main extends Activity {
       @Override
       protected Void doInBackground(final Void... args) {
          Main.this.application.dataImageHelper.clearAllBitmapSourceFiles();
-         HashSet<Book> books =
+         ArrayList<Book> books =
                   Main.this.application.dataHelper.selectAllBooks();
-         for (Book b : books) {
+         for (int i = 0; i < books.size(); i++) {
+            Book b = books.get(i);
             if (Main.this.application.debugEnabled) {
                Log.d(Constants.LOG_TAG, "resetting cover image for book - "
                         + b.title);

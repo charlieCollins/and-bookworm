@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
@@ -224,6 +223,7 @@ public class BookSearch extends Activity {
          this.books = books;
       }
 
+      @Override
       public View getView(int position, View convertView, ViewGroup parent) {
 
          View item = convertView;
@@ -286,7 +286,8 @@ public class BookSearch extends Activity {
          if ((books != null) && !books.isEmpty()) {
             BookSearch.this.selectorPosition =
                      BookSearch.this.parsedBooks.size();
-            for (Book b : books) {
+            for (int i = 0; i < books.size(); i++) {
+               Book b = books.get(i);
                if (!BookSearch.this.parsedBooks.contains(b)) {
                   BookSearch.this.parsedBooks.add(b);
                }

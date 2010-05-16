@@ -23,16 +23,16 @@
 		Éditer
   </string>
 	<string name="menuEditBook">
-		Modifier livre
+		Modifier Livre
   </string>
 	<string name="menuAddBook">
 		Ajouter Livre
   </string>
 	<string name="menuDeleteBook">
-		Supprimer livre
+		Supprimer Livre
   </string>
 	<string name="menuEditBookDetails">
-		Détails sur le livre Modifier
+		Détails sur le Livre Modifier
   </string>
 	<string name="menuManageCoverImage">
 		Gérer Cover Image
@@ -77,7 +77,7 @@
 		Trier par
   </string>
 	<string name="btnScanCode">
-		code de produit Scan
+		Code de produit Scan
   </string>
 	<string name="btnSearchWeb">
 		Rechercher sur le Web
@@ -125,10 +125,10 @@
 		ISBN 13
   </string>
 	<string name="labelAuthors">
-		Auteur (s) (séparées par des virgules)
+		Auteur(s) (séparées par des virgules)
   </string>
 	<string name="labelAuthorsShort">
-		Auteur (s)
+		Auteur(s)
   </string>
 	<string name="labelRating">
 		Classement
@@ -287,7 +287,7 @@
 		Données effacées
   </string>
 	<string name="msgExportingData">
-		base de données ... Exportation
+		Dase de données exportation...
   </string>
 	<string name="msgExportSuccess">
 		D&#39;exportation réussie!
@@ -296,7 +296,7 @@
 		Echec de l&#39;export
   </string>
 	<string name="msgImportingData">
-		base de données Importation ...
+		Base de données importation ...
   </string>
 	<string name="msgImportSuccess">
 		Importer un succès!

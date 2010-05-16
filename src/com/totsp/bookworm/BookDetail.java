@@ -130,7 +130,8 @@ public class BookDetail extends Activity {
          bookSubTitle.setText(book.subTitle);
 
          String authors = null;
-         for (Author a : book.authors) {
+         for (int i = 0; i < book.authors.size(); i++) {
+            Author a = book.authors.get(i);
             if (authors == null) {
                authors = a.name;
             } else {

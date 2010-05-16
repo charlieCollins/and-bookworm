@@ -15,7 +15,7 @@ import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 /**
  * Android DataHelper to encapsulate SQL and DB details.
@@ -32,6 +32,10 @@ public class DataHelper {
             "authors desc, book.tit asc";
    public static final String ORDER_BY_TITLE_ASC = "book.tit asc";
    public static final String ORDER_BY_TITLE_DESC = "book.tit desc";
+   public static final String ORDER_BY_SUBJECT_ASC =
+            "book.subject asc, book.tit asc";
+   public static final String ORDER_BY_SUBJECT_DESC =
+            "book.subject desc, book.tit asc";
    public static final String ORDER_BY_RATING_ASC =
             "bookuserdata.rat asc, book.tit asc";
    public static final String ORDER_BY_RATING_DESC =
@@ -42,8 +46,10 @@ public class DataHelper {
             "bookuserdata.rstat desc, book.tit asc";
    public static final String ORDER_BY_PUB_ASC = "book.pub asc, book.tit asc";
    public static final String ORDER_BY_PUB_DESC = "book.pub desc, book.tit asc";
-   public static final String ORDER_BY_DATE_PUB_ASC = "book.datepub asc, book.tit asc";
-   public static final String ORDER_BY_DATE_PUB_DESC = "book.datepub desc, book.tit asc";
+   public static final String ORDER_BY_DATE_PUB_ASC =
+            "book.datepub asc, book.tit asc";
+   public static final String ORDER_BY_DATE_PUB_DESC =
+            "book.datepub desc, book.tit asc";
 
    private static final String DATABASE_NAME = "bookworm.db";
    private static final int DATABASE_VERSION = 10;
@@ -128,7 +134,7 @@ public class DataHelper {
    // book
    // 
    private static final String CURSOR_QUERY_PREFIX =
-            "select book.bid as _id, book.tit, book.subtit, book.pub, book.datepub, book.format, "
+            "select book.bid as _id, book.tit, book.subtit, book.subject, book.pub, book.datepub, book.format, "
                      + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb, group_concat(author.name) as authors "
                      + "from book join bookuserdata on book.bid = bookuserdata.bid "
                      + "join bookauthor on bookauthor.bid = book.bid join author on author.aid = bookauthor.aid";
@@ -167,9 +173,10 @@ public class DataHelper {
          db.beginTransaction();
          try {
             // insert authors as needed
-            HashSet<Long> authorIds = new HashSet<Long>();
+            ArrayList<Long> authorIds = new ArrayList<Long>();
             if ((b.authors != null) && !b.authors.isEmpty()) {
-               for (Author a : b.authors) {
+               for (int i = 0; i < b.authors.size(); i++) {
+                  Author a = b.authors.get(i);
                   Author authorExists = selectAuthor(a.name);
                   if (authorExists == null) {
                      authorIds.add(insertAuthor(a));
@@ -224,9 +231,10 @@ public class DataHelper {
          try {
 
             // insert authors as needed            
-            HashSet<Long> authorIds = new HashSet<Long>();
+            ArrayList<Long> authorIds = new ArrayList<Long>();
             if ((b.authors != null) && !b.authors.isEmpty()) {
-               for (Author a : b.authors) {
+               for (int i = 0; i < b.authors.size(); i++) {
+                  Author a = b.authors.get(i);
                   Author authorExists = selectAuthor(a.name);
                   if (authorExists == null) {
                      authorIds.add(insertAuthor(a));
@@ -291,8 +299,8 @@ public class DataHelper {
       return b;
    }
 
-   public HashSet<Book> selectAllBooks() {
-      HashSet<Book> set = new HashSet<Book>();
+   public ArrayList<Book> selectAllBooks() {
+      ArrayList<Book> set = new ArrayList<Book>();
       Cursor c =
                db.query(DataHelper.BOOK_TABLE, new String[] {
                         DataConstants.BOOKID, DataConstants.ISBN10,
@@ -313,8 +321,8 @@ public class DataHelper {
       return set;
    }
 
-   public HashSet<Book> selectAllBooksByAuthor(final String name) {
-      HashSet<Book> set = new HashSet<Book>();
+   public ArrayList<Book> selectAllBooksByAuthor(final String name) {
+      ArrayList<Book> set = new ArrayList<Book>();
       Author a = selectAuthor(name);
       if (a != null) {
          Cursor c =
@@ -337,8 +345,8 @@ public class DataHelper {
       return set;
    }
 
-   public HashSet<Book> selectAllBooksByTitle(final String title) {
-      HashSet<Book> set = new HashSet<Book>();
+   public ArrayList<Book> selectAllBooksByTitle(final String title) {
+      ArrayList<Book> set = new ArrayList<Book>();
       Cursor c =
                db.query(DataHelper.BOOK_TABLE,
                         new String[] { DataConstants.BOOKID },
@@ -357,8 +365,8 @@ public class DataHelper {
       return set;
    }
 
-   public HashSet<String> selectAllBookNames() {
-      HashSet<String> set = new HashSet<String>();
+   public ArrayList<String> selectAllBookNames() {
+      ArrayList<String> set = new ArrayList<String>();
       Cursor c =
                db.query(DataHelper.BOOK_TABLE,
                         new String[] { DataConstants.TITLE }, null, null, null,
@@ -377,16 +385,16 @@ public class DataHelper {
    public void deleteBook(final long id) {
       Book b = selectBook(id);
       if (b != null) {
-         HashSet<Author> authors = selectAuthorsByBookId(id);
+         ArrayList<Author> authors = selectAuthorsByBookId(id);
          db.delete(DataHelper.BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?",
                   new String[] { String.valueOf(b.id) });
          db.delete(DataHelper.BOOK_TABLE, DataConstants.BOOKID + " = ?",
                   new String[] { String.valueOf(id) });
          // if no other books by same author, also delete author
-         for (Author a : authors) {
-            HashSet<Book> books = selectAllBooksByAuthor(a.name);
+         for (int i = 0; i < authors.size(); i++) {
+            ArrayList<Book> books = selectAllBooksByAuthor(authors.get(i).name);
             if (books.isEmpty()) {
-               deleteAuthor(a.id);
+               deleteAuthor(authors.get(i).id);
             }
          }
       }
@@ -428,8 +436,9 @@ public class DataHelper {
    // book-author data
    //   
    public void insertBookAuthorData(final long bookId,
-            final HashSet<Long> authorIds) {
-      for (Long authorId : authorIds) {
+            final ArrayList<Long> authorIds) {
+      for (int i = 0; i < authorIds.size(); i++) {
+         Long authorId = authorIds.get(i);
          bookAuthorInsertStmt.clearBindings();
          bookAuthorInsertStmt.bindLong(1, bookId);
          bookAuthorInsertStmt.bindLong(2, authorId);
@@ -551,14 +560,15 @@ public class DataHelper {
       return a;
    }
 
-   public HashSet<Author> selectAuthorsByBookId(final long bookId) {
-      HashSet<Author> authors = new HashSet<Author>();
-      HashSet<Long> authorIds = new HashSet<Long>();
+   public ArrayList<Author> selectAuthorsByBookId(final long bookId) {
+      ArrayList<Author> authors = new ArrayList<Author>();
+      ArrayList<Long> authorIds = new ArrayList<Long>();
       Cursor c =
                db.query(DataHelper.BOOKAUTHOR_TABLE,
                         new String[] { DataConstants.AUTHORID },
                         DataConstants.BOOKID + " = ?", new String[] { String
-                                 .valueOf(bookId) }, null, null, null, null);
+                                 .valueOf(bookId) }, null, null,
+                        DataConstants.NAME + " desc", null);
       if (c.moveToFirst()) {
          do {
             authorIds.add(c.getLong(0));
@@ -568,7 +578,8 @@ public class DataHelper {
          c.close();
       }
       if (!authorIds.isEmpty()) {
-         for (Long authorId : authorIds) {
+         for (int i = 0; i < authorIds.size(); i++) {
+            Long authorId = authorIds.get(i);
             Author a = selectAuthor(authorId);
             if (a != null) {
                authors.add(a);
@@ -578,8 +589,8 @@ public class DataHelper {
       return authors;
    }
 
-   public HashSet<Author> selectAllAuthors() {
-      HashSet<Author> set = new HashSet<Author>();
+   public ArrayList<Author> selectAllAuthors() {
+      ArrayList<Author> set = new ArrayList<Author>();
       Cursor c =
                db.query(DataHelper.AUTHOR_TABLE, new String[] {
                         DataConstants.AUTHORID, DataConstants.NAME }, null,

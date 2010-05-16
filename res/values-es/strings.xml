@@ -124,10 +124,10 @@
 		ISBN 13
   </string>
 	<string name="labelAuthors">
-		Autor (s) (separados por comas)
+		Autor(s) (separados por comas)
   </string>
 	<string name="labelAuthorsShort">
-		Autor (s)
+		Autor(s)
   </string>
 	<string name="labelRating">
 		Clasificación
@@ -251,7 +251,7 @@
 		Generación de imagen de la cubierta...
   </string>
 	<string name="msgGenerateCoverImageError">
-		generar un error, imagen de la cubierta, el libro
+		Generar un error, imagen de la cubierta, el libro
 		de información no está
 		presente, o nula identificación.
   </string>
@@ -335,7 +335,7 @@
 		Preferencias de la aplicación
   </string>
 	<string name="prefTitleSplash">
-		pantalla de bienvenida Activar?
+		Pantalla de bienvenida Activar?
   </string>
 	<string name="prefSumSplash">
 		Por Splash defecto que se muestra una vez después

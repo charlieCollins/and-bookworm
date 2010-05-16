@@ -37,8 +37,8 @@
 	<string name="btnCancel">Cancel</string>
 	<string name="btnDismiss">Dismiss</string>
 	<string name="btnDetails">Details</string>
-	<string name="btnAddBook">Add Book</string> 
-	<string name="btnSortBy">Sort By</string>	
+	<string name="btnAddBook">Add book</string> 
+	<string name="btnSortBy">Sort by</string>	
 	<string name="btnScanCode">Scan product code</string>   
     <string name="btnSearchWeb">Search the web</string>   
     <string name="btnSearch">Search</string>   
@@ -59,11 +59,11 @@
     <string name="labelAuthors">Author(s) (comma separated)</string>
     <string name="labelAuthorsShort">Author(s)</string>
     <string name="labelRating">Rating</string>
-    <string name="labelDatepub">Publication Date</string>
+    <string name="labelDatepub">Publication date</string>
     <string name="labelPublisher">Publisher</string>
     <string name="labelReadstatus">Read status</string>
     <string name="labelAddBook">Add Book</string>     
-    <string name="labelCurrentCover">Current Cover Image</string>
+    <string name="labelCurrentCover">Current cover image</string>
     <string name="labelHaveRead">Have read?</string>   
     <string name="labelSearchTerms">Enter search term(s)</string>	
     <string name="labelMoreResults">-- Get more results --</string>	

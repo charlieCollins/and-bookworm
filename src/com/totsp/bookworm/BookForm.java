@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -165,6 +166,12 @@ public class BookForm extends TabActivity {
       } else {
          bookEnterEditLabel.setText(getString(R.string.menuAddBook));
       }
+
+      // do not enable the soft keyboard unless user explicitly selects textedit
+      // Android seems to have an IMM bug concerning this on devices with only soft keyboard
+      // http://code.google.com/p/android/issues/detail?id=7115
+      getWindow().setSoftInputMode(
+               WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
    }
 
    @Override

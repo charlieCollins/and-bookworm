@@ -2,13 +2,12 @@ package com.totsp.bookworm.util;
 
 import com.totsp.bookworm.model.Author;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 public final class AuthorsStringUtil {
 
-   public static LinkedHashSet<Author> expandAuthors(final String in) {
-      LinkedHashSet<Author> authors = new LinkedHashSet<Author>();
+   public static ArrayList<Author> expandAuthors(final String in) {
+      ArrayList<Author> authors = new ArrayList<Author>();
       if (in.contains(",")) {
          String[] authorsArray = in.split(",\\s*");
          for (int i = 0; i < authorsArray.length; i++) {
@@ -20,13 +19,15 @@ public final class AuthorsStringUtil {
       return authors;
    }
 
-   public static String contractAuthors(final Set<Author> authors) {
+   public static String contractAuthors(final ArrayList<Author> authors) {
       String result = null;
       if (authors.size() == 1) {
          result = authors.iterator().next().name;
       } else {
          int count = 0;
-         for (Author a : authors) {
+         // avoid enhanced for loop on Android with ArrayList
+         for (int i = 0; i < authors.size(); i++) {
+            Author a = authors.get(i);
             if (count == 0) {
                result = a.name;
             } else {
@@ -37,7 +38,7 @@ public final class AuthorsStringUtil {
       }
       return result;
    }
-   
+
    public static String addSpacesToCSVString(final String in) {
       StringBuilder sb = null;
       if (in.contains(",")) {
