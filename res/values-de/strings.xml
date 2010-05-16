@@ -21,7 +21,7 @@
 		Bearbeiten
   </string>
 	<string name="menuEditBook">
-		Bearbeiten Buch
+		Buch Bearbeiten
   </string>
 	<string name="menuAddBook">
 		Fügen Sie Buch hinzu
@@ -30,10 +30,10 @@
 		Löschen Sie Buch
   </string>
 	<string name="menuEditBookDetails">
-		Bearbeiten Buch Detailliert
+		Buchdetails Editieren
   </string>
 	<string name="menuManageCoverImage">
-		Verwalten Sie Einband Kunst
+		Titelbild Bearbeiten
   </string>
 	<string name="menuSortBooks">
 		Sortieren Bücher
@@ -45,13 +45,13 @@
 		Um
   </string>
 	<string name="menuPrefs">
-		Vorzüge
+		Einstellungen
   </string>
 	<string name="menuManageData">
 		Verwalten Sie Daten
   </string>
 	<string name="menuResetCoverImages">
-		Stellen Sie Decke Kunst nach
+		Umschlagbilder Neu Laden
   </string>
 	<string name="btnYes">
 		Ja
@@ -87,7 +87,7 @@
 		Verwenden Form
   </string>
 	<string name="btnSave">
-		Sparen
+		Speichern
   </string>
 	<string name="btnSelectImage">
 		Wählen Sie ein Bild
@@ -114,7 +114,7 @@
 		Untertitel
   </string>
 	<string name="labelSubject">
-		Gegenstand
+		Genre
   </string>
 	<string name="labelIsbn10">
 		ISBN 10
@@ -144,7 +144,7 @@
 		Fügen Sie Buch hinzu
   </string>
 	<string name="labelCurrentCover">
-		Aktuelle Cover Image
+		Aktuelles Titelbild
   </string>
 	<string name="labelHaveRead">
 		Haben Sie gelesen?
@@ -230,7 +230,7 @@
 		&quot;Buch aktualisiert
   </string>
 	<string name="msgSavingBookInfo">
-		Sparen von Buch Informationen...
+		Speichern von Buch Informationen...
   </string>
 	<string name="msgBookSaved">
 		Buch gespeichert
@@ -338,7 +338,7 @@
 		Anwendungsvorzüge
   </string>
 	<string name="prefTitleSplash">
-		Ermöglichen Sie Spritzer-schirm? 
+		Startbild?
   </string>
 	<string name="prefSumSplash">
 		Standardmäßig Splash gezeigt, einmal nach der
@@ -346,7 +346,7 @@
 		Start zeigen.
   </string>
 	<string name="prefTitleDebugLog">
-		Aktivieren Sie die Debug-Protokollierung?
+		Debug Funktion?
   </string>
 	<string name="prefSumDebugLog">
 		Aktivieren und dann exit / app starten, um
@@ -356,14 +356,14 @@
 		Datenversorgervorzüge
   </string>
 	<string name="prefTitleBookData">
-		Buchen Sie Daten Versorger
+		Datenquelle
   </string>
 	<string name="prefSumBookData">
 		Derzeit werden nur Google Books (zukünftige
 		Erweiterungen geplant).
   </string>
 	<string name="prefTitleCoverImage">
-		Buchen Sie Decke Bildnis Versorger
+		Umschlagquelle
   </string>
 	<string name="prefSumCoverImage">
 		Derzeit werden nur OpenLibrary (zukünftige
