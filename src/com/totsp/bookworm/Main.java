@@ -169,7 +169,7 @@ public class Main extends Activity {
                            break;
                         case 4:
                            Main.this
-                                    .saveSortOrder(DataHelper.ORDER_BY_SUBJECT_DESC);
+                                    .saveSortOrder(DataHelper.ORDER_BY_SUBJECT_ASC);
                            break;
                         case 5:
                            Main.this
