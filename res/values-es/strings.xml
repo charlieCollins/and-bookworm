@@ -25,16 +25,16 @@
 		Edición Libro
   </string>
 	<string name="menuAddBook">
-		Añadir libro
+		Añadir Libro
   </string>
 	<string name="menuDeleteBook">
 		Eliminar Libro
   </string>
 	<string name="menuEditBookDetails">
-		Editar Detalles del libro
+		Editar Detalles del Libro
   </string>
 	<string name="menuManageCoverImage">
-		Administrar Cover Image
+		Administrar Reserve Cobertura
   </string>
 	<string name="menuSortBooks">
 		Ordenar Libros
@@ -49,10 +49,10 @@
 		Preferencias
   </string>
 	<string name="menuManageData">
-		Administrar la base de datos
+		Administrar la Base de Datos
   </string>
 	<string name="menuResetCoverImages">
-		Perdí imágenes de la cubierta
+		Restablecer Reserve Cobertura
   </string>
 	<string name="btnYes">
 		Sí
