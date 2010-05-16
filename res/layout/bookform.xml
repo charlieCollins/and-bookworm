@@ -132,22 +132,19 @@
 						android:layout_width="120px" android:layout_height="150px"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_gravity="center_horizontal" />
-
 					<Button android:id="@+id/bookformselectcoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_marginTop="2dp" android:layout_marginLeft="10dp"
+						android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:text="@string/btnSelectImage"
 						style="@style/blacksmall" />
-
 					<Button android:id="@+id/bookformretrievecoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_marginTop="2dp" android:layout_marginLeft="10dp"
+						android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:text="@string/btnRetrieveImage"
 						style="@style/blacksmall" />
-
 					<Button android:id="@+id/bookformgeneratecoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:text="@string/btnGenerateImage"
 						style="@style/blacksmall" />
 				</LinearLayout>

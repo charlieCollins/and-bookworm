@@ -24,18 +24,16 @@ public final class AuthorsStringUtil {
    public static String contractAuthors(final ArrayList<Author> authors) {
       String result = null;
       if (authors.size() == 1) {
-         result = authors.iterator().next().name;
-      } else {
-         int count = 0;
+         result = authors.get(0).name;
+      } else {         
          // avoid enhanced for loop on Android with ArrayList
          for (int i = 0; i < authors.size(); i++) {
             Author a = authors.get(i);
-            if (count == 0) {
+            if (i == 0) {
                result = a.name;
             } else {
                result += ", " + a.name;
-            }
-            count++;
+            }            
          }
       }
       return result;

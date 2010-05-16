@@ -44,7 +44,7 @@
     <string name="btnSearch">Search</string>   
     <string name="btnUseForm">Use form</string>   
     <string name="btnSave">Save</string>   
-    <string name="btnSelectImage">Select from Gallery</string>   
+    <string name="btnSelectImage">Select from gallery</string>   
     <string name="btnRetrieveImage">Retrieve from web</string>   
     <string name="btnGenerateImage">Generate from title</string>
     <string name="btnExportData">Export DB to SD card</string>

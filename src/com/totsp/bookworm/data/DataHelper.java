@@ -419,7 +419,7 @@ public class DataHelper {
          b.format = (c.getString(7));
          b.subject = (c.getString(8));
          b.datePubStamp = (c.getLong(9));
-         b.authors = (selectAuthorsByBookId(b.id));
+         b.authors = selectAuthorsByBookId(b.id);
 
          // TODO add join to bookuserdata - rather than sep query
          Book userData = selectBookUserData(b.id);
@@ -560,15 +560,15 @@ public class DataHelper {
    }
 
    private static final String QUERY_AUTHORS_BY_BOOK_ID_PREFIX =
-            "select author.name from author join bookauthor on bookauthor.baid = author.aid join book on bookauthor.bid = book.bid";
+            "select author.name from author join bookauthor on bookauthor.aid = author.aid join book on bookauthor.bid = book.bid";
 
    public ArrayList<Author> selectAuthorsByBookId(final long bookId) {
       ArrayList<Author> authors = new ArrayList<Author>();
       // TODO string.format this, faster?
       StringBuilder sb = new StringBuilder();
-      sb.append(DataHelper.QUERY_AUTHORS_BY_BOOK_ID_PREFIX);
+      sb.append(DataHelper.QUERY_AUTHORS_BY_BOOK_ID_PREFIX);      
       sb.append(" where book.bid = " + bookId);
-      sb.append(" order by author.name desc");
+      sb.append(" order by author.name asc");
       Cursor c = db.rawQuery(sb.toString(), null);
 
       if (c.moveToFirst()) {

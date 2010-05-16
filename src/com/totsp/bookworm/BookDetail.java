@@ -19,6 +19,7 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.AuthorsStringUtil;
 import com.totsp.bookworm.util.DateUtil;
 
 import java.util.Date;
@@ -128,21 +129,10 @@ public class BookDetail extends Activity {
 
          bookTitle.setText(book.title);
          bookSubTitle.setText(book.subTitle);
-
-         String authors = null;
-         for (int i = 0; i < book.authors.size(); i++) {
-            Author a = book.authors.get(i);
-            if (authors == null) {
-               authors = a.name;
-            } else {
-               authors += ", " + a.name;
-            }
-         }
-
          ratingBar.setRating(book.rating);
          readStatus.setChecked(book.read);
          bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
-         bookAuthors.setText(authors);
+         bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
 
          // we leave publisher and subject out of landscape layout         
          if (bookSubject != null) {
