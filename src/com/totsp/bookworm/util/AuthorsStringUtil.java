@@ -8,13 +8,15 @@ public final class AuthorsStringUtil {
 
    public static ArrayList<Author> expandAuthors(final String in) {
       ArrayList<Author> authors = new ArrayList<Author>();
-      if (in.contains(",")) {
-         String[] authorsArray = in.split(",\\s*");
-         for (int i = 0; i < authorsArray.length; i++) {
-            authors.add(new Author(authorsArray[i]));
+      if (in != null) {
+         if (in.contains(",")) {
+            String[] authorsArray = in.split(",\\s*");
+            for (int i = 0; i < authorsArray.length; i++) {
+               authors.add(new Author(authorsArray[i]));
+            }
+         } else {
+            authors.add(new Author(in));
          }
-      } else {
-         authors.add(new Author(in));
       }
       return authors;
    }
@@ -40,19 +42,20 @@ public final class AuthorsStringUtil {
    }
 
    public static String addSpacesToCSVString(final String in) {
-      StringBuilder sb = null;
-      if (in.contains(",")) {
-         sb = new StringBuilder();
-         String[] authorsArray = in.split(",\\s*");
-         for (int i = 0; i < authorsArray.length; i++) {
-            if (i == 0) {
-               sb.append(authorsArray[i]);
-            } else {
-               sb.append(", " + authorsArray[i]);
+      StringBuilder sb = new StringBuilder();
+      if (in != null) {
+         if (in.contains(",")) {
+            String[] authorsArray = in.split(",\\s*");
+            for (int i = 0; i < authorsArray.length; i++) {
+               if (i == 0) {
+                  sb.append(authorsArray[i]);
+               } else {
+                  sb.append(", " + authorsArray[i]);
+               }
             }
+         } else {
+            return in;
          }
-      } else {
-         return in;
       }
       return sb.toString();
    }

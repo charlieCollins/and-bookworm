@@ -476,21 +476,21 @@ public class Main extends Activity {
             bid = 0
             tit = 1
             subtit = 2
-            pub = 3
-            datepub = 4
-            format = 5
-            rstat = 6
-            rat = 7
-            blurb = 8
-            authors = 9
+            subject = 3
+            pub = 4
+            datepub = 5
+            format = 6
+            rstat = 7
+            rat = 8
+            blurb = 9
+            authors = 10
              */
 
-            int rating = c.getInt(7);
-            int readStatus = c.getInt(6);
+            int rating = c.getInt(8);
+            int readStatus = c.getInt(7);
             String title = c.getString(1);
-            //String subTitle = c.getString(2);
-            String authors = c.getString(9);
-
+            String authors = c.getString(10);
+            
             if (Main.this.application.debugEnabled) {
                Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id
                         + "|" + title);

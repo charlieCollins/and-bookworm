@@ -90,7 +90,6 @@ public class DataHelper {
                      + ") values (?, ?, ?, ?)";
 
    public DataHelper(final Context context) {
-      ///this.context = context;
       OpenHelper openHelper = new OpenHelper(context);
       db = openHelper.getWritableDatabase();
 
@@ -133,7 +132,7 @@ public class DataHelper {
    //
    // book
    // 
-   private static final String CURSOR_QUERY_PREFIX =
+   private static final String QUERY_CURSOR_PREFIX =
             "select book.bid as _id, book.tit, book.subtit, book.subject, book.pub, book.datepub, book.format, "
                      + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb, group_concat(author.name) as authors "
                      + "from book join bookuserdata on book.bid = bookuserdata.bid "
@@ -145,7 +144,7 @@ public class DataHelper {
       // note that query MUST have a column named _id  
 
       StringBuilder sb = new StringBuilder();
-      sb.append(DataHelper.CURSOR_QUERY_PREFIX);
+      sb.append(DataHelper.QUERY_CURSOR_PREFIX);
       if ((whereClauseLimit != null) && (whereClauseLimit.length() > 0)) {
          sb.append(" " + whereClauseLimit);
       }
@@ -560,31 +559,27 @@ public class DataHelper {
       return a;
    }
 
+   private static final String QUERY_AUTHORS_BY_BOOK_ID_PREFIX =
+            "select author.name from author join bookauthor on bookauthor.baid = author.aid join book on bookauthor.bid = book.bid";
+
    public ArrayList<Author> selectAuthorsByBookId(final long bookId) {
       ArrayList<Author> authors = new ArrayList<Author>();
-      ArrayList<Long> authorIds = new ArrayList<Long>();
-      Cursor c =
-               db.query(DataHelper.BOOKAUTHOR_TABLE,
-                        new String[] { DataConstants.AUTHORID },
-                        DataConstants.BOOKID + " = ?", new String[] { String
-                                 .valueOf(bookId) }, null, null,
-                        DataConstants.NAME + " desc", null);
+      // TODO string.format this, faster?
+      StringBuilder sb = new StringBuilder();
+      sb.append(DataHelper.QUERY_AUTHORS_BY_BOOK_ID_PREFIX);
+      sb.append(" where book.bid = " + bookId);
+      sb.append(" order by author.name desc");
+      Cursor c = db.rawQuery(sb.toString(), null);
+
       if (c.moveToFirst()) {
          do {
-            authorIds.add(c.getLong(0));
+            Author a = new Author();
+            a.name = c.getString(0);
+            authors.add(a);
          } while (c.moveToNext());
       }
       if ((c != null) && !c.isClosed()) {
          c.close();
-      }
-      if (!authorIds.isEmpty()) {
-         for (int i = 0; i < authorIds.size(); i++) {
-            Long authorId = authorIds.get(i);
-            Author a = selectAuthor(authorId);
-            if (a != null) {
-               authors.add(a);
-            }
-         }
       }
       return authors;
    }
