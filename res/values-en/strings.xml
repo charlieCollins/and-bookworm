@@ -108,6 +108,7 @@
     <string name="msgProcessingBookX">Processing book: %s.</string>   
     <string name="msgWarnDupe">Warning, your list already contains a book with the same title and ISBN as this one.</string>
     <string name="msgTapToBegin">Tap to begin</string> 
+    <string name="msgBookListEmpty">Book database is empty. Use the menu Add Book feature to add data.</string>
     
     <string name="prefSectApp">Application Preferences</string>
     <string name="prefTitleSplash">Enable splash screen?</string>

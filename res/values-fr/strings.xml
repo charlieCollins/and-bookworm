@@ -343,6 +343,8 @@
 	<string name="msgTapToBegin">
 		Appuyez sur pour commencer
   </string>
+  <string name="msgBookListEmpty">Book database is empty. Use the menu Add Book feature to add data.</string>
+  
 	<string name="prefSectApp">
 		Préférences de l&#39;application
   </string>

@@ -10,7 +10,7 @@
 	<TextView android:id="@+id/empty" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:gravity="center_horizontal"
 		android:layout_marginTop="50dp"
-		android:text="Book database is empty. Use the menu Add Book feature to add data."
+		android:text="@string/msgBookListEmpty"
 		style="@style/whitemed" />
 </LinearLayout>
 
