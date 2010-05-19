@@ -171,9 +171,12 @@ public class DataImageHelper {
       // for now hard code provider to 2, OpenLibrary (future use pref here, etc, to establish)
       Bitmap coverImageBitmap =
                CoverImageUtil.retrieveCoverImage("2", b.isbn10);
+      if (coverImageBitmap == null) {
+    	  coverImageBitmap = createCoverImage(b.title);
+      }
       if (coverImageBitmap != null) {
          storeBitmap(coverImageBitmap, b.title, b.id);
-      }
+      } 
    }
 
    public Bitmap createCoverImage(final String title) {
