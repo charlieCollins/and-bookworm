@@ -331,7 +331,7 @@
 	<string name="msgTapToBegin">
 		Pulse para comenzar
   </string>
-  <string name="msgBookListEmpty">Book database is empty. Use the menu Add Book feature to add data.</string>
+  <string name="msgBookListEmpty">Base de datos de libros está vacía. Utilice el menú de función Añadir libro para agregar datos.</string>
   
 	<string name="prefSectApp">
 		Preferencias de la aplicación
