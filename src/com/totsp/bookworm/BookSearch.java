@@ -227,11 +227,12 @@ public class BookSearch extends Activity {
       public View getView(int position, View convertView, ViewGroup parent) {
 
          View item = convertView;
+         ViewHolder holder = null;
 
          if (item == null) {
             item = vi.inflate(R.layout.search_list_item, parent, false);
             // use ViewHolder pattern to avoid extra trips to findViewById         
-            ViewHolder holder = new ViewHolder();
+            holder = new ViewHolder();
             holder.text1 =
                      (TextView) item.findViewById(R.id.search_item_text_1);
             holder.text2 =
@@ -239,7 +240,7 @@ public class BookSearch extends Activity {
             item.setTag(holder);
          }
 
-         ViewHolder holder = (ViewHolder) item.getTag();
+         holder = (ViewHolder) item.getTag();
          holder.text1.setText(books.get(position).title);
          holder.text2.setText(AuthorsStringUtil.contractAuthors(books
                   .get(position).authors));
