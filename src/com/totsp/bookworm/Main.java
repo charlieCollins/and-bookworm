@@ -137,9 +137,7 @@ public class Main extends Activity {
 		bindAdapter();
 		
 		setupDialogs();
-	}
-	
-	
+	}	
 
 	@Override
 	public void onStart() {
