@@ -80,31 +80,31 @@ public class Main extends Activity {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// /Debug.startMethodTracing("BookWorm");
-		this.setContentView(R.layout.main);
-		this.application = (BookWormApplication) this.getApplication();
-		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		setContentView(R.layout.main);
+		application = (BookWormApplication) getApplication();
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		this.resetAllCoverImagesTask = null;
+		resetAllCoverImagesTask = null;
 
-		this.coverImageMissing = BitmapFactory.decodeResource(this
+		coverImageMissing = BitmapFactory.decodeResource(this
 				.getResources(), R.drawable.book_cover_missing);
-		this.star0 = BitmapFactory.decodeResource(this.getResources(),
+		star0 = BitmapFactory.decodeResource(getResources(),
 				R.drawable.star0);
-		this.star1 = BitmapFactory.decodeResource(this.getResources(),
+		star1 = BitmapFactory.decodeResource(getResources(),
 				R.drawable.star1);
-		this.star2 = BitmapFactory.decodeResource(this.getResources(),
+		star2 = BitmapFactory.decodeResource(getResources(),
 				R.drawable.star2);
-		this.star3 = BitmapFactory.decodeResource(this.getResources(),
+		star3 = BitmapFactory.decodeResource(getResources(),
 				R.drawable.star3);
-		this.star4 = BitmapFactory.decodeResource(this.getResources(),
+		star4 = BitmapFactory.decodeResource(getResources(),
 				R.drawable.star4);
-		this.star5 = BitmapFactory.decodeResource(this.getResources(),
+		star5 = BitmapFactory.decodeResource(getResources(),
 				R.drawable.star5);
 
-		this.bookListView = (ListView) this.findViewById(R.id.booklistview);
-		this.bookListView.setEmptyView(this.findViewById(R.id.empty));
-		this.bookListView.setTextFilterEnabled(true);
-		this.bookListView.setOnItemClickListener(new OnItemClickListener() {
+		bookListView = (ListView) findViewById(R.id.booklistview);
+		bookListView.setEmptyView(findViewById(R.id.empty));
+		bookListView.setTextFilterEnabled(true);
+		bookListView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(final AdapterView<?> parent, final View v,
 					final int index, final long id) {
 				Main.this.cursor.moveToPosition(index);
@@ -132,86 +132,14 @@ public class Main extends Activity {
 			}
 		});		
 
-		this.registerForContextMenu(this.bookListView);
+		registerForContextMenu(bookListView);
 
-		// bind bookListView and adapter
-		String orderBy = this.prefs.getString(Constants.DEFAULT_SORT_ORDER,
-				DataHelper.ORDER_BY_TITLE_ASC);
-		this.cursor = this.application.dataHelper.getSelectBookJoinCursor(
-				orderBy, null);
-		if ((this.cursor != null) && (this.cursor.getCount() > 0)) {
-			this.startManagingCursor(this.cursor);
-			this.adapter = new BookCursorAdapter(this.cursor);
-			this.bookListView.setAdapter(this.adapter);
-			int lastMainPos = this.application.lastMainListPosition;
-			if ((lastMainPos - 1) < this.adapter.getCount()) {
-				this.bookListView
-						.setSelection(this.application.lastMainListPosition - 1);
-			}
-		}
+		bindAdapter();
 		
-		this.setupDialogs();
+		setupDialogs();
 	}
 	
-	private void setupDialogs() {
-		this.sortDialog = new AlertDialog.Builder(this);
-		this.sortDialog.setTitle(this.getString(R.string.btnSortBy));
-		this.sortDialog.setItems(new CharSequence[] {
-				this.getString(R.string.labelTitle),
-				this.getString(R.string.labelAuthorsShort),
-				this.getString(R.string.labelRating),
-				this.getString(R.string.labelReadstatus),
-				this.getString(R.string.labelSubject),
-				this.getString(R.string.labelDatepub),
-				this.getString(R.string.labelPublisher) },
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface d, int selected) {
-						switch (selected) {
-						case 0:
-							Main.this
-									.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
-							break;
-						case 1:
-							Main.this
-									.saveSortOrder(DataHelper.ORDER_BY_AUTHORS_ASC);
-							break;
-						case 2:
-							Main.this
-									.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
-							break;
-						case 3:
-							Main.this
-									.saveSortOrder(DataHelper.ORDER_BY_READ_DESC);
-							break;
-						case 4:
-							Main.this
-									.saveSortOrder(DataHelper.ORDER_BY_SUBJECT_ASC);
-							break;
-						case 5:
-							Main.this
-									.saveSortOrder(DataHelper.ORDER_BY_DATE_PUB_DESC);
-							break;
-						case 6:
-							Main.this
-									.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
-							break;
-						}
-						Main.this.application.lastMainListPosition = 0;
-						Main.this.adapter.notifyDataSetChanged();
-						// /Main.this.bindBookList();
-					}
-				});
-		this.sortDialog.create();
-
-		this.statsDialog = new AlertDialog.Builder(this);
-		this.statsDialog.setTitle(this.getString(R.string.msgBookListStats));
-		this.statsDialog.setNeutralButton(this.getString(R.string.btnDismiss),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface d, int i) {
-					};
-				});
-		this.statsDialog.create();
-	}
+	
 
 	@Override
 	public void onStart() {
@@ -220,23 +148,23 @@ public class Main extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-		menu.add(0, Main.MENU_SORT, 1, this.getString(R.string.menuSortBooks))
+		menu.add(0, MENU_SORT, 1, getString(R.string.menuSortBooks))
 				.setIcon(android.R.drawable.ic_menu_sort_by_size);
-		menu.add(0, Main.MENU_BOOKADD, 2, this.getString(R.string.menuAddBook))
+		menu.add(0, MENU_BOOKADD, 2, getString(R.string.menuAddBook))
 				.setIcon(android.R.drawable.ic_menu_add);
-		menu.add(0, Main.MENU_STATS, 3, this.getString(R.string.menuListStats))
+		menu.add(0, MENU_STATS, 3, getString(R.string.menuListStats))
 				.setIcon(android.R.drawable.ic_menu_info_details);
-		menu.add(0, Main.MENU_ABOUT, 4, this.getString(R.string.menuAbout))
+		menu.add(0, MENU_ABOUT, 4, getString(R.string.menuAbout))
 				.setIcon(android.R.drawable.ic_menu_help);
-		menu.add(0, Main.MENU_PREFS, 5, this.getString(R.string.menuPrefs))
+		menu.add(0, MENU_PREFS, 5, getString(R.string.menuPrefs))
 				.setIcon(android.R.drawable.ic_menu_preferences);
-		// /menu.add(0, Main.MENU_SEND, 6,
+		// /menu.add(0, Main.this.MENU_SEND, 6,
 		// "Send Book List").setIcon(android.R.drawable.ic_menu_send);
-		menu.add(0, Main.MENU_MANAGE, 7,
-				this.getString(R.string.menuManageData)).setIcon(
+		menu.add(0, MENU_MANAGE, 7,
+				getString(R.string.menuManageData)).setIcon(
 				android.R.drawable.ic_menu_manage);
-		menu.add(0, Main.MENU_RESET_COVER_IMAGES, 8,
-				this.getString(R.string.menuResetCoverImages)).setIcon(
+		menu.add(0, MENU_RESET_COVER_IMAGES, 8,
+				getString(R.string.menuResetCoverImages)).setIcon(
 				android.R.drawable.ic_menu_gallery);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -245,13 +173,13 @@ public class Main extends Activity {
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_SORT:
-			this.sortDialog.show();
+			sortDialog.show();
 			return true;
 		case MENU_BOOKADD:
-			this.startActivity(new Intent(Main.this, BookAdd.class));
+			startActivity(new Intent(Main.this, BookAdd.class));
 			return true;
 		case MENU_STATS:
-			BookListStats stats = this.application.dataHelper.getStats();
+			BookListStats stats = application.dataHelper.getStats();
 			// TODO this stringbuilder is NOT i18n'd
 			// use string.format and resource strings
 			StringBuilder sb = new StringBuilder();
@@ -266,14 +194,14 @@ public class Main extends Activity {
 					+ (stats.totalBooks - (stats.fiveStarBooks
 							+ stats.fourStarBooks + stats.threeStarBooks
 							+ stats.twoStarBooks + stats.oneStarBooks)) + "\n");
-			this.statsDialog.setMessage(sb.toString());
-			this.statsDialog.show();
+			statsDialog.setMessage(sb.toString());
+			statsDialog.show();
 			return true;
 		case MENU_ABOUT:
-			this.startActivity(new Intent(Main.this, About.class));
+			startActivity(new Intent(Main.this, About.class));
 			return true;
 		case MENU_PREFS:
-			this.startActivity(new Intent(Main.this, Preferences.class));
+			startActivity(new Intent(Main.this, Preferences.class));
 			return true;
 			// below first 5 are "more" options
 			/*
@@ -282,16 +210,14 @@ public class Main extends Activity {
 			 * return true;
 			 */
 		case MENU_MANAGE:
-			this.startActivity(new Intent(Main.this, ManageData.class));
+			startActivity(new Intent(Main.this, ManageData.class));
 			return true;
 		case MENU_RESET_COVER_IMAGES:
 			new AlertDialog.Builder(Main.this)
 					.setTitle(
-							Main.this
-									.getString(R.string.msgResetAllCoverImages))
+							Main.this.getString(R.string.msgResetAllCoverImages))
 					.setMessage(
-							Main.this
-									.getString(R.string.msgResetAllCoverImagesExplain))
+							Main.this.getString(R.string.msgResetAllCoverImagesExplain))
 					.setPositiveButton(Main.this.getString(R.string.btnYes),
 							new DialogInterface.OnClickListener() {
 								public void onClick(final DialogInterface d,
@@ -316,9 +242,9 @@ public class Main extends Activity {
 	public void onCreateContextMenu(final ContextMenu menu, final View v,
 			final ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(0, Main.MENU_CONTEXT_EDIT, 0, this
+		menu.add(0, MENU_CONTEXT_EDIT, 0, this
 				.getString(R.string.menuEditBook));
-		menu.add(0, Main.MENU_CONTEXT_DELETE, 1, this
+		menu.add(0, MENU_CONTEXT_DELETE, 1, this
 				.getString(R.string.menuDeleteBook));
 		menu.setHeaderTitle("Action");
 	}
@@ -328,7 +254,7 @@ public class Main extends Activity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		long bookId = info.id;
-		final Book b = this.application.dataHelper.selectBook(bookId);
+		final Book b = application.dataHelper.selectBook(bookId);
 		Main.this.application.lastMainListPosition = info.position;
 		switch (item.getItemId()) {
 		case MENU_CONTEXT_EDIT:
@@ -360,9 +286,9 @@ public class Main extends Activity {
 
 	@Override
 	public void onPause() {
-		if ((this.resetAllCoverImagesTask != null)
-				&& this.resetAllCoverImagesTask.dialog.isShowing()) {
-			this.resetAllCoverImagesTask.dialog.dismiss();
+		if ((resetAllCoverImagesTask != null)
+				&& resetAllCoverImagesTask.dialog.isShowing()) {
+			resetAllCoverImagesTask.dialog.dismiss();
 		}
 		// /Debug.stopMethodTracing();		
 		super.onPause();
@@ -380,14 +306,85 @@ public class Main extends Activity {
 		if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
 			Intent intent = new Intent(Intent.ACTION_MAIN);
 			intent.addCategory(Intent.CATEGORY_HOME);
-			this.startActivity(intent);
+			startActivity(intent);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
 	
+	private void bindAdapter() {
+		// bind bookListView and adapter
+		String orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER,
+				DataHelper.ORDER_BY_TITLE_ASC);
+		cursor = application.dataHelper.getSelectBookJoinCursor(
+				orderBy, null);
+		if ((cursor != null) && (cursor.getCount() > 0)) {
+			startManagingCursor(cursor);
+			adapter = new BookCursorAdapter(cursor);
+			bookListView.setAdapter(adapter);
+			int lastMainPos = application.lastMainListPosition;
+			if ((lastMainPos - 1) < adapter.getCount()) {
+				bookListView
+						.setSelection(application.lastMainListPosition - 1);
+			}
+		}
+	}
+	
+	private void setupDialogs() {
+		sortDialog = new AlertDialog.Builder(this);
+		sortDialog.setTitle(getString(R.string.btnSortBy));
+		sortDialog.setItems(new CharSequence[] {
+				getString(R.string.labelTitle),
+				getString(R.string.labelAuthorsShort),
+				getString(R.string.labelRating),
+				getString(R.string.labelReadstatus),
+				getString(R.string.labelSubject),
+				getString(R.string.labelDatepub),
+				getString(R.string.labelPublisher) },
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface d, int selected) {
+						switch (selected) {
+						case 0:
+							Main.this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
+							break;
+						case 1:
+							Main.this.saveSortOrder(DataHelper.ORDER_BY_AUTHORS_ASC);
+							break;
+						case 2:
+							Main.this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
+							break;
+						case 3:
+							Main.this.saveSortOrder(DataHelper.ORDER_BY_READ_DESC);
+							break;
+						case 4:
+							Main.this.saveSortOrder(DataHelper.ORDER_BY_SUBJECT_ASC);
+							break;
+						case 5:
+							Main.this.saveSortOrder(DataHelper.ORDER_BY_DATE_PUB_DESC);
+							break;
+						case 6:
+							Main.this.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
+							break;
+						}
+						Main.this.application.lastMainListPosition = 0;
+						Main.this.adapter.notifyDataSetChanged();
+						// /Main.this.bindBookList();
+					}
+				});
+		sortDialog.create();
+
+		statsDialog = new AlertDialog.Builder(this);
+		statsDialog.setTitle(getString(R.string.msgBookListStats));
+		statsDialog.setNeutralButton(getString(R.string.btnDismiss),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface d, int i) {
+					};
+				});
+		statsDialog.create();
+	}
+	
 	private void saveSortOrder(final String order) {
-		Editor editor = this.prefs.edit();
+		Editor editor = prefs.edit();
 		editor.putString(Constants.DEFAULT_SORT_ORDER, order);
 		editor.commit();
 	}
@@ -413,7 +410,7 @@ public class Main extends Activity {
 
 		public BookCursorAdapter(final Cursor c) {
 			super(Main.this, c, true);
-			this.setFilterQueryProvider(this);
+			setFilterQueryProvider(this);
 		}
 
 		// FilterQueryProvider impl
@@ -421,7 +418,7 @@ public class Main extends Activity {
 			// /Log.i(Constants.LOG_TAG, "RUN QUERY - " + constraint);
 			Cursor c = null;
 			if ((constraint == null) || (constraint.length() == 0)) {
-				c = this.getCursor();
+				c = getCursor();
 			} else {
 				String pattern = "'%" + constraint + "%'";
 				String orderBy = Main.this.prefs.getString(
@@ -436,14 +433,14 @@ public class Main extends Activity {
 
 		@Override
 		public void bindView(final View v, final Context context, final Cursor c) {
-			this.populateView(v, c);
+			populateView(v, c);
 		}
 
 		@Override
 		public View newView(final Context context, final Cursor c,
 				final ViewGroup parent) {
 			// use ViewHolder pattern to avoid extra trips to findViewById
-			View v = this.vi.inflate(R.layout.list_items_item, parent, false);
+			View v = vi.inflate(R.layout.list_items_item, parent, false);
 			ViewHolder holder = new ViewHolder();
 			holder.coverImage = (ImageView) v
 					.findViewById(R.id.list_items_item_image);
@@ -456,7 +453,7 @@ public class Main extends Activity {
 			holder.readStatus = (CheckBox) v
 					.findViewById(R.id.list_items_item_read_status);
 			v.setTag(holder);
-			this.populateView(v, c);
+			populateView(v, c);
 			return v;
 		}
 
@@ -536,14 +533,13 @@ public class Main extends Activity {
 
 		@Override
 		protected void onPreExecute() {
-			this.dialog.setMessage(Main.this
-					.getString(R.string.msgResetCoverImagesWarnTime));
-			this.dialog.show();
+			dialog.setMessage(Main.this.getString(R.string.msgResetCoverImagesWarnTime));
+			dialog.show();
 		}
 
 		@Override
 		protected void onProgressUpdate(final String... args) {
-			this.dialog.setMessage(args[0]);
+			dialog.setMessage(args[0]);
 		}
 
 		@Override
@@ -557,7 +553,7 @@ public class Main extends Activity {
 					Log.d(Constants.LOG_TAG,
 							"resetting cover image for book - " + b.title);
 				}
-				this.publishProgress(String.format(Main.this.getString(
+				publishProgress(String.format(Main.this.getString(
 						R.string.msgProcessingBookX, b.title)));
 				Main.this.application.dataImageHelper.resetCoverImage(
 						Main.this.application.dataHelper, b);
@@ -568,8 +564,8 @@ public class Main extends Activity {
 		@Override
 		protected void onPostExecute(final Void v) {
 			Main.this.adapter.notifyDataSetChanged();
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
+			if (dialog.isShowing()) {
+				dialog.dismiss();
 			}
 		}
 	}
