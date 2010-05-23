@@ -26,9 +26,10 @@ public class BookAuthorDataDAO implements DAO<BookUserData> {
       this.db = db;
 
       // statements
-      bookUserDataInsertStmt = db.compileStatement(BOOKUSERDATA_INSERT);
+      bookUserDataInsertStmt =
+               db.compileStatement(BookAuthorDataDAO.BOOKUSERDATA_INSERT);
 
-   }   
+   }
 
    @Override
    public BookUserData select(final long id) {
@@ -37,8 +38,8 @@ public class BookAuthorDataDAO implements DAO<BookUserData> {
                db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] {
                         DataConstants.READSTATUS, DataConstants.RATING,
                         DataConstants.BLURB }, DataConstants.BOOKID + " = ?",
-                        new String[] { String.valueOf(id) }, null, null,
-                        null, "1");
+                        new String[] { String.valueOf(id) }, null, null, null,
+                        "1");
       if (c.moveToFirst()) {
          b = new BookUserData();
          b.read = (c.getInt(0) == 0 ? false : true);
@@ -50,7 +51,7 @@ public class BookAuthorDataDAO implements DAO<BookUserData> {
       }
       return b;
    }
-   
+
    @Override
    public ArrayList<BookUserData> selectAll() {
       throw new UnsupportedOperationException("Not yet implemented.");
@@ -100,6 +101,5 @@ public class BookAuthorDataDAO implements DAO<BookUserData> {
                   + " = ?", new String[] { String.valueOf(bookId) });
       }
    }
-  
 
 }

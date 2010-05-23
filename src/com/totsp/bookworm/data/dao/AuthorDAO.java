@@ -29,8 +29,8 @@ public class AuthorDAO implements DAO<Author> {
       this.db = db;
 
       // statements
-      authorInsertStmt = db.compileStatement(AUTHOR_INSERT);
-   }   
+      authorInsertStmt = db.compileStatement(AuthorDAO.AUTHOR_INSERT);
+   }
 
    @Override
    public Author select(final long id) {
@@ -66,7 +66,7 @@ public class AuthorDAO implements DAO<Author> {
       }
       return a;
    }
-   
+
    @Override
    public ArrayList<Author> selectAll() {
       ArrayList<Author> set = new ArrayList<Author>();
@@ -92,7 +92,7 @@ public class AuthorDAO implements DAO<Author> {
       ArrayList<Author> authors = new ArrayList<Author>();
       // TODO string.format this with final String, faster?
       StringBuilder sb = new StringBuilder();
-      sb.append(QUERY_AUTHORS_BY_BOOK_ID_PREFIX);
+      sb.append(AuthorDAO.QUERY_AUTHORS_BY_BOOK_ID_PREFIX);
       sb.append(" where book.bid = " + bookId);
       sb.append(" order by author.name asc");
       Cursor c = db.rawQuery(sb.toString(), null);
@@ -108,8 +108,8 @@ public class AuthorDAO implements DAO<Author> {
          c.close();
       }
       return authors;
-   }  
-   
+   }
+
    @Override
    public long insert(final Author a) {
       authorInsertStmt.clearBindings();

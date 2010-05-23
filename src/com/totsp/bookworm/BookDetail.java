@@ -1,7 +1,5 @@
 package com.totsp.bookworm;
 
-import java.util.Date;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,6 +20,8 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.AuthorsStringUtil;
 import com.totsp.bookworm.util.DateUtil;
+
+import java.util.Date;
 
 public class BookDetail extends Activity {
 
@@ -118,8 +118,8 @@ public class BookDetail extends Activity {
                               + book.toStringFull());
          }
          Bitmap coverImage =
-                  application.imageManager.retrieveBitmap(book.title,
-                           book.id, false);
+                  application.imageManager.retrieveBitmap(book.title, book.id,
+                           false);
          if (coverImage != null) {
             bookCover.setImageBitmap(coverImage);
          } else {

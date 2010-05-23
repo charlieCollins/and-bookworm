@@ -348,14 +348,15 @@ public class BookForm extends TabActivity {
             return true;
          } else if ((book != null) && (book.id == 0)) {
             newBook = true;
-            long bookId = BookForm.this.application.dataManager.insertBook(book);
+            long bookId =
+                     BookForm.this.application.dataManager.insertBook(book);
             BookForm.this.application.establishSelectedBook(bookId);
             // also auto store generated cover with new form based book insert
             Bitmap generatedCover =
                      BookForm.this.application.imageManager
                               .createCoverImage(book.title);
-            BookForm.this.application.imageManager.storeBitmap(
-                     generatedCover, book.title, bookId);
+            BookForm.this.application.imageManager.storeBitmap(generatedCover,
+                     book.title, bookId);
             return true;
          }
          return false;
@@ -443,8 +444,8 @@ public class BookForm extends TabActivity {
             Bitmap generatedCover =
                      BookForm.this.application.imageManager
                               .createCoverImage(book.title);
-            BookForm.this.application.imageManager.storeBitmap(
-                     generatedCover, book.title, book.id);
+            BookForm.this.application.imageManager.storeBitmap(generatedCover,
+                     book.title, book.id);
             return true;
          }
          return false;

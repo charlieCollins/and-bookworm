@@ -25,7 +25,7 @@ public final class AuthorsStringUtil {
       String result = null;
       if (authors.size() == 1) {
          result = authors.get(0).name;
-      } else {         
+      } else {
          // avoid enhanced for loop on Android with ArrayList
          for (int i = 0; i < authors.size(); i++) {
             Author a = authors.get(i);
@@ -33,7 +33,7 @@ public final class AuthorsStringUtil {
                result = a.name;
             } else {
                result += ", " + a.name;
-            }            
+            }
          }
       }
       return result;

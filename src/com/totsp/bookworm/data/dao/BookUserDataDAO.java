@@ -26,19 +26,20 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       this.db = db;
 
       // statements
-      bookUserDataInsertStmt = db.compileStatement(BOOKUSERDATA_INSERT);
+      bookUserDataInsertStmt =
+               db.compileStatement(BookUserDataDAO.BOOKUSERDATA_INSERT);
 
-   }   
+   }
 
-   @Override   
+   @Override
    public BookUserData select(final long id) {
       BookUserData b = null;
       Cursor c =
                db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] {
                         DataConstants.READSTATUS, DataConstants.RATING,
-                        DataConstants.BLURB }, DataConstants.BOOKUSERDATAID + " = ?",
-                        new String[] { String.valueOf(id) }, null, null,
-                        null, "1");
+                        DataConstants.BLURB }, DataConstants.BOOKUSERDATAID
+                        + " = ?", new String[] { String.valueOf(id) }, null,
+                        null, null, "1");
       if (c.moveToFirst()) {
          b = new BookUserData();
          b.read = (c.getInt(0) == 0 ? false : true);
@@ -50,7 +51,7 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       }
       return b;
    }
-   
+
    public BookUserData selectByBookId(final long bookId) {
       BookUserData b = null;
       Cursor c =
@@ -70,7 +71,7 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       }
       return b;
    }
-   
+
    @Override
    public ArrayList<BookUserData> selectAll() {
       throw new UnsupportedOperationException("Not yet implemented.");
@@ -120,6 +121,5 @@ public class BookUserDataDAO implements DAO<BookUserData> {
                   + " = ?", new String[] { String.valueOf(bookId) });
       }
    }
-  
 
 }

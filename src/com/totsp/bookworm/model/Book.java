@@ -106,7 +106,6 @@ public final class Book {
          result += bookUserData.hashCode();
       }
       result += datePubStamp;
-      
 
       return result;
    }
@@ -124,7 +123,7 @@ public final class Book {
       sb.append("\n description:" + description);
       sb.append("\n format:" + format);
       sb.append("\n subject:" + subject);
-      sb.append("\n datePubStamp:" + datePubStamp);      
+      sb.append("\n datePubStamp:" + datePubStamp);
       return sb.toString();
    }
 }

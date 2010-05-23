@@ -6,8 +6,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.totsp.bookworm.data.DataManager;
-import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.data.IBookDataSource;
+import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
 
 import java.util.ArrayList;

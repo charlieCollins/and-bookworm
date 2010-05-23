@@ -50,16 +50,16 @@ public class DataManager {
    private static final int DATABASE_VERSION = 10;
 
    private SQLiteDatabase db;
-   
-   private BookDAO bookDAO;   
+
+   private BookDAO bookDAO;
 
    public DataManager(final Context context) {
       OpenHelper openHelper = new OpenHelper(context);
-      db = openHelper.getWritableDatabase();   
-      
+      db = openHelper.getWritableDatabase();
+
       // app only needs access to book DAO at present (can't create authors on their own, etc.)
       bookDAO = new BookDAO(db);
-      
+
       if (openHelper.isDbCreated()) {
          // insert default data here if needed
       }
@@ -87,23 +87,23 @@ public class DataManager {
    //
    // wrapped DB methods
    //
-   
+
    public Book selectBook(final long id) {
       return bookDAO.select(id);
    }
-   
+
    public ArrayList<Book> selectAllBooks() {
       return bookDAO.selectAll();
    }
-   
+
    public ArrayList<Book> selectAllBooksByTitle(final String title) {
       return bookDAO.selectAllBooksByTitle(title);
    }
-   
+
    public long insertBook(final Book b) {
       return bookDAO.insert(b);
    }
-   
+
    public void updateBook(final Book b) {
       bookDAO.update(b);
    }
@@ -111,12 +111,12 @@ public class DataManager {
    public void deleteBook(final long id) {
       bookDAO.delete(id);
    }
-   
-   public Cursor getSelectBookJoinCursor(final String orderBy, final String whereClauseLimit) {
+
+   public Cursor getSelectBookJoinCursor(final String orderBy,
+            final String whereClauseLimit) {
       return bookDAO.getSelectBookJoinCursor(orderBy, whereClauseLimit);
    }
-   
-   
+
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
       Log.i(Constants.LOG_TAG,
