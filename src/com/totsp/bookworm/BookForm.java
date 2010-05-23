@@ -212,7 +212,7 @@ public class BookForm extends TabActivity {
                Bitmap bitmap = BitmapFactory.decodeStream(is);
                Book book = BookForm.this.application.selectedBook;
                if ((bitmap != null) && (book != null)) {
-                  BookForm.this.application.dataImageManager.storeBitmap(bitmap,
+                  BookForm.this.application.imageManager.storeBitmap(bitmap,
                            book.title, book.id);
                }
             } catch (FileNotFoundException e) {
@@ -259,7 +259,7 @@ public class BookForm extends TabActivity {
    private void setExistingViewData() {
       Book book = application.selectedBook;
       Bitmap coverImage =
-               application.dataImageManager.retrieveBitmap(book.title, book.id,
+               application.imageManager.retrieveBitmap(book.title, book.id,
                         false);
       if (coverImage != null) {
          bookCover.setImageBitmap(coverImage);
@@ -316,7 +316,7 @@ public class BookForm extends TabActivity {
 
          // rename the cover images too, if title changes
          if (book.title != newBook.title) {
-            application.dataImageManager.renameBitmapSourceFile(book.title,
+            application.imageManager.renameBitmapSourceFile(book.title,
                      newBook.title, book.id);
          }
       }
@@ -352,9 +352,9 @@ public class BookForm extends TabActivity {
             BookForm.this.application.establishSelectedBook(bookId);
             // also auto store generated cover with new form based book insert
             Bitmap generatedCover =
-                     BookForm.this.application.dataImageManager
+                     BookForm.this.application.imageManager
                               .createCoverImage(book.title);
-            BookForm.this.application.dataImageManager.storeBitmap(
+            BookForm.this.application.imageManager.storeBitmap(
                      generatedCover, book.title, bookId);
             return true;
          }
@@ -399,7 +399,7 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
-            BookForm.this.application.dataImageManager.resetCoverImage(book);
+            BookForm.this.application.imageManager.resetCoverImage(book);
             return true;
          }
          return false;
@@ -441,9 +441,9 @@ public class BookForm extends TabActivity {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
             Bitmap generatedCover =
-                     BookForm.this.application.dataImageManager
+                     BookForm.this.application.imageManager
                               .createCoverImage(book.title);
-            BookForm.this.application.dataImageManager.storeBitmap(
+            BookForm.this.application.imageManager.storeBitmap(
                      generatedCover, book.title, book.id);
             return true;
          }

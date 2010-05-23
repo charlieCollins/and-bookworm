@@ -24,11 +24,11 @@ import java.io.IOException;
  * @author ccollins
  *
  */
-public class DataImageManager {
+public class ImageManager {
 
    private static final String IMAGES_LOCATION = "bookwormdata/images/";
 
-   public DataImageManager(final Context context) {
+   public ImageManager(final Context context) {
    }
 
    public final Bitmap retrieveBitmap(final String title, final Long id,
@@ -39,7 +39,7 @@ public class DataImageManager {
 
       File exportDir =
                new File(Environment.getExternalStorageDirectory(),
-                        DataImageManager.IMAGES_LOCATION);
+                        ImageManager.IMAGES_LOCATION);
       File file = null;
       if (!thumb) {
          file = new File(exportDir, name + ".jpg");
@@ -60,13 +60,13 @@ public class DataImageManager {
 
       // M from OpenLibrary is about 180x225
       // I scale to 120x150      
-      Bitmap bitmap = DataImageManager.resizeBitmap(source, 120, 150);
-      Bitmap bitmapThumb = DataImageManager.resizeBitmap(source, 55, 70);
+      Bitmap bitmap = ImageManager.resizeBitmap(source, 120, 150);
+      Bitmap bitmapThumb = ImageManager.resizeBitmap(source, 55, 70);
 
       try {
          File exportDir =
                   new File(Environment.getExternalStorageDirectory(),
-                           DataImageManager.IMAGES_LOCATION);
+                           ImageManager.IMAGES_LOCATION);
          if (!exportDir.exists()) {
             exportDir.mkdirs();
          }
@@ -95,7 +95,7 @@ public class DataImageManager {
       String name = getNameKey(title, id);
       File exportDir =
                new File(Environment.getExternalStorageDirectory(),
-                        DataImageManager.IMAGES_LOCATION);
+                        ImageManager.IMAGES_LOCATION);
       File file = new File(exportDir, name + ".jpg");
       File thumbFile = new File(exportDir, name + "-t.jpg");
       if ((file != null) && file.exists() && file.canWrite()) {
@@ -112,7 +112,7 @@ public class DataImageManager {
       String newName = getNameKey(newTitle, id);
       File exportDir =
                new File(Environment.getExternalStorageDirectory(),
-                        DataImageManager.IMAGES_LOCATION);
+                        ImageManager.IMAGES_LOCATION);
       File file = new File(exportDir, oldName + ".jpg");
       File thumbFile = new File(exportDir, oldName + "-t.jpg");
       if ((file != null) && file.exists() && file.canWrite()) {
@@ -126,7 +126,7 @@ public class DataImageManager {
    public final void clearAllBitmapSourceFiles() {
       File exportDir =
                new File(Environment.getExternalStorageDirectory(),
-                        DataImageManager.IMAGES_LOCATION);
+                        ImageManager.IMAGES_LOCATION);
       if (exportDir.exists() && exportDir.canWrite()) {
          for (File f : exportDir.listFiles()) {
             f.delete();

@@ -118,7 +118,7 @@ public class BookDetail extends Activity {
                               + book.toStringFull());
          }
          Bitmap coverImage =
-                  application.dataImageManager.retrieveBitmap(book.title,
+                  application.imageManager.retrieveBitmap(book.title,
                            book.id, false);
          if (coverImage != null) {
             bookCover.setImageBitmap(coverImage);

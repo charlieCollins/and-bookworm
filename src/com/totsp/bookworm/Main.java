@@ -266,7 +266,7 @@ public class Main extends Activity {
 					Main.this.getString(R.string.btnYes),
 					new DialogInterface.OnClickListener() {
 						public void onClick(final DialogInterface d, final int i) {
-							Main.this.application.dataImageManager
+							Main.this.application.imageManager
 									.deleteBitmapSourceFile(b.title, b.id);
 							Main.this.application.dataManager.deleteBook(b.id);
 							Main.this.startActivity(Main.this.getIntent());
@@ -483,7 +483,7 @@ public class Main extends Activity {
 				}
 
 				ImageView coverImage = holder.coverImage;
-				Bitmap coverImageBitmap = Main.this.application.dataImageManager
+				Bitmap coverImageBitmap = Main.this.application.imageManager
 						.retrieveBitmap(title, id, true);
 				if (coverImageBitmap != null) {
 					coverImage.setImageBitmap(coverImageBitmap);
@@ -542,7 +542,7 @@ public class Main extends Activity {
 
 		@Override
 		protected Void doInBackground(final Void... args) {
-			Main.this.application.dataImageManager.clearAllBitmapSourceFiles();
+			Main.this.application.imageManager.clearAllBitmapSourceFiles();
 			ArrayList<Book> books = Main.this.application.dataManager
 					.selectAllBooks();
 			for (int i = 0; i < books.size(); i++) {
@@ -553,7 +553,7 @@ public class Main extends Activity {
 				}
 				publishProgress(String.format(Main.this.getString(
 						R.string.msgProcessingBookX, b.title)));
-				Main.this.application.dataImageManager.resetCoverImage(b);
+				Main.this.application.imageManager.resetCoverImage(b);
 			}
 			return null;
 		}

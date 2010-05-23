@@ -141,7 +141,7 @@ public class BookEntryResult extends Activity {
          // save book to database
          long bookId = application.dataManager.insertBook(book);
          if (book.coverImage != null) {
-            BookEntryResult.this.application.dataImageManager.storeBitmap(
+            BookEntryResult.this.application.imageManager.storeBitmap(
                      book.coverImage, book.title, bookId);
          }
       }
@@ -283,7 +283,7 @@ public class BookEntryResult extends Activity {
                            "book cover not found, generate image");
                }
                Bitmap generatedCover =
-                        BookEntryResult.this.application.dataImageManager
+                        BookEntryResult.this.application.imageManager
                                  .createCoverImage(bean.book.title);
                BookEntryResult.this.bookCover.setImageBitmap(generatedCover);
                bean.book.coverImage = generatedCover;

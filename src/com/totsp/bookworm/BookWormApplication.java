@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.totsp.bookworm.data.DataManager;
-import com.totsp.bookworm.data.DataImageManager;
+import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Book;
 
@@ -19,7 +19,7 @@ public class BookWormApplication extends Application {
    SharedPreferences prefs;
    IBookDataSource bookDataSource;
    DataManager dataManager;
-   DataImageManager dataImageManager;
+   ImageManager imageManager;
 
    Book selectedBook;
 
@@ -37,7 +37,7 @@ public class BookWormApplication extends Application {
 
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
       dataManager = new DataManager(this);
-      dataImageManager = new DataImageManager(this);
+      imageManager = new ImageManager(this);
 
       establishBookDataSourceFromProvider();
    }
