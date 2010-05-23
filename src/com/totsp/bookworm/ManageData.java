@@ -142,9 +142,9 @@ public class ManageData extends Activity {
                                           final int arg1) {
                                     Log.i(Constants.LOG_TAG,
                                              "deleting database");
-                                    ManageData.this.application.dataHelper
+                                    ManageData.this.application.dataManager
                                              .deleteAllDataYesIAmSure();
-                                    ManageData.this.application.dataHelper
+                                    ManageData.this.application.dataManager
                                              .resetDbConnection();
                                     Toast
                                              .makeText(
@@ -269,7 +269,7 @@ public class ManageData extends Activity {
          try {
             dbFile.createNewFile();
             FileUtil.copyFile(dbBackupFile, dbFile);
-            ManageData.this.application.dataHelper.resetDbConnection();
+            ManageData.this.application.dataManager.resetDbConnection();
             return null;
          } catch (IOException e) {
             Log.e(Constants.LOG_TAG, e.getMessage(), e);

@@ -21,10 +21,7 @@ public final class Book {
    public long datePubStamp = 0L;
    public ArrayList<Author> authors;
 
-   // user data (stored sep from book itself, not modeled sep though, for now)
-   public boolean read;
-   public int rating;
-   ///public String blurb;
+   public BookUserData bookUserData;
 
    // not stored in db or serialized
    // (optionally returned from parser, but not stored, image Ids are stored after processing)
@@ -32,6 +29,7 @@ public final class Book {
 
    public Book() {
       authors = new ArrayList<Author>();
+      bookUserData = new BookUserData();
    }
 
    public Book(final String title) {
@@ -40,6 +38,7 @@ public final class Book {
                   "Error, book must have a title (minimum size 1)");
       }
       authors = new ArrayList<Author>();
+      bookUserData = new BookUserData();
       this.title = title;
    }
 
@@ -65,7 +64,7 @@ public final class Book {
                   && (lhs.format.equals(format))
                   && (lhs.subject.equals(subject))
                   && (lhs.datePubStamp == datePubStamp)
-                  && (lhs.rating == rating) && (lhs.read == read)) {
+                  && (lhs.bookUserData == bookUserData)) {
             return true;
          }
       }
@@ -103,9 +102,11 @@ public final class Book {
       if (subject != null) {
          result += subject.hashCode();
       }
+      if (bookUserData != null) {
+         result += bookUserData.hashCode();
+      }
       result += datePubStamp;
-      result += rating;
-      result += read ? 1 : 0;
+      
 
       return result;
    }
@@ -123,9 +124,7 @@ public final class Book {
       sb.append("\n description:" + description);
       sb.append("\n format:" + format);
       sb.append("\n subject:" + subject);
-      sb.append("\n datePubStamp:" + datePubStamp);
-      sb.append("\n read:" + read);
-      sb.append("\n rating:" + rating);
+      sb.append("\n datePubStamp:" + datePubStamp);      
       return sb.toString();
    }
 }

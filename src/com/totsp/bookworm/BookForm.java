@@ -212,7 +212,7 @@ public class BookForm extends TabActivity {
                Bitmap bitmap = BitmapFactory.decodeStream(is);
                Book book = BookForm.this.application.selectedBook;
                if ((bitmap != null) && (book != null)) {
-                  BookForm.this.application.dataImageHelper.storeBitmap(bitmap,
+                  BookForm.this.application.dataImageManager.storeBitmap(bitmap,
                            book.title, book.id);
                }
             } catch (FileNotFoundException e) {
@@ -259,7 +259,7 @@ public class BookForm extends TabActivity {
    private void setExistingViewData() {
       Book book = application.selectedBook;
       Bitmap coverImage =
-               application.dataImageHelper.retrieveBitmap(book.title, book.id,
+               application.dataImageManager.retrieveBitmap(book.title, book.id,
                         false);
       if (coverImage != null) {
          bookCover.setImageBitmap(coverImage);
@@ -311,12 +311,12 @@ public class BookForm extends TabActivity {
          newBook.format = (book.format);
 
          // properties editable on display page and not on edit page
-         newBook.rating = (book.rating);
-         newBook.read = (book.read);
+         newBook.bookUserData.rating = (book.bookUserData.rating);
+         newBook.bookUserData.read = (book.bookUserData.read);
 
          // rename the cover images too, if title changes
          if (book.title != newBook.title) {
-            application.dataImageHelper.renameBitmapSourceFile(book.title,
+            application.dataImageManager.renameBitmapSourceFile(book.title,
                      newBook.title, book.id);
          }
       }
@@ -343,18 +343,18 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
-            BookForm.this.application.dataHelper.updateBook(book);
+            BookForm.this.application.dataManager.updateBook(book);
             BookForm.this.application.establishSelectedBook(book.id);
             return true;
          } else if ((book != null) && (book.id == 0)) {
             newBook = true;
-            long bookId = BookForm.this.application.dataHelper.insertBook(book);
+            long bookId = BookForm.this.application.dataManager.insertBook(book);
             BookForm.this.application.establishSelectedBook(bookId);
             // also auto store generated cover with new form based book insert
             Bitmap generatedCover =
-                     BookForm.this.application.dataImageHelper
+                     BookForm.this.application.dataImageManager
                               .createCoverImage(book.title);
-            BookForm.this.application.dataImageHelper.storeBitmap(
+            BookForm.this.application.dataImageManager.storeBitmap(
                      generatedCover, book.title, bookId);
             return true;
          }
@@ -399,8 +399,7 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
-            BookForm.this.application.dataImageHelper.resetCoverImage(
-                     BookForm.this.application.dataHelper, book);
+            BookForm.this.application.dataImageManager.resetCoverImage(book);
             return true;
          }
          return false;
@@ -442,9 +441,9 @@ public class BookForm extends TabActivity {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
             Bitmap generatedCover =
-                     BookForm.this.application.dataImageHelper
+                     BookForm.this.application.dataImageManager
                               .createCoverImage(book.title);
-            BookForm.this.application.dataImageHelper.storeBitmap(
+            BookForm.this.application.dataImageManager.storeBitmap(
                      generatedCover, book.title, book.id);
             return true;
          }

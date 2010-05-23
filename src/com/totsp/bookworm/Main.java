@@ -34,7 +34,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.totsp.bookworm.data.DataHelper;
+import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.AuthorsStringUtil;
@@ -114,7 +114,7 @@ public class Main extends Activity {
 				// _id too
 				int bookId = Main.this.cursor.getInt(Main.this.cursor
 						.getColumnIndex("_id"));
-				Book book = Main.this.application.dataHelper.selectBook(bookId);
+				Book book = Main.this.application.dataManager.selectBook(bookId);
 				if (book != null) {
 					if (Main.this.application.debugEnabled) {
 						Log.d(Constants.LOG_TAG, "book selected - "
@@ -177,7 +177,7 @@ public class Main extends Activity {
 			startActivity(new Intent(Main.this, BookAdd.class));
 			return true;
 		case MENU_STATS:
-			BookListStats stats = application.dataHelper.getStats();
+			BookListStats stats = application.dataManager.getStats();
 			// TODO this stringbuilder is NOT i18n'd
 			// use string.format and resource strings
 			StringBuilder sb = new StringBuilder();
@@ -252,7 +252,7 @@ public class Main extends Activity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		long bookId = info.id;
-		final Book b = application.dataHelper.selectBook(bookId);
+		final Book b = application.dataManager.selectBook(bookId);
 		Main.this.application.lastMainListPosition = info.position;
 		switch (item.getItemId()) {
 		case MENU_CONTEXT_EDIT:
@@ -266,9 +266,9 @@ public class Main extends Activity {
 					Main.this.getString(R.string.btnYes),
 					new DialogInterface.OnClickListener() {
 						public void onClick(final DialogInterface d, final int i) {
-							Main.this.application.dataImageHelper
+							Main.this.application.dataImageManager
 									.deleteBitmapSourceFile(b.title, b.id);
-							Main.this.application.dataHelper.deleteBook(b.id);
+							Main.this.application.dataManager.deleteBook(b.id);
 							Main.this.startActivity(Main.this.getIntent());
 						}
 					}).setNegativeButton(Main.this.getString(R.string.btnNo),
@@ -313,8 +313,8 @@ public class Main extends Activity {
 	private void bindAdapter() {
 		// bind bookListView and adapter
 		String orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER,
-				DataHelper.ORDER_BY_TITLE_ASC);
-		cursor = application.dataHelper.getSelectBookJoinCursor(
+				DataManager.ORDER_BY_TITLE_ASC);
+		cursor = application.dataManager.getSelectBookJoinCursor(
 				orderBy, null);
 		if ((cursor != null) && (cursor.getCount() > 0)) {
 			startManagingCursor(cursor);
@@ -343,25 +343,25 @@ public class Main extends Activity {
 					public void onClick(DialogInterface d, int selected) {
 						switch (selected) {
 						case 0:
-							Main.this.saveSortOrder(DataHelper.ORDER_BY_TITLE_ASC);
+							Main.this.saveSortOrder(DataManager.ORDER_BY_TITLE_ASC);
 							break;
 						case 1:
-							Main.this.saveSortOrder(DataHelper.ORDER_BY_AUTHORS_ASC);
+							Main.this.saveSortOrder(DataManager.ORDER_BY_AUTHORS_ASC);
 							break;
 						case 2:
-							Main.this.saveSortOrder(DataHelper.ORDER_BY_RATING_DESC);
+							Main.this.saveSortOrder(DataManager.ORDER_BY_RATING_DESC);
 							break;
 						case 3:
-							Main.this.saveSortOrder(DataHelper.ORDER_BY_READ_DESC);
+							Main.this.saveSortOrder(DataManager.ORDER_BY_READ_DESC);
 							break;
 						case 4:
-							Main.this.saveSortOrder(DataHelper.ORDER_BY_SUBJECT_ASC);
+							Main.this.saveSortOrder(DataManager.ORDER_BY_SUBJECT_ASC);
 							break;
 						case 5:
-							Main.this.saveSortOrder(DataHelper.ORDER_BY_DATE_PUB_DESC);
+							Main.this.saveSortOrder(DataManager.ORDER_BY_DATE_PUB_DESC);
 							break;
 						case 6:
-							Main.this.saveSortOrder(DataHelper.ORDER_BY_PUB_ASC);
+							Main.this.saveSortOrder(DataManager.ORDER_BY_PUB_ASC);
 							break;
 						}
 						Main.this.application.lastMainListPosition = 0;
@@ -421,8 +421,8 @@ public class Main extends Activity {
 				String pattern = "'%" + constraint + "%'";
 				String orderBy = Main.this.prefs.getString(
 						Constants.DEFAULT_SORT_ORDER,
-						DataHelper.ORDER_BY_TITLE_ASC);
-				c = Main.this.application.dataHelper.getSelectBookJoinCursor(
+						DataManager.ORDER_BY_TITLE_ASC);
+				c = Main.this.application.dataManager.getSelectBookJoinCursor(
 						orderBy, "where book.tit like " + pattern);
 			}
 			Main.this.cursor = c;
@@ -483,7 +483,7 @@ public class Main extends Activity {
 				}
 
 				ImageView coverImage = holder.coverImage;
-				Bitmap coverImageBitmap = Main.this.application.dataImageHelper
+				Bitmap coverImageBitmap = Main.this.application.dataImageManager
 						.retrieveBitmap(title, id, true);
 				if (coverImageBitmap != null) {
 					coverImage.setImageBitmap(coverImageBitmap);
@@ -542,8 +542,8 @@ public class Main extends Activity {
 
 		@Override
 		protected Void doInBackground(final Void... args) {
-			Main.this.application.dataImageHelper.clearAllBitmapSourceFiles();
-			ArrayList<Book> books = Main.this.application.dataHelper
+			Main.this.application.dataImageManager.clearAllBitmapSourceFiles();
+			ArrayList<Book> books = Main.this.application.dataManager
 					.selectAllBooks();
 			for (int i = 0; i < books.size(); i++) {
 				Book b = books.get(i);
@@ -553,8 +553,7 @@ public class Main extends Activity {
 				}
 				publishProgress(String.format(Main.this.getString(
 						R.string.msgProcessingBookX, b.title)));
-				Main.this.application.dataImageHelper.resetCoverImage(
-						Main.this.application.dataHelper, b);
+				Main.this.application.dataImageManager.resetCoverImage(b);
 			}
 			return null;
 		}

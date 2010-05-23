@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.totsp.bookworm.data.DataHelper;
-import com.totsp.bookworm.data.DataImageHelper;
+import com.totsp.bookworm.data.DataManager;
+import com.totsp.bookworm.data.DataImageManager;
 import com.totsp.bookworm.data.IBookDataSource;
 import com.totsp.bookworm.model.Book;
 
@@ -18,8 +18,8 @@ public class BookWormApplication extends Application {
 
    SharedPreferences prefs;
    IBookDataSource bookDataSource;
-   DataHelper dataHelper;
-   DataImageHelper dataImageHelper;
+   DataManager dataManager;
+   DataImageManager dataImageManager;
 
    Book selectedBook;
 
@@ -36,8 +36,8 @@ public class BookWormApplication extends Application {
       }
 
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
-      dataHelper = new DataHelper(this);
-      dataImageHelper = new DataImageHelper(this);
+      dataManager = new DataManager(this);
+      dataImageManager = new DataImageManager(this);
 
       establishBookDataSourceFromProvider();
    }
@@ -64,13 +64,13 @@ public class BookWormApplication extends Application {
 
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved title
    public void establishSelectedBook(final long id) {
-      selectedBook = dataHelper.selectBook(id);
+      selectedBook = dataManager.selectBook(id);
    }
 
    @Override
    public void onTerminate() {
       // not guaranteed to be called
-      dataHelper.cleanup();
+      dataManager.cleanup();
       selectedBook = null;
       super.onTerminate();
    }

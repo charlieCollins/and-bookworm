@@ -1,6 +1,23 @@
 package com.totsp.bookworm.data;
 
-public class DataConstants {
+import android.os.Environment;
+
+public class DataConstants {   
+   
+   private static final String APP_PACKAGE_NAME = "com.totsp.bookworm";
+   private static final String EXTERNAL_DATA_DIR_NAME = "bookwormdata";
+   public static final String DATABASE_NAME = "bookworm.db";
+   public static final String DATABASE_PATH = Environment.getDataDirectory()
+         + "/data/" + APP_PACKAGE_NAME + "/databases/" + DATABASE_NAME;
+   public static final String EXTERNAL_DATA_PATH = Environment
+         .getExternalStorageDirectory()
+         + "/" + EXTERNAL_DATA_DIR_NAME; 
+   
+   public static final String BOOK_TABLE = "book";
+   public static final String BOOKUSERDATA_TABLE = "bookuserdata";
+   public static final String BOOKAUTHOR_TABLE = "bookauthor";
+   public static final String AUTHOR_TABLE = "author";
+   
    public static final String BOOKID = "bid";
    public static final String BOOKUSERDATAID = "budid";
    public static final String BOOKAUTHORID = "baid";

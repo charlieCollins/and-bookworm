@@ -24,45 +24,12 @@ import java.io.IOException;
  * @author ccollins
  *
  */
-public class DataImageHelper {
+public class DataImageManager {
 
    private static final String IMAGES_LOCATION = "bookwormdata/images/";
 
-   public DataImageHelper(final Context context) {
+   public DataImageManager(final Context context) {
    }
-
-   // TODO could be used (with change path name to .images above) to remove old images dir
-   // in order to hide from gallery - but gallery 1.5+ expects it and deals with it
-   // and logs errors about files missing if files deleted without also removing from ContentProvider
-   // might be more trouble than worth to "hide" 
-   /*
-   public void copyOverImages() {
-      // this method is used to copy over images from bookwormdata/images 
-      // into bookwormdata/.images
-      // this is needed to because 1.0.5 is changing the images path in order to hide them
-      try {
-         File newDir = new File(Environment.getExternalStorageDirectory(), DataImageHelper.IMAGES_LOCATION);
-         if (!newDir.exists()) {
-            newDir.mkdirs();
-         }
-
-         File oldDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata/images/");
-         if (oldDir.exists() && oldDir.canRead()) {
-            for (File s : oldDir.listFiles()) {
-               File d = new File(newDir.getAbsolutePath() + File.separator + s.getName());
-               FileUtil.copyFile(s, d);
-               s.delete();
-            }
-         }
-
-         // delete old dir itself too
-         oldDir.delete();
-
-      } catch (IOException e) {
-         Log.e(Constants.LOG_TAG, e.getMessage(), e);
-      }
-   }
-   */
 
    public final Bitmap retrieveBitmap(final String title, final Long id,
             final boolean thumb) {
@@ -72,7 +39,7 @@ public class DataImageHelper {
 
       File exportDir =
                new File(Environment.getExternalStorageDirectory(),
-                        DataImageHelper.IMAGES_LOCATION);
+                        DataImageManager.IMAGES_LOCATION);
       File file = null;
       if (!thumb) {
          file = new File(exportDir, name + ".jpg");
@@ -93,13 +60,13 @@ public class DataImageHelper {
 
       // M from OpenLibrary is about 180x225
       // I scale to 120x150      
-      Bitmap bitmap = DataImageHelper.resizeBitmap(source, 120, 150);
-      Bitmap bitmapThumb = DataImageHelper.resizeBitmap(source, 55, 70);
+      Bitmap bitmap = DataImageManager.resizeBitmap(source, 120, 150);
+      Bitmap bitmapThumb = DataImageManager.resizeBitmap(source, 55, 70);
 
       try {
          File exportDir =
                   new File(Environment.getExternalStorageDirectory(),
-                           DataImageHelper.IMAGES_LOCATION);
+                           DataImageManager.IMAGES_LOCATION);
          if (!exportDir.exists()) {
             exportDir.mkdirs();
          }
@@ -128,7 +95,7 @@ public class DataImageHelper {
       String name = getNameKey(title, id);
       File exportDir =
                new File(Environment.getExternalStorageDirectory(),
-                        DataImageHelper.IMAGES_LOCATION);
+                        DataImageManager.IMAGES_LOCATION);
       File file = new File(exportDir, name + ".jpg");
       File thumbFile = new File(exportDir, name + "-t.jpg");
       if ((file != null) && file.exists() && file.canWrite()) {
@@ -145,7 +112,7 @@ public class DataImageHelper {
       String newName = getNameKey(newTitle, id);
       File exportDir =
                new File(Environment.getExternalStorageDirectory(),
-                        DataImageHelper.IMAGES_LOCATION);
+                        DataImageManager.IMAGES_LOCATION);
       File file = new File(exportDir, oldName + ".jpg");
       File thumbFile = new File(exportDir, oldName + "-t.jpg");
       if ((file != null) && file.exists() && file.canWrite()) {
@@ -159,7 +126,7 @@ public class DataImageHelper {
    public final void clearAllBitmapSourceFiles() {
       File exportDir =
                new File(Environment.getExternalStorageDirectory(),
-                        DataImageHelper.IMAGES_LOCATION);
+                        DataImageManager.IMAGES_LOCATION);
       if (exportDir.exists() && exportDir.canWrite()) {
          for (File f : exportDir.listFiles()) {
             f.delete();
@@ -167,16 +134,16 @@ public class DataImageHelper {
       }
    }
 
-   public void resetCoverImage(final DataHelper dataHelper, final Book b) {
+   public void resetCoverImage(final Book b) {
       // for now hard code provider to 2, OpenLibrary (future use pref here, etc, to establish)
       Bitmap coverImageBitmap =
                CoverImageUtil.retrieveCoverImage("2", b.isbn10);
       if (coverImageBitmap == null) {
-    	  coverImageBitmap = createCoverImage(b.title);
+         coverImageBitmap = createCoverImage(b.title);
       }
       if (coverImageBitmap != null) {
          storeBitmap(coverImageBitmap, b.title, b.id);
-      } 
+      }
    }
 
    public Bitmap createCoverImage(final String title) {

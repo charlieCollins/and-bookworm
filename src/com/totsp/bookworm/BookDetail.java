@@ -96,16 +96,16 @@ public class BookDetail extends Activity {
    private void saveRatingEdit() {
       Book book = application.selectedBook;
       if (book != null) {
-         book.rating = (Math.round(ratingBar.getRating()));
-         BookDetail.this.application.dataHelper.updateBook(book);
+         book.bookUserData.rating = (Math.round(ratingBar.getRating()));
+         BookDetail.this.application.dataManager.updateBook(book);
       }
    }
 
    private void saveReadStatusEdit() {
       Book book = application.selectedBook;
       if (book != null) {
-         book.read = (readStatus.isChecked());
-         BookDetail.this.application.dataHelper.updateBook(book);
+         book.bookUserData.read = (readStatus.isChecked());
+         BookDetail.this.application.dataManager.updateBook(book);
       }
    }
 
@@ -118,7 +118,7 @@ public class BookDetail extends Activity {
                               + book.toStringFull());
          }
          Bitmap coverImage =
-                  application.dataImageHelper.retrieveBitmap(book.title,
+                  application.dataImageManager.retrieveBitmap(book.title,
                            book.id, false);
          if (coverImage != null) {
             bookCover.setImageBitmap(coverImage);
@@ -128,8 +128,8 @@ public class BookDetail extends Activity {
 
          bookTitle.setText(book.title);
          bookSubTitle.setText(book.subTitle);
-         ratingBar.setRating(book.rating);
-         readStatus.setChecked(book.read);
+         ratingBar.setRating(book.bookUserData.rating);
+         readStatus.setChecked(book.bookUserData.read);
          bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
          bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
 

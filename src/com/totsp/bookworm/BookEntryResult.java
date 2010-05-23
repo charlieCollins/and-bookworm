@@ -139,9 +139,9 @@ public class BookEntryResult extends Activity {
          // TODO check for book exists using more than just ISBN or title (these are not unique - use a combination maybe?)
          // if book exists do not resave, or allow user to choose
          // save book to database
-         long bookId = application.dataHelper.insertBook(book);
+         long bookId = application.dataManager.insertBook(book);
          if (book.coverImage != null) {
-            BookEntryResult.this.application.dataImageHelper.storeBitmap(
+            BookEntryResult.this.application.dataImageManager.storeBitmap(
                      book.coverImage, book.title, bookId);
          }
       }
@@ -283,7 +283,7 @@ public class BookEntryResult extends Activity {
                            "book cover not found, generate image");
                }
                Bitmap generatedCover =
-                        BookEntryResult.this.application.dataImageHelper
+                        BookEntryResult.this.application.dataImageManager
                                  .createCoverImage(bean.book.title);
                BookEntryResult.this.bookCover.setImageBitmap(generatedCover);
                bean.book.coverImage = generatedCover;
@@ -294,7 +294,7 @@ public class BookEntryResult extends Activity {
 
             // check for dupes and warn if title and either isbn match
             ArrayList<Book> potentialDupes =
-                     BookEntryResult.this.application.dataHelper
+                     BookEntryResult.this.application.dataManager
                               .selectAllBooksByTitle(bean.book.title);
             if (potentialDupes != null) {
                boolean dupe = false;
