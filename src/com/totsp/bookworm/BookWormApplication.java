@@ -43,6 +43,7 @@ public class BookWormApplication extends Application {
    }
 
    private void establishBookDataSourceFromProvider() {
+      // hard coded to one provider for now
       String className =
                prefs.getString("dataproviderpref",
                         "com.totsp.bookworm.data.GoogleBookDataSource");
