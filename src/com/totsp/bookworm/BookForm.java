@@ -113,7 +113,14 @@ public class BookForm extends TabActivity {
       saveButton = (Button) findViewById(R.id.bookformsavebutton);
       saveButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookForm.this.saveEdits();
+            if ((bookTitleFormTab != null && bookTitleFormTab.getText() != null && !bookTitleFormTab.getText().toString().equals("")) 
+                     && (bookAuthors != null && bookAuthors.getText() != null && !bookAuthors.getText().toString().equals(""))) {
+               BookForm.this.saveEdits();
+            } else {
+               Toast.makeText(BookForm.this,
+                        BookForm.this.getString(R.string.msgMinimumSave),
+                        Toast.LENGTH_LONG).show();
+            }
          }
       });
 

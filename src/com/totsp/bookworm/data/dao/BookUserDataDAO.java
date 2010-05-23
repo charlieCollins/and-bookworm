@@ -87,13 +87,16 @@ public class BookUserDataDAO implements DAO<BookUserData> {
          bookUserDataInsertStmt.bindString(4, b.blurb);
       }
       long id = 0L;
-      try {
+      ///try {
          id = bookUserDataInsertStmt.executeInsert();
-      } catch (SQLiteConstraintException e) {
+      ///} 
+      /*
+      catch (SQLiteConstraintException e) {
          // TODO sometimes constraint occurs, seems to be related to db versions, not sure
          // for now catch and update instead (hack)
          update(b);
       }
+      */
       return id;
    }
 
