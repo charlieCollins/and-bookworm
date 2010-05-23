@@ -4,7 +4,7 @@ import com.totsp.bookworm.model.Book;
 
 import java.util.ArrayList;
 
-public interface IBookDataSource {
+public interface BookDataSource {
 
    Book getBook(String identifier);
 

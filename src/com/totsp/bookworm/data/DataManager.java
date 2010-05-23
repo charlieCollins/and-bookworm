@@ -14,7 +14,7 @@ import com.totsp.bookworm.model.BookListStats;
 import java.util.ArrayList;
 
 /**
- * Android DataHelper to encapsulate SQL and DB details.
+ * Android DataManager to encapsulate SQL and DB details.
  * Includes SQLiteOpenHelper.
  *
  * @author ccollins
@@ -181,7 +181,6 @@ public class DataManager {
    //
    // SQLiteOpenHelper   
    //
-
    private static class OpenHelper extends SQLiteOpenHelper {
 
       private boolean dbCreated;
@@ -283,5 +282,4 @@ public class DataManager {
          return dbCreated;
       }
    }
-
 }

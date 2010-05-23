@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GoogleBookDataSource implements IBookDataSource {
+public class GoogleBookDataSource implements BookDataSource {
 
    // web identifier search url http://books.google.com/books?isbn=
    private static final String GDATA_BOOK_URL_PREFIX =

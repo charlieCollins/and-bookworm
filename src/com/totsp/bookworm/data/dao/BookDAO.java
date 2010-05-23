@@ -45,8 +45,10 @@ public class BookDAO implements DAO<Book> {
 
    public BookDAO(SQLiteDatabase db) {
       this.db = db;
-      bookUserDataDAO = new BookUserDataDAO(db);
-      // here we will have a second copy of some DAOs, but trivial overhead
+      
+      // here we wire in other DAOs manually, for now (not cleanest approach, but simple)
+      // (other DAOs are not used elsewhere at present, can't create just an author, for ex)
+      bookUserDataDAO = new BookUserDataDAO(db);      
       authorDAO = new AuthorDAO(db);
 
       // statements

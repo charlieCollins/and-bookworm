@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.totsp.bookworm.data.DataManager;
-import com.totsp.bookworm.data.IBookDataSource;
+import com.totsp.bookworm.data.BookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
 
@@ -17,7 +17,7 @@ public class BookWormApplication extends Application {
    boolean debugEnabled;
 
    SharedPreferences prefs;
-   IBookDataSource bookDataSource;
+   BookDataSource bookDataSource;
    DataManager dataManager;
    ImageManager imageManager;
 
@@ -52,8 +52,8 @@ public class BookWormApplication extends Application {
                         + className);
       try {
          Class<?> clazz = Class.forName(className);
-         // NOTE - validate that clazz is of IBookDataSource type?
-         bookDataSource = (IBookDataSource) clazz.newInstance();
+         // NOTE - validate that clazz is of BookDataSource type?
+         bookDataSource = (BookDataSource) clazz.newInstance();
       } catch (ClassNotFoundException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
       } catch (IllegalAccessException e) {
