@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
@@ -31,6 +32,7 @@ public class DataManager {
    public DataManager(final Context context) {
       OpenHelper openHelper = new OpenHelper(context);
       db = openHelper.getWritableDatabase();
+      Log.i(Constants.LOG_TAG, "DataManager created, db open status: " + db.isOpen());
 
       // app only needs access to book DAO at present (can't create authors on their own, etc.)
       bookDAO = new BookDAO(db);
@@ -42,21 +44,30 @@ public class DataManager {
 
    public SQLiteDatabase getDb() {
       return db;
+   }   
+   
+   public void openDb() {
+      if (!db.isOpen()) {
+         db =
+            SQLiteDatabase.openDatabase(DataConstants.DATABASE_PATH, null,
+                     SQLiteDatabase.OPEN_READWRITE);
+         // since we pass db into DAO, have to recreate DAO if db is re-opened
+         bookDAO = new BookDAO(db);
+      }
    }
-
-   public void resetDbConnection() {
-      Log.i(Constants.LOG_TAG,
-               "Resetting database connection (close and re-open).");
-      cleanup();
-      db =
-               SQLiteDatabase.openDatabase(DataConstants.DATABASE_PATH, null,
-                        SQLiteDatabase.OPEN_READWRITE);
-   }
-
-   public void cleanup() {
-      if ((db != null) && db.isOpen()) {
+   
+   public void closeDb() {
+      if (db.isOpen()) {
          db.close();
       }
+   }
+   
+   public void resetDb() {
+      Log.i(Constants.LOG_TAG,
+               "Resetting database connection (close and re-open).");
+      closeDb();
+      SystemClock.sleep(500);
+      openDb();
    }
 
    //

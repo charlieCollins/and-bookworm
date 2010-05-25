@@ -73,7 +73,7 @@ public class BookWormApplication extends Application {
    @Override
    public void onTerminate() {
       // not guaranteed to be called
-      dataManager.cleanup();
+      dataManager.closeDb();
       selectedBook = null;
       super.onTerminate();
    }

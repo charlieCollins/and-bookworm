@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -98,12 +99,8 @@ public class ManageData extends Activity {
                                        ManageData.this.importDatabaseTask
                                                 .execute("bookworm",
                                                          "bookwormdata");
-                                       // sleep momentarily so that database reset stuff has time to take place (else Main shows no data)
-                                       try {
-                                          Thread.sleep(1000);
-                                       } catch (InterruptedException e) {
-
-                                       }
+                                       // reset the db (else Main shows no data)
+                                       ManageData.this.application.dataManager.resetDb();
                                        ManageData.this
                                                 .startActivity(new Intent(
                                                          ManageData.this,
@@ -145,7 +142,7 @@ public class ManageData extends Activity {
                                     ManageData.this.application.dataManager
                                              .deleteAllDataYesIAmSure();
                                     ManageData.this.application.dataManager
-                                             .resetDbConnection();
+                                             .resetDb();
                                     Toast
                                              .makeText(
                                                       ManageData.this,
@@ -269,7 +266,7 @@ public class ManageData extends Activity {
          try {
             dbFile.createNewFile();
             FileUtil.copyFile(dbBackupFile, dbFile);
-            ManageData.this.application.dataManager.resetDbConnection();
+            ///ManageData.this.application.dataManager.resetDbConnection();
             return null;
          } catch (IOException e) {
             Log.e(Constants.LOG_TAG, e.getMessage(), e);

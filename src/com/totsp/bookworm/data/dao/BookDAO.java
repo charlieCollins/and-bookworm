@@ -57,9 +57,8 @@ public class BookDAO implements DAO<Book> {
    }
 
    public Cursor getSelectBookJoinCursor(final String orderBy,
-            final String whereClauseLimit) {
-      // note that query MUST have a column named _id  
-
+            final String whereClauseLimit) {      
+      // note that query MUST have a column named _id
       StringBuilder sb = new StringBuilder();
       sb.append(BookDAO.QUERY_CURSOR_PREFIX);
       if ((whereClauseLimit != null) && (whereClauseLimit.length() > 0)) {
