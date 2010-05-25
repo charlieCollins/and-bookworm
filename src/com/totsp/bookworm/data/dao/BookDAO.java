@@ -354,7 +354,7 @@ public class BookDAO implements DAO<Book> {
    }
 
    //
-   // book-author data
+   // book-author data (not yet a separate DAO, only used here)
    //   
    public void insertBookAuthorData(final long bookId,
             final ArrayList<Long> authorIds) {
