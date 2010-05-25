@@ -63,7 +63,7 @@ public class BookWormApplication extends Application {
       }
    }
 
-   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved title
+   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id
    public void establishSelectedBook(final long id) {
       selectedBook = dataManager.selectBook(id);
    }
