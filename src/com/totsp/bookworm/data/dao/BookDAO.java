@@ -45,10 +45,10 @@ public class BookDAO implements DAO<Book> {
 
    public BookDAO(SQLiteDatabase db) {
       this.db = db;
-      
+
       // here we wire in other DAOs manually, for now (not cleanest approach, but simple)
       // (other DAOs are not used elsewhere at present, can't create just an author, for ex)
-      bookUserDataDAO = new BookUserDataDAO(db);      
+      bookUserDataDAO = new BookUserDataDAO(db);
       authorDAO = new AuthorDAO(db);
 
       // statements
@@ -215,6 +215,7 @@ public class BookDAO implements DAO<Book> {
             bookInsertStmt.bindString(8, b.subject);
             bookInsertStmt.bindLong(9, b.datePubStamp);
             bookId = bookInsertStmt.executeInsert();
+            System.out.println("bookId after execute - " + bookId);
 
             // insert bookauthors
             insertBookAuthorData(bookId, authorIds);
@@ -225,13 +226,14 @@ public class BookDAO implements DAO<Book> {
 
             db.setTransactionSuccessful();
          } catch (SQLException e) {
-            Log.e(Constants.LOG_TAG, "Error inserting book", e);
+            bookId = 0;
+            Log.e(Constants.LOG_TAG, "Error inserting book.", e);
          } finally {
             db.endTransaction();
          }
       } else {
          throw new IllegalArgumentException(
-                  "Error, book cannot be null, and must have a unique title.");
+                  "Error, book cannot be null, and must have a title.");
       }
       return bookId;
    }
@@ -289,13 +291,13 @@ public class BookDAO implements DAO<Book> {
 
             db.setTransactionSuccessful();
          } catch (SQLException e) {
-            Log.e(Constants.LOG_TAG, "Error inserting book", e);
+            Log.e(Constants.LOG_TAG, "Error inserting book.", e);
          } finally {
             db.endTransaction();
          }
       } else {
          throw new IllegalArgumentException(
-                  "Error, book cannot be null, and must have a unique title");
+                  "Error, book cannot be null, and must have a title.");
       }
    }
 

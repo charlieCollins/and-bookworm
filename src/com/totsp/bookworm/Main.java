@@ -34,7 +34,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.totsp.bookworm.data.DataManager;
+import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.AuthorsStringUtil;
@@ -310,7 +310,7 @@ public class Main extends Activity {
       // bind bookListView and adapter
       String orderBy =
                prefs.getString(Constants.DEFAULT_SORT_ORDER,
-                        DataManager.ORDER_BY_TITLE_ASC);
+                        DataConstants.ORDER_BY_TITLE_ASC);
       cursor = application.dataManager.getSelectBookJoinCursor(orderBy, null);
       if ((cursor != null) && (cursor.getCount() > 0)) {
          startManagingCursor(cursor);
@@ -338,31 +338,31 @@ public class Main extends Activity {
                      switch (selected) {
                         case 0:
                            Main.this
-                                    .saveSortOrder(DataManager.ORDER_BY_TITLE_ASC);
+                                    .saveSortOrder(DataConstants.ORDER_BY_TITLE_ASC);
                            break;
                         case 1:
                            Main.this
-                                    .saveSortOrder(DataManager.ORDER_BY_AUTHORS_ASC);
+                                    .saveSortOrder(DataConstants.ORDER_BY_AUTHORS_ASC);
                            break;
                         case 2:
                            Main.this
-                                    .saveSortOrder(DataManager.ORDER_BY_RATING_DESC);
+                                    .saveSortOrder(DataConstants.ORDER_BY_RATING_DESC);
                            break;
                         case 3:
                            Main.this
-                                    .saveSortOrder(DataManager.ORDER_BY_READ_DESC);
+                                    .saveSortOrder(DataConstants.ORDER_BY_READ_DESC);
                            break;
                         case 4:
                            Main.this
-                                    .saveSortOrder(DataManager.ORDER_BY_SUBJECT_ASC);
+                                    .saveSortOrder(DataConstants.ORDER_BY_SUBJECT_ASC);
                            break;
                         case 5:
                            Main.this
-                                    .saveSortOrder(DataManager.ORDER_BY_DATE_PUB_DESC);
+                                    .saveSortOrder(DataConstants.ORDER_BY_DATE_PUB_DESC);
                            break;
                         case 6:
                            Main.this
-                                    .saveSortOrder(DataManager.ORDER_BY_PUB_ASC);
+                                    .saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
                            break;
                      }
                      Main.this.application.lastMainListPosition = 0;
@@ -415,7 +415,6 @@ public class Main extends Activity {
 
       // FilterQueryProvider impl
       public Cursor runQuery(CharSequence constraint) {
-         // /Log.i(Constants.LOG_TAG, "RUN QUERY - " + constraint);
          Cursor c = null;
          if ((constraint == null) || (constraint.length() == 0)) {
             c = getCursor();
@@ -423,7 +422,7 @@ public class Main extends Activity {
             String pattern = "'%" + constraint + "%'";
             String orderBy =
                      Main.this.prefs.getString(Constants.DEFAULT_SORT_ORDER,
-                              DataManager.ORDER_BY_TITLE_ASC);
+                              DataConstants.ORDER_BY_TITLE_ASC);
             c =
                      Main.this.application.dataManager.getSelectBookJoinCursor(
                               orderBy, "where book.tit like " + pattern);

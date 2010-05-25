@@ -12,85 +12,124 @@
 			<!--  tab1 -->
 			<ScrollView android:id="@+id/bookformtab1"
 				android:layout_width="fill_parent" android:layout_height="wrap_content">
-				<RelativeLayout android:orientation="vertical"
-					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:background="@drawable/book_bgrnd_noheader_textarea"
+				<RelativeLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:background="@drawable/book_bgrnd_noheader_textarea"
 					android:paddingBottom="40dp">
 					<TextView android:id="@+id/bookentereditlabel"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="23dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:gravity="left"
+						android:layout_marginRight="10dp" android:gravity="center"
 						style="@style/subsubtitledkred" />
-					<TextView android:id="@+id/booktitlelabel"
+
+					<!--
+						<TextView android:id="@+id/booktitlelabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/bookentereditlabel"
+						android:gravity="left" style="@style/black"
+						android:text="@string/labelTitle" />
+					-->
+					<EditText android:id="@+id/booktitleform"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/bookentereditlabel"
-						android:gravity="left" style="@style/black" android:text="@string/labelTitle" />
-					<EditText android:id="@+id/booktitleform"
-						android:layout_width="fill_parent" android:layout_height="wrap_content"
-						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/booktitlelabel"
-						android:gravity="left" />
-					<TextView android:id="@+id/booksubtitlelabel"
+						android:gravity="left" android:autoText="true" android:capitalize="words"
+						android:freezesText="true" android:hint="@string/labelTitle" />
+					<!--
+						<TextView android:id="@+id/booksubtitlelabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/booktitleform" android:gravity="left"
+						style="@style/black" android:text="@string/labelSubtitle" />
+					-->
+					<EditText android:id="@+id/booksubtitle"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/booktitleform"
-						android:gravity="left" style="@style/black" android:text="@string/labelSubtitle" />
-					<EditText android:id="@+id/booksubtitle"
-						android:layout_width="fill_parent" android:layout_height="wrap_content"
-						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitlelabel"
-						android:gravity="left" />
-					<TextView android:id="@+id/bookisbn10label"
-						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:gravity="left" android:autoText="true" android:capitalize="words"
+						android:freezesText="true" android:hint="@string/labelSubtitle" />
+					<!--
+						<TextView android:id="@+id/bookisbn10label"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitle"
-						android:gravity="left" style="@style/black" android:text="@string/labelIsbn10" />
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/booksubtitle" android:gravity="left"
+						style="@style/black" android:text="@string/labelIsbn10" />
+					-->
 					<EditText android:id="@+id/bookisbn10"
-						android:layout_width="150dp" android:layout_height="wrap_content"
-						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/bookisbn10label"
-						android:gravity="left" android:maxLength="10" />
-					<TextView android:id="@+id/bookisbn13label"
+						android:layout_width="135dp" android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="2dp" android:layout_below="@id/booksubtitle"
+						android:gravity="left" android:maxLength="10" android:autoText="true"
+						android:capitalize="words" android:freezesText="true"
+						android:hint="@string/labelIsbn10" />
+					<!--
+						<TextView android:id="@+id/bookisbn13label"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/bookisbn10" android:gravity="left"
+						style="@style/black" android:text="@string/labelIsbn13" />
+					-->
+					<EditText android:id="@+id/bookisbn13"
+						android:layout_width="190dp" android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="2dp"
+						android:layout_marginRight="10dp" android:layout_below="@id/booksubtitle"
+						android:layout_toRightOf="@id/bookisbn10" android:gravity="left"
+						android:maxLength="13" android:autoText="true" android:capitalize="words"
+						android:freezesText="true" android:hint="@string/labelIsbn13" />
+					<!--
+						<TextView android:id="@+id/bookauthorslabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/bookisbn13" android:gravity="left"
+						style="@style/black" android:text="@string/labelAuthors" />
+					-->
+					<EditText android:id="@+id/bookauthors"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/bookisbn10"
-						android:gravity="left" style="@style/black" android:text="@string/labelIsbn13" />
-					<EditText android:id="@+id/bookisbn13"
-						android:layout_width="175dp" android:layout_height="wrap_content"
-						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/bookisbn13label"
-						android:gravity="left" android:maxLength="13" />
-					<TextView android:id="@+id/bookauthorslabel"
-						android:layout_width="fill_parent" android:layout_height="wrap_content"
+						android:gravity="left" android:autoText="true" android:capitalize="words"
+						android:freezesText="true" android:hint="@string/labelAuthors" />
+					<!--
+						<TextView android:id="@+id/booksubjectlabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/bookisbn13"
-						android:gravity="left" style="@style/black" android:text="@string/labelAuthors" />
-					<EditText android:id="@+id/bookauthors"
-						android:layout_width="fill_parent" android:layout_height="wrap_content"
-						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/bookauthorslabel"
-						android:gravity="left" />
-					<TextView android:id="@+id/booksubjectlabel"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/bookauthors" android:gravity="left"
+						style="@style/black" android:text="@string/labelSubject" />
+					-->
+					<EditText android:id="@+id/booksubject"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
-						android:gravity="left" style="@style/black" android:text="@string/labelSubject" />
-					<EditText android:id="@+id/booksubject"
-						android:layout_width="fill_parent" android:layout_height="wrap_content"
-						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/booksubjectlabel"
-						android:gravity="left" />
-					<TextView android:id="@+id/bookpublisherlabel"
+						android:gravity="left" android:autoText="true" android:capitalize="words"
+						android:freezesText="true" android:hint="@string/labelSubject" />
+					<!--
+						<TextView android:id="@+id/bookpublisherlabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/booksubject" android:gravity="left"
+						style="@style/black" android:text="@string/labelPublisher" />
+					-->
+					<EditText android:id="@+id/bookpublisher"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
-						android:gravity="left" style="@style/black" android:text="@string/labelPublisher" />
-					<EditText android:id="@+id/bookpublisher"
-						android:layout_width="fill_parent" android:layout_height="wrap_content"
-						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
-						android:layout_marginRight="10dp" android:layout_below="@id/bookpublisherlabel"
-						android:gravity="left" />
+						android:gravity="left" android:autoText="true" android:capitalize="words"
+						android:freezesText="true" android:hint="@string/labelPublisher" />
+
 					<TextView android:id="@+id/bookdatepublabel"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
@@ -100,12 +139,13 @@
 						android:layout_height="wrap_content" android:layout_width="wrap_content"
 						android:layout_marginTop="3dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/bookdatepublabel"
-						android:gravity="left" />
+						android:gravity="left" android:freezesText="true" />
+
 					<Button android:id="@+id/bookformsavebutton"
 						android:layout_width="150dp" android:layout_height="wrap_content"
 						android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
 						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-						android:layout_below="@id/bookdatepub" android:layout_gravity="center_horizontal"
+						android:layout_below="@id/bookdatepub" android:gravity="center"
 						android:text="@string/btnSave" style="@style/black" />
 				</RelativeLayout>
 			</ScrollView>
@@ -136,17 +176,17 @@
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:text="@string/btnSelectImage"
-						style="@style/blacksmall" />
+						style="@style/black" />
 					<Button android:id="@+id/bookformretrievecoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:text="@string/btnRetrieveImage"
-						style="@style/blacksmall" />
+						style="@style/black" />
 					<Button android:id="@+id/bookformgeneratecoverbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:text="@string/btnGenerateImage"
-						style="@style/blacksmall" />
+						style="@style/black" />
 				</LinearLayout>
 			</ScrollView>
 		</FrameLayout>

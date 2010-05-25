@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.data.BookDataSource;
+import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
 

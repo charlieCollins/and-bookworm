@@ -113,8 +113,12 @@ public class BookForm extends TabActivity {
       saveButton = (Button) findViewById(R.id.bookformsavebutton);
       saveButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            if ((bookTitleFormTab != null && bookTitleFormTab.getText() != null && !bookTitleFormTab.getText().toString().equals("")) 
-                     && (bookAuthors != null && bookAuthors.getText() != null && !bookAuthors.getText().toString().equals(""))) {
+            if (((bookTitleFormTab != null)
+                     && (bookTitleFormTab.getText() != null) && !bookTitleFormTab
+                     .getText().toString().equals(""))
+                     && ((bookAuthors != null)
+                              && (bookAuthors.getText() != null) && !bookAuthors
+                              .getText().toString().equals(""))) {
                BookForm.this.saveEdits();
             } else {
                Toast.makeText(BookForm.this,
@@ -265,28 +269,30 @@ public class BookForm extends TabActivity {
 
    private void setExistingViewData() {
       Book book = application.selectedBook;
-      Bitmap coverImage =
-               application.imageManager.retrieveBitmap(book.title, book.id,
-                        false);
-      if (coverImage != null) {
-         bookCover.setImageBitmap(coverImage);
-      } else {
-         bookCover.setImageResource(R.drawable.book_cover_missing);
+      if (book != null) {
+         Bitmap coverImage =
+                  application.imageManager.retrieveBitmap(book.title, book.id,
+                           false);
+         if (coverImage != null) {
+            bookCover.setImageBitmap(coverImage);
+         } else {
+            bookCover.setImageResource(R.drawable.book_cover_missing);
+         }
+
+         bookTitleFormTab.setText(book.title);
+         bookTitleCoverTab.setText(book.title);
+         bookSubTitle.setText(book.subTitle);
+         bookIsbn10.setText(book.isbn10);
+         bookIsbn13.setText(book.isbn13);
+         bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
+         bookSubject.setText(book.subject);
+         bookPublisher.setText(book.publisher);
+
+         Calendar cal = Calendar.getInstance();
+         cal.setTimeInMillis(book.datePubStamp);
+         bookDatePub.updateDate(cal.get(Calendar.YEAR),
+                  cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
       }
-
-      bookTitleFormTab.setText(book.title);
-      bookTitleCoverTab.setText(book.title);
-      bookSubTitle.setText(book.subTitle);
-      bookIsbn10.setText(book.isbn10);
-      bookIsbn13.setText(book.isbn13);
-      bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
-      bookSubject.setText(book.subject);
-      bookPublisher.setText(book.publisher);
-
-      Calendar cal = Calendar.getInstance();
-      cal.setTimeInMillis(book.datePubStamp);
-      bookDatePub.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-               cal.get(Calendar.DAY_OF_MONTH));
    }
 
    private void saveEdits() {
@@ -357,14 +363,17 @@ public class BookForm extends TabActivity {
             newBook = true;
             long bookId =
                      BookForm.this.application.dataManager.insertBook(book);
-            BookForm.this.application.establishSelectedBook(bookId);
-            // also auto store generated cover with new form based book insert
-            Bitmap generatedCover =
-                     BookForm.this.application.imageManager
-                              .createCoverImage(book.title);
-            BookForm.this.application.imageManager.storeBitmap(generatedCover,
-                     book.title, bookId);
-            return true;
+            System.out.println("bookId after save" + bookId);
+            if (bookId > 0) {
+               BookForm.this.application.establishSelectedBook(bookId);
+               // also auto store generated cover with new form based book insert
+               Bitmap generatedCover =
+                        BookForm.this.application.imageManager
+                                 .createCoverImage(book.title);
+               BookForm.this.application.imageManager.storeBitmap(
+                        generatedCover, book.title, bookId);
+               return true;
+            }
          }
          return false;
       }

@@ -45,16 +45,12 @@ public class BookSearch extends Activity {
 
    private SearchTask searchTask;
 
-   ///private InputMethodManager imm;
-
    private boolean footerViewShown;
    private boolean fromEntryResult;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-
-      ///imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); 
 
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
@@ -177,6 +173,10 @@ public class BookSearch extends Activity {
 
    private void bindAdapter() {
 
+      // because we add and remove footer view dynamically
+      // and because list set here is small, we just rebind the list
+      // rather than calling notifyDataSetChanged, etc.
+
       // add footer view BEFORE setting adapter
       if (!parsedBooks.isEmpty() && !footerViewShown) {
          searchResults.addFooterView(getMoreData);
@@ -189,7 +189,6 @@ public class BookSearch extends Activity {
       if (selectorPosition > 2) {
          searchResults.setSelection(selectorPosition - 1);
       }
-
    }
 
    private void restoreFromCache() {

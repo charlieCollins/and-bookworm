@@ -15,6 +15,31 @@ public class DataConstants {
             Environment.getExternalStorageDirectory() + "/"
                      + DataConstants.EXTERNAL_DATA_DIR_NAME;
 
+   public static final String ORDER_BY_AUTHORS_ASC =
+            "authors asc, book.tit asc";
+   public static final String ORDER_BY_AUTHORS_DESC =
+            "authors desc, book.tit asc";
+   public static final String ORDER_BY_TITLE_ASC = "book.tit asc";
+   public static final String ORDER_BY_TITLE_DESC = "book.tit desc";
+   public static final String ORDER_BY_SUBJECT_ASC =
+            "book.subject asc, book.tit asc";
+   public static final String ORDER_BY_SUBJECT_DESC =
+            "book.subject desc, book.tit asc";
+   public static final String ORDER_BY_RATING_ASC =
+            "bookuserdata.rat asc, book.tit asc";
+   public static final String ORDER_BY_RATING_DESC =
+            "bookuserdata.rat desc, book.tit asc";
+   public static final String ORDER_BY_READ_ASC =
+            "bookuserdata.rstat asc, book.tit asc";
+   public static final String ORDER_BY_READ_DESC =
+            "bookuserdata.rstat desc, book.tit asc";
+   public static final String ORDER_BY_PUB_ASC = "book.pub asc, book.tit asc";
+   public static final String ORDER_BY_PUB_DESC = "book.pub desc, book.tit asc";
+   public static final String ORDER_BY_DATE_PUB_ASC =
+            "book.datepub asc, book.tit asc";
+   public static final String ORDER_BY_DATE_PUB_DESC =
+            "book.datepub desc, book.tit asc";
+
    public static final String BOOK_TABLE = "book";
    public static final String BOOKUSERDATA_TABLE = "bookuserdata";
    public static final String BOOKAUTHOR_TABLE = "bookauthor";

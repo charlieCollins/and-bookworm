@@ -2,7 +2,6 @@ package com.totsp.bookworm.data.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
@@ -86,18 +85,9 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       if (b.blurb != null) {
          bookUserDataInsertStmt.bindString(4, b.blurb);
       }
-      long id = 0L;
-      ///try {
-         id = bookUserDataInsertStmt.executeInsert();
-      ///} 
-      /*
-      catch (SQLiteConstraintException e) {
-         // TODO sometimes constraint occurs, seems to be related to db versions, not sure
-         // for now catch and update instead (hack)
-         update(b);
-      }
-      */
-      return id;
+      // was getting ConstraintExcept here, 
+      // seems trans not rolled back in some insert scenarios?
+      return bookUserDataInsertStmt.executeInsert();
    }
 
    @Override
