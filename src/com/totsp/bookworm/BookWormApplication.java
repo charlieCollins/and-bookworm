@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.totsp.bookworm.data.BookDataSource;
 import com.totsp.bookworm.data.DataManager;
+import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
 
@@ -46,7 +47,7 @@ public class BookWormApplication extends Application {
       // hard coded to one provider for now
       String className =
                prefs.getString("dataproviderpref",
-                        "com.totsp.bookworm.data.GoogleBookDataSource");
+                        GoogleBookDataSource.class.getCanonicalName());
       Log.i(Constants.LOG_TAG,
                "establishing book data provider using class name - "
                         + className);
@@ -61,6 +62,7 @@ public class BookWormApplication extends Application {
       } catch (InstantiationException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
       }
+      // TODO fail fast here if any except (rather than just Log)
    }
 
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id

@@ -92,7 +92,6 @@ public class BookEntryResult extends Activity {
             setupBookResultTask.execute(isbn);
          }
       }
-
    }
 
    @Override
@@ -136,9 +135,9 @@ public class BookEntryResult extends Activity {
 
    private void bookAddClick() {
       if ((book != null) && (book.isbn10 != null)) {
-         // TODO check for book exists using more than just ISBN or title (these are not unique - use a combination maybe?)
-         // if book exists do not resave, or allow user to choose
-         // save book to database
+         // TODO check for book exists using more than just ISBN or title 
+         // (these are not unique - use a combination maybe?)
+         // if book exists do not resave, or allow user to choose?
          long bookId = application.dataManager.insertBook(book);
          if (book.coverImage != null) {
             BookEntryResult.this.application.imageManager.storeBitmap(
