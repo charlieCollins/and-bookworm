@@ -194,7 +194,7 @@ public class ImageManager {
 
    private String parseLine(final int wordStart, final int maxLineLength, final String[] words) {
       String line = "";
-      if ((words != null) && (wordStart < words.length)) {
+      if ((words != null && words.length > 0) && (wordStart < words.length)) {
          for (int i = wordStart; i < words.length; i++) {
             if (line == null) {
                line = words[i];

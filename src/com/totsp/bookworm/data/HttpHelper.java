@@ -1,10 +1,13 @@
 package com.totsp.bookworm.data;
 
-import android.util.Log;
-
+import org.apache.http.Header;
+import org.apache.http.HeaderElement;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthScope;
@@ -19,6 +22,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -31,21 +35,24 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Apache HttpClient helper class for performing HTTP requests.
  * 
  * This class is intentionally *not* bound to any Android classes so that it is easier 
  * to develop and test. Use calls to this class inside Android AsyncTask implementations
- * to make HTTP requests asynchronous and not block the UI Thread.
+ * (or manual Thread-Handlers) to make HTTP requests asynchronous and not block the UI Thread.
  * 
  * TODO cookies 
  * TODO multi-part binary data
+ * TODO follow 302s?
  * TODO shutdown connection mgr? - client.getConnectionManager().shutdown();
  * 
  * @author ccollins
@@ -53,11 +60,11 @@ import java.util.Map;
  */
 public class HttpHelper {
 
-   private static final String CLASSTAG = HttpHelper.class.getSimpleName();
-
    private static final String CONTENT_TYPE = "Content-Type";
    private static final int POST_TYPE = 1;
    private static final int GET_TYPE = 2;
+   private static final String GZIP = "gzip";
+   private static final String ACCEPT_ENCODING = "Accept-Encoding";
 
    public static final String MIME_FORM_ENCODED = "application/x-www-form-urlencoded";
    public static final String MIME_TEXT_PLAIN = "text/plain";
@@ -79,13 +86,30 @@ public class HttpHelper {
       schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
       ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
       client = new DefaultHttpClient(cm, params);
+      // add gzip decompressor to handle gzipped content in responses 
+      // (default we *do* always send accept encoding gzip header in request)
+      client.addResponseInterceptor(new HttpResponseInterceptor() {
+         public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
+            HttpEntity entity = response.getEntity();
+            Header contentEncodingHeader = entity.getContentEncoding();
+            if (contentEncodingHeader != null) {
+               HeaderElement[] codecs = contentEncodingHeader.getElements();
+               for (int i = 0; i < codecs.length; i++) {
+                  if (codecs[i].getName().equalsIgnoreCase(GZIP)) {
+                     response.setEntity(new GzipDecompressingEntity(response.getEntity()));
+                     return;
+                  }
+               }
+            }
+         }
+      });
    }
 
    private final ResponseHandler<String> responseHandler;
 
    /**
     * Constructor.
-    * 
+    *
     */
    public HttpHelper() {
       responseHandler = new BasicResponseHandler();
@@ -93,7 +117,7 @@ public class HttpHelper {
 
    /**
     * Perform a simple HTTP GET operation.
-    * 
+    *
     */
    public String performGet(final String url) {
       return performRequest(null, url, null, null, null, null, HttpHelper.GET_TYPE);
@@ -101,7 +125,7 @@ public class HttpHelper {
 
    /**
     * Perform an HTTP GET operation with user/pass and headers.
-    * 
+    *
     */
    public String performGet(final String url, final String user, final String pass,
             final Map<String, String> additionalHeaders) {
@@ -110,16 +134,17 @@ public class HttpHelper {
 
    /**
     * Perform a simplified HTTP POST operation.
-    * 
+    *
     */
    public String performPost(final String url, final Map<String, String> params) {
       return performRequest(HttpHelper.MIME_FORM_ENCODED, url, null, null, null, params, HttpHelper.POST_TYPE);
    }
 
    /**
-    * Perform an HTTP POST operation with user/pass, headers, request parameters, 
+    * Perform an HTTP POST operation with user/pass, headers, request
+   parameters,
     * and a default content-type of "application/x-www-form-urlencoded."
-    * 
+    *
     */
    public String performPost(final String url, final String user, final String pass,
             final Map<String, String> additionalHeaders, final Map<String, String> params) {
@@ -128,8 +153,9 @@ public class HttpHelper {
    }
 
    /**
-    * Perform an HTTP POST operation with flexible parameters (the complicated/flexible version of the method).
-    * 
+    * Perform an HTTP POST operation with flexible parameters (the
+   complicated/flexible version of the method).
+    *
     */
    public String performPost(final String contentType, final String url, final String user, final String pass,
             final Map<String, String> additionalHeaders, final Map<String, String> params) {
@@ -139,7 +165,6 @@ public class HttpHelper {
    //
    // private methods
    //
-
    private String performRequest(final String contentType, final String url, final String user, final String pass,
             final Map<String, String> headers, final Map<String, String> params, final int requestType) {
 
@@ -151,6 +176,10 @@ public class HttpHelper {
 
       // process headers using request interceptor
       final Map<String, String> sendHeaders = new HashMap<String, String>();
+      // add encoding header for gzip if not present
+      if (!sendHeaders.containsKey(ACCEPT_ENCODING)) {
+         sendHeaders.put(ACCEPT_ENCODING, GZIP);
+      }
       if ((headers != null) && (headers.size() > 0)) {
          sendHeaders.putAll(headers);
       }
@@ -186,7 +215,7 @@ public class HttpHelper {
                HttpPost methodPost = (HttpPost) method;
                methodPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
             } catch (UnsupportedEncodingException e) {
-               Log.e(HttpHelper.CLASSTAG, e.getMessage(), e);
+               throw new RuntimeException("Error peforming HTTP request: " + e.getMessage(), e);
             }
          }
       } else if (requestType == HttpHelper.GET_TYPE) {
@@ -210,5 +239,30 @@ public class HttpHelper {
          //e.printStackTrace();
       }
       return response;
+   }
+
+   static class GzipDecompressingEntity extends HttpEntityWrapper {
+      public GzipDecompressingEntity(final HttpEntity entity) {
+         super(entity);
+      }
+
+      @Override
+      public InputStream getContent() throws IOException, IllegalStateException {
+         // the wrapped entity's getContent() decides about repeatability
+         InputStream wrappedin = wrappedEntity.getContent();
+         return new GZIPInputStream(wrappedin);
+      }
+
+      @Override
+      public long getContentLength() {
+         // length of ungzipped content is not known
+         return -1;
+      }
+   }
+
+   public static void main(final String[] args) {
+      HttpHelper helper = new HttpHelper();
+      String response = helper.performGet("http://www.google.com");
+      System.out.println("response - " + response);
    }
 }

@@ -321,8 +321,10 @@ public class Main extends Activity {
                            break;
                      }
                      Main.this.application.lastMainListPosition = 0;
-                     Main.this.adapter.notifyDataSetChanged();
-                     // /Main.this.bindBookList();
+                     //Main.this.adapter.notifyDataSetChanged();
+                     // TODO notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
+                     // need to research (shouldn't have to re-bind the entire adapter)
+                     Main.this.bindAdapter();
                   }
                });
       sortDialog.create();
