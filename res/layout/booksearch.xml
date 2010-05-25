@@ -12,18 +12,17 @@
 
 	<LinearLayout android:orientation="horizontal"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:gravity="center_horizontal">
+		android:gravity="center">
 		<EditText android:id="@+id/bookentrysearchinput"
-			android:layout_width="190dp" android:layout_height="wrap_content"
+			android:layout_width="180dp" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginBottom="5dp"
 			android:layout_marginLeft="8dp" android:layout_marginRight="1dp"
 			android:autoText="true" android:freezesText="true" />
-
 		<Button android:id="@+id/bookentrysearchbutton"
 			android:layout_width="120dp" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginBottom="5dp"
 			android:layout_marginLeft="1dp" android:layout_marginRight="8dp"
-			android:layout_gravity="center_horizontal" style="@style/black"
+			android:layout_gravity="center" style="@style/black"
 			android:text="@string/btnSearch" />
 	</LinearLayout>
 
