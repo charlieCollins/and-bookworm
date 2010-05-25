@@ -43,8 +43,8 @@ public class GoogleBooksHandler extends DefaultHandler {
    }
 
    @Override
-   public void startElement(final String namespaceURI, final String localName,
-            final String qName, final Attributes atts) throws SAXException {
+   public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes atts)
+      throws SAXException {
 
       if (localName.equals(GoogleBooksHandler.ENTRY)) {
          inEntry = true;
@@ -82,8 +82,7 @@ public class GoogleBooksHandler extends DefaultHandler {
    }
 
    @Override
-   public void endElement(final String namespaceURI, final String localName,
-            final String qName) throws SAXException {
+   public void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException {
       if (localName.equals(GoogleBooksHandler.ENTRY)) {
          if (inEntry) {
             books.add(book);

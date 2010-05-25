@@ -17,12 +17,9 @@ public class GoogleBookDataSource implements BookDataSource {
    private static final String GDATA_BOOK_URL_PREFIX =
             "http://books.google.com/books/feeds/volumes?as_pt=BOOKS&q=isbn:";
    // web search term url
-   private static final String GDATA_BOOK_SEARCH_PREFIX =
-            "http://books.google.com/books/feeds/volumes?q=%22";
-   private static final String GDATA_BOOK_SEARCH_SUFFIX_PRE =
-            "%22&start-index=";
-   private static final String GDATA_BOOK_SEARCH_SUFFIX_POST =
-            "&max-results=10";
+   private static final String GDATA_BOOK_SEARCH_PREFIX = "http://books.google.com/books/feeds/volumes?q=%22";
+   private static final String GDATA_BOOK_SEARCH_SUFFIX_PRE = "%22&start-index=";
+   private static final String GDATA_BOOK_SEARCH_SUFFIX_POST = "&max-results=10";
 
    // google books uses X FORWARDED FOR header to determine location and what book stuff user can "see"
    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
@@ -56,17 +53,14 @@ public class GoogleBookDataSource implements BookDataSource {
    private Book getSingleBook(final String isbn) {
       String url = GoogleBookDataSource.GDATA_BOOK_URL_PREFIX + isbn;
       HashMap<String, String> headers = new HashMap<String, String>();
-      headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil
-               .getIpAddress());
+      headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = httpHelper.performGet(url, null, null, headers);
       if (debugEnabled) {
          Log.d(Constants.LOG_TAG, "HTTP request to URL " + url);
          Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
-      if ((response == null)
-               || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
-         Log.w(Constants.LOG_TAG, "HTTP request returned no data (null) - "
-                  + url);
+      if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
+         Log.w(Constants.LOG_TAG, "HTTP request returned no data (null) - " + url);
          return null;
       }
 
@@ -77,28 +71,23 @@ public class GoogleBookDataSource implements BookDataSource {
       return null;
    }
 
-   private ArrayList<Book> getBooksFromSearch(final String searchTerm,
-            final int startIndex) {
+   private ArrayList<Book> getBooksFromSearch(final String searchTerm, final int startIndex) {
       String url =
                GoogleBookDataSource.GDATA_BOOK_SEARCH_PREFIX + searchTerm
-                        + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_PRE
-                        + startIndex
+                        + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_PRE + startIndex
                         + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_POST;
       if (debugEnabled) {
          Log.d(Constants.LOG_TAG, "book search URL - " + url);
       }
       HashMap<String, String> headers = new HashMap<String, String>();
-      headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil
-               .getIpAddress());
+      headers.put(GoogleBookDataSource.X_FORWARDED_FOR, NetworkUtil.getIpAddress());
       String response = httpHelper.performGet(url, null, null, headers);
       if (debugEnabled) {
          Log.d(Constants.LOG_TAG, "HTTP request to URL " + url);
          Log.d(Constants.LOG_TAG, "HTTP response\n" + response);
       }
-      if ((response == null)
-               || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
-         Log.w(Constants.LOG_TAG, "HTTP request returned no data (null) - "
-                  + url);
+      if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
+         Log.w(Constants.LOG_TAG, "HTTP request returned no data (null) - " + url);
          return null;
       }
       return parseResponse(response);
@@ -106,8 +95,7 @@ public class GoogleBookDataSource implements BookDataSource {
 
    private ArrayList<Book> parseResponse(final String response) {
       try {
-         Xml.parse(new ByteArrayInputStream(response.getBytes("UTF-8")),
-                  Xml.Encoding.UTF_8, saxHandler);
+         Xml.parse(new ByteArrayInputStream(response.getBytes("UTF-8")), Xml.Encoding.UTF_8, saxHandler);
       } catch (Exception e) {
          Log.e(Constants.LOG_TAG, "Error parsing book XML result", e);
       }

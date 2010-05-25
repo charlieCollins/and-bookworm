@@ -74,25 +74,19 @@ public class BookForm extends TabActivity {
       saveBookTask = null;
 
       tabHost = getTabHost();
-      tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator(
-               getString(R.string.menuEditBookDetails),
-               getResources().getDrawable(android.R.drawable.ic_menu_edit))
-               .setContent(R.id.bookformtab1));
-      tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator(
-               getString(R.string.menuManageCoverImage),
-               getResources().getDrawable(android.R.drawable.ic_menu_crop))
-               .setContent(R.id.bookformtab2));
+      tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator(getString(R.string.menuEditBookDetails),
+               getResources().getDrawable(android.R.drawable.ic_menu_edit)).setContent(R.id.bookformtab1));
+      tabHost.addTab(tabHost.newTabSpec("tab2").setIndicator(getString(R.string.menuManageCoverImage),
+               getResources().getDrawable(android.R.drawable.ic_menu_crop)).setContent(R.id.bookformtab2));
       tabHost.setCurrentTab(0);
 
       // make sure if user is ADDing a new book, and title/authors not set, they cannot go to Manage Cover Image tab
       // (we have to have a book first, before we can manage cover image)
       tabHost.setOnTabChangedListener(new OnTabChangeListener() {
          public void onTabChanged(final String tabName) {
-            if (tabName.equals("tab2")
-                     && (BookForm.this.application.selectedBook == null)) {
-               Toast.makeText(BookForm.this,
-                        BookForm.this.getString(R.string.msgMinimumSave),
-                        Toast.LENGTH_LONG).show();
+            if (tabName.equals("tab2") && (BookForm.this.application.selectedBook == null)) {
+               Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgMinimumSave), Toast.LENGTH_LONG)
+                        .show();
                BookForm.this.tabHost.setCurrentTab(0);
             }
          }
@@ -113,17 +107,14 @@ public class BookForm extends TabActivity {
       saveButton = (Button) findViewById(R.id.bookformsavebutton);
       saveButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            if (((bookTitleFormTab != null)
-                     && (bookTitleFormTab.getText() != null) && !bookTitleFormTab
-                     .getText().toString().equals(""))
-                     && ((bookAuthors != null)
-                              && (bookAuthors.getText() != null) && !bookAuthors
-                              .getText().toString().equals(""))) {
+            if (((bookTitleFormTab != null) && (bookTitleFormTab.getText() != null) && !bookTitleFormTab.getText()
+                     .toString().equals(""))
+                     && ((bookAuthors != null) && (bookAuthors.getText() != null) && !bookAuthors.getText().toString()
+                              .equals(""))) {
                BookForm.this.saveEdits();
             } else {
-               Toast.makeText(BookForm.this,
-                        BookForm.this.getString(R.string.msgMinimumSave),
-                        Toast.LENGTH_LONG).show();
+               Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgMinimumSave), Toast.LENGTH_LONG)
+                        .show();
             }
          }
       });
@@ -133,40 +124,28 @@ public class BookForm extends TabActivity {
          public void onClick(final View v) {
             try {
                BookForm.this.tabHost.setCurrentTab(0);
-               BookForm.this
-                        .startActivityForResult(
-                                 new Intent(
-                                          Intent.ACTION_PICK,
-                                          android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
-                                 BookForm.SELECT_IMAGE);
+               BookForm.this.startActivityForResult(new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), BookForm.SELECT_IMAGE);
             } catch (ActivityNotFoundException e) {
-               Toast
-                        .makeText(
-                                 BookForm.this,
-                                 BookForm.this
-                                          .getString(R.string.msgNoActivityGalleryError),
-                                 Toast.LENGTH_LONG).show();
+               Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgNoActivityGalleryError),
+                        Toast.LENGTH_LONG).show();
             }
          }
       });
 
-      retrieveCoverButton =
-               (Button) findViewById(R.id.bookformretrievecoverbutton);
+      retrieveCoverButton = (Button) findViewById(R.id.bookformretrievecoverbutton);
       retrieveCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookForm.this.RetrieveCoverImageTask = new RetrieveCoverImageTask();
-            BookForm.this.RetrieveCoverImageTask
-                     .execute(BookForm.this.application.selectedBook);
+            BookForm.this.RetrieveCoverImageTask.execute(BookForm.this.application.selectedBook);
          }
       });
 
-      generateCoverButton =
-               (Button) findViewById(R.id.bookformgeneratecoverbutton);
+      generateCoverButton = (Button) findViewById(R.id.bookformgeneratecoverbutton);
       generateCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookForm.this.generateCoverImageTask = new GenerateCoverImageTask();
-            BookForm.this.generateCoverImageTask
-                     .execute(BookForm.this.application.selectedBook);
+            BookForm.this.generateCoverImageTask.execute(BookForm.this.application.selectedBook);
          }
       });
 
@@ -181,8 +160,7 @@ public class BookForm extends TabActivity {
       // do not enable the soft keyboard unless user explicitly selects textedit
       // Android seems to have an IMM bug concerning this on devices with only soft keyboard
       // http://code.google.com/p/android/issues/detail?id=7115
-      getWindow().setSoftInputMode(
-               WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+      getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
    }
 
    @Override
@@ -193,12 +171,10 @@ public class BookForm extends TabActivity {
    @Override
    public void onPause() {
       bookTitleFormTab = null;
-      if ((generateCoverImageTask != null)
-               && generateCoverImageTask.dialog.isShowing()) {
+      if ((generateCoverImageTask != null) && generateCoverImageTask.dialog.isShowing()) {
          generateCoverImageTask.dialog.dismiss();
       }
-      if ((RetrieveCoverImageTask != null)
-               && RetrieveCoverImageTask.dialog.isShowing()) {
+      if ((RetrieveCoverImageTask != null) && RetrieveCoverImageTask.dialog.isShowing()) {
          RetrieveCoverImageTask.dialog.dismiss();
       }
       if ((saveBookTask != null) && saveBookTask.dialog.isShowing()) {
@@ -208,8 +184,7 @@ public class BookForm extends TabActivity {
    }
 
    @Override
-   public void onActivityResult(final int requestCode, final int resultCode,
-            final Intent data) {
+   public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
       if (requestCode == BookForm.SELECT_IMAGE) {
          if (resultCode == Activity.RESULT_OK) {
@@ -217,14 +192,11 @@ public class BookForm extends TabActivity {
             Uri selectedImageUri = data.getData();
             InputStream is = null;
             try {
-               is =
-                        BookForm.this.getContentResolver().openInputStream(
-                                 selectedImageUri);
+               is = BookForm.this.getContentResolver().openInputStream(selectedImageUri);
                Bitmap bitmap = BitmapFactory.decodeStream(is);
                Book book = BookForm.this.application.selectedBook;
                if ((bitmap != null) && (book != null)) {
-                  BookForm.this.application.imageManager.storeBitmap(bitmap,
-                           book.title, book.id);
+                  BookForm.this.application.imageManager.storeBitmap(bitmap, book.title, book.id);
                }
             } catch (FileNotFoundException e) {
                Log.e(Constants.LOG_TAG, e.getMessage(), e);
@@ -238,9 +210,7 @@ public class BookForm extends TabActivity {
                }
             }
 
-            Toast.makeText(BookForm.this,
-                     BookForm.this.getString(R.string.msgBookUpdated),
-                     Toast.LENGTH_SHORT).show();
+            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookForm.this, BookDetail.class);
             BookForm.this.startActivity(intent);
          }
@@ -270,9 +240,7 @@ public class BookForm extends TabActivity {
    private void setExistingViewData() {
       Book book = application.selectedBook;
       if (book != null) {
-         Bitmap coverImage =
-                  application.imageManager.retrieveBitmap(book.title, book.id,
-                           false);
+         Bitmap coverImage = application.imageManager.retrieveBitmap(book.title, book.id, false);
          if (coverImage != null) {
             bookCover.setImageBitmap(coverImage);
          } else {
@@ -290,8 +258,7 @@ public class BookForm extends TabActivity {
 
          Calendar cal = Calendar.getInstance();
          cal.setTimeInMillis(book.datePubStamp);
-         bookDatePub.updateDate(cal.get(Calendar.YEAR),
-                  cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+         bookDatePub.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
       }
    }
 
@@ -302,9 +269,7 @@ public class BookForm extends TabActivity {
       newBook.subTitle = (bookSubTitle.getText().toString());
       newBook.isbn10 = (bookIsbn10.getText().toString());
       newBook.isbn13 = (bookIsbn13.getText().toString());
-      newBook.authors =
-               (AuthorsStringUtil.expandAuthors(bookAuthors.getText()
-                        .toString()));
+      newBook.authors = (AuthorsStringUtil.expandAuthors(bookAuthors.getText().toString()));
       newBook.subject = (bookSubject.getText().toString());
       newBook.publisher = (bookPublisher.getText().toString());
 
@@ -329,8 +294,7 @@ public class BookForm extends TabActivity {
 
          // rename the cover images too, if title changes
          if (!book.title.equals(newBook.title)) {
-            application.imageManager.renameBitmapSourceFile(book.title,
-                     newBook.title, book.id);
+            application.imageManager.renameBitmapSourceFile(book.title, newBook.title, book.id);
          }
       }
 
@@ -361,17 +325,13 @@ public class BookForm extends TabActivity {
             return true;
          } else if ((book != null) && (book.id == 0)) {
             newBook = true;
-            long bookId =
-                     BookForm.this.application.dataManager.insertBook(book);
+            long bookId = BookForm.this.application.dataManager.insertBook(book);
             System.out.println("bookId after save" + bookId);
             if (bookId > 0) {
                BookForm.this.application.establishSelectedBook(bookId);
                // also auto store generated cover with new form based book insert
-               Bitmap generatedCover =
-                        BookForm.this.application.imageManager
-                                 .createCoverImage(book.title);
-               BookForm.this.application.imageManager.storeBitmap(
-                        generatedCover, book.title, bookId);
+               Bitmap generatedCover = BookForm.this.application.imageManager.createCoverImage(book.title);
+               BookForm.this.application.imageManager.storeBitmap(generatedCover, book.title, bookId);
                return true;
             }
          }
@@ -384,13 +344,9 @@ public class BookForm extends TabActivity {
             dialog.dismiss();
          }
          if (!b) {
-            Toast.makeText(BookForm.this,
-                     BookForm.this.getString(R.string.msgBookSaveError),
-                     Toast.LENGTH_LONG).show();
+            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookSaveError), Toast.LENGTH_LONG).show();
          } else {
-            Toast.makeText(BookForm.this,
-                     BookForm.this.getString(R.string.msgBookSaved),
-                     Toast.LENGTH_SHORT).show();
+            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookSaved), Toast.LENGTH_SHORT).show();
             if (!newBook) {
                Intent intent = new Intent(BookForm.this, BookDetail.class);
                intent.putExtra("RELOAD_AFTER_EDIT", true);
@@ -407,8 +363,7 @@ public class BookForm extends TabActivity {
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(BookForm.this
-                  .getString(R.string.msgRetrieveCoverImage));
+         dialog.setMessage(BookForm.this.getString(R.string.msgRetrieveCoverImage));
          dialog.show();
       }
 
@@ -428,15 +383,10 @@ public class BookForm extends TabActivity {
             dialog.dismiss();
          }
          if (!b) {
-            Toast.makeText(
-                     BookForm.this,
-                     BookForm.this
-                              .getString(R.string.msgRetrieveCoverImageError),
+            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgRetrieveCoverImageError),
                      Toast.LENGTH_LONG).show();
          } else {
-            Toast.makeText(BookForm.this,
-                     BookForm.this.getString(R.string.msgBookUpdated),
-                     Toast.LENGTH_SHORT).show();
+            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookForm.this, BookDetail.class);
             BookForm.this.startActivity(intent);
          }
@@ -448,8 +398,7 @@ public class BookForm extends TabActivity {
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(BookForm.this
-                  .getString(R.string.msgGenerateCoverImage));
+         dialog.setMessage(BookForm.this.getString(R.string.msgGenerateCoverImage));
          dialog.show();
       }
 
@@ -457,11 +406,8 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
-            Bitmap generatedCover =
-                     BookForm.this.application.imageManager
-                              .createCoverImage(book.title);
-            BookForm.this.application.imageManager.storeBitmap(generatedCover,
-                     book.title, book.id);
+            Bitmap generatedCover = BookForm.this.application.imageManager.createCoverImage(book.title);
+            BookForm.this.application.imageManager.storeBitmap(generatedCover, book.title, book.id);
             return true;
          }
          return false;
@@ -473,15 +419,10 @@ public class BookForm extends TabActivity {
             dialog.dismiss();
          }
          if (!b) {
-            Toast.makeText(
-                     BookForm.this,
-                     BookForm.this
-                              .getString(R.string.msgGenerateCoverImageError),
+            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgGenerateCoverImageError),
                      Toast.LENGTH_LONG).show();
          } else {
-            Toast.makeText(BookForm.this,
-                     BookForm.this.getString(R.string.msgBookUpdated),
-                     Toast.LENGTH_SHORT).show();
+            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookForm.this, BookDetail.class);
             BookForm.this.startActivity(intent);
          }

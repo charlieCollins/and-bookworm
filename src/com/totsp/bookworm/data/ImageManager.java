@@ -31,15 +31,12 @@ public class ImageManager {
    public ImageManager(final Context context) {
    }
 
-   public final Bitmap retrieveBitmap(final String title, final Long id,
-            final boolean thumb) {
+   public final Bitmap retrieveBitmap(final String title, final Long id, final boolean thumb) {
       String name = getNameKey(title, id);
 
       Bitmap bitmap = null;
 
-      File exportDir =
-               new File(Environment.getExternalStorageDirectory(),
-                        ImageManager.IMAGES_LOCATION);
+      File exportDir = new File(Environment.getExternalStorageDirectory(), ImageManager.IMAGES_LOCATION);
       File file = null;
       if (!thumb) {
          file = new File(exportDir, name + ".jpg");
@@ -54,8 +51,7 @@ public class ImageManager {
       return bitmap;
    }
 
-   public final void storeBitmap(final Bitmap source, final String title,
-            final Long id) {
+   public final void storeBitmap(final Bitmap source, final String title, final Long id) {
       String name = getNameKey(title, id);
 
       // M from OpenLibrary is about 180x225
@@ -64,9 +60,7 @@ public class ImageManager {
       Bitmap bitmapThumb = ImageManager.resizeBitmap(source, 55, 70);
 
       try {
-         File exportDir =
-                  new File(Environment.getExternalStorageDirectory(),
-                           ImageManager.IMAGES_LOCATION);
+         File exportDir = new File(Environment.getExternalStorageDirectory(), ImageManager.IMAGES_LOCATION);
          if (!exportDir.exists()) {
             exportDir.mkdirs();
          }
@@ -93,9 +87,7 @@ public class ImageManager {
 
    public final void deleteBitmapSourceFile(final String title, final Long id) {
       String name = getNameKey(title, id);
-      File exportDir =
-               new File(Environment.getExternalStorageDirectory(),
-                        ImageManager.IMAGES_LOCATION);
+      File exportDir = new File(Environment.getExternalStorageDirectory(), ImageManager.IMAGES_LOCATION);
       File file = new File(exportDir, name + ".jpg");
       File thumbFile = new File(exportDir, name + "-t.jpg");
       if ((file != null) && file.exists() && file.canWrite()) {
@@ -106,13 +98,10 @@ public class ImageManager {
       }
    }
 
-   public final void renameBitmapSourceFile(final String oldTitle,
-            final String newTitle, final Long id) {
+   public final void renameBitmapSourceFile(final String oldTitle, final String newTitle, final Long id) {
       String oldName = getNameKey(oldTitle, id);
       String newName = getNameKey(newTitle, id);
-      File exportDir =
-               new File(Environment.getExternalStorageDirectory(),
-                        ImageManager.IMAGES_LOCATION);
+      File exportDir = new File(Environment.getExternalStorageDirectory(), ImageManager.IMAGES_LOCATION);
       File file = new File(exportDir, oldName + ".jpg");
       File thumbFile = new File(exportDir, oldName + "-t.jpg");
       if ((file != null) && file.exists() && file.canWrite()) {
@@ -124,9 +113,7 @@ public class ImageManager {
    }
 
    public final void clearAllBitmapSourceFiles() {
-      File exportDir =
-               new File(Environment.getExternalStorageDirectory(),
-                        ImageManager.IMAGES_LOCATION);
+      File exportDir = new File(Environment.getExternalStorageDirectory(), ImageManager.IMAGES_LOCATION);
       if (exportDir.exists() && exportDir.canWrite()) {
          for (File f : exportDir.listFiles()) {
             f.delete();
@@ -136,8 +123,7 @@ public class ImageManager {
 
    public void resetCoverImage(final Book b) {
       // for now hard code provider to 2, OpenLibrary (future use pref here, etc, to establish)
-      Bitmap coverImageBitmap =
-               CoverImageUtil.retrieveCoverImage("2", b.isbn10);
+      Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage("2", b.isbn10);
       if (coverImageBitmap == null) {
          coverImageBitmap = createCoverImage(b.title);
       }
@@ -150,14 +136,10 @@ public class ImageManager {
       String[] words = title.split(" ");
       String line1 = parseLine(0, 15, words);
       String line2 = parseLine(line1.split(" ").length - 1, 15, words);
-      String line3 =
-               parseLine(line1.split(" ").length + line2.split(" ").length - 2,
-                        15, words);
+      String line3 = parseLine(line1.split(" ").length + line2.split(" ").length - 2, 15, words);
       String line4 =
-               parseLine(line1.split(" ").length + line2.split(" ").length
-                        + line3.split(" ").length - 3, 12, words);
-      if ((line1.split(" ").length + line2.split(" ").length
-               + line3.split(" ").length + line4.split(" ").length) < words.length) {
+               parseLine(line1.split(" ").length + line2.split(" ").length + line3.split(" ").length - 3, 12, words);
+      if ((line1.split(" ").length + line2.split(" ").length + line3.split(" ").length + line4.split(" ").length) < words.length) {
          line4 += "...";
       }
 
@@ -186,8 +168,7 @@ public class ImageManager {
       return bitmap;
    }
 
-   private static final Bitmap resizeBitmap(final Bitmap source,
-            final int width, final int height) {
+   private static final Bitmap resizeBitmap(final Bitmap source, final int width, final int height) {
       // create the matrix to scale it
       /*
       Matrix matrix = new Matrix();     
@@ -199,9 +180,7 @@ public class ImageManager {
 
       final int bitmapWidth = source.getWidth();
       final int bitmapHeight = source.getHeight();
-      final float scale =
-               Math.min((float) width / (float) bitmapWidth, (float) height
-                        / (float) bitmapHeight);
+      final float scale = Math.min((float) width / (float) bitmapWidth, (float) height / (float) bitmapHeight);
       final int scaledWidth = (int) (bitmapWidth * scale);
       final int scaledHeight = (int) (bitmapHeight * scale);
       return Bitmap.createScaledBitmap(source, scaledWidth, scaledHeight, true);
@@ -213,8 +192,7 @@ public class ImageManager {
       return key;
    }
 
-   private String parseLine(final int wordStart, final int maxLineLength,
-            final String[] words) {
+   private String parseLine(final int wordStart, final int maxLineLength, final String[] words) {
       String line = "";
       if ((words != null) && (wordStart < words.length)) {
          for (int i = wordStart; i < words.length; i++) {

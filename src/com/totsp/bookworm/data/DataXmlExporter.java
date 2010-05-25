@@ -42,10 +42,8 @@ public class DataXmlExporter {
       this.db = db;
    }
 
-   public void export(final String dbName, final String exportFileNamePrefix)
-      throws IOException {
-      Log.i(Constants.LOG_TAG, "exporting database - " + dbName
-               + " exportFileNamePrefix=" + exportFileNamePrefix);
+   public void export(final String dbName, final String exportFileNamePrefix) throws IOException {
+      Log.i(Constants.LOG_TAG, "exporting database - " + dbName + " exportFileNamePrefix=" + exportFileNamePrefix);
 
       xmlBuilder = new XmlBuilder();
       xmlBuilder.start(dbName);
@@ -58,8 +56,7 @@ public class DataXmlExporter {
             String tableName = c.getString(c.getColumnIndex("name"));
 
             // skip metadata, sequence, and uidx (unique indexes)
-            if (!tableName.equals("android_metadata")
-                     && !tableName.equals("sqlite_sequence")
+            if (!tableName.equals("android_metadata") && !tableName.equals("sqlite_sequence")
                      && !tableName.startsWith("uidx")) {
                exportTable(tableName);
             }
@@ -88,11 +85,8 @@ public class DataXmlExporter {
       xmlBuilder.closeTable();
    }
 
-   private void writeToFile(final String xmlString, final String exportFileName)
-      throws IOException {
-      File dir =
-               new File(Environment.getExternalStorageDirectory(),
-                        DataXmlExporter.DATASUBDIRECTORY);
+   private void writeToFile(final String xmlString, final String exportFileName) throws IOException {
+      File dir = new File(Environment.getExternalStorageDirectory(), DataXmlExporter.DATASUBDIRECTORY);
       if (!dir.exists()) {
          dir.mkdirs();
       }
@@ -123,8 +117,7 @@ public class DataXmlExporter {
    }
 
    public static boolean isExternalStorageAvail() {
-      return Environment.getExternalStorageState().equals(
-               Environment.MEDIA_MOUNTED);
+      return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
    }
 
    /**
@@ -135,8 +128,7 @@ public class DataXmlExporter {
     *
     */
    static class XmlBuilder {
-      private static final String OPEN_XML_STANZA =
-               "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+      private static final String OPEN_XML_STANZA = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
       private static final String CLOSE_WITH_TICK = "'>";
       private static final String DB_OPEN = "<database name='";
       private static final String DB_CLOSE = "</database>";
@@ -164,8 +156,7 @@ public class DataXmlExporter {
       }
 
       void openTable(final String tableName) {
-         sb.append(XmlBuilder.TABLE_OPEN + tableName
-                  + XmlBuilder.CLOSE_WITH_TICK);
+         sb.append(XmlBuilder.TABLE_OPEN + tableName + XmlBuilder.CLOSE_WITH_TICK);
       }
 
       void closeTable() {
@@ -181,8 +172,7 @@ public class DataXmlExporter {
       }
 
       void addColumn(final String name, final String val) throws IOException {
-         sb.append(XmlBuilder.COL_OPEN + name + XmlBuilder.CLOSE_WITH_TICK
-                  + val + XmlBuilder.COL_CLOSE);
+         sb.append(XmlBuilder.COL_OPEN + name + XmlBuilder.CLOSE_WITH_TICK + val + XmlBuilder.COL_CLOSE);
       }
    }
 

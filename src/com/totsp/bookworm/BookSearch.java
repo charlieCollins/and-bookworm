@@ -63,12 +63,10 @@ public class BookSearch extends Activity {
       // if user hits "enter" on keyboard, go ahead and submit, no need for newlines in the search box
       searchInput.setOnKeyListener(new OnKeyListener() {
          public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if ((event.getAction() == KeyEvent.ACTION_DOWN)
-                     && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                BookSearch.this.parsedBooks = new ArrayList<Book>();
                BookSearch.this.searchTask = new SearchTask();
-               BookSearch.this.searchTask.execute(BookSearch.this.searchInput
-                        .getText().toString(), "1");
+               BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), "1");
                return true;
             }
             return false;
@@ -80,8 +78,7 @@ public class BookSearch extends Activity {
       searchResults = (ListView) findViewById(R.id.bookentrysearchresultlist);
       searchResults.setTextFilterEnabled(true);
       searchResults.setOnItemClickListener(new OnItemClickListener() {
-         public void onItemClick(final AdapterView<?> parent, final View v,
-                  final int index, final long id) {
+         public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
             // don't redo the search, you have the BOOK itself (don't pass the ISBN, use the Book)
             application.selectedBook = BookSearch.this.parsedBooks.get(index);
             ;
@@ -96,26 +93,22 @@ public class BookSearch extends Activity {
          public void onClick(final View v) {
             BookSearch.this.parsedBooks = new ArrayList<Book>();
             BookSearch.this.searchTask = new SearchTask();
-            BookSearch.this.searchTask.execute(BookSearch.this.searchInput
-                     .getText().toString(), "1");
+            BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), "1");
          }
       });
 
       LayoutInflater li = getLayoutInflater();
-      getMoreData =
-               (TextView) li.inflate(R.layout.search_listview_footer, null);
+      getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);
       getMoreData.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             int startIndex = BookSearch.this.parsedBooks.size() + 1;
-            new SearchTask().execute(BookSearch.this.searchInput.getText()
-                     .toString(), String.valueOf(startIndex));
+            new SearchTask().execute(BookSearch.this.searchInput.getText().toString(), String.valueOf(startIndex));
             v.setBackgroundResource(R.color.red1);
          }
       });
 
       // if returning to search from search result reload prev search data
-      fromEntryResult =
-               getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false);
+      fromEntryResult = getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false);
       if (fromEntryResult) {
          restoreFromCache();
       }
@@ -129,8 +122,7 @@ public class BookSearch extends Activity {
       // do not enable the soft keyboard unless user explicitly selects textedit
       // Android seems to have an IMM bug concerning this on devices with only soft keyboard
       // http://code.google.com/p/android/issues/detail?id=7115
-      getWindow().setSoftInputMode(
-               WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+      getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
    }
 
    @Override
@@ -213,9 +205,7 @@ public class BookSearch extends Activity {
    private class BookSearchAdapter extends ArrayAdapter<Book> {
       private ArrayList<Book> books;
 
-      LayoutInflater vi =
-               (LayoutInflater) BookSearch.this
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      LayoutInflater vi = (LayoutInflater) BookSearch.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
       BookSearchAdapter(ArrayList<Book> books) {
          super(BookSearch.this, R.layout.search_list_item, books);
@@ -232,17 +222,14 @@ public class BookSearch extends Activity {
             item = vi.inflate(R.layout.search_list_item, parent, false);
             // use ViewHolder pattern to avoid extra trips to findViewById         
             holder = new ViewHolder();
-            holder.text1 =
-                     (TextView) item.findViewById(R.id.search_item_text_1);
-            holder.text2 =
-                     (TextView) item.findViewById(R.id.search_item_text_2);
+            holder.text1 = (TextView) item.findViewById(R.id.search_item_text_1);
+            holder.text2 = (TextView) item.findViewById(R.id.search_item_text_2);
             item.setTag(holder);
          }
 
          holder = (ViewHolder) item.getTag();
          holder.text1.setText(books.get(position).title);
-         holder.text2.setText(AuthorsStringUtil.contractAuthors(books
-                  .get(position).authors));
+         holder.text2.setText(AuthorsStringUtil.contractAuthors(books.get(position).authors));
          return item;
       }
    }
@@ -284,8 +271,7 @@ public class BookSearch extends Activity {
          }
 
          if ((books != null) && !books.isEmpty()) {
-            BookSearch.this.selectorPosition =
-                     BookSearch.this.parsedBooks.size();
+            BookSearch.this.selectorPosition = BookSearch.this.parsedBooks.size();
             for (int i = 0; i < books.size(); i++) {
                Book b = books.get(i);
                if (!BookSearch.this.parsedBooks.contains(b)) {
@@ -294,8 +280,7 @@ public class BookSearch extends Activity {
             }
 
             BookSearch.this.bindAdapter();
-            BookSearch.this.getMoreData
-                     .setBackgroundResource(android.R.color.transparent);
+            BookSearch.this.getMoreData.setBackgroundResource(android.R.color.transparent);
          }
       }
    }

@@ -25,18 +25,13 @@ public class BookDAO implements DAO<Book> {
 
    private final SQLiteStatement bookInsertStmt;
    private static final String BOOK_INSERT =
-            "insert into " + DataConstants.BOOK_TABLE + "("
-                     + DataConstants.ISBN10 + "," + DataConstants.ISBN13 + ","
-                     + DataConstants.TITLE + "," + DataConstants.SUBTITLE + ","
-                     + DataConstants.PUBLISHER + ","
-                     + DataConstants.DESCRIPTION + "," + DataConstants.FORMAT
-                     + "," + DataConstants.SUBJECT + ","
-                     + DataConstants.DATEPUB
-                     + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "insert into " + DataConstants.BOOK_TABLE + "(" + DataConstants.ISBN10 + "," + DataConstants.ISBN13 + ","
+                     + DataConstants.TITLE + "," + DataConstants.SUBTITLE + "," + DataConstants.PUBLISHER + ","
+                     + DataConstants.DESCRIPTION + "," + DataConstants.FORMAT + "," + DataConstants.SUBJECT + ","
+                     + DataConstants.DATEPUB + ") values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
    private final SQLiteStatement bookAuthorInsertStmt;
    private static final String BOOKAUTHOR_INSERT =
-            "insert into " + DataConstants.BOOKAUTHOR_TABLE + "("
-                     + DataConstants.BOOKID + "," + DataConstants.AUTHORID
+            "insert into " + DataConstants.BOOKAUTHOR_TABLE + "(" + DataConstants.BOOKID + "," + DataConstants.AUTHORID
                      + ") values (?, ?)";
 
    private SQLiteDatabase db;
@@ -56,8 +51,7 @@ public class BookDAO implements DAO<Book> {
       bookAuthorInsertStmt = db.compileStatement(BookDAO.BOOKAUTHOR_INSERT);
    }
 
-   public Cursor getSelectBookJoinCursor(final String orderBy,
-            final String whereClauseLimit) {      
+   public Cursor getSelectBookJoinCursor(final String orderBy, final String whereClauseLimit) {
       // note that query MUST have a column named _id
       StringBuilder sb = new StringBuilder();
       sb.append(BookDAO.QUERY_CURSOR_PREFIX);
@@ -76,13 +70,11 @@ public class BookDAO implements DAO<Book> {
    public Book select(final long id) {
       Book b = null;
       Cursor c =
-               db.query(DataConstants.BOOK_TABLE, new String[] {
-                        DataConstants.BOOKID, DataConstants.ISBN10,
-                        DataConstants.ISBN13, DataConstants.TITLE,
-                        DataConstants.SUBTITLE, DataConstants.PUBLISHER,
-                        DataConstants.DESCRIPTION, DataConstants.FORMAT,
-                        DataConstants.SUBJECT, DataConstants.DATEPUB },
-                        DataConstants.BOOKID + " = ?", new String[] { String
+               db.query(DataConstants.BOOK_TABLE,
+                        new String[] { DataConstants.BOOKID, DataConstants.ISBN10, DataConstants.ISBN13,
+                                 DataConstants.TITLE, DataConstants.SUBTITLE, DataConstants.PUBLISHER,
+                                 DataConstants.DESCRIPTION, DataConstants.FORMAT, DataConstants.SUBJECT,
+                                 DataConstants.DATEPUB }, DataConstants.BOOKID + " = ?", new String[] { String
                                  .valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = buildBookFromFullQueryCursor(c);
@@ -97,13 +89,11 @@ public class BookDAO implements DAO<Book> {
    public ArrayList<Book> selectAll() {
       ArrayList<Book> set = new ArrayList<Book>();
       Cursor c =
-               db.query(DataConstants.BOOK_TABLE, new String[] {
-                        DataConstants.BOOKID, DataConstants.ISBN10,
-                        DataConstants.ISBN13, DataConstants.TITLE,
-                        DataConstants.SUBTITLE, DataConstants.PUBLISHER,
-                        DataConstants.DESCRIPTION, DataConstants.FORMAT,
-                        DataConstants.SUBJECT, DataConstants.DATEPUB }, null,
-                        null, null, null, DataConstants.TITLE + " desc", null);
+               db.query(DataConstants.BOOK_TABLE,
+                        new String[] { DataConstants.BOOKID, DataConstants.ISBN10, DataConstants.ISBN13,
+                                 DataConstants.TITLE, DataConstants.SUBTITLE, DataConstants.PUBLISHER,
+                                 DataConstants.DESCRIPTION, DataConstants.FORMAT, DataConstants.SUBJECT,
+                                 DataConstants.DATEPUB }, null, null, null, null, DataConstants.TITLE + " desc", null);
       if (c.moveToFirst()) {
          do {
             Book b = buildBookFromFullQueryCursor(c);
@@ -122,11 +112,8 @@ public class BookDAO implements DAO<Book> {
       // TODO do this in a single join
       if (a != null) {
          Cursor c =
-                  db.query(DataConstants.BOOKAUTHOR_TABLE,
-                           new String[] { DataConstants.BOOKID },
-                           DataConstants.AUTHORID + " = ?",
-                           new String[] { String.valueOf(a.id) }, null, null,
-                           null);
+                  db.query(DataConstants.BOOKAUTHOR_TABLE, new String[] { DataConstants.BOOKID },
+                           DataConstants.AUTHORID + " = ?", new String[] { String.valueOf(a.id) }, null, null, null);
          if (c.moveToFirst()) {
             do {
                // makes an addtl query for every name, not the best approach here
@@ -145,10 +132,8 @@ public class BookDAO implements DAO<Book> {
       ArrayList<Book> set = new ArrayList<Book>();
       // TODO do this in a single join
       Cursor c =
-               db.query(DataConstants.BOOK_TABLE,
-                        new String[] { DataConstants.BOOKID },
-                        DataConstants.TITLE + " = ?", new String[] { title },
-                        null, null, DataConstants.TITLE + " desc", null);
+               db.query(DataConstants.BOOK_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.TITLE + " = ?",
+                        new String[] { title }, null, null, DataConstants.TITLE + " desc", null);
       if (c.moveToFirst()) {
          do {
             // makes an addtl query for every title, not the best approach here
@@ -165,9 +150,8 @@ public class BookDAO implements DAO<Book> {
    public ArrayList<String> selectAllBookNames() {
       ArrayList<String> set = new ArrayList<String>();
       Cursor c =
-               db.query(DataConstants.BOOK_TABLE,
-                        new String[] { DataConstants.TITLE }, null, null, null,
-                        null, DataConstants.TITLE + " desc");
+               db.query(DataConstants.BOOK_TABLE, new String[] { DataConstants.TITLE }, null, null, null, null,
+                        DataConstants.TITLE + " desc");
       if (c.moveToFirst()) {
          do {
             set.add(c.getString(0));
@@ -220,8 +204,7 @@ public class BookDAO implements DAO<Book> {
             insertBookAuthorData(bookId, authorIds);
 
             // insert bookuserdata
-            bookUserDataDAO.insert(new BookUserData(bookId,
-                     b.bookUserData.rating, b.bookUserData.read, null));
+            bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read, null));
 
             db.setTransactionSuccessful();
          } catch (SQLException e) {
@@ -231,8 +214,7 @@ public class BookDAO implements DAO<Book> {
             db.endTransaction();
          }
       } else {
-         throw new IllegalArgumentException(
-                  "Error, book cannot be null, and must have a title.");
+         throw new IllegalArgumentException("Error, book cannot be null, and must have a title.");
       }
       return bookId;
    }
@@ -242,8 +224,7 @@ public class BookDAO implements DAO<Book> {
       if ((b != null) && (b.id != 0)) {
          Book bookExists = select(b.id);
          if (bookExists == null) {
-            throw new IllegalArgumentException(
-                     "Cannot update book that does not already exist.");
+            throw new IllegalArgumentException("Cannot update book that does not already exist.");
          }
 
          // use transaction
@@ -270,8 +251,7 @@ public class BookDAO implements DAO<Book> {
 
             // update/insert book user data
             bookUserDataDAO.delete(b.id);
-            bookUserDataDAO.insert(new BookUserData(b.id,
-                     b.bookUserData.rating, b.bookUserData.read, null));
+            bookUserDataDAO.insert(new BookUserData(b.id, b.bookUserData.rating, b.bookUserData.read, null));
 
             // update book
             final ContentValues values = new ContentValues();
@@ -285,8 +265,8 @@ public class BookDAO implements DAO<Book> {
             values.put(DataConstants.SUBJECT, b.subject);
             values.put(DataConstants.DATEPUB, b.datePubStamp);
 
-            db.update(DataConstants.BOOK_TABLE, values, DataConstants.BOOKID
-                     + " = ?", new String[] { String.valueOf(b.id) });
+            db.update(DataConstants.BOOK_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String
+                     .valueOf(b.id) });
 
             db.setTransactionSuccessful();
          } catch (SQLException e) {
@@ -295,8 +275,7 @@ public class BookDAO implements DAO<Book> {
             db.endTransaction();
          }
       } else {
-         throw new IllegalArgumentException(
-                  "Error, book cannot be null, and must have a title.");
+         throw new IllegalArgumentException("Error, book cannot be null, and must have a title.");
       }
    }
 
@@ -305,10 +284,10 @@ public class BookDAO implements DAO<Book> {
       Book b = select(id);
       if (b != null) {
          ArrayList<Author> authors = authorDAO.selectByBookId(id);
-         db.delete(DataConstants.BOOKAUTHOR_TABLE, DataConstants.BOOKID
-                  + " = ?", new String[] { String.valueOf(b.id) });
-         db.delete(DataConstants.BOOK_TABLE, DataConstants.BOOKID + " = ?",
-                  new String[] { String.valueOf(id) });
+         db
+                  .delete(DataConstants.BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String
+                           .valueOf(b.id) });
+         db.delete(DataConstants.BOOK_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) });
          // if no other books by same author, also delete author
          for (int i = 0; i < authors.size(); i++) {
             ArrayList<Book> books = selectAllBooksByAuthor(authors.get(i).name);
@@ -355,8 +334,7 @@ public class BookDAO implements DAO<Book> {
    //
    // book-author data (not yet a separate DAO, only used here)
    //   
-   public void insertBookAuthorData(final long bookId,
-            final ArrayList<Long> authorIds) {
+   public void insertBookAuthorData(final long bookId, final ArrayList<Long> authorIds) {
       for (int i = 0; i < authorIds.size(); i++) {
          Long authorId = authorIds.get(i);
          bookAuthorInsertStmt.clearBindings();
@@ -367,8 +345,7 @@ public class BookDAO implements DAO<Book> {
    }
 
    public void deleteBookAuthorData(final long bookId) {
-      db.delete(DataConstants.BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?",
-               new String[] { String.valueOf(bookId) });
+      db.delete(DataConstants.BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) });
    }
 
 }

@@ -44,27 +44,24 @@ public class DataManager {
 
    public SQLiteDatabase getDb() {
       return db;
-   }   
-   
+   }
+
    public void openDb() {
       if (!db.isOpen()) {
-         db =
-            SQLiteDatabase.openDatabase(DataConstants.DATABASE_PATH, null,
-                     SQLiteDatabase.OPEN_READWRITE);
+         db = SQLiteDatabase.openDatabase(DataConstants.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
          // since we pass db into DAO, have to recreate DAO if db is re-opened
          bookDAO = new BookDAO(db);
       }
    }
-   
+
    public void closeDb() {
       if (db.isOpen()) {
          db.close();
       }
    }
-   
+
    public void resetDb() {
-      Log.i(Constants.LOG_TAG,
-               "Resetting database connection (close and re-open).");
+      Log.i(Constants.LOG_TAG, "Resetting database connection (close and re-open).");
       closeDb();
       SystemClock.sleep(500);
       openDb();
@@ -97,15 +94,13 @@ public class DataManager {
       bookDAO.delete(id);
    }
 
-   public Cursor getSelectBookJoinCursor(final String orderBy,
-            final String whereClauseLimit) {
+   public Cursor getSelectBookJoinCursor(final String orderBy, final String whereClauseLimit) {
       return bookDAO.getSelectBookJoinCursor(orderBy, whereClauseLimit);
    }
 
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
-      Log.i(Constants.LOG_TAG,
-               "deleting all data from database - deleteAllYesIAmSure invoked");
+      Log.i(Constants.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");
       db.beginTransaction();
       try {
          db.delete(DataConstants.AUTHOR_TABLE, null, null);
@@ -124,32 +119,18 @@ public class DataManager {
       BookListStats stats = new BookListStats();
       stats.totalBooks = getCountFromTable(DataConstants.BOOK_TABLE, "");
       stats.totalAuthors = getCountFromTable(DataConstants.AUTHOR_TABLE, "");
-      stats.readBooks =
-               getCountFromTable(DataConstants.BOOKUSERDATA_TABLE,
-                        "where bookuserdata.rstat = 1");
-      stats.fiveStarBooks =
-               getCountFromTable(DataConstants.BOOKUSERDATA_TABLE,
-                        "where bookuserdata.rat = 5");
-      stats.fourStarBooks =
-               getCountFromTable(DataConstants.BOOKUSERDATA_TABLE,
-                        "where bookuserdata.rat = 4");
-      stats.threeStarBooks =
-               getCountFromTable(DataConstants.BOOKUSERDATA_TABLE,
-                        "where bookuserdata.rat = 3");
-      stats.twoStarBooks =
-               getCountFromTable(DataConstants.BOOKUSERDATA_TABLE,
-                        "where bookuserdata.rat = 2");
-      stats.oneStarBooks =
-               getCountFromTable(DataConstants.BOOKUSERDATA_TABLE,
-                        "where bookuserdata.rat = 1");
+      stats.readBooks = getCountFromTable(DataConstants.BOOKUSERDATA_TABLE, "where bookuserdata.rstat = 1");
+      stats.fiveStarBooks = getCountFromTable(DataConstants.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 5");
+      stats.fourStarBooks = getCountFromTable(DataConstants.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 4");
+      stats.threeStarBooks = getCountFromTable(DataConstants.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 3");
+      stats.twoStarBooks = getCountFromTable(DataConstants.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 2");
+      stats.oneStarBooks = getCountFromTable(DataConstants.BOOKUSERDATA_TABLE, "where bookuserdata.rat = 1");
       return stats;
    }
 
    private int getCountFromTable(final String table, final String whereClause) {
       int result = 0;
-      Cursor c =
-               db.rawQuery("select count(*) from " + table + " " + whereClause,
-                        null);
+      Cursor c = db.rawQuery("select count(*) from " + table + " " + whereClause, null);
       if (c.moveToFirst()) {
          result = c.getInt(0);
       }
@@ -171,15 +152,12 @@ public class DataManager {
       private boolean dbCreated;
 
       OpenHelper(final Context context) {
-         super(context, DataConstants.DATABASE_NAME, null,
-                  DataManager.DATABASE_VERSION);
+         super(context, DataConstants.DATABASE_NAME, null, DataManager.DATABASE_VERSION);
       }
 
       @Override
       public void onCreate(final SQLiteDatabase db) {
-         Log
-                  .i(Constants.LOG_TAG,
-                           "BookWorm DataHelper.OpenHelper onCreate creating database bookworm.db");
+         Log.i(Constants.LOG_TAG, "BookWorm DataHelper.OpenHelper onCreate creating database bookworm.db");
 
          // using StringBuilder here because it is easier to read/reuse lines
          StringBuilder sb = new StringBuilder();
@@ -213,12 +191,10 @@ public class DataManager {
          sb.append(DataConstants.BOOKAUTHORID + " INTEGER PRIMARY KEY, ");
          sb.append(DataConstants.BOOKID + " INTEGER, ");
          sb.append(DataConstants.AUTHORID + " INTEGER, ");
-         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES "
-                  + DataConstants.BOOK_TABLE + "(" + DataConstants.BOOKID
-                  + "), ");
-         sb.append("FOREIGN KEY(" + DataConstants.AUTHORID + ") REFERENCES "
-                  + DataConstants.AUTHOR_TABLE + "(" + DataConstants.AUTHORID
-                  + ") ");
+         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + DataConstants.BOOK_TABLE + "("
+                  + DataConstants.BOOKID + "), ");
+         sb.append("FOREIGN KEY(" + DataConstants.AUTHORID + ") REFERENCES " + DataConstants.AUTHOR_TABLE + "("
+                  + DataConstants.AUTHORID + ") ");
          sb.append(");");
          db.execSQL(sb.toString());
 
@@ -230,28 +206,25 @@ public class DataManager {
          sb.append(DataConstants.READSTATUS + " INTEGER, ");
          sb.append(DataConstants.RATING + " INTEGER, ");
          sb.append(DataConstants.BLURB + " TEXT, ");
-         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES "
-                  + DataConstants.BOOK_TABLE + "(" + DataConstants.BOOKID
-                  + ") ");
+         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + DataConstants.BOOK_TABLE + "("
+                  + DataConstants.BOOKID + ") ");
          sb.append(");");
          db.execSQL(sb.toString());
 
          // constraints         
-         db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON "
-                  + DataConstants.AUTHOR_TABLE + "(" + DataConstants.NAME
+         db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON " + DataConstants.AUTHOR_TABLE + "(" + DataConstants.NAME
                   + " COLLATE NOCASE)");
-         db.execSQL("CREATE UNIQUE INDEX uidxBookIdForUserData ON "
-                  + DataConstants.BOOKUSERDATA_TABLE + "("
+         db.execSQL("CREATE UNIQUE INDEX uidxBookIdForUserData ON " + DataConstants.BOOKUSERDATA_TABLE + "("
                   + DataConstants.BOOKID + " COLLATE NOCASE)");
 
          dbCreated = true;
       }
 
       @Override
-      public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
-               final int newVersion) {
-         Log.i(Constants.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:"
-                  + oldVersion + " newVersion:" + newVersion);
+      public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+         Log
+                  .i(Constants.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"
+                           + newVersion);
          // export old data first, then upgrade, then import
          db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOK_TABLE);
          db.execSQL("DROP TABLE IF EXISTS " + DataConstants.AUTHOR_TABLE);

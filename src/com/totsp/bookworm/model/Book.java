@@ -34,8 +34,7 @@ public final class Book {
 
    public Book(final String title) {
       if ((title == null) || (title.length() < 1)) {
-         throw new IllegalArgumentException(
-                  "Error, book must have a title (minimum size 1)");
+         throw new IllegalArgumentException("Error, book must have a title (minimum size 1)");
       }
       authors = new ArrayList<Author>();
       bookUserData = new BookUserData();
@@ -55,15 +54,10 @@ public final class Book {
       }
       if (obj instanceof Book) {
          Book lhs = (Book) obj;
-         if ((lhs.id == id) && (lhs.isbn10.equals(isbn10))
-                  && (lhs.isbn13.equals(isbn13)) && (lhs.title.equals(title))
-                  && (lhs.subTitle.equals(subTitle))
-                  && (lhs.authors.equals(authors))
-                  && (lhs.publisher.equals(publisher))
-                  && (lhs.description.equals(description))
-                  && (lhs.format.equals(format))
-                  && (lhs.subject.equals(subject))
-                  && (lhs.datePubStamp == datePubStamp)
+         if ((lhs.id == id) && (lhs.isbn10.equals(isbn10)) && (lhs.isbn13.equals(isbn13)) && (lhs.title.equals(title))
+                  && (lhs.subTitle.equals(subTitle)) && (lhs.authors.equals(authors))
+                  && (lhs.publisher.equals(publisher)) && (lhs.description.equals(description))
+                  && (lhs.format.equals(format)) && (lhs.subject.equals(subject)) && (lhs.datePubStamp == datePubStamp)
                   && (lhs.bookUserData == bookUserData)) {
             return true;
          }

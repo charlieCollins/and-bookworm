@@ -11,8 +11,7 @@ public final class FileUtil {
    private FileUtil() {
    }
 
-   public static void copyFile(final File src, final File dst)
-      throws IOException {
+   public static void copyFile(final File src, final File dst) throws IOException {
       FileChannel inChannel = new FileInputStream(src).getChannel();
       FileChannel outChannel = new FileOutputStream(dst).getChannel();
       try {

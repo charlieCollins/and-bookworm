@@ -75,8 +75,7 @@ public class BookEntryResult extends Activity {
       // *EITHER* use application.selectedBook (if from SEARCH)
       // or ISBN must be present as intent extra to proceed (in which case request will be made to get data)
       if (fromSearch && (application.selectedBook != null)) {
-         setupBookResultTask =
-                  new SetupBookResultTask(application.selectedBook);
+         setupBookResultTask = new SetupBookResultTask(application.selectedBook);
          setupBookResultTask.execute(null);
       } else {
          String isbn = getIntent().getStringExtra(Constants.ISBN);
@@ -96,8 +95,7 @@ public class BookEntryResult extends Activity {
 
    @Override
    public void onPause() {
-      if ((setupBookResultTask != null)
-               && setupBookResultTask.dialog.isShowing()) {
+      if ((setupBookResultTask != null) && setupBookResultTask.dialog.isShowing()) {
          setupBookResultTask.dialog.dismiss();
       }
       super.onPause();
@@ -105,8 +103,7 @@ public class BookEntryResult extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, BookEntryResult.MENU_SCANNING_TIPS, 0,
-               getResources().getString(R.string.menuScanTips)).setIcon(
+      menu.add(0, BookEntryResult.MENU_SCANNING_TIPS, 0, getResources().getString(R.string.menuScanTips)).setIcon(
                android.R.drawable.ic_menu_info_details);
       return super.onCreateOptionsMenu(menu);
    }
@@ -115,16 +112,10 @@ public class BookEntryResult extends Activity {
    public boolean onOptionsItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
          case MENU_SCANNING_TIPS:
-            new AlertDialog.Builder(BookEntryResult.this).setTitle(
-                     getResources().getString(R.string.menuScanTips))
-                     .setMessage(
-                              Html.fromHtml(this
-                                       .getString(R.string.msgScanningtips)))
-                     .setNeutralButton(
-                              getResources().getString(R.string.btnDismiss),
-                              new DialogInterface.OnClickListener() {
-                                 public void onClick(final DialogInterface d,
-                                          final int i) {
+            new AlertDialog.Builder(BookEntryResult.this).setTitle(getResources().getString(R.string.menuScanTips))
+                     .setMessage(Html.fromHtml(this.getString(R.string.msgScanningtips))).setNeutralButton(
+                              getResources().getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
+                                 public void onClick(final DialogInterface d, final int i) {
 
                                  }
                               }).show();
@@ -140,8 +131,7 @@ public class BookEntryResult extends Activity {
          // if book exists do not resave, or allow user to choose?
          long bookId = application.dataManager.insertBook(book);
          if (book.coverImage != null) {
-            BookEntryResult.this.application.imageManager.storeBitmap(
-                     book.coverImage, book.title, bookId);
+            BookEntryResult.this.application.imageManager.storeBitmap(book.coverImage, book.title, bookId);
          }
       }
       if (fromSearch) {
@@ -156,17 +146,14 @@ public class BookEntryResult extends Activity {
 
    private void setViewsForInvalidEntry(final BookMessageBean bean) {
       bookCover.setImageResource(R.drawable.book_invalid_isbn);
-      bookAuthors.setText(String.format(this.getString(R.string.msgScanError),
-               bean.code));
+      bookAuthors.setText(String.format(this.getString(R.string.msgScanError), bean.code));
    }
 
    //
    // AsyncTasks
    //
-   private class SetupBookResultTask extends
-            AsyncTask<String, Void, BookMessageBean> {
-      private final ProgressDialog dialog =
-               new ProgressDialog(BookEntryResult.this);
+   private class SetupBookResultTask extends AsyncTask<String, Void, BookMessageBean> {
+      private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
 
       private Book book;
       private String coverImageProviderKey;
@@ -174,8 +161,7 @@ public class BookEntryResult extends Activity {
       private final GoogleBookDataSource gbs;
 
       public SetupBookResultTask() {
-         gbs =
-                  (GoogleBookDataSource) BookEntryResult.this.application.bookDataSource;
+         gbs = (GoogleBookDataSource) BookEntryResult.this.application.bookDataSource;
          if (BookEntryResult.this.application.debugEnabled && (gbs != null)) {
             gbs.setDebugEnabled(true);
          }
@@ -188,12 +174,9 @@ public class BookEntryResult extends Activity {
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(BookEntryResult.this
-                  .getString(R.string.msgRetrievingBookData));
+         dialog.setMessage(BookEntryResult.this.getString(R.string.msgRetrievingBookData));
          dialog.show();
-         SharedPreferences prefs =
-                  PreferenceManager
-                           .getDefaultSharedPreferences(BookEntryResult.this);
+         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BookEntryResult.this);
          // default to OpenLibrary(2) for cover image provider - for now (doesn't require login)
          coverImageProviderKey = prefs.getString("coverimagelistpref", "2");
       }
@@ -215,11 +198,9 @@ public class BookEntryResult extends Activity {
                   this.book = gbs.getBook(isbns[0]);
                   bean.book = this.book;
                   if (bean.book == null) {
-                     Log
-                              .e(
-                                       Constants.LOG_TAG,
-                                       "GetBookDataTask book returned from data source null (using product code/ISBN - "
-                                                + isbns[0] + ").");
+                     Log.e(Constants.LOG_TAG,
+                              "GetBookDataTask book returned from data source null (using product code/ISBN - "
+                                       + isbns[0] + ").");
                      /*
                      bean.message =
                               String.format(BookEntryResult.this
@@ -228,9 +209,7 @@ public class BookEntryResult extends Activity {
                                        */
                   }
                } else {
-                  Log
-                           .e(Constants.LOG_TAG,
-                                    "GetBookDataTask book data source null, cannot add book.");
+                  Log.e(Constants.LOG_TAG, "GetBookDataTask book data source null, cannot add book.");
                   /*
                   bean.message =
                            BookEntryResult.this
@@ -238,9 +217,7 @@ public class BookEntryResult extends Activity {
                                     */
                }
             } else {
-               Log
-                        .e(Constants.LOG_TAG,
-                                 "GetBookDataTask product code/ISBN null, cannot add book.");
+               Log.e(Constants.LOG_TAG, "GetBookDataTask product code/ISBN null, cannot add book.");
                /*
                bean.message =
                         BookEntryResult.this.getString(R.string.msgISBNError);
@@ -251,13 +228,9 @@ public class BookEntryResult extends Activity {
          // handle cover image either way
          if (bean.book != null) {
             if (bean.book.isbn10 != null) {
-               bean.book.coverImage =
-                        CoverImageUtil.retrieveCoverImage(
-                                 this.coverImageProviderKey, bean.book.isbn10);
+               bean.book.coverImage = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, bean.book.isbn10);
             } else if (bean.book.isbn13 != null) {
-               bean.book.coverImage =
-                        CoverImageUtil.retrieveCoverImage(
-                                 this.coverImageProviderKey, bean.book.isbn13);
+               bean.book.coverImage = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, bean.book.isbn13);
             }
          }
 
@@ -272,24 +245,18 @@ public class BookEntryResult extends Activity {
 
          if (bean.book != null) {
             BookEntryResult.this.bookTitle.setText(bean.book.title);
-            BookEntryResult.this.bookAuthors.setText(AuthorsStringUtil
-                     .contractAuthors(bean.book.authors));
+            BookEntryResult.this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(bean.book.authors));
 
             if (bean.book.coverImage != null) {
                if (BookEntryResult.this.application.debugEnabled) {
-                  Log.d(Constants.LOG_TAG,
-                           "book cover bitmap present, set cover");
+                  Log.d(Constants.LOG_TAG, "book cover bitmap present, set cover");
                }
-               BookEntryResult.this.bookCover
-                        .setImageBitmap(bean.book.coverImage);
+               BookEntryResult.this.bookCover.setImageBitmap(bean.book.coverImage);
             } else {
                if (BookEntryResult.this.application.debugEnabled) {
-                  Log.d(Constants.LOG_TAG,
-                           "book cover not found, generate image");
+                  Log.d(Constants.LOG_TAG, "book cover not found, generate image");
                }
-               Bitmap generatedCover =
-                        BookEntryResult.this.application.imageManager
-                                 .createCoverImage(bean.book.title);
+               Bitmap generatedCover = BookEntryResult.this.application.imageManager.createCoverImage(bean.book.title);
                BookEntryResult.this.bookCover.setImageBitmap(generatedCover);
                bean.book.coverImage = generatedCover;
             }
@@ -299,16 +266,14 @@ public class BookEntryResult extends Activity {
 
             // check for dupes and warn if title and either isbn match
             ArrayList<Book> potentialDupes =
-                     BookEntryResult.this.application.dataManager
-                              .selectAllBooksByTitle(bean.book.title);
+                     BookEntryResult.this.application.dataManager.selectAllBooksByTitle(bean.book.title);
             if (potentialDupes != null) {
                boolean dupe = false;
                // TODO move this to datahelper, do it with query
                for (int i = 0; i < potentialDupes.size(); i++) {
                   Book b = potentialDupes.get(i);
                   if (b.title.equals(bean.book.title)
-                           && (b.isbn10.equals(bean.book.isbn10) || b.isbn13
-                                    .equals(bean.book.isbn13))) {
+                           && (b.isbn10.equals(bean.book.isbn10) || b.isbn13.equals(bean.book.isbn13))) {
                      dupe = true;
                      break;
                   }

@@ -14,9 +14,8 @@ public class BookUserDataDAO implements DAO<BookUserData> {
 
    private final SQLiteStatement bookUserDataInsertStmt;
    private static final String BOOKUSERDATA_INSERT =
-            "insert into " + DataConstants.BOOKUSERDATA_TABLE + "("
-                     + DataConstants.BOOKID + "," + DataConstants.READSTATUS
-                     + "," + DataConstants.RATING + "," + DataConstants.BLURB
+            "insert into " + DataConstants.BOOKUSERDATA_TABLE + "(" + DataConstants.BOOKID + ","
+                     + DataConstants.READSTATUS + "," + DataConstants.RATING + "," + DataConstants.BLURB
                      + ") values (?, ?, ?, ?)";
 
    private SQLiteDatabase db;
@@ -25,8 +24,7 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       this.db = db;
 
       // statements
-      bookUserDataInsertStmt =
-               db.compileStatement(BookUserDataDAO.BOOKUSERDATA_INSERT);
+      bookUserDataInsertStmt = db.compileStatement(BookUserDataDAO.BOOKUSERDATA_INSERT);
 
    }
 
@@ -34,11 +32,9 @@ public class BookUserDataDAO implements DAO<BookUserData> {
    public BookUserData select(final long id) {
       BookUserData b = null;
       Cursor c =
-               db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] {
-                        DataConstants.READSTATUS, DataConstants.RATING,
-                        DataConstants.BLURB }, DataConstants.BOOKUSERDATAID
-                        + " = ?", new String[] { String.valueOf(id) }, null,
-                        null, null, "1");
+               db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] { DataConstants.READSTATUS,
+                        DataConstants.RATING, DataConstants.BLURB }, DataConstants.BOOKUSERDATAID + " = ?",
+                        new String[] { String.valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new BookUserData();
          b.read = (c.getInt(0) == 0 ? false : true);
@@ -54,11 +50,9 @@ public class BookUserDataDAO implements DAO<BookUserData> {
    public BookUserData selectByBookId(final long bookId) {
       BookUserData b = null;
       Cursor c =
-               db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] {
-                        DataConstants.READSTATUS, DataConstants.RATING,
-                        DataConstants.BLURB }, DataConstants.BOOKID + " = ?",
-                        new String[] { String.valueOf(bookId) }, null, null,
-                        null, "1");
+               db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] { DataConstants.READSTATUS,
+                        DataConstants.RATING, DataConstants.BLURB }, DataConstants.BOOKID + " = ?",
+                        new String[] { String.valueOf(bookId) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new BookUserData();
          b.read = (c.getInt(0) == 0 ? false : true);
@@ -101,17 +95,16 @@ public class BookUserDataDAO implements DAO<BookUserData> {
          values.put(DataConstants.READSTATUS, b.read ? 1 : 0);
          values.put(DataConstants.RATING, b.rating);
          values.put(DataConstants.BLURB, b.blurb);
-         db.update(DataConstants.BOOKUSERDATA_TABLE, values,
-                  DataConstants.BOOKID + " = ?", new String[] { String
-                           .valueOf(b.bookId) });
+         db.update(DataConstants.BOOKUSERDATA_TABLE, values, DataConstants.BOOKID + " = ?", new String[] { String
+                  .valueOf(b.bookId) });
       }
    }
 
    @Override
    public void delete(final long bookId) {
       if (bookId > 0) {
-         db.delete(DataConstants.BOOKUSERDATA_TABLE, DataConstants.BOOKID
-                  + " = ?", new String[] { String.valueOf(bookId) });
+         db.delete(DataConstants.BOOKUSERDATA_TABLE, DataConstants.BOOKID + " = ?", new String[] { String
+                  .valueOf(bookId) });
       }
    }
 

@@ -45,12 +45,8 @@ public class BookWormApplication extends Application {
 
    private void establishBookDataSourceFromProvider() {
       // hard coded to one provider for now
-      String className =
-               prefs.getString("dataproviderpref",
-                        GoogleBookDataSource.class.getCanonicalName());
-      Log.i(Constants.LOG_TAG,
-               "establishing book data provider using class name - "
-                        + className);
+      String className = prefs.getString("dataproviderpref", GoogleBookDataSource.class.getCanonicalName());
+      Log.i(Constants.LOG_TAG, "establishing book data provider using class name - " + className);
       try {
          Class<?> clazz = Class.forName(className);
          // NOTE - validate that clazz is of BookDataSource type?

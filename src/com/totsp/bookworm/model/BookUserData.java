@@ -13,8 +13,7 @@ public final class BookUserData {
    public BookUserData() {
    }
 
-   public BookUserData(final long bookId, final long rating,
-            final boolean read, final String blurb) {
+   public BookUserData(final long bookId, final long rating, final boolean read, final String blurb) {
       this.bookId = bookId;
       this.rating = rating;
       this.read = read;
@@ -28,8 +27,8 @@ public final class BookUserData {
       }
       if (obj instanceof BookUserData) {
          BookUserData lhs = (BookUserData) obj;
-         if ((lhs.id == id) && (lhs.bookId == bookId) && (lhs.rating == rating)
-                  && (lhs.read == read) && (lhs.blurb.equals(blurb))) {
+         if ((lhs.id == id) && (lhs.bookId == bookId) && (lhs.rating == rating) && (lhs.read == read)
+                  && (lhs.blurb.equals(blurb))) {
             return true;
          }
       }

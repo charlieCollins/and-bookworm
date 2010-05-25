@@ -20,8 +20,7 @@ public class AuthorDAO implements DAO<Author> {
 
    private final SQLiteStatement authorInsertStmt;
    private static final String AUTHOR_INSERT =
-            "insert into " + DataConstants.AUTHOR_TABLE + "("
-                     + DataConstants.NAME + ") values (?)";
+            "insert into " + DataConstants.AUTHOR_TABLE + "(" + DataConstants.NAME + ") values (?)";
 
    private SQLiteDatabase db;
 
@@ -36,10 +35,8 @@ public class AuthorDAO implements DAO<Author> {
    public Author select(final long id) {
       Author a = null;
       Cursor c =
-               db.query(DataConstants.AUTHOR_TABLE,
-                        new String[] { DataConstants.NAME },
-                        DataConstants.AUTHORID + " = ?", new String[] { String
-                                 .valueOf(id) }, null, null, null, "1");
+               db.query(DataConstants.AUTHOR_TABLE, new String[] { DataConstants.NAME }, DataConstants.AUTHORID
+                        + " = ?", new String[] { String.valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          a = new Author();
          a.id = (id);
@@ -54,10 +51,8 @@ public class AuthorDAO implements DAO<Author> {
    public Author select(final String name) {
       Author a = null;
       Cursor c =
-               db.query(DataConstants.AUTHOR_TABLE,
-                        new String[] { DataConstants.AUTHORID },
-                        DataConstants.NAME + " = ?", new String[] { name },
-                        null, null, null, "1");
+               db.query(DataConstants.AUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.NAME
+                        + " = ?", new String[] { name }, null, null, null, "1");
       if (c.moveToFirst()) {
          a = select(c.getLong(0));
       }
@@ -71,8 +66,7 @@ public class AuthorDAO implements DAO<Author> {
    public ArrayList<Author> selectAll() {
       ArrayList<Author> set = new ArrayList<Author>();
       Cursor c =
-               db.query(DataConstants.AUTHOR_TABLE, new String[] {
-                        DataConstants.AUTHORID, DataConstants.NAME }, null,
+               db.query(DataConstants.AUTHOR_TABLE, new String[] { DataConstants.AUTHORID, DataConstants.NAME }, null,
                         null, null, null, DataConstants.NAME + " desc", null);
       if (c.moveToFirst()) {
          do {
@@ -122,8 +116,7 @@ public class AuthorDAO implements DAO<Author> {
       if ((a != null) && (a.id != 0)) {
          Author exists = select(a.id);
          if (exists == null) {
-            throw new IllegalArgumentException(
-                     "Cannot update entity that does not already exist.");
+            throw new IllegalArgumentException("Cannot update entity that does not already exist.");
          }
 
          // use transaction
@@ -132,9 +125,8 @@ public class AuthorDAO implements DAO<Author> {
             // update book
             final ContentValues values = new ContentValues();
             values.put(DataConstants.NAME, a.name);
-            db.update(DataConstants.AUTHOR_TABLE, values,
-                     DataConstants.AUTHORID + " = ?", new String[] { String
-                              .valueOf(a.id) });
+            db.update(DataConstants.AUTHOR_TABLE, values, DataConstants.AUTHORID + " = ?", new String[] { String
+                     .valueOf(a.id) });
 
             db.setTransactionSuccessful();
          } catch (SQLException e) {
@@ -151,16 +143,14 @@ public class AuthorDAO implements DAO<Author> {
    public void delete(final long id) {
       Author a = select(id);
       if (a != null) {
-         db.delete(DataConstants.AUTHOR_TABLE, DataConstants.AUTHORID + " = ?",
-                  new String[] { String.valueOf(id) });
+         db.delete(DataConstants.AUTHOR_TABLE, DataConstants.AUTHORID + " = ?", new String[] { String.valueOf(id) });
       }
    }
 
    public void delete(final String name) {
       Author a = select(name);
       if (a != null) {
-         db.delete(DataConstants.AUTHOR_TABLE, DataConstants.NAME + " = ?",
-                  new String[] { name });
+         db.delete(DataConstants.AUTHOR_TABLE, DataConstants.NAME + " = ?", new String[] { name });
       }
    }
 }

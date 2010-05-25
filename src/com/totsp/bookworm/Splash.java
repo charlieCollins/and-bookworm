@@ -21,8 +21,7 @@ public class Splash extends Activity {
    }
 
    private void initPrefs() {
-      SharedPreferences prefs =
-               PreferenceManager.getDefaultSharedPreferences(this);
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
       boolean debugEnabled = prefs.getBoolean("debugenabled", false);
       application.debugEnabled = debugEnabled;

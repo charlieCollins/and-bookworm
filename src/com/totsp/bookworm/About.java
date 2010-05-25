@@ -22,15 +22,13 @@ public class About extends Activity {
       setContentView(R.layout.about);
 
       about = (TextView) findViewById(R.id.aboutcontent);
-      about.setText(Html.fromHtml(getString(R.string.aboutcontent)),
-               TextView.BufferType.SPANNABLE);
+      about.setText(Html.fromHtml(getString(R.string.aboutcontent)), TextView.BufferType.SPANNABLE);
       about.setMovementMethod(LinkMovementMethod.getInstance());
 
       aboutDetails = (Button) findViewById(R.id.aboutdetails);
       aboutDetails.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri
-                     .parse("file:///android_asset/release_notes.html"),
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release_notes.html"),
                      About.this, HTMLScreen.class));
          }
       });

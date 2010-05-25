@@ -86,9 +86,7 @@ public class Main extends Activity {
 
       resetAllCoverImagesTask = null;
 
-      coverImageMissing =
-               BitmapFactory.decodeResource(this.getResources(),
-                        R.drawable.book_cover_missing);
+      coverImageMissing = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_cover_missing);
       star0 = BitmapFactory.decodeResource(getResources(), R.drawable.star0);
       star1 = BitmapFactory.decodeResource(getResources(), R.drawable.star1);
       star2 = BitmapFactory.decodeResource(getResources(), R.drawable.star2);
@@ -100,16 +98,13 @@ public class Main extends Activity {
       bookListView.setEmptyView(findViewById(R.id.empty));
       bookListView.setTextFilterEnabled(true);
       bookListView.setOnItemClickListener(new OnItemClickListener() {
-         public void onItemClick(final AdapterView<?> parent, final View v,
-                  final int index, final long id) {
+         public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
             Main.this.cursor.moveToPosition(index);
             // note - this is tricky, table doesn't have _id, but
             // CursorAdapter requires it
             // in the query we used "book.bid as _id" so here we have to use
             // _id too
-            int bookId =
-                     Main.this.cursor.getInt(Main.this.cursor
-                              .getColumnIndex("_id"));
+            int bookId = Main.this.cursor.getInt(Main.this.cursor.getColumnIndex("_id"));
             Book book = Main.this.application.dataManager.selectBook(bookId);
             if (book != null) {
                if (Main.this.application.debugEnabled) {
@@ -119,9 +114,7 @@ public class Main extends Activity {
                Main.this.application.selectedBook = book;
                Main.this.startActivity(new Intent(Main.this, BookDetail.class));
             } else {
-               Toast.makeText(Main.this,
-                        Main.this.getString(R.string.msgSelectBookError),
-                        Toast.LENGTH_SHORT).show();
+               Toast.makeText(Main.this, Main.this.getString(R.string.msgSelectBookError), Toast.LENGTH_SHORT).show();
             }
          }
       });
@@ -142,20 +135,15 @@ public class Main extends Activity {
    public boolean onCreateOptionsMenu(final Menu menu) {
       menu.add(0, Main.MENU_SORT, 1, getString(R.string.menuSortBooks))
                .setIcon(android.R.drawable.ic_menu_sort_by_size);
-      menu.add(0, Main.MENU_BOOKADD, 2, getString(R.string.menuAddBook))
-               .setIcon(android.R.drawable.ic_menu_add);
-      menu.add(0, Main.MENU_STATS, 3, getString(R.string.menuListStats))
-               .setIcon(android.R.drawable.ic_menu_info_details);
-      menu.add(0, Main.MENU_ABOUT, 4, getString(R.string.menuAbout)).setIcon(
-               android.R.drawable.ic_menu_help);
-      menu.add(0, Main.MENU_PREFS, 5, getString(R.string.menuPrefs)).setIcon(
-               android.R.drawable.ic_menu_preferences);
+      menu.add(0, Main.MENU_BOOKADD, 2, getString(R.string.menuAddBook)).setIcon(android.R.drawable.ic_menu_add);
+      menu.add(0, Main.MENU_STATS, 3, getString(R.string.menuListStats)).setIcon(
+               android.R.drawable.ic_menu_info_details);
+      menu.add(0, Main.MENU_ABOUT, 4, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
+      menu.add(0, Main.MENU_PREFS, 5, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
       // /menu.add(0, Main.this.MENU_SEND, 6,
       // "Send Book List").setIcon(android.R.drawable.ic_menu_send);
-      menu.add(0, Main.MENU_MANAGE, 7, getString(R.string.menuManageData))
-               .setIcon(android.R.drawable.ic_menu_manage);
-      menu.add(0, Main.MENU_RESET_COVER_IMAGES, 8,
-               getString(R.string.menuResetCoverImages)).setIcon(
+      menu.add(0, Main.MENU_MANAGE, 7, getString(R.string.menuManageData)).setIcon(android.R.drawable.ic_menu_manage);
+      menu.add(0, Main.MENU_RESET_COVER_IMAGES, 8, getString(R.string.menuResetCoverImages)).setIcon(
                android.R.drawable.ic_menu_gallery);
       return super.onCreateOptionsMenu(menu);
    }
@@ -182,10 +170,8 @@ public class Main extends Activity {
             sb.append("2 star books: " + stats.twoStarBooks + "\n");
             sb.append("1 star books: " + stats.oneStarBooks + "\n");
             sb.append("Unrated books: "
-                     + (stats.totalBooks - (stats.fiveStarBooks
-                              + stats.fourStarBooks + stats.threeStarBooks
-                              + stats.twoStarBooks + stats.oneStarBooks))
-                     + "\n");
+                     + (stats.totalBooks - (stats.fiveStarBooks + stats.fourStarBooks + stats.threeStarBooks
+                              + stats.twoStarBooks + stats.oneStarBooks)) + "\n");
             statsDialog.setMessage(sb.toString());
             statsDialog.show();
             return true;
@@ -205,26 +191,16 @@ public class Main extends Activity {
             startActivity(new Intent(Main.this, ManageData.class));
             return true;
          case MENU_RESET_COVER_IMAGES:
-            new AlertDialog.Builder(Main.this)
-                     .setTitle(
-                              Main.this
-                                       .getString(R.string.msgResetAllCoverImages))
-                     .setMessage(
-                              Main.this
-                                       .getString(R.string.msgResetAllCoverImagesExplain))
-                     .setPositiveButton(Main.this.getString(R.string.btnYes),
-                              new DialogInterface.OnClickListener() {
-                                 public void onClick(final DialogInterface d,
-                                          final int i) {
-                                    Main.this.resetAllCoverImagesTask =
-                                             new ResetAllCoverImagesTask();
+            new AlertDialog.Builder(Main.this).setTitle(Main.this.getString(R.string.msgResetAllCoverImages))
+                     .setMessage(Main.this.getString(R.string.msgResetAllCoverImagesExplain)).setPositiveButton(
+                              Main.this.getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                                 public void onClick(final DialogInterface d, final int i) {
+                                    Main.this.resetAllCoverImagesTask = new ResetAllCoverImagesTask();
                                     Main.this.resetAllCoverImagesTask.execute();
                                  }
-                              }).setNegativeButton(
-                              Main.this.getString(R.string.btnNo),
+                              }).setNegativeButton(Main.this.getString(R.string.btnNo),
                               new DialogInterface.OnClickListener() {
-                                 public void onClick(final DialogInterface d,
-                                          final int i) {
+                                 public void onClick(final DialogInterface d, final int i) {
                                  }
                               }).show();
             return true;
@@ -234,13 +210,10 @@ public class Main extends Activity {
    }
 
    @Override
-   public void onCreateContextMenu(final ContextMenu menu, final View v,
-            final ContextMenuInfo menuInfo) {
+   public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
       super.onCreateContextMenu(menu, v, menuInfo);
-      menu.add(0, Main.MENU_CONTEXT_EDIT, 0, this
-               .getString(R.string.menuEditBook));
-      menu.add(0, Main.MENU_CONTEXT_DELETE, 1, this
-               .getString(R.string.menuDeleteBook));
+      menu.add(0, Main.MENU_CONTEXT_EDIT, 0, this.getString(R.string.menuEditBook));
+      menu.add(0, Main.MENU_CONTEXT_DELETE, 1, this.getString(R.string.menuDeleteBook));
       menu.setHeaderTitle("Action");
    }
 
@@ -256,22 +229,18 @@ public class Main extends Activity {
             Main.this.startActivity(new Intent(Main.this, BookForm.class));
             return true;
          case MENU_CONTEXT_DELETE:
-            new AlertDialog.Builder(Main.this).setTitle(
-                     Main.this.getString(R.string.menuDeleteBook)).setMessage(
-                     b.title).setPositiveButton(
-                     Main.this.getString(R.string.btnYes),
+            new AlertDialog.Builder(Main.this).setTitle(Main.this.getString(R.string.menuDeleteBook)).setMessage(
+                     b.title).setPositiveButton(Main.this.getString(R.string.btnYes),
                      new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface d, final int i) {
-                           Main.this.application.imageManager
-                                    .deleteBitmapSourceFile(b.title, b.id);
+                           Main.this.application.imageManager.deleteBitmapSourceFile(b.title, b.id);
                            Main.this.application.dataManager.deleteBook(b.id);
                            Main.this.startActivity(Main.this.getIntent());
                         }
-                     }).setNegativeButton(Main.this.getString(R.string.btnNo),
-                     new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface d, final int i) {
-                        }
-                     }).show();
+                     }).setNegativeButton(Main.this.getString(R.string.btnNo), new DialogInterface.OnClickListener() {
+               public void onClick(final DialogInterface d, final int i) {
+               }
+            }).show();
             return true;
          default:
             return super.onContextItemSelected(item);
@@ -280,8 +249,7 @@ public class Main extends Activity {
 
    @Override
    public void onPause() {
-      if ((resetAllCoverImagesTask != null)
-               && resetAllCoverImagesTask.dialog.isShowing()) {
+      if ((resetAllCoverImagesTask != null) && resetAllCoverImagesTask.dialog.isShowing()) {
          resetAllCoverImagesTask.dialog.dismiss();
       }
       // /Debug.stopMethodTracing();		
@@ -308,9 +276,7 @@ public class Main extends Activity {
 
    private void bindAdapter() {
       // bind bookListView and adapter
-      String orderBy =
-               prefs.getString(Constants.DEFAULT_SORT_ORDER,
-                        DataConstants.ORDER_BY_TITLE_ASC);
+      String orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
       cursor = application.dataManager.getSelectBookJoinCursor(orderBy, null);
       if ((cursor != null) && (cursor.getCount() > 0)) {
          startManagingCursor(cursor);
@@ -326,43 +292,32 @@ public class Main extends Activity {
    private void setupDialogs() {
       sortDialog = new AlertDialog.Builder(this);
       sortDialog.setTitle(getString(R.string.btnSortBy));
-      sortDialog.setItems(new CharSequence[] { getString(R.string.labelTitle),
-               getString(R.string.labelAuthorsShort),
-               getString(R.string.labelRating),
-               getString(R.string.labelReadstatus),
-               getString(R.string.labelSubject),
-               getString(R.string.labelDatepub),
-               getString(R.string.labelPublisher) },
+      sortDialog.setItems(new CharSequence[] { getString(R.string.labelTitle), getString(R.string.labelAuthorsShort),
+               getString(R.string.labelRating), getString(R.string.labelReadstatus), getString(R.string.labelSubject),
+               getString(R.string.labelDatepub), getString(R.string.labelPublisher) },
                new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface d, int selected) {
                      switch (selected) {
                         case 0:
-                           Main.this
-                                    .saveSortOrder(DataConstants.ORDER_BY_TITLE_ASC);
+                           Main.this.saveSortOrder(DataConstants.ORDER_BY_TITLE_ASC);
                            break;
                         case 1:
-                           Main.this
-                                    .saveSortOrder(DataConstants.ORDER_BY_AUTHORS_ASC);
+                           Main.this.saveSortOrder(DataConstants.ORDER_BY_AUTHORS_ASC);
                            break;
                         case 2:
-                           Main.this
-                                    .saveSortOrder(DataConstants.ORDER_BY_RATING_DESC);
+                           Main.this.saveSortOrder(DataConstants.ORDER_BY_RATING_DESC);
                            break;
                         case 3:
-                           Main.this
-                                    .saveSortOrder(DataConstants.ORDER_BY_READ_DESC);
+                           Main.this.saveSortOrder(DataConstants.ORDER_BY_READ_DESC);
                            break;
                         case 4:
-                           Main.this
-                                    .saveSortOrder(DataConstants.ORDER_BY_SUBJECT_ASC);
+                           Main.this.saveSortOrder(DataConstants.ORDER_BY_SUBJECT_ASC);
                            break;
                         case 5:
-                           Main.this
-                                    .saveSortOrder(DataConstants.ORDER_BY_DATE_PUB_DESC);
+                           Main.this.saveSortOrder(DataConstants.ORDER_BY_DATE_PUB_DESC);
                            break;
                         case 6:
-                           Main.this
-                                    .saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
+                           Main.this.saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
                            break;
                      }
                      Main.this.application.lastMainListPosition = 0;
@@ -374,11 +329,10 @@ public class Main extends Activity {
 
       statsDialog = new AlertDialog.Builder(this);
       statsDialog.setTitle(getString(R.string.msgBookListStats));
-      statsDialog.setNeutralButton(getString(R.string.btnDismiss),
-               new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface d, int i) {
-                  };
-               });
+      statsDialog.setNeutralButton(getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
+         public void onClick(DialogInterface d, int i) {
+         };
+      });
       statsDialog.create();
    }
 
@@ -401,12 +355,9 @@ public class Main extends Activity {
    //
    // BookCursorAdapter
    //
-   private class BookCursorAdapter extends CursorAdapter implements
-            FilterQueryProvider {
+   private class BookCursorAdapter extends CursorAdapter implements FilterQueryProvider {
 
-      LayoutInflater vi =
-               (LayoutInflater) Main.this
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
       public BookCursorAdapter(final Cursor c) {
          super(Main.this, c, true);
@@ -420,12 +371,8 @@ public class Main extends Activity {
             c = getCursor();
          } else {
             String pattern = "'%" + constraint + "%'";
-            String orderBy =
-                     Main.this.prefs.getString(Constants.DEFAULT_SORT_ORDER,
-                              DataConstants.ORDER_BY_TITLE_ASC);
-            c =
-                     Main.this.application.dataManager.getSelectBookJoinCursor(
-                              orderBy, "where book.tit like " + pattern);
+            String orderBy = Main.this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
+            c = Main.this.application.dataManager.getSelectBookJoinCursor(orderBy, "where book.tit like " + pattern);
          }
          Main.this.cursor = c;
          return c;
@@ -437,19 +384,15 @@ public class Main extends Activity {
       }
 
       @Override
-      public View newView(final Context context, final Cursor c,
-               final ViewGroup parent) {
+      public View newView(final Context context, final Cursor c, final ViewGroup parent) {
          // use ViewHolder pattern to avoid extra trips to findViewById
          View v = vi.inflate(R.layout.list_items_item, parent, false);
          ViewHolder holder = new ViewHolder();
-         holder.coverImage =
-                  (ImageView) v.findViewById(R.id.list_items_item_image);
-         holder.ratingImage =
-                  (ImageView) v.findViewById(R.id.list_items_item_rating_image);
+         holder.coverImage = (ImageView) v.findViewById(R.id.list_items_item_image);
+         holder.ratingImage = (ImageView) v.findViewById(R.id.list_items_item_rating_image);
          holder.text1 = (TextView) v.findViewById(R.id.list_items_item_text1);
          holder.text2 = (TextView) v.findViewById(R.id.list_items_item_text2);
-         holder.readStatus =
-                  (CheckBox) v.findViewById(R.id.list_items_item_read_status);
+         holder.readStatus = (CheckBox) v.findViewById(R.id.list_items_item_read_status);
          v.setTag(holder);
          populateView(v, c);
          return v;
@@ -478,14 +421,11 @@ public class Main extends Activity {
             String authors = c.getString(10);
 
             if (Main.this.application.debugEnabled) {
-               Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id
-                        + "|" + title);
+               Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);
             }
 
             ImageView coverImage = holder.coverImage;
-            Bitmap coverImageBitmap =
-                     Main.this.application.imageManager.retrieveBitmap(title,
-                              id, true);
+            Bitmap coverImageBitmap = Main.this.application.imageManager.retrieveBitmap(title, id, true);
             if (coverImageBitmap != null) {
                coverImage.setImageBitmap(coverImageBitmap);
             } else {
@@ -515,8 +455,7 @@ public class Main extends Activity {
             }
 
             holder.text1.setText(title);
-            holder.text2.setText(AuthorsStringUtil
-                     .addSpacesToCSVString(authors));
+            holder.text2.setText(AuthorsStringUtil.addSpacesToCSVString(authors));
 
             if (readStatus == 1) {
                holder.readStatus.setChecked(true);
@@ -532,8 +471,7 @@ public class Main extends Activity {
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(Main.this
-                  .getString(R.string.msgResetCoverImagesWarnTime));
+         dialog.setMessage(Main.this.getString(R.string.msgResetCoverImagesWarnTime));
          dialog.show();
       }
 
@@ -545,16 +483,13 @@ public class Main extends Activity {
       @Override
       protected Void doInBackground(final Void... args) {
          Main.this.application.imageManager.clearAllBitmapSourceFiles();
-         ArrayList<Book> books =
-                  Main.this.application.dataManager.selectAllBooks();
+         ArrayList<Book> books = Main.this.application.dataManager.selectAllBooks();
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
             if (Main.this.application.debugEnabled) {
-               Log.d(Constants.LOG_TAG, "resetting cover image for book - "
-                        + b.title);
+               Log.d(Constants.LOG_TAG, "resetting cover image for book - " + b.title);
             }
-            publishProgress(String.format(Main.this.getString(
-                     R.string.msgProcessingBookX, b.title)));
+            publishProgress(String.format(Main.this.getString(R.string.msgProcessingBookX, b.title)));
             Main.this.application.imageManager.resetCoverImage(b);
          }
          return null;

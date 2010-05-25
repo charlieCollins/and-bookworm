@@ -33,16 +33,14 @@ public class BookAdd extends Activity {
       scanButton = (Button) findViewById(R.id.bookaddscanbutton);
       scanButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            ZXingIntentIntegrator.initiateScan(BookAdd.this, "Scan Book",
-                     "message", "Yes", "No");
+            ZXingIntentIntegrator.initiateScan(BookAdd.this, "Scan Book", "message", "Yes", "No");
          }
       });
 
       searchButton = (Button) findViewById(R.id.bookaddsearchbutton);
       searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookAdd.this.startActivity(new Intent(BookAdd.this,
-                     BookSearch.class));
+            BookAdd.this.startActivity(new Intent(BookAdd.this, BookSearch.class));
          }
       });
 
@@ -50,8 +48,7 @@ public class BookAdd extends Activity {
       formButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             BookAdd.this.application.selectedBook = null;
-            BookAdd.this
-                     .startActivity(new Intent(BookAdd.this, BookForm.class));
+            BookAdd.this.startActivity(new Intent(BookAdd.this, BookForm.class));
          }
       });
    }
@@ -65,30 +62,21 @@ public class BookAdd extends Activity {
       } else {
          scanButton.setEnabled(false);
          searchButton.setEnabled(false);
-         Toast
-                  .makeText(
-                           BookAdd.this,
-                           "Network connection not present, cannot scan or search at this time.",
-                           Toast.LENGTH_LONG).show();
+         Toast.makeText(BookAdd.this, "Network connection not present, cannot scan or search at this time.",
+                  Toast.LENGTH_LONG).show();
       }
    }
 
    @Override
-   public void onActivityResult(final int requestCode, final int resultCode,
-            final Intent intent) {
-      ZXingIntentResult scanResult =
-               ZXingIntentIntegrator.parseActivityResult(requestCode,
-                        resultCode, intent);
+   public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+      ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
       if (scanResult != null) {
          String isbn = scanResult.getContents();
          if (application.debugEnabled) {
-            Log.d(Constants.LOG_TAG, "Scan result format was - "
-                     + scanResult.getFormatName());
-            Log.d(Constants.LOG_TAG, "Scan result contents are - "
-                     + scanResult.getContents());
+            Log.d(Constants.LOG_TAG, "Scan result format was - " + scanResult.getFormatName());
+            Log.d(Constants.LOG_TAG, "Scan result contents are - " + scanResult.getContents());
          }
-         if ((scanResult.getFormatName() != null)
-                  && !scanResult.getFormatName().equals("EAN_13")) {
+         if ((scanResult.getFormatName() != null) && !scanResult.getFormatName().equals("EAN_13")) {
             // if it's not EAN 13 we are likely gonna have issues 
             // we are using PRODUCT_MODE which limits to UPC and EAN
             // we *might* be able to parse ISBN from UPC, but pattern is not understood, yet
@@ -104,9 +92,7 @@ public class BookAdd extends Activity {
                      isbn = isbn.substring(0, isbn.length() - 1);
                   }
                }
-               Log.w(Constants.LOG_TAG,
-                        "Scan result was a UPC code (not an EAN code), parsed into ISBN:"
-                                 + isbn);
+               Log.w(Constants.LOG_TAG, "Scan result was a UPC code (not an EAN code), parsed into ISBN:" + isbn);
             }
          }
 
@@ -118,9 +104,7 @@ public class BookAdd extends Activity {
    }
 
    private boolean connectionPresent() {
-      ConnectivityManager cMgr =
-               (ConnectivityManager) this
-                        .getSystemService(Context.CONNECTIVITY_SERVICE);
+      ConnectivityManager cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
       NetworkInfo netInfo = cMgr.getActiveNetworkInfo();
       if ((netInfo != null) && (netInfo.getState() != null)) {
          return netInfo.getState().equals(State.CONNECTED);

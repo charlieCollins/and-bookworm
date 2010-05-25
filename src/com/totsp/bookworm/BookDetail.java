@@ -60,16 +60,14 @@ public class BookDetail extends Activity {
       ratingBar = (RatingBar) findViewById(R.id.bookrating);
 
       readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-         public void onCheckedChanged(final CompoundButton button,
-                  final boolean isChecked) {
+         public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
             // NOTE not sure why change listener fires when onCreate is init, but does
             BookDetail.this.saveReadStatusEdit();
          }
       });
 
       ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
-         public void onRatingChanged(final RatingBar rb, final float val,
-                  final boolean b) {
+         public void onRatingChanged(final RatingBar rb, final float val, final boolean b) {
             BookDetail.this.saveRatingEdit();
          }
       });
@@ -113,13 +111,9 @@ public class BookDetail extends Activity {
       Book book = application.selectedBook;
       if (book != null) {
          if (application.debugEnabled) {
-            Log.d(Constants.LOG_TAG,
-                     "BookDetail book present, will be displayed: "
-                              + book.toStringFull());
+            Log.d(Constants.LOG_TAG, "BookDetail book present, will be displayed: " + book.toStringFull());
          }
-         Bitmap coverImage =
-                  application.imageManager.retrieveBitmap(book.title, book.id,
-                           false);
+         Bitmap coverImage = application.imageManager.retrieveBitmap(book.title, book.id, false);
          if (coverImage != null) {
             bookCover.setImageBitmap(coverImage);
          } else {
@@ -172,12 +166,9 @@ public class BookDetail extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, BookDetail.MENU_EDIT, 0, getString(R.string.menuEdit))
-               .setIcon(android.R.drawable.ic_menu_edit);
-      menu.add(0, BookDetail.MENU_WEB_GOOGLE, 1, null).setIcon(
-               R.drawable.google);
-      menu.add(0, BookDetail.MENU_WEB_AMAZON, 2, null).setIcon(
-               R.drawable.amazon);
+      menu.add(0, BookDetail.MENU_EDIT, 0, getString(R.string.menuEdit)).setIcon(android.R.drawable.ic_menu_edit);
+      menu.add(0, BookDetail.MENU_WEB_GOOGLE, 1, null).setIcon(R.drawable.google);
+      menu.add(0, BookDetail.MENU_WEB_AMAZON, 2, null).setIcon(R.drawable.amazon);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -191,15 +182,12 @@ public class BookDetail extends Activity {
          case MENU_WEB_GOOGLE:
             // TODO add fallback book isbn13 support
             // TODO other Locales?
-            uri =
-                     Uri.parse("http://books.google.com/books?isbn="
-                              + application.selectedBook.isbn10);
+            uri = Uri.parse("http://books.google.com/books?isbn=" + application.selectedBook.isbn10);
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             return true;
          case MENU_WEB_AMAZON:
             uri =
-                     Uri.parse("http://www.amazon.com/gp/search?keywords="
-                              + application.selectedBook.isbn10
+                     Uri.parse("http://www.amazon.com/gp/search?keywords=" + application.selectedBook.isbn10
                               + "&index=books");
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             return true;
