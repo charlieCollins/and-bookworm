@@ -41,6 +41,8 @@ public class BookDAO implements DAO<Book> {
    public BookDAO(SQLiteDatabase db) {
       this.db = db;
 
+      // TODO refactor other DAOs out, make each DAO handle its own abstraction
+      // (ok to combine the DAOs at the manager/service layer, but not inside another DAO - bad mojo)
       // here we wire in other DAOs manually, for now (not cleanest approach, but simple)
       // (other DAOs are not used elsewhere at present, can't create just an author, for ex)
       bookUserDataDAO = new BookUserDataDAO(db);
@@ -51,7 +53,7 @@ public class BookDAO implements DAO<Book> {
       bookAuthorInsertStmt = db.compileStatement(BookDAO.BOOKAUTHOR_INSERT);
    }
 
-   public Cursor getSelectBookJoinCursor(final String orderBy, final String whereClauseLimit) {
+   public Cursor getCursor(final String orderBy, final String whereClauseLimit) {
       // note that query MUST have a column named _id
       StringBuilder sb = new StringBuilder();
       sb.append(BookDAO.QUERY_CURSOR_PREFIX);

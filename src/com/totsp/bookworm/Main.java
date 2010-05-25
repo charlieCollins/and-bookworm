@@ -37,7 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
-import com.totsp.bookworm.util.AuthorsStringUtil;
+import com.totsp.bookworm.util.StringUtil;
 
 import java.util.ArrayList;
 
@@ -277,7 +277,7 @@ public class Main extends Activity {
    private void bindAdapter() {
       // bind bookListView and adapter
       String orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
-      cursor = application.dataManager.getSelectBookJoinCursor(orderBy, null);
+      cursor = application.dataManager.getBookCursor(orderBy, null);
       if ((cursor != null) && (cursor.getCount() > 0)) {
          startManagingCursor(cursor);
          adapter = new BookCursorAdapter(cursor);
@@ -374,7 +374,7 @@ public class Main extends Activity {
          } else {
             String pattern = "'%" + constraint + "%'";
             String orderBy = Main.this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
-            c = Main.this.application.dataManager.getSelectBookJoinCursor(orderBy, "where book.tit like " + pattern);
+            c = Main.this.application.dataManager.getBookCursor(orderBy, "where book.tit like " + pattern);
          }
          Main.this.cursor = c;
          return c;
@@ -457,7 +457,7 @@ public class Main extends Activity {
             }
 
             holder.text1.setText(title);
-            holder.text2.setText(AuthorsStringUtil.addSpacesToCSVString(authors));
+            holder.text2.setText(StringUtil.addSpacesToCSVString(authors));
 
             if (readStatus == 1) {
                holder.readStatus.setChecked(true);
@@ -487,10 +487,7 @@ public class Main extends Activity {
          Main.this.application.imageManager.clearAllBitmapSourceFiles();
          ArrayList<Book> books = Main.this.application.dataManager.selectAllBooks();
          for (int i = 0; i < books.size(); i++) {
-            Book b = books.get(i);
-            if (Main.this.application.debugEnabled) {
-               Log.d(Constants.LOG_TAG, "resetting cover image for book - " + b.title);
-            }
+            Book b = books.get(i);            
             publishProgress(String.format(Main.this.getString(R.string.msgProcessingBookX, b.title)));
             Main.this.application.imageManager.resetCoverImage(b);
          }

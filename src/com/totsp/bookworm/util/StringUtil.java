@@ -4,7 +4,7 @@ import com.totsp.bookworm.model.Author;
 
 import java.util.ArrayList;
 
-public final class AuthorsStringUtil {
+public final class StringUtil {
 
    public static ArrayList<Author> expandAuthors(final String in) {
       ArrayList<Author> authors = new ArrayList<Author>();

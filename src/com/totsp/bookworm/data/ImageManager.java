@@ -121,12 +121,34 @@ public class ImageManager {
       }
    }
 
-   public void resetCoverImage(final Book b) {
-      // for now hard code provider to 2, OpenLibrary (future use pref here, etc, to establish)
-      Bitmap coverImageBitmap = CoverImageUtil.retrieveCoverImage("2", b.isbn10);
-      if (coverImageBitmap == null) {
+   public Bitmap getOrCreateCoverImage(final Book b) {
+      Bitmap coverImageBitmap = null;      
+      
+      String isbn = b.isbn10;
+      if (isbn == null || isbn.equals("")) {
+         isbn = b.isbn13;
+      }
+
+      // for now hard code providers (later will be pref)
+      // use OL, then AZ, then generate (in that order)
+      if (isbn != null) {         
+         coverImageBitmap =
+                  CoverImageUtil.getCoverImageFromNetwork(isbn, CoverImageUtil.COVER_IMAGE_PROVIDER_OPENLIBRARY);
+         if (coverImageBitmap == null) {
+            coverImageBitmap =
+                     CoverImageUtil.getCoverImageFromNetwork(isbn, CoverImageUtil.COVER_IMAGE_PROVIDER_AMAZON);
+         }          
+         if (coverImageBitmap == null) {
+            coverImageBitmap = createCoverImage(b.title);
+         }
+      } else {
          coverImageBitmap = createCoverImage(b.title);
       }
+      return coverImageBitmap;
+   }
+
+   public void resetCoverImage(final Book b) {
+      Bitmap coverImageBitmap = getOrCreateCoverImage(b);
       if (coverImageBitmap != null) {
          storeBitmap(coverImageBitmap, b.title, b.id);
       }

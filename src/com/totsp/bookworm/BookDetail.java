@@ -18,7 +18,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RatingBar.OnRatingBarChangeListener;
 
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.AuthorsStringUtil;
+import com.totsp.bookworm.util.StringUtil;
 import com.totsp.bookworm.util.DateUtil;
 
 import java.util.Date;
@@ -125,7 +125,7 @@ public class BookDetail extends Activity {
          ratingBar.setRating(book.bookUserData.rating);
          readStatus.setChecked(book.bookUserData.read);
          bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
-         bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
+         bookAuthors.setText(StringUtil.contractAuthors(book.authors));
 
          // we leave publisher and subject out of landscape layout         
          if (bookSubject != null) {

@@ -94,8 +94,8 @@ public class DataManager {
       bookDAO.delete(id);
    }
 
-   public Cursor getSelectBookJoinCursor(final String orderBy, final String whereClauseLimit) {
-      return bookDAO.getSelectBookJoinCursor(orderBy, whereClauseLimit);
+   public Cursor getBookCursor(final String orderBy, final String whereClauseLimit) {
+      return bookDAO.getCursor(orderBy, whereClauseLimit);
    }
 
    // super delete - clears all tables

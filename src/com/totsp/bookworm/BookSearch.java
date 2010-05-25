@@ -23,7 +23,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.AuthorsStringUtil;
+import com.totsp.bookworm.util.StringUtil;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -229,7 +229,7 @@ public class BookSearch extends Activity {
 
          holder = (ViewHolder) item.getTag();
          holder.text1.setText(books.get(position).title);
-         holder.text2.setText(AuthorsStringUtil.contractAuthors(books.get(position).authors));
+         holder.text2.setText(StringUtil.contractAuthors(books.get(position).authors));
          return item;
       }
    }

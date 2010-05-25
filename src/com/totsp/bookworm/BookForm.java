@@ -24,7 +24,7 @@ import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.AuthorsStringUtil;
+import com.totsp.bookworm.util.StringUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -107,10 +107,10 @@ public class BookForm extends TabActivity {
       saveButton = (Button) findViewById(R.id.bookformsavebutton);
       saveButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            if (((bookTitleFormTab != null) && (bookTitleFormTab.getText() != null) && !bookTitleFormTab.getText()
-                     .toString().equals(""))
-                     && ((bookAuthors != null) && (bookAuthors.getText() != null) && !bookAuthors.getText().toString()
-                              .equals(""))) {
+            if (((bookTitleFormTab != null) && (bookTitleFormTab.getText() != null) && (!bookTitleFormTab.getText()
+                     .toString().equals("")))
+                     && ((bookAuthors != null) && (bookAuthors.getText() != null) && (!bookAuthors.getText().toString()
+                              .equals("")))) {
                BookForm.this.saveEdits();
             } else {
                Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgMinimumSave), Toast.LENGTH_LONG)
@@ -252,7 +252,7 @@ public class BookForm extends TabActivity {
          bookSubTitle.setText(book.subTitle);
          bookIsbn10.setText(book.isbn10);
          bookIsbn13.setText(book.isbn13);
-         bookAuthors.setText(AuthorsStringUtil.contractAuthors(book.authors));
+         bookAuthors.setText(StringUtil.contractAuthors(book.authors));
          bookSubject.setText(book.subject);
          bookPublisher.setText(book.publisher);
 
@@ -269,7 +269,7 @@ public class BookForm extends TabActivity {
       newBook.subTitle = (bookSubTitle.getText().toString());
       newBook.isbn10 = (bookIsbn10.getText().toString());
       newBook.isbn13 = (bookIsbn13.getText().toString());
-      newBook.authors = (AuthorsStringUtil.expandAuthors(bookAuthors.getText().toString()));
+      newBook.authors = (StringUtil.expandAuthors(bookAuthors.getText().toString()));
       newBook.subject = (bookSubject.getText().toString());
       newBook.publisher = (bookPublisher.getText().toString());
 

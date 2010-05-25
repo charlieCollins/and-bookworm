@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.AuthorsStringUtil;
+import com.totsp.bookworm.util.StringUtil;
 import com.totsp.bookworm.util.CoverImageUtil;
 
 import java.util.ArrayList;
@@ -100,13 +100,13 @@ public class BookEntryResult extends Activity {
       }
       super.onPause();
    }
-   
+
    @Override
    public void onSaveInstanceState(Bundle outState) {
       application.selectedBook = book;
       super.onSaveInstanceState(outState);
    }
-   
+
    @Override
    public void onRestoreInstanceState(Bundle inState) {
       super.onRestoreInstanceState(inState);
@@ -238,13 +238,9 @@ public class BookEntryResult extends Activity {
             }
          }
 
-         // handle cover image either way
+         // handle cover image 
          if (bean.book != null) {
-            if (bean.book.isbn10 != null) {
-               bean.book.coverImage = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, bean.book.isbn10);
-            } else if (bean.book.isbn13 != null) {
-               bean.book.coverImage = CoverImageUtil.retrieveCoverImage(this.coverImageProviderKey, bean.book.isbn13);
-            }
+            bean.book.coverImage = application.imageManager.getOrCreateCoverImage(bean.book);
          }
 
          return bean;
@@ -258,7 +254,7 @@ public class BookEntryResult extends Activity {
 
          if (bean.book != null) {
             BookEntryResult.this.bookTitle.setText(bean.book.title);
-            BookEntryResult.this.bookAuthors.setText(AuthorsStringUtil.contractAuthors(bean.book.authors));
+            BookEntryResult.this.bookAuthors.setText(StringUtil.contractAuthors(bean.book.authors));
 
             if (bean.book.coverImage != null) {
                if (BookEntryResult.this.application.debugEnabled) {

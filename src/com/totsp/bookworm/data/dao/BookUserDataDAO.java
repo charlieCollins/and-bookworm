@@ -25,7 +25,11 @@ public class BookUserDataDAO implements DAO<BookUserData> {
 
       // statements
       bookUserDataInsertStmt = db.compileStatement(BookUserDataDAO.BOOKUSERDATA_INSERT);
-
+   }
+   
+   @Override
+   public Cursor getCursor(final String orderBy, final String whereClauseLimit) {
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    @Override

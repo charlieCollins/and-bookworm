@@ -32,6 +32,11 @@ public class AuthorDAO implements DAO<Author> {
    }
 
    @Override
+   public Cursor getCursor(final String orderBy, final String whereClauseLimit) {
+      throw new UnsupportedOperationException("Not yet implemented");
+   }
+   
+   @Override
    public Author select(final long id) {
       Author a = null;
       Cursor c =
