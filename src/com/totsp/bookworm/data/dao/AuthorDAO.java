@@ -45,7 +45,7 @@ public class AuthorDAO implements DAO<Author> {
          a.id = (id);
          a.name = (c.getString(0));
       }
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          c.close();
       }
       return a;
@@ -61,7 +61,7 @@ public class AuthorDAO implements DAO<Author> {
       if (c.moveToFirst()) {
          a = select(c.getLong(0));
       }
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          c.close();
       }
       return a;
@@ -82,7 +82,7 @@ public class AuthorDAO implements DAO<Author> {
             set.add(a);
          } while (c.moveToNext());
       }
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          c.close();
       }
       return set;
@@ -104,7 +104,7 @@ public class AuthorDAO implements DAO<Author> {
             authors.add(a);
          } while (c.moveToNext());
       }
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          c.close();
       }
       return authors;
@@ -163,16 +163,4 @@ public class AuthorDAO implements DAO<Author> {
                   new String[] { name });
       }
    }
-
-   /*
-   private Author buildFromCursor(final Cursor c) {
-      Author a = null;
-      if ((c != null) && !c.isClosed()) {
-         a = new Author();
-         a.name = c.getString(0);        
-      }
-      return a;
-   }
-   */
-
 }

@@ -328,7 +328,7 @@ public class BookForm extends TabActivity {
          newBook.bookUserData.read = (book.bookUserData.read);
 
          // rename the cover images too, if title changes
-         if (book.title != newBook.title) {
+         if (!book.title.equals(newBook.title)) {
             application.imageManager.renameBitmapSourceFile(book.title,
                      newBook.title, book.id);
          }

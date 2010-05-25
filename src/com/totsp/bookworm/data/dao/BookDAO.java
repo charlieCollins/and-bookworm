@@ -88,7 +88,7 @@ public class BookDAO implements DAO<Book> {
       if (c.moveToFirst()) {
          b = buildBookFromFullQueryCursor(c);
       }
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          c.close();
       }
       return b;
@@ -111,7 +111,7 @@ public class BookDAO implements DAO<Book> {
             set.add(b);
          } while (c.moveToNext());
       }
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          c.close();
       }
       return set;
@@ -135,7 +135,7 @@ public class BookDAO implements DAO<Book> {
                set.add(b);
             } while (c.moveToNext());
          }
-         if ((c != null) && !c.isClosed()) {
+         if (!c.isClosed()) {
             c.close();
          }
       }
@@ -157,7 +157,7 @@ public class BookDAO implements DAO<Book> {
             set.add(b);
          } while (c.moveToNext());
       }
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          c.close();
       }
       return set;
@@ -174,7 +174,7 @@ public class BookDAO implements DAO<Book> {
             set.add(c.getString(0));
          } while (c.moveToNext());
       }
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          c.close();
       }
       return set;
@@ -322,7 +322,7 @@ public class BookDAO implements DAO<Book> {
 
    private Book buildBookFromFullQueryCursor(final Cursor c) {
       Book b = null;
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          b = new Book();
          b.id = c.getLong(0);
          try {

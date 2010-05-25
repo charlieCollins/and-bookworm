@@ -73,7 +73,7 @@ public class BookEntryResult extends Activity {
 
       // several other activities can populate this one
       // *EITHER* use application.selectedBook (if from SEARCH)
-      // or ISBN must be present as intent extra to proceed
+      // or ISBN must be present as intent extra to proceed (in which case request will be made to get data)
       if (fromSearch && (application.selectedBook != null)) {
          setupBookResultTask =
                   new SetupBookResultTask(application.selectedBook);
@@ -85,7 +85,7 @@ public class BookEntryResult extends Activity {
                      + "to BookEntryResult (may not be an ISBN?) - " + isbn);
             BookMessageBean bean = new BookMessageBean();
             bean.code = isbn;
-            bean.message = getString(R.string.msgInvalidISBN);
+            ///bean.message = getString(R.string.msgInvalidISBN);
             setViewsForInvalidEntry(bean);
          } else {
             setupBookResultTask = new SetupBookResultTask();
@@ -221,25 +221,31 @@ public class BookEntryResult extends Activity {
                                        Constants.LOG_TAG,
                                        "GetBookDataTask book returned from data source null (using product code/ISBN - "
                                                 + isbns[0] + ").");
+                     /*
                      bean.message =
                               String.format(BookEntryResult.this
                                        .getString(R.string.msgFindError),
                                        isbns[0]);
+                                       */
                   }
                } else {
                   Log
                            .e(Constants.LOG_TAG,
                                     "GetBookDataTask book data source null, cannot add book.");
+                  /*
                   bean.message =
                            BookEntryResult.this
                                     .getString(R.string.msgDataSourceError);
+                                    */
                }
             } else {
                Log
                         .e(Constants.LOG_TAG,
                                  "GetBookDataTask product code/ISBN null, cannot add book.");
+               /*
                bean.message =
                         BookEntryResult.this.getString(R.string.msgISBNError);
+                        */
             }
          }
 
@@ -321,6 +327,6 @@ public class BookEntryResult extends Activity {
    class BookMessageBean {
       String code;
       Book book;
-      String message;
+      //String message;
    }
 }

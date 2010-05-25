@@ -142,7 +142,7 @@ public class DataManager {
       if (c.moveToFirst()) {
          result = c.getInt(0);
       }
-      if ((c != null) && !c.isClosed()) {
+      if (!c.isClosed()) {
          c.close();
       }
       return result;
