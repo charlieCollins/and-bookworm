@@ -20,8 +20,8 @@
 		style="@style/subsubtitledkred" android:maxLines="1"
 		android:ellipsize="end" />
 
-	<ImageView android:id="@+id/bookcover" android:layout_width="120px"
-		android:layout_height="150px" android:layout_marginTop="5dp"
+	<ImageView android:id="@+id/bookcover" android:layout_width="120dp"
+		android:layout_height="150dp" android:layout_marginTop="5dp"
 		android:layout_marginLeft="5dp" android:layout_below="@id/booksubtitle"
 		android:layout_gravity="left" />
 
