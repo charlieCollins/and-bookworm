@@ -11,8 +11,10 @@ import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -35,10 +37,12 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataConstants;
+import com.totsp.bookworm.data.DataCsvExporter;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.StringUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Main extends Activity {
@@ -49,7 +53,7 @@ public class Main extends Activity {
    private static final int MENU_ABOUT = 4;
    private static final int MENU_PREFS = 5;
    // after first 5 next items go in "more" selection
-   // /private static final int MENU_SEND = 6;
+   private static final int MENU_EXPORT_CSV = 6;
    private static final int MENU_MANAGE = 7;
    private static final int MENU_RESET_COVER_IMAGES = 8;
 
@@ -140,8 +144,7 @@ public class Main extends Activity {
                android.R.drawable.ic_menu_info_details);
       menu.add(0, Main.MENU_ABOUT, 4, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 5, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
-      // /menu.add(0, Main.this.MENU_SEND, 6,
-      // "Send Book List").setIcon(android.R.drawable.ic_menu_send);
+      menu.add(0, Main.MENU_EXPORT_CSV, 6, getString(R.string.menuExportCSV)).setIcon(android.R.drawable.ic_menu_send);
       menu.add(0, Main.MENU_MANAGE, 7, getString(R.string.menuManageData)).setIcon(android.R.drawable.ic_menu_manage);
       menu.add(0, Main.MENU_RESET_COVER_IMAGES, 8, getString(R.string.menuResetCoverImages)).setIcon(
                android.R.drawable.ic_menu_gallery);
@@ -181,12 +184,28 @@ public class Main extends Activity {
          case MENU_PREFS:
             startActivity(new Intent(Main.this, Preferences.class));
             return true;
-            // below first 5 are "more" options
-            /*
-             * case MENU_SEND: Toast.makeText(this,
-             * "TODO send as CSV or HTML or TEXT", Toast.LENGTH_SHORT).show();
-             * return true;
-             */
+         case MENU_EXPORT_CSV:
+            new AlertDialog.Builder(Main.this).setMessage(R.string.labelExportCSV).setPositiveButton(
+                     Main.this.getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface arg0, final int arg1) {
+                           DataCsvExporter exporter = new DataCsvExporter();
+                           // TODO select the current FILTERED list of books?
+                           exporter.export(application.dataManager.selectAllBooks());
+                           // send email using chooser, with CSV as attach
+                           Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                           sendIntent.setType("text/csv");
+                           sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"
+                                    + DataConstants.EXTERNAL_DATA_PATH + File.separator
+                                    + DataCsvExporter.EXPORT_FILENAME));
+                           sendIntent.putExtra(Intent.EXTRA_SUBJECT, "BookWorm CSV Export");
+                           sendIntent.putExtra(Intent.EXTRA_TEXT, "CSV export attached.");
+                           startActivity(Intent.createChooser(sendIntent, "Email:"));
+                        }
+                     }).setNegativeButton(Main.this.getString(R.string.btnNo), new DialogInterface.OnClickListener() {
+               public void onClick(final DialogInterface arg0, final int arg1) {
+               }
+            }).show();
+            return true;
          case MENU_MANAGE:
             startActivity(new Intent(Main.this, ManageData.class));
             return true;
@@ -487,9 +506,10 @@ public class Main extends Activity {
          Main.this.application.imageManager.clearAllBitmapSourceFiles();
          ArrayList<Book> books = Main.this.application.dataManager.selectAllBooks();
          for (int i = 0; i < books.size(); i++) {
-            Book b = books.get(i);            
+            Book b = books.get(i);
             publishProgress(String.format(Main.this.getString(R.string.msgProcessingBookX, b.title)));
             Main.this.application.imageManager.resetCoverImage(b);
+            SystemClock.sleep(100); // sleep a little, too many requests too quickly with large data sets is bad mojo
          }
          return null;
       }

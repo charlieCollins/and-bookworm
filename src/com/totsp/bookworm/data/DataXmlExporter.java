@@ -115,11 +115,7 @@ public class DataXmlExporter {
       }
       */
    }
-
-   public static boolean isExternalStorageAvail() {
-      return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-   }
-
+  
    /**
     * XmlBuilder is used to write XML tags (open and close, and a few attributes)
     * to a StringBuilder. Here we have nothing to do with IO or SQL, just a fancy StringBuilder. 

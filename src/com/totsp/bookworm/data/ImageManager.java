@@ -79,8 +79,10 @@ public class ImageManager {
          bitmapThumb.compress(Bitmap.CompressFormat.JPEG, 100, fos);
          fos.close();
       } catch (FileNotFoundException e) {
+         // don't fail fast here, just swallow and log?
          e.printStackTrace();
       } catch (IOException e) {
+         // don't fail fast here, just swallow and log?
          e.printStackTrace();
       }
    }

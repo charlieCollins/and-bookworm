@@ -30,6 +30,7 @@
 	<string name="menuListStats">List Stats</string>
 	<string name="menuAbout">About</string>
 	<string name="menuPrefs">Prefs</string>
+	<string name="menuExportCSV">Export Data as CSV</string>
 	<string name="menuManageData">Manage Database</string>
 	<string name="menuResetCoverImages">Reset Cover Images</string>
 	
@@ -50,7 +51,8 @@
     <string name="btnGenerateImage">Generate from title</string>
     <string name="btnExportData">Export DB to SD card</string>
     <string name="btnImportData">Import DB from SD card</string>
-    <string name="btnDeleteData">Delete all data from DB</string>    
+    <string name="btnDeleteData">Delete all data from DB</string>
+    <string name="btnExport">Export</string>    
     
     <string name="labelTitle">Title</string>
     <string name="labelSubtitle">Subtitle</string>
@@ -66,8 +68,10 @@
     <string name="labelAddBook">Add Book</string>     
     <string name="labelCurrentCover">Current cover image</string>
     <string name="labelHaveRead">Have read?</string>   
-    <string name="labelSearchTerms">Enter search term(s)</string>	
+    <string name="labelSearchTerms">Enter search term(s)</string>   
     <string name="labelMoreResults">-- Get more results --</string>	
+    <string name="labelExportCSV">Export (email) current list as a CSV file?</string> 
+    <string name="labelEmailAddress">Email Address</string>  
 	
 	<string name="msgInvalidISBN">ISBN format invalid (not ISBN 10 or ISBN 13), cannot retrieve result.</string>	
 	<string name="msgFindError">Book not found using ISBN/product code %s (may not be an ISBN?).</string>	

@@ -95,7 +95,7 @@ public class BookDAO implements DAO<Book> {
                         new String[] { DataConstants.BOOKID, DataConstants.ISBN10, DataConstants.ISBN13,
                                  DataConstants.TITLE, DataConstants.SUBTITLE, DataConstants.PUBLISHER,
                                  DataConstants.DESCRIPTION, DataConstants.FORMAT, DataConstants.SUBJECT,
-                                 DataConstants.DATEPUB }, null, null, null, null, DataConstants.TITLE + " desc", null);
+                                 DataConstants.DATEPUB }, null, null, null, null, DataConstants.TITLE + " asc", null);
       if (c.moveToFirst()) {
          do {
             Book b = buildBookFromFullQueryCursor(c);
@@ -115,7 +115,8 @@ public class BookDAO implements DAO<Book> {
       if (a != null) {
          Cursor c =
                   db.query(DataConstants.BOOKAUTHOR_TABLE, new String[] { DataConstants.BOOKID },
-                           DataConstants.AUTHORID + " = ?", new String[] { String.valueOf(a.id) }, null, null, null);
+                           DataConstants.AUTHORID + " = ?", new String[] { String.valueOf(a.id) }, null, null,
+                           DataConstants.TITLE + " asc", null);
          if (c.moveToFirst()) {
             do {
                // makes an addtl query for every name, not the best approach here
@@ -135,7 +136,7 @@ public class BookDAO implements DAO<Book> {
       // TODO do this in a single join
       Cursor c =
                db.query(DataConstants.BOOK_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.TITLE + " = ?",
-                        new String[] { title }, null, null, DataConstants.TITLE + " desc", null);
+                        new String[] { title }, null, null, DataConstants.TITLE + " asc", null);
       if (c.moveToFirst()) {
          do {
             // makes an addtl query for every title, not the best approach here
@@ -153,7 +154,7 @@ public class BookDAO implements DAO<Book> {
       ArrayList<String> set = new ArrayList<String>();
       Cursor c =
                db.query(DataConstants.BOOK_TABLE, new String[] { DataConstants.TITLE }, null, null, null, null,
-                        DataConstants.TITLE + " desc");
+                        DataConstants.TITLE + " asc");
       if (c.moveToFirst()) {
          do {
             set.add(c.getString(0));

@@ -7,14 +7,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.totsp.bookworm.data.DataXmlExporter;
+import com.totsp.bookworm.data.DataConstants;
+import com.totsp.bookworm.util.ExternalStorageUtil;
 import com.totsp.bookworm.util.FileUtil;
 
 import java.io.File;
@@ -47,10 +47,16 @@ public class ManageData extends Activity {
                      ManageData.this.getString(R.string.msgReplaceExistingExport)).setPositiveButton(
                      ManageData.this.getString(R.string.btnYes), new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface arg0, final int arg1) {
-                           Log.i(Constants.LOG_TAG, "exporting database to external storage");
-                           ManageData.this.exportDatabaseTask = new ExportDatabaseTask();
-                           ManageData.this.exportDatabaseTask.execute();
-                           ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
+                           if (ExternalStorageUtil.isExternalStorageAvail()) {
+                              Log.i(Constants.LOG_TAG, "exporting database to external storage");
+                              ManageData.this.exportDatabaseTask = new ExportDatabaseTask();
+                              ManageData.this.exportDatabaseTask.execute();
+                              ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
+                           } else {
+                              Toast.makeText(ManageData.this,
+                                       ManageData.this.getString(R.string.msgExternalStorageNAError),
+                                       Toast.LENGTH_SHORT).show();
+                           }
                         }
                      }).setNegativeButton(ManageData.this.getString(R.string.btnNo),
                      new DialogInterface.OnClickListener() {
@@ -67,7 +73,7 @@ public class ManageData extends Activity {
                      ManageData.this.getString(R.string.msgReplaceExistingData)).setPositiveButton(
                      ManageData.this.getString(R.string.btnYes), new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface arg0, final int arg1) {
-                           if (DataXmlExporter.isExternalStorageAvail()) {
+                           if (ExternalStorageUtil.isExternalStorageAvail()) {
                               Log.i(Constants.LOG_TAG, "importing database from external storage");
                               ManageData.this.importDatabaseTask = new ImportDatabaseTask();
                               ManageData.this.importDatabaseTask.execute("bookworm", "bookwormdata");
@@ -136,9 +142,9 @@ public class ManageData extends Activity {
       @Override
       protected Boolean doInBackground(final String... args) {
 
-         File dbFile = new File(Environment.getDataDirectory() + "/data/com.totsp.bookworm/databases/bookworm.db");
+         File dbFile = new File(DataConstants.DATABASE_PATH);
 
-         File exportDir = new File(Environment.getExternalStorageDirectory(), "bookwormdata");
+         File exportDir = new File(DataConstants.EXTERNAL_DATA_PATH);
          if (!exportDir.exists()) {
             exportDir.mkdirs();
          }
@@ -181,14 +187,14 @@ public class ManageData extends Activity {
       @Override
       protected String doInBackground(final String... args) {
 
-         File dbBackupFile = new File(Environment.getExternalStorageDirectory() + "/bookwormdata/bookworm.db");
+         File dbBackupFile = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + DataConstants.DATABASE_NAME);
          if (!dbBackupFile.exists()) {
             return ManageData.this.getString(R.string.msgImportFileMissingError);
          } else if (!dbBackupFile.canRead()) {
             return ManageData.this.getString(R.string.msgImportFileNonReadableError);
          }
 
-         File dbFile = new File(Environment.getDataDirectory() + "/data/com.totsp.bookworm/databases/bookworm.db");
+         File dbFile = new File(DataConstants.DATABASE_PATH);
          if (dbFile.exists()) {
             dbFile.delete();
          }
