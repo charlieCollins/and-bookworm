@@ -116,7 +116,7 @@ public class BookDAO implements DAO<Book> {
          Cursor c =
                   db.query(DataConstants.BOOKAUTHOR_TABLE, new String[] { DataConstants.BOOKID },
                            DataConstants.AUTHORID + " = ?", new String[] { String.valueOf(a.id) }, null, null,
-                           DataConstants.TITLE + " asc", null);
+                           null, null);
          if (c.moveToFirst()) {
             do {
                // makes an addtl query for every name, not the best approach here
