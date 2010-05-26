@@ -56,10 +56,9 @@ public class BookForm extends TabActivity {
    private Button retrieveCoverButton;
    private Button generateCoverButton;
 
-   // keep handle to AsyncTasks so cleanup in onPause can be done (else would just create new during usage)
+   // keep handle to AsyncTasks so cleanup in onPause can be done
    private RetrieveCoverImageTask RetrieveCoverImageTask;
    private GenerateCoverImageTask generateCoverImageTask;
-   ///private SelectCoverImageTask selectCoverImageTask;
    private SaveBookTask saveBookTask;
 
    @Override
@@ -70,7 +69,6 @@ public class BookForm extends TabActivity {
 
       RetrieveCoverImageTask = null;
       generateCoverImageTask = null;
-      ///selectCoverImageTask = null;
       saveBookTask = null;
 
       tabHost = getTabHost();

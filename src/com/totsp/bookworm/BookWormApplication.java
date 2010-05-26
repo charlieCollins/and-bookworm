@@ -53,12 +53,14 @@ public class BookWormApplication extends Application {
          bookDataSource = (BookDataSource) clazz.newInstance();
       } catch (ClassNotFoundException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
+         throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
       } catch (IllegalAccessException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
+         throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
       } catch (InstantiationException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
+         throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
       }
-      // TODO fail fast here if any except (rather than just Log)
    }
 
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id

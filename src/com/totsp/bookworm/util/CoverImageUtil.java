@@ -11,12 +11,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class CoverImageUtil {
+public final class CoverImageUtil {
 
    // note -- gbooks not implemented yet, needs OAuth login to allow cover images
    public static final int COVER_IMAGE_PROVIDER_GOOGLEBOOKS = 1; 
    public static final int COVER_IMAGE_PROVIDER_OPENLIBRARY = 2;
    public static final int COVER_IMAGE_PROVIDER_AMAZON = 3;
+   
+   private CoverImageUtil() {      
+   }
    
    // FUTURE - pass in coverImageProvider key and use specified provider
    // right now hard coded to us OL first and fall through to OZ

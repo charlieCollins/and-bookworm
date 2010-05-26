@@ -104,10 +104,8 @@ public class Main extends Activity {
       bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
             Main.this.cursor.moveToPosition(index);
-            // note - this is tricky, table doesn't have _id, but
-            // CursorAdapter requires it
-            // in the query we used "book.bid as _id" so here we have to use
-            // _id too
+            // NOTE - this is tricky, table doesn't have _id, but CursorAdapter requires it
+            // in the query we used "book.bid as _id" so here we have to use _id too
             int bookId = Main.this.cursor.getInt(Main.this.cursor.getColumnIndex("_id"));
             Book book = Main.this.application.dataManager.selectBook(bookId);
             if (book != null) {

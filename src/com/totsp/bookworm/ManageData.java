@@ -202,7 +202,6 @@ public class ManageData extends Activity {
          try {
             dbFile.createNewFile();
             FileUtil.copyFile(dbBackupFile, dbFile);
-            ///ManageData.this.application.dataManager.resetDbConnection();
             return null;
          } catch (IOException e) {
             Log.e(Constants.LOG_TAG, e.getMessage(), e);

@@ -12,8 +12,11 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-public class NetworkUtil {
+public final class NetworkUtil {
 
+   private NetworkUtil() {      
+   }
+   
    public static String getIpAddress() {
       try {
          for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {

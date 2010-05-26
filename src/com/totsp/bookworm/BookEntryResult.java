@@ -100,16 +100,13 @@ public class BookEntryResult extends Activity {
    }
 
    @Override
-   public void onSaveInstanceState(Bundle outState) {
-      application.selectedBook = book;
+   public void onSaveInstanceState(Bundle outState) {      
       super.onSaveInstanceState(outState);
    }
 
    @Override
    public void onRestoreInstanceState(Bundle inState) {
       super.onRestoreInstanceState(inState);
-      // we save the Book, also tell onCreate we are "From search" again so it doesn't make unnecessary net req
-      fromSearch = true;
    }
 
    @Override

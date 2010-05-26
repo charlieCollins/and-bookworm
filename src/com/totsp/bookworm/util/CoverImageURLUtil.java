@@ -13,6 +13,9 @@ public final class CoverImageURLUtil {
    // Because google books seems to not allow cover links unauthenticated, use another source.
    // OpenLibrary seems great - http://openlibrary.org/ - make them an Android app too ;).
 
+   private CoverImageURLUtil() {      
+   }
+   
    public static final String getCoverUrlMedium(final String isbn, final int providerKey) {
       switch (providerKey) {
          case CoverImageUtil.COVER_IMAGE_PROVIDER_AMAZON:

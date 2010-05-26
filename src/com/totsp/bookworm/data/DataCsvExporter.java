@@ -47,7 +47,7 @@ public class DataCsvExporter {
    
    private String cleanString(String in) {
       String result = in;     
-      in = in.replaceAll("\"", "\\\\\"");
+      in = in.replaceAll("\"", "");
       if (in.contains(",") || in.contains("\n")) {
          result = "\"" + in + "\"";
       } 
