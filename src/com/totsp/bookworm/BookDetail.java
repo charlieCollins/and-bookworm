@@ -61,7 +61,7 @@ public class BookDetail extends Activity {
 
       readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
          public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
-            // NOTE not sure why change listener fires when onCreate is init, but does
+            // TODO not sure why change listener fires when onCreate is init, but does
             BookDetail.this.saveReadStatusEdit();
          }
       });
@@ -180,8 +180,7 @@ public class BookDetail extends Activity {
             startActivity(new Intent(this, BookForm.class));
             return true;
          case MENU_WEB_GOOGLE:
-            // TODO add fallback book isbn13 support
-            // TODO other Locales?
+            // TODO other Locales for GOOG URL?
             uri = Uri.parse("http://books.google.com/books?isbn=" + application.selectedBook.isbn10);
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             return true;

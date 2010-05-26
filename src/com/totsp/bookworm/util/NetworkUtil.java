@@ -1,5 +1,8 @@
 package com.totsp.bookworm.util;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.NetworkInfo.State;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
@@ -26,5 +29,17 @@ public class NetworkUtil {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
       }
       return null;
+   }
+
+   public static boolean connectionPresent(final ConnectivityManager cMgr) {
+      if (cMgr != null) {
+         NetworkInfo netInfo = cMgr.getActiveNetworkInfo();
+         if ((netInfo != null) && (netInfo.getState() != null)) {
+            return netInfo.getState().equals(State.CONNECTED);
+         } else {
+            return false;
+         }
+      }
+      return false;
    }
 }

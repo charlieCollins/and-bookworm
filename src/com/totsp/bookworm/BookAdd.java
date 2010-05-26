@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
 
@@ -23,6 +22,8 @@ public class BookAdd extends Activity {
    private Button scanButton;
    private Button searchButton;
    private Button formButton;
+   
+   private ConnectivityManager cMgr;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -51,12 +52,14 @@ public class BookAdd extends Activity {
             BookAdd.this.startActivity(new Intent(BookAdd.this, BookForm.class));
          }
       });
+      
+      cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
    }
 
    @Override
    public void onStart() {
       super.onStart();
-      if (connectionPresent()) {
+      if (NetworkUtil.connectionPresent(cMgr)) {
          scanButton.setEnabled(true);
          searchButton.setEnabled(true);
       } else {
@@ -79,8 +82,8 @@ public class BookAdd extends Activity {
          if ((scanResult.getFormatName() != null) && !scanResult.getFormatName().equals("EAN_13")) {
             // if it's not EAN 13 we are likely gonna have issues 
             // we are using PRODUCT_MODE which limits to UPC and EAN
-            // we *might* be able to parse ISBN from UPC, but pattern is not understood, yet
-            // if it's EAN-8 though, we are screwed
+            // we *might* be able to parse ISBN from UPC, but not always
+            // if it's EAN-8 though, we are screwed (offer user "scanning tips" in menu)
             // for example UPC 008819265580
             if (scanResult.getFormatName().startsWith("UPC")) {
                isbn = scanResult.getContents();
@@ -101,15 +104,5 @@ public class BookAdd extends Activity {
          scanIntent.putExtra(Constants.ISBN, isbn);
          startActivity(scanIntent);
       }
-   }
-
-   private boolean connectionPresent() {
-      ConnectivityManager cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-      NetworkInfo netInfo = cMgr.getActiveNetworkInfo();
-      if ((netInfo != null) && (netInfo.getState() != null)) {
-         return netInfo.getState().equals(State.CONNECTED);
-      } else {
-         return false;
-      }
-   }
+   }    
 }

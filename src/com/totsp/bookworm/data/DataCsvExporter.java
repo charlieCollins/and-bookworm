@@ -45,9 +45,9 @@ public class DataCsvExporter {
       }
    }
    
-   // TODO needs to be smarter than this, what it already has quotes? etc.
-   private String cleanString(final String in) {
-      String result = in;      
+   private String cleanString(String in) {
+      String result = in;     
+      in = in.replaceAll("\"", "\\\\\"");
       if (in.contains(",") || in.contains("\n")) {
          result = "\"" + in + "\"";
       } 

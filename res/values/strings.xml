@@ -70,7 +70,7 @@
     <string name="labelHaveRead">Have read?</string>   
     <string name="labelSearchTerms">Enter search term(s)</string>   
     <string name="labelMoreResults">-- Get more results --</string>	
-    <string name="labelExportCSV">Export (email) current list as a CSV file?</string> 
+    <string name="labelExportCSV">Export (email) current book data list as a CSV file?</string> 
     <string name="labelEmailAddress">Email Address</string>  
 	
 	<string name="msgInvalidISBN">ISBN format invalid (not ISBN 10 or ISBN 13), cannot retrieve result.</string>	

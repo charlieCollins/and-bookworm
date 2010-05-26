@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.StringUtil;
-import com.totsp.bookworm.util.CoverImageUtil;
 
 import java.util.ArrayList;
 
@@ -84,7 +83,6 @@ public class BookEntryResult extends Activity {
                      + "to BookEntryResult (may not be an ISBN?) - " + isbn);
             BookMessageBean bean = new BookMessageBean();
             bean.code = isbn;
-            ///bean.message = getString(R.string.msgInvalidISBN);
             setViewsForInvalidEntry(bean);
          } else {
             setupBookResultTask = new SetupBookResultTask();
@@ -170,7 +168,7 @@ public class BookEntryResult extends Activity {
 
       private Book book;
       private String coverImageProviderKey;
-      // TODO hard coded to GoogleBookDataSource for now
+      // NOTE - hard coded to GoogleBookDataSource for now
       private final GoogleBookDataSource gbs;
 
       public SetupBookResultTask() {
@@ -213,28 +211,13 @@ public class BookEntryResult extends Activity {
                   if (bean.book == null) {
                      Log.e(Constants.LOG_TAG,
                               "GetBookDataTask book returned from data source null (using product code/ISBN - "
-                                       + isbns[0] + ").");
-                     /*
-                     bean.message =
-                              String.format(BookEntryResult.this
-                                       .getString(R.string.msgFindError),
-                                       isbns[0]);
-                                       */
+                                       + isbns[0] + ").");                     
                   }
                } else {
-                  Log.e(Constants.LOG_TAG, "GetBookDataTask book data source null, cannot add book.");
-                  /*
-                  bean.message =
-                           BookEntryResult.this
-                                    .getString(R.string.msgDataSourceError);
-                                    */
+                  Log.e(Constants.LOG_TAG, "GetBookDataTask book data source null, cannot add book.");                  
                }
             } else {
-               Log.e(Constants.LOG_TAG, "GetBookDataTask product code/ISBN null, cannot add book.");
-               /*
-               bean.message =
-                        BookEntryResult.this.getString(R.string.msgISBNError);
-                        */
+               Log.e(Constants.LOG_TAG, "GetBookDataTask product code/ISBN null, cannot add book.");              
             }
          }
 
