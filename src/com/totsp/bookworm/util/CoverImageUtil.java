@@ -35,8 +35,8 @@ public final class CoverImageUtil {
          try {
             URL url = new URL(imageUrl);
             URLConnection conn = url.openConnection();
-            conn.setConnectTimeout(4000);
-            conn.setReadTimeout(4000);
+            conn.setConnectTimeout(6000);
+            conn.setReadTimeout(6000);
             conn.connect();
             bis = new BufferedInputStream(conn.getInputStream(), 8192);
             BitmapFactory.Options options = new BitmapFactory.Options();
