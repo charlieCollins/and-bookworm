@@ -8,40 +8,60 @@ import com.totsp.bookworm.Constants;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 
 public final class CoverImageUtil {
 
    // note -- gbooks not implemented yet, needs OAuth login to allow cover images
-   public static final int COVER_IMAGE_PROVIDER_GOOGLEBOOKS = 1; 
+   public static final int COVER_IMAGE_PROVIDER_GOOGLEBOOKS = 1;
    public static final int COVER_IMAGE_PROVIDER_OPENLIBRARY = 2;
    public static final int COVER_IMAGE_PROVIDER_AMAZON = 3;
-   
-   private CoverImageUtil() {      
+
+   private CoverImageUtil() {
    }
-   
+
    // FUTURE - pass in coverImageProvider key and use specified provider
    // right now hard coded to us OL first and fall through to OZ
    public static Bitmap getCoverImageFromNetwork(final String isbn, final int providerKey) {
       Bitmap coverImageBitmap = null;
       String imageUrl = CoverImageURLUtil.getCoverUrlMedium(isbn, providerKey);
-      
+
       // TODO implement via HttpHelper and not URLConnection
       // NOTE - make sure this is called outside UI Thread
+      BufferedInputStream bis = null;
       if ((imageUrl != null) && !imageUrl.equals("")) {
          try {
             URL url = new URL(imageUrl);
             URLConnection conn = url.openConnection();
-            conn.setConnectTimeout(8000);
+            conn.setConnectTimeout(4000);
+            conn.setReadTimeout(4000);
             conn.connect();
-            BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), 8192);
-            coverImageBitmap = BitmapFactory.decodeStream(bis);
+            bis = new BufferedInputStream(conn.getInputStream(), 8192);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            //options.inSampleSize = 2; // reduces memory, but cuts image quality a lot too
+            options.inInputShareable = true;
+            options.inPurgeable = true;
+            coverImageBitmap = BitmapFactory.decodeStream(bis, null, options);
             if ((coverImageBitmap != null) && (coverImageBitmap.getWidth() < 10)) {
                coverImageBitmap = null;
             }
+            Log.d(Constants.LOG_TAG, " FINISHED");
          } catch (IOException e) {
-            Log.e(Constants.LOG_TAG, " ", e);
+            if (e instanceof SocketTimeoutException) {
+               Log.i(Constants.LOG_TAG, "SocketTimeoutException retrieving cover image for URL:" + imageUrl);
+            } else {
+               Log.e(Constants.LOG_TAG, " ", e);
+            }
+         } finally {
+            if (bis != null) {
+               try {
+                  bis.close();
+               } catch (IOException e) {
+                  // swallow
+               }
+            }
          }
       }
 

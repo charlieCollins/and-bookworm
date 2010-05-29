@@ -3,10 +3,12 @@ package com.totsp.bookworm;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.util.StringUtil;
 
 import java.util.ArrayList;
@@ -46,12 +49,16 @@ public class BookEntryResult extends Activity {
    boolean fromSearch;
 
    private SetupBookResultTask setupBookResultTask;
+   
+   private ConnectivityManager cMgr;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.bookentryresult);
       application = (BookWormApplication) getApplication();
+      
+      cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
       setupBookResultTask = null;
 
@@ -164,7 +171,7 @@ public class BookEntryResult extends Activity {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
 
       private Book book;
-      private String coverImageProviderKey;
+      //private String coverImageProviderKey;
       // NOTE - hard coded to GoogleBookDataSource for now
       private final GoogleBookDataSource gbs;
 
@@ -184,9 +191,9 @@ public class BookEntryResult extends Activity {
       protected void onPreExecute() {
          dialog.setMessage(BookEntryResult.this.getString(R.string.msgRetrievingBookData));
          dialog.show();
-         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BookEntryResult.this);
+         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BookEntryResult.this);
          // default to OpenLibrary(2) for cover image provider - for now (doesn't require login)
-         coverImageProviderKey = prefs.getString("coverimagelistpref", "2");
+         //coverImageProviderKey = prefs.getString("coverimagelistpref", "2");
       }
 
       @Override
@@ -220,7 +227,12 @@ public class BookEntryResult extends Activity {
 
          // handle cover image 
          if (bean.book != null) {
-            bean.book.coverImage = application.imageManager.getOrCreateCoverImage(bean.book);
+            if (NetworkUtil.connectionPresent(cMgr)) {
+               bean.book.coverImage = application.imageManager.getOrCreateCoverImage(bean.book);
+            } else {
+               bean.book.coverImage = application.imageManager.createCoverImage(bean.book.title);
+               Log.i(Constants.LOG_TAG, "Cover retrieval for book " + bean.book.title + " skipped because network was not available.");
+            }
          }
 
          return bean;
