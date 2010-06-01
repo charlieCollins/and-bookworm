@@ -16,7 +16,7 @@
         BookWorm project
         site&lt;/a&gt;.
         &lt;br /&gt;&lt;br /&gt;
-        Thanks to Google Books and Open Library for making BookWorm possible (these are the current data providers, more are planned in the future).
+        Thanks to Google Books and Open Library for making BookWorm possible (these are the current data providers).
     </string>
 	
 	<string name="menuScanTips">Scanning Tips</string>
