@@ -115,8 +115,8 @@ public class BookDAO implements DAO<Book> {
       if (a != null) {
          Cursor c =
                   db.query(DataConstants.BOOKAUTHOR_TABLE, new String[] { DataConstants.BOOKID },
-                           DataConstants.AUTHORID + " = ?", new String[] { String.valueOf(a.id) }, null, null,
-                           null, null);
+                           DataConstants.AUTHORID + " = ?", new String[] { String.valueOf(a.id) }, null, null, null,
+                           null);
          if (c.moveToFirst()) {
             do {
                // makes an addtl query for every name, not the best approach here
@@ -202,13 +202,18 @@ public class BookDAO implements DAO<Book> {
             bookInsertStmt.bindLong(9, b.datePubStamp);
             bookId = bookInsertStmt.executeInsert();
 
-            // insert bookauthors
-            insertBookAuthorData(bookId, authorIds);
+            if (bookId > 0) {
+               // insert bookauthors
+               insertBookAuthorData(bookId, authorIds);
 
-            // insert bookuserdata
-            bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read, null));
+               // insert bookuserdata
+               bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read, null));
 
-            db.setTransactionSuccessful();
+               db.setTransactionSuccessful();
+            } else {
+               Log.e(Constants.LOG_TAG,
+                        "Error book insert failed, book will not be persisted, transaction rolled back.");
+            }
          } catch (SQLException e) {
             bookId = 0;
             Log.e(Constants.LOG_TAG, "Error inserting book.", e);
