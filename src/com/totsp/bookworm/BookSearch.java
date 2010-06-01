@@ -81,7 +81,7 @@ public class BookSearch extends Activity {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
             // don't redo the search, you have the BOOK itself (don't pass the ISBN, use the Book)
             application.selectedBook = BookSearch.this.parsedBooks.get(index);
-            ;
+
             BookSearch.this.selectorPosition = index - 1;
             Intent intent = new Intent(BookSearch.this, BookEntryResult.class);
             intent.putExtra(BookSearch.FROM_SEARCH, true);
@@ -278,10 +278,13 @@ public class BookSearch extends Activity {
                   BookSearch.this.parsedBooks.add(b);
                }
             }
+         } else {
+            BookSearch.this.parsedBooks.clear();
 
-            BookSearch.this.bindAdapter();
-            BookSearch.this.getMoreData.setBackgroundResource(android.R.color.transparent);
          }
+
+         BookSearch.this.bindAdapter();
+         BookSearch.this.getMoreData.setBackgroundResource(android.R.color.transparent);
       }
    }
 }
