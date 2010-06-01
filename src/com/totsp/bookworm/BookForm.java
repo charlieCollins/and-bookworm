@@ -324,7 +324,6 @@ public class BookForm extends TabActivity {
          } else if ((book != null) && (book.id == 0)) {
             newBook = true;
             long bookId = BookForm.this.application.dataManager.insertBook(book);
-            System.out.println("bookId after save" + bookId);
             if (bookId > 0) {
                BookForm.this.application.establishSelectedBook(bookId);
                // also auto store generated cover with new form based book insert

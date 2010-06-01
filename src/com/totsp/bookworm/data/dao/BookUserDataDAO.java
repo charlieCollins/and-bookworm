@@ -2,6 +2,7 @@ package com.totsp.bookworm.data.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
@@ -26,7 +27,7 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       // statements
       bookUserDataInsertStmt = db.compileStatement(BookUserDataDAO.BOOKUSERDATA_INSERT);
    }
-   
+
    @Override
    public Cursor getCursor(final String orderBy, final String whereClauseLimit) {
       throw new UnsupportedOperationException("Not yet implemented");
@@ -76,16 +77,24 @@ public class BookUserDataDAO implements DAO<BookUserData> {
 
    @Override
    public long insert(final BookUserData b) {
+      long id = 0L;
       bookUserDataInsertStmt.clearBindings();
       bookUserDataInsertStmt.bindLong(1, b.bookId);
       bookUserDataInsertStmt.bindLong(2, b.read ? 1 : 0);
       bookUserDataInsertStmt.bindLong(3, b.rating);
       if (b.blurb != null) {
          bookUserDataInsertStmt.bindString(4, b.blurb);
+      }     
+      try {
+         id = bookUserDataInsertStmt.executeInsert();
+      } catch (SQLiteConstraintException e) {
+         // not sure how this occurs, but sometimes get constraint except
+         // for bookuserdata -- if this occurs, delete the bookuserdata row
+         // and stop (this will clean up the bad data, user will have to re-add book?)
+         this.delete(b.bookId);         
+         
       }
-      // was getting ConstraintExcept here, 
-      // seems trans not rolled back in some insert scenarios?
-      return bookUserDataInsertStmt.executeInsert();
+      return id;
    }
 
    @Override

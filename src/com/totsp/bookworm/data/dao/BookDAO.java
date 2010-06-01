@@ -201,7 +201,6 @@ public class BookDAO implements DAO<Book> {
             bookInsertStmt.bindString(8, b.subject);
             bookInsertStmt.bindLong(9, b.datePubStamp);
             bookId = bookInsertStmt.executeInsert();
-            System.out.println("bookId after execute - " + bookId);
 
             // insert bookauthors
             insertBookAuthorData(bookId, authorIds);

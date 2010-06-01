@@ -259,10 +259,4 @@ public class HttpHelper {
          return -1;
       }
    }
-
-   public static void main(final String[] args) {
-      HttpHelper helper = new HttpHelper();
-      String response = helper.performGet("http://www.google.com");
-      System.out.println("response - " + response);
-   }
 }
