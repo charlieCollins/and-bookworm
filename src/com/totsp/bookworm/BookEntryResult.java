@@ -226,7 +226,7 @@ public class BookEntryResult extends Activity {
          }
 
          // handle cover image 
-         if (bean.book != null) {
+         if (bean.book != null && bean.book.coverImage == null) {
             if (NetworkUtil.connectionPresent(cMgr)) {
                bean.book.coverImage = application.imageManager.getOrCreateCoverImage(bean.book);
             } else {
