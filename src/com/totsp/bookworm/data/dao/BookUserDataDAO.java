@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
+import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.model.BookUserData;
 
@@ -84,15 +86,16 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       bookUserDataInsertStmt.bindLong(3, b.rating);
       if (b.blurb != null) {
          bookUserDataInsertStmt.bindString(4, b.blurb);
-      }     
+      }
       try {
          id = bookUserDataInsertStmt.executeInsert();
       } catch (SQLiteConstraintException e) {
          // not sure how this occurs, but sometimes get constraint except
          // for bookuserdata -- if this occurs, delete the bookuserdata row
          // and stop (this will clean up the bad data, user will have to re-add book?)
-         this.delete(b.bookId);         
-         
+         this.delete(b.bookId);
+         Log.i(Constants.LOG_TAG, "Constraint issue inserting bookuserdata, cleaning up table (bookId=" + b.bookId
+                  + ")");
       }
       return id;
    }
