@@ -96,6 +96,7 @@ public class BookUserDataDAO implements DAO<BookUserData> {
          this.delete(b.bookId);
          Log.i(Constants.LOG_TAG, "Constraint issue inserting bookuserdata, cleaning up table (bookId=" + b.bookId
                   + ")");
+         Log.e(Constants.LOG_TAG, "Constraint error " + e.getMessage(), e);
       }
       return id;
    }
