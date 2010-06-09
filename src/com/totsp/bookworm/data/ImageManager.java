@@ -64,6 +64,11 @@ public class ImageManager {
          if (!exportDir.exists()) {
             exportDir.mkdirs();
          }
+         
+         File noMedia = new File(exportDir.getAbsolutePath() + "/.nomedia");
+         if (!noMedia.exists()) {
+            noMedia.createNewFile();
+         }
 
          FileOutputStream fos = null;
 
