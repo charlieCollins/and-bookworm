@@ -102,7 +102,8 @@ public class BookSearch extends Activity {
       getMoreData.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             int startIndex = BookSearch.this.parsedBooks.size() + 1;
-            new SearchTask().execute(BookSearch.this.searchInput.getText().toString(), String.valueOf(startIndex));
+            BookSearch.this.searchTask = new SearchTask();
+            BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), String.valueOf(startIndex));
             v.setBackgroundResource(R.color.red1);
          }
       });
