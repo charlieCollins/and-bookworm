@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 // the file handling stuff here certainly isn't the best
 // but files are small and this is rarely used, so not a bottleneck anyway
@@ -82,7 +83,7 @@ public class DataCsvExporter {
             sb.append(b.format != null ? cleanString(b.format) + "," : ",");
             sb.append(b.subject != null ? cleanString(b.subject) + "," : ",");
             sb.append(b.publisher != null ? cleanString(b.publisher) + "," : ",");
-            sb.append(DateUtil.parse(String.valueOf(b.datePubStamp)) + ",");
+            sb.append(DateUtil.format(new Date(b.datePubStamp)) + ",");
             if (b.bookUserData != null) {
                sb.append(b.bookUserData.rating + ",");
                sb.append(b.bookUserData.read + ",");
