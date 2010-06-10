@@ -8,7 +8,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.os.Environment;
+import android.util.Log;
 
+import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.CoverImageUtil;
 
@@ -64,7 +66,7 @@ public class ImageManager {
          if (!exportDir.exists()) {
             exportDir.mkdirs();
          }
-         
+
          File noMedia = new File(exportDir.getAbsolutePath() + "/.nomedia");
          if (!noMedia.exists()) {
             noMedia.createNewFile();
@@ -129,8 +131,8 @@ public class ImageManager {
    }
 
    public Bitmap getOrCreateCoverImage(final Book b) {
-      Bitmap coverImageBitmap = null;      
-      
+      Bitmap coverImageBitmap = null;
+
       String isbn = b.isbn10;
       if (isbn == null || isbn.equals("")) {
          isbn = b.isbn13;
@@ -138,13 +140,13 @@ public class ImageManager {
 
       // for now hard code providers (later will be pref)
       // use OL, then AZ, then generate (in that order)
-      if (isbn != null) {         
+      if (isbn != null) {
          coverImageBitmap =
                   CoverImageUtil.getCoverImageFromNetwork(isbn, CoverImageUtil.COVER_IMAGE_PROVIDER_OPENLIBRARY);
          if (coverImageBitmap == null) {
             coverImageBitmap =
                      CoverImageUtil.getCoverImageFromNetwork(isbn, CoverImageUtil.COVER_IMAGE_PROVIDER_AMAZON);
-         }          
+         }
          if (coverImageBitmap == null) {
             coverImageBitmap = createCoverImage(b.title);
          }
@@ -225,13 +227,21 @@ public class ImageManager {
       String line = "";
       if ((words != null && words.length > 0) && (wordStart < words.length)) {
          for (int i = wordStart; i < words.length; i++) {
-            if (line == null) {
-               line = words[i];
-            } else {
-               line += " " + words[i];
-            }
-            if (line.length() >= maxLineLength - 2) {
-               break;
+            try {
+               if (line == null) {
+                  line = words[i];
+               } else {
+                  line += " " + words[i];
+               }
+               if (line.length() >= maxLineLength - 2) {
+                  break;
+               }
+            } catch (ArrayIndexOutOfBoundsException e) {
+               // very rare error on line 232 above reported in market (has happened 4 times)
+               // must be some strange titles that are causing this (I have never been able to repro)
+               // if it happens, log it, and just return empty String to avoid FC?
+               Log.i(Constants.LOG_TAG, "Error parsing title string into words, returning line up to this point.", e);
+               return line;
             }
          }
       }
