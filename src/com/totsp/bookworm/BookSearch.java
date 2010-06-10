@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class BookSearch extends Activity {
 
    public static final String FROM_SEARCH = "FROM_SEARCH";
-
+   
    BookWormApplication application;
 
    private EditText searchInput;
@@ -41,12 +41,24 @@ public class BookSearch extends Activity {
    ArrayList<Book> parsedBooks;
    int selectorPosition = 0;
 
-   private ArrayAdapter<Book> adapter;
+   private BookSearchAdapter adapter;
 
    private SearchTask searchTask;
 
-   private boolean footerViewShown;
-   private boolean fromEntryResult;
+   private boolean footerViewEnabled;
+   
+   private String currSearchTerm = "";
+   private String prevSearchTerm = "";
+   
+   private OnClickListener getMoreDataClickListener = new OnClickListener() {
+      public void onClick(final View v) {
+         int startIndex = BookSearch.this.parsedBooks.size() + 1;
+         BookSearch.this.searchTask = new SearchTask();
+         BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), String
+                  .valueOf(startIndex));
+         v.setBackgroundResource(R.color.red1);
+      }
+   };
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -56,9 +68,13 @@ public class BookSearch extends Activity {
       application = (BookWormApplication) getApplication();
 
       searchTask = null;
-      parsedBooks = null;
-      adapter = null;
+      parsedBooks = new ArrayList<Book>();
+      adapter = new BookSearchAdapter(parsedBooks);
 
+      LayoutInflater li = getLayoutInflater();
+      getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);      
+      getMoreData.setVisibility(View.INVISIBLE);
+      
       searchInput = (EditText) findViewById(R.id.bookentrysearchinput);
       // if user hits "enter" on keyboard, go ahead and submit, no need for newlines in the search box
       searchInput.setOnKeyListener(new OnKeyListener() {
@@ -88,6 +104,9 @@ public class BookSearch extends Activity {
             BookSearch.this.startActivity(intent);
          }
       });
+      // note you can't dynamically add/remove header/footer views -- must be there before setAdapter (by design?)
+      searchResults.addFooterView(getMoreData);
+      searchResults.setAdapter(adapter);
 
       searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
@@ -95,35 +114,15 @@ public class BookSearch extends Activity {
             BookSearch.this.searchTask = new SearchTask();
             BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), "1");
          }
-      });
-
-      LayoutInflater li = getLayoutInflater();
-      getMoreData = (TextView) li.inflate(R.layout.search_listview_footer, null);
-      getMoreData.setOnClickListener(new OnClickListener() {
-         public void onClick(final View v) {
-            int startIndex = BookSearch.this.parsedBooks.size() + 1;
-            BookSearch.this.searchTask = new SearchTask();
-            BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), String.valueOf(startIndex));
-            v.setBackgroundResource(R.color.red1);
-         }
-      });
-
-      // if returning to search from search result reload prev search data
-      fromEntryResult = getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false);
-      if (fromEntryResult) {
-         restoreFromCache();
-      }
-
-      // if search data exists after an orientation change, reload it
-      Object lastNonConfig = getLastNonConfigurationInstance();
-      if ((lastNonConfig != null) && (lastNonConfig instanceof Boolean)) {
-         restoreFromCache();
-      }
+      });    
 
       // do not enable the soft keyboard unless user explicitly selects textedit
       // Android seems to have an IMM bug concerning this on devices with only soft keyboard
       // http://code.google.com/p/android/issues/detail?id=7115
       getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+      this.restoreFromCache();
+      this.resetAdapter();
    }
 
    @Override
@@ -131,11 +130,13 @@ public class BookSearch extends Activity {
       super.onStart();
    }
 
+   /*
    @Override
    public Object onRetainNonConfigurationInstance() {
       // never pass a View/Drawable/Adapter etc here or will leak Activity
       return true;
    }
+   */
 
    @Override
    public void onPause() {
@@ -164,21 +165,42 @@ public class BookSearch extends Activity {
       return super.onKeyDown(keyCode, event);
    }
 
-   private void bindAdapter() {
-
-      // because we add and remove footer view dynamically
-      // and because list set here is small, we just rebind the list
-      // rather than calling notifyDataSetChanged, etc.
-
-      // add footer view BEFORE setting adapter
-      if (!parsedBooks.isEmpty() && !footerViewShown) {
-         searchResults.addFooterView(getMoreData);
-         footerViewShown = true;
+   private void enableFooterView() {
+      if (!footerViewEnabled) {         
+         footerViewEnabled = true;
+      }
+      getMoreData.setVisibility(View.VISIBLE);
+      getMoreData.setOnClickListener(getMoreDataClickListener);
+   }
+   
+   private void disableFooterView() {
+      if (footerViewEnabled) {
+         footerViewEnabled = false;
+      }
+      getMoreData.setVisibility(View.INVISIBLE);
+      getMoreData.setOnClickListener(null);
+      getMoreData.setBackgroundResource(android.R.color.transparent);
+   }
+   
+   private void resetAdapter() {
+      if (!parsedBooks.isEmpty() && !footerViewEnabled) {
+         this.enableFooterView();         
       }
 
-      adapter = new BookSearchAdapter(BookSearch.this.parsedBooks);
+      // TODO why can't I add all? must be doing this wrong
+      if (!parsedBooks.isEmpty()) {
+         if (!prevSearchTerm.equals(currSearchTerm)) {
+            adapter.clear();
+         }
+         for (Book book : parsedBooks) {
+            adapter.add(book);
+         }
+      } else {
+         adapter.clear();
+      }
+      
+      adapter.notifyDataSetChanged();
 
-      searchResults.setAdapter(adapter);
       if (selectorPosition > 2) {
          searchResults.setSelection(selectorPosition - 1);
       }
@@ -189,8 +211,8 @@ public class BookSearch extends Activity {
       if (application.bookCacheList != null) {
          selectorPosition = application.lastSearchListPosition;
          parsedBooks = application.bookCacheList;
-         bindAdapter();
       }
+
       if (application.lastSearchTerm != null) {
          searchInput.setText(application.lastSearchTerm);
       }
@@ -257,7 +279,9 @@ public class BookSearch extends Activity {
       @Override
       protected ArrayList<Book> doInBackground(final String... args) {
          String searchTerm = args[0];
-         int startIndex = Integer.valueOf(args[1]);
+         BookSearch.this.prevSearchTerm = BookSearch.this.currSearchTerm;
+         BookSearch.this.currSearchTerm = searchTerm;
+         int startIndex = Integer.valueOf(args[1]);         
          if (searchTerm != null) {
             searchTerm = URLEncoder.encode(searchTerm);
             return gbs.getBooks(searchTerm, startIndex);
@@ -281,11 +305,10 @@ public class BookSearch extends Activity {
             }
          } else {
             BookSearch.this.parsedBooks.clear();
-
          }
 
-         BookSearch.this.bindAdapter();
-         BookSearch.this.getMoreData.setBackgroundResource(android.R.color.transparent);
+         BookSearch.this.disableFooterView();
+         BookSearch.this.resetAdapter();         
       }
    }
 }
