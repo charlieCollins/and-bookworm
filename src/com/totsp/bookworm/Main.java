@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -37,7 +38,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.DataConstants;
-import com.totsp.bookworm.data.DataCsvExporter;
+import com.totsp.bookworm.data.CsvManager;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.StringUtil;
@@ -54,8 +55,9 @@ public class Main extends Activity {
    private static final int MENU_PREFS = 5;
    // after first 5 next items go in "more" selection
    private static final int MENU_EXPORT_CSV = 6;
-   private static final int MENU_MANAGE = 7;
-   private static final int MENU_RESET_COVER_IMAGES = 8;
+   private static final int MENU_IMPORT_CSV = 7;
+   private static final int MENU_MANAGE = 8;
+   private static final int MENU_RESET_COVER_IMAGES = 9;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -143,8 +145,9 @@ public class Main extends Activity {
       menu.add(0, Main.MENU_ABOUT, 4, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 5, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
       menu.add(0, Main.MENU_EXPORT_CSV, 6, getString(R.string.menuExportCSV)).setIcon(android.R.drawable.ic_menu_send);
-      menu.add(0, Main.MENU_MANAGE, 7, getString(R.string.menuManageData)).setIcon(android.R.drawable.ic_menu_manage);
-      menu.add(0, Main.MENU_RESET_COVER_IMAGES, 8, getString(R.string.menuResetCoverImages)).setIcon(
+      menu.add(0, Main.MENU_IMPORT_CSV, 7, "Import Data as CSV").setIcon(android.R.drawable.ic_menu_send);      
+      menu.add(0, Main.MENU_MANAGE, 8, getString(R.string.menuManageData)).setIcon(android.R.drawable.ic_menu_manage);
+      menu.add(0, Main.MENU_RESET_COVER_IMAGES, 9, getString(R.string.menuResetCoverImages)).setIcon(
                android.R.drawable.ic_menu_gallery);
       return super.onCreateOptionsMenu(menu);
    }
@@ -186,7 +189,7 @@ public class Main extends Activity {
             new AlertDialog.Builder(Main.this).setMessage(R.string.labelExportCSV).setPositiveButton(
                      Main.this.getString(R.string.btnYes), new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface arg0, final int arg1) {
-                           DataCsvExporter exporter = new DataCsvExporter();
+                           CsvManager exporter = new CsvManager();
                            // TODO select the current FILTERED list of books?
                            exporter.export(application.dataManager.selectAllBooks());
                            // send email using chooser, with CSV as attach
@@ -194,7 +197,7 @@ public class Main extends Activity {
                            sendIntent.setType("text/csv");
                            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"
                                     + DataConstants.EXTERNAL_DATA_PATH + File.separator
-                                    + DataCsvExporter.EXPORT_FILENAME));
+                                    + CsvManager.EXPORT_FILENAME));
                            sendIntent.putExtra(Intent.EXTRA_SUBJECT, "BookWorm CSV Export");
                            sendIntent.putExtra(Intent.EXTRA_TEXT, "CSV export attached.");
                            startActivity(Intent.createChooser(sendIntent, "Email:"));
@@ -203,6 +206,9 @@ public class Main extends Activity {
                public void onClick(final DialogInterface arg0, final int arg1) {
                }
             }).show();
+            return true;
+         case MENU_IMPORT_CSV:
+            startActivity(new Intent(Main.this, BookImport.class));
             return true;
          case MENU_MANAGE:
             startActivity(new Intent(Main.this, ManageData.class));
@@ -492,6 +498,7 @@ public class Main extends Activity {
       protected void onPreExecute() {
          dialog.setMessage(Main.this.getString(R.string.msgResetCoverImagesWarnTime));
          dialog.show();
+         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
       }
 
       @Override
@@ -518,6 +525,7 @@ public class Main extends Activity {
          if (dialog.isShowing()) {
             dialog.dismiss();
          }
+         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
       }
    }
 }
