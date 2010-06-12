@@ -64,7 +64,7 @@ public class CSVImport extends Activity {
             File f = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + "bookworm.csv");
             if (f == null || !f.exists() || !f.canRead()) {
                Toast.makeText(CSVImport.this, getString(R.string.msgCsvFileNotFound),
-                        Toast.LENGTH_LONG);
+                        Toast.LENGTH_LONG).show();
             }
             // potentially AsyncTask this too? (could be an FC here with perfect timing, though this is very quick)
             CsvManager importer = new CsvManager();

@@ -14,30 +14,32 @@
 
 		<TextView android:id="@+id/bookimportexplain"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
-			style="@style/black" android:gravity="center_horizontal"
-			android:text="@string/msgImportCSVInstructions" />
+			android:layout_marginTop="10dp" android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp" style="@style/black"
+			android:gravity="center_horizontal" android:text="@string/msgImportCSVInstructions" />
 
 		<Button android:id="@+id/bookimportparsebutton"
 			android:layout_width="120dp" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginBottom="5dp"
-			android:layout_marginLeft="1dp" android:layout_marginRight="8dp"
+			android:layout_marginTop="15dp" android:layout_marginBottom="5dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
 			android:layout_gravity="center" style="@style/black" android:text="@string/btnParse" />
 
 		<TextView android:id="@+id/bookimportmetadata"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
-			style="@style/blackmed" android:gravity="left" android:text="" />
+			android:layout_marginTop="10dp" android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp" style="@style/blackmed"
+			android:gravity="left" android:text="" />
 
 		<TextView android:id="@+id/bookimportdata"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
-			style="@style/blacksmall" android:gravity="left" android:text="" />
+			android:layout_marginTop="10dp" android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp" style="@style/blacksmall"
+			android:gravity="left" android:text="" />
 
 		<Button android:id="@+id/bookimportbutton"
 			android:layout_width="120dp" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginBottom="5dp"
-			android:layout_marginLeft="1dp" android:layout_marginRight="8dp"
+			android:layout_marginTop="10dp" android:layout_marginBottom="5dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
 			android:layout_gravity="center" style="@style/black" android:text="@string/btnImport" />
 
 	</LinearLayout>

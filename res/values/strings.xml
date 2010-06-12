@@ -30,7 +30,7 @@
 	<string name="menuListStats">List Stats</string>
 	<string name="menuAbout">About</string>
 	<string name="menuPrefs">Prefs</string>	
-	<string name="menuResetCoverImages">Reset Cover Images</string>
+	<string name="menuResetCoverImages">Reset All Cover Images</string>
 	
 	<string name="btnYes">Yes</string>
 	<string name="btnNo">No</string>
@@ -125,7 +125,7 @@
     <string name="btnExportDB">Export DB to SD card</string>    
     <string name="btnImportDB">Import DB from SD card</string>
 	<string name="labelImportCSV">Import CSV File</string>
-	<string name="msgImportCSVInstructions">Place a file named "bookworm.csv" in the "/sdcard/bookwormdata" directory. Then press Parse when you are ready to proceed.</string>
+	<string name="msgImportCSVInstructions">Place a file named <i>bookworm.csv</i> in the <i>sdcard/bookwormdata</i> directory. Then press Parse when you are ready to proceed.</string>
 	<string name="btnParse">Parse</string>   
 	<string name="btnImport">Import</string>   
 	<string name="btnDeleteData">Delete all data</string>
@@ -137,8 +137,8 @@
     <string name="labelInstallScanner">Install Barcode Scanner</string>
     <string name="msgCsvMetaData">Parsed %s books from import file. Click import (below list) to continue and import to database.</string>
     <string name="msgCsvUnableToParse">Unable to parse any data from CSV file for import.</string>
-    <string name="msgCsvFileNotFound">"File <i>/sdcard/bookwormdata/bookworm.csv</i> not found, cannot import.</string>
-    <string name="msgCsvSkippingBook">Skipping book (appears to be a duplicate):\n %s</string>
-    <string name="msgCsvImportingBook">Importing book:\n %s</string>
+    <string name="msgCsvFileNotFound">File <i>/sdcard/bookwormdata/bookworm.csv</i> not found, cannot import.</string>
+    <string name="msgCsvSkippingBook">Skipping book (appears to be a duplicate):\n%s</string>
+    <string name="msgCsvImportingBook">Importing book:\n%s</string>
 	
 </resources>
