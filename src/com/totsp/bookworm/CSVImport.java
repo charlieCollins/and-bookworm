@@ -3,6 +3,7 @@ package com.totsp.bookworm;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.totsp.bookworm.data.CsvManager;
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.ExternalStorageUtil;
 
 import java.io.File;
@@ -23,14 +25,15 @@ import java.util.ArrayList;
 
 public class CSVImport extends Activity {
 
-   BookWormApplication application;
+   private BookWormApplication application;
 
-   TextView data;
-   Button parseButton;
-   Button importButton;
+   private TextView metaData;
+   private TextView data;
+   private Button parseButton;
+   private Button importButton;
 
    ArrayList<Book> books;
-   
+
    ImportTask importTask;
 
    @Override
@@ -39,18 +42,20 @@ public class CSVImport extends Activity {
 
       setContentView(R.layout.csvimport);
       application = (BookWormApplication) getApplication();
-      
+
       importTask = new ImportTask();
 
+      metaData = (TextView) this.findViewById(R.id.bookimportmetadata);
+      metaData.setText("");
       data = (TextView) this.findViewById(R.id.bookimportdata);
-      data.setText("");
+      data.setText("");      
 
       parseButton = (Button) this.findViewById(R.id.bookimportparsebutton);
       importButton = (Button) this.findViewById(R.id.bookimportbutton);
       importButton.setEnabled(false);
 
       if (!ExternalStorageUtil.isExternalStorageAvail()) {
-         Toast.makeText(this, "External storage (SD card) not available, cannot import.", Toast.LENGTH_LONG).show();
+         Toast.makeText(this, getString(R.string.msgExternalStorageNAError), Toast.LENGTH_LONG).show();
          parseButton.setEnabled(false);
       }
 
@@ -58,14 +63,14 @@ public class CSVImport extends Activity {
          public void onClick(View v) {
             File f = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + "bookworm.csv");
             if (f == null || !f.exists() || !f.canRead()) {
-               Toast.makeText(CSVImport.this, "File /sdcard/bookwormdata/bookworm.csv not available to import.",
+               Toast.makeText(CSVImport.this, getString(R.string.msgCsvFileNotFound),
                         Toast.LENGTH_LONG);
             }
-            // TODO AsyncTask this too
+            // potentially AsyncTask this too? (could be an FC here with perfect timing, though this is very quick)
             CsvManager importer = new CsvManager();
             ArrayList<Book> parsedBooks = importer.parseCSVFile(f);
             if (parsedBooks == null || parsedBooks.isEmpty()) {
-               Toast.makeText(CSVImport.this, "Unable to parse any data from file for import.", Toast.LENGTH_LONG);
+               Toast.makeText(CSVImport.this, getString(R.string.msgCsvUnableToParse), Toast.LENGTH_LONG);
             } else {
                CSVImport.this.books = parsedBooks;
                CSVImport.this.populateData();
@@ -78,38 +83,40 @@ public class CSVImport extends Activity {
             if (books != null && !books.isEmpty()) {
                importTask.execute(books);
             }
-            Toast.makeText(CSVImport.this, "Imported book data from CSV file.", Toast.LENGTH_LONG);
+            Toast.makeText(CSVImport.this, getString(R.string.msgImportSuccess), Toast.LENGTH_LONG);
             reset();
          }
       });
 
    }
-   
+
    @Override
    public void onPause() {
       if ((importTask != null) && importTask.dialog.isShowing()) {
          importTask.dialog.dismiss();
-      }      
+      }
       super.onPause();
    }
 
    private void reset() {
       books = null;
       data.setText("");
+      metaData.setText("");
       importButton.setEnabled(false);
       parseButton.setEnabled(true);
    }
 
-   private void populateData() {
+   private void populateData() {      
+      metaData.setText(String.format(getString(R.string.msgCsvMetaData), books.size()));
+      
+      String title = getString(R.string.labelTitle);
       StringBuilder sb = new StringBuilder();
-      sb.append("Parsed " + books.size()
-               + " books from import file. Click import (below) to continue and import to database.\n\n");
       for (Book b : books) {
-         System.out.println("book - " + b);
-         sb.append("Title: " + b.title);
+         sb.append(title + ": " + b.title);
          sb.append("\n");
       }
       this.data.setText(sb.toString());
+      
       this.importButton.setEnabled(true);
       this.parseButton.setEnabled(false);
    }
@@ -120,16 +127,16 @@ public class CSVImport extends Activity {
    private class ImportTask extends AsyncTask<ArrayList<Book>, String, Void> {
       private final ProgressDialog dialog = new ProgressDialog(CSVImport.this);
 
-      // TODO don't import books that are dupes!
-      
       public ImportTask() {
       }
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage("Importing Books");
+         dialog.setMessage(getString(R.string.msgImportingData));
          dialog.show();
-         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         // keep screen on, and prevent orientation change, during potentially long running task
+         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);   
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
       }
 
       @Override
@@ -141,9 +148,25 @@ public class CSVImport extends Activity {
       protected Void doInBackground(final ArrayList<Book>... args) {
          ArrayList<Book> taskBooks = args[0];
          for (Book b : taskBooks) {
-            Log.i(Constants.LOG_TAG, "Importing book: " + b.title);
-            publishProgress("Importing book:\n" + b.title);
-            application.dataManager.insertBook(b);
+            boolean dupe = false;
+            ArrayList<Book> potentialDupes = CSVImport.this.application.dataManager.selectAllBooksByTitle(b.title);
+            if (potentialDupes != null) {
+               for (int i = 0; i < potentialDupes.size(); i++) {
+                  Book b2 = potentialDupes.get(i);
+                  if (BookUtil.areBooksEffectiveDupes(b, b2)) {
+                     dupe = true;
+                     break;
+                  }
+               }
+            }
+            if (dupe) {              
+               Log.i(Constants.LOG_TAG, "NOT Importing book: " + b.title + " because it appears to be a duplicate.");
+               publishProgress(String.format(getString(R.string.msgCsvSkippingBook, b.title)));
+            } else {
+               Log.i(Constants.LOG_TAG, "Importing book: " + b.title);
+               publishProgress(String.format(getString(R.string.msgCsvImportingBook, b.title)));
+               application.dataManager.insertBook(b);
+            }
          }
          return null;
       }
@@ -153,10 +176,13 @@ public class CSVImport extends Activity {
          if (dialog.isShowing()) {
             dialog.dismiss();
          }
-         
-         application.dataManager.resetDb();
+
          reset();
-         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+      
+         // reset screen and orientation params
+         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);         
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);  
+         
          startActivity(new Intent(CSVImport.this, Main.class));
       }
    }
