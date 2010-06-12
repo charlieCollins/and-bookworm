@@ -3,17 +3,61 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent" android:paddingLeft="8dp"
 	android:paddingRight="8dp">
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/mainactionbar" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:gravity="center"
+		android:padding="2dp" android:minHeight="55dp" android:orientation="horizontal">
+
+		<ImageView android:id="@+id/actionsort"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:src="@android:drawable/ic_menu_sort_by_size"
+			android:layout_gravity="center" />
+
+		<ImageView android:id="@+id/actionaddscan"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:src="@android:drawable/ic_menu_camera"
+			android:layout_gravity="center" />
+
+		<ImageView android:id="@+id/actionaddsearch"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:src="@android:drawable/ic_menu_search"
+			android:layout_gravity="center" />
+
+		<ImageView android:id="@+id/actionaddform"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:src="@android:drawable/ic_menu_edit" android:layout_gravity="center" />
+
+		<ImageView android:id="@+id/actionmanagedata"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:src="@android:drawable/ic_menu_manage"
+			android:layout_gravity="center" />
+	</LinearLayout>
+
+	<View android:layout_width="fill_parent" android:layout_height="1dp"
+		android:background="#333" />
+
 	<ListView android:id="@+id/booklistview" android:layout_width="fill_parent"
 		android:layout_height="0dp" android:layout_weight="1"
 		android:drawSelectorOnTop="false" />
 
 	<TextView android:id="@+id/empty" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:gravity="center_horizontal"
-		android:layout_marginTop="50dp"
-		android:text="@string/msgBookListEmpty"
+		android:layout_marginTop="50dp" android:text="@string/msgBookListEmpty"
 		style="@style/whitemed" />
-</LinearLayout>
+
+
+
 
 	<!--  android:cacheColorHint="#00000000" -->
-
+</LinearLayout>
 			

@@ -150,7 +150,7 @@
 	<string name="labelHaveRead">
 		Ha leído?
   </string>
-	<string name="labelSearchTerms">
+	<string name="labelSearch">
 		Ingrese el término de búsqueda (s)
   </string>
 	<string name="labelMoreResults">
@@ -169,7 +169,7 @@
 	<string name="msgRetrievingBookData">
 		Recuperación de datos del libro...
   </string>
-	<string name="msgBooksListEmpty">
+	<string name="msgBookListEmpty">
 		Usted no tiene ningún libro en su lista todavía.
 		Utilice el menú Agregar
 		función para añadir libros.
@@ -331,7 +331,6 @@
 	<string name="msgTapToBegin">
 		Pulse para comenzar
   </string>
-  <string name="msgBookListEmpty">Base de datos de libros está vacía. Utilice el menú de función Añadir libro para agregar datos.</string>
   
 	<string name="prefSectApp">
 		Preferencias de la aplicación

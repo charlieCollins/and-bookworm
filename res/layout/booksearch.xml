@@ -8,7 +8,7 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
 		style="@style/subsubtitledkred" android:gravity="center_horizontal"
-		android:text="@string/labelSearchTerms" />
+		android:text="@string/labelSearch" />
 
 	<LinearLayout android:orientation="horizontal"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"

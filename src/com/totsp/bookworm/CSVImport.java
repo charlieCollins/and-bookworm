@@ -21,7 +21,7 @@ import com.totsp.bookworm.util.ExternalStorageUtil;
 import java.io.File;
 import java.util.ArrayList;
 
-public class BookImport extends Activity {
+public class CSVImport extends Activity {
 
    BookWormApplication application;
 
@@ -37,7 +37,7 @@ public class BookImport extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      setContentView(R.layout.bookimport);
+      setContentView(R.layout.csvimport);
       application = (BookWormApplication) getApplication();
       
       importTask = new ImportTask();
@@ -58,17 +58,17 @@ public class BookImport extends Activity {
          public void onClick(View v) {
             File f = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + "bookworm.csv");
             if (f == null || !f.exists() || !f.canRead()) {
-               Toast.makeText(BookImport.this, "File /sdcard/bookwormdata/bookworm.csv not available to import.",
+               Toast.makeText(CSVImport.this, "File /sdcard/bookwormdata/bookworm.csv not available to import.",
                         Toast.LENGTH_LONG);
             }
             // TODO AsyncTask this too
             CsvManager importer = new CsvManager();
             ArrayList<Book> parsedBooks = importer.parseCSVFile(f);
             if (parsedBooks == null || parsedBooks.isEmpty()) {
-               Toast.makeText(BookImport.this, "Unable to parse any data from file for import.", Toast.LENGTH_LONG);
+               Toast.makeText(CSVImport.this, "Unable to parse any data from file for import.", Toast.LENGTH_LONG);
             } else {
-               BookImport.this.books = parsedBooks;
-               BookImport.this.populateData();
+               CSVImport.this.books = parsedBooks;
+               CSVImport.this.populateData();
             }
          }
       });
@@ -78,7 +78,7 @@ public class BookImport extends Activity {
             if (books != null && !books.isEmpty()) {
                importTask.execute(books);
             }
-            Toast.makeText(BookImport.this, "Imported book data from CSV file.", Toast.LENGTH_LONG);
+            Toast.makeText(CSVImport.this, "Imported book data from CSV file.", Toast.LENGTH_LONG);
             reset();
          }
       });
@@ -118,7 +118,7 @@ public class BookImport extends Activity {
    // AsyncTasks
    //
    private class ImportTask extends AsyncTask<ArrayList<Book>, String, Void> {
-      private final ProgressDialog dialog = new ProgressDialog(BookImport.this);
+      private final ProgressDialog dialog = new ProgressDialog(CSVImport.this);
 
       // TODO don't import books that are dupes!
       
@@ -157,7 +157,7 @@ public class BookImport extends Activity {
          application.dataManager.resetDb();
          reset();
          getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-         startActivity(new Intent(BookImport.this, Main.class));
+         startActivity(new Intent(CSVImport.this, Main.class));
       }
    }
 }

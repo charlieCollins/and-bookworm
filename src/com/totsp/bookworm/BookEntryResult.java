@@ -6,12 +6,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +22,7 @@ import android.widget.TextView;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.util.StringUtil;
 
@@ -49,7 +48,7 @@ public class BookEntryResult extends Activity {
    boolean fromSearch;
 
    private SetupBookResultTask setupBookResultTask;
-   
+
    private ConnectivityManager cMgr;
 
    @Override
@@ -57,7 +56,7 @@ public class BookEntryResult extends Activity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.bookentryresult);
       application = (BookWormApplication) getApplication();
-      
+
       cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
       setupBookResultTask = null;
@@ -107,7 +106,7 @@ public class BookEntryResult extends Activity {
    }
 
    @Override
-   public void onSaveInstanceState(Bundle outState) {      
+   public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
    }
 
@@ -215,13 +214,13 @@ public class BookEntryResult extends Activity {
                   if (bean.book == null) {
                      Log.e(Constants.LOG_TAG,
                               "GetBookDataTask book returned from data source null (using product code/ISBN - "
-                                       + isbns[0] + ").");                     
+                                       + isbns[0] + ").");
                   }
                } else {
-                  Log.e(Constants.LOG_TAG, "GetBookDataTask book data source null, cannot add book.");                  
+                  Log.e(Constants.LOG_TAG, "GetBookDataTask book data source null, cannot add book.");
                }
             } else {
-               Log.e(Constants.LOG_TAG, "GetBookDataTask product code/ISBN null, cannot add book.");              
+               Log.e(Constants.LOG_TAG, "GetBookDataTask product code/ISBN null, cannot add book.");
             }
          }
 
@@ -231,7 +230,8 @@ public class BookEntryResult extends Activity {
                bean.book.coverImage = application.imageManager.getOrCreateCoverImage(bean.book);
             } else {
                bean.book.coverImage = application.imageManager.createCoverImage(bean.book.title);
-               Log.i(Constants.LOG_TAG, "Cover retrieval for book " + bean.book.title + " skipped because network was not available.");
+               Log.i(Constants.LOG_TAG, "Cover retrieval for book " + bean.book.title
+                        + " skipped because network was not available.");
             }
          }
 
@@ -273,11 +273,10 @@ public class BookEntryResult extends Activity {
                // TODO move this to datahelper, do it with query
                for (int i = 0; i < potentialDupes.size(); i++) {
                   Book b = potentialDupes.get(i);
-                  if (b.title.equals(bean.book.title)
-                           && (b.isbn10.equals(bean.book.isbn10) || b.isbn13.equals(bean.book.isbn13))) {
+                  if (BookUtil.areBooksEffectiveDupes(bean.book, b)) {
                      dupe = true;
                      break;
-                  }
+                  }                  
                }
                if (dupe) {
                   BookEntryResult.this.warnDupe.setVisibility(View.VISIBLE);

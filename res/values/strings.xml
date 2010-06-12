@@ -16,7 +16,7 @@
         BookWorm project
         site&lt;/a&gt;.
         &lt;br /&gt;&lt;br /&gt;
-        Thanks to Google Books and Open Library for making BookWorm possible (these are the current data providers).
+        Thanks to Google Books and Open Library for making BookWorm possible.
     </string>
 	
 	<string name="menuScanTips">Scanning Tips</string>
@@ -29,9 +29,7 @@
 	<string name="menuSortBooks">Sort Books</string>
 	<string name="menuListStats">List Stats</string>
 	<string name="menuAbout">About</string>
-	<string name="menuPrefs">Prefs</string>
-	<string name="menuExportCSV">Export Data as CSV</string>
-	<string name="menuManageData">Manage Database</string>
+	<string name="menuPrefs">Prefs</string>	
 	<string name="menuResetCoverImages">Reset Cover Images</string>
 	
 	<string name="btnYes">Yes</string>
@@ -48,11 +46,7 @@
     <string name="btnSave">Save</string>   
     <string name="btnSelectImage">Select from gallery</string>   
     <string name="btnRetrieveImage">Retrieve from web</string>   
-    <string name="btnGenerateImage">Generate from title</string>
-    <string name="btnExportData">Export DB to SD card</string>
-    <string name="btnImportData">Import DB from SD card</string>
-    <string name="btnDeleteData">Delete all data from DB</string>
-    <string name="btnExport">Export</string>    
+    <string name="btnGenerateImage">Generate from title</string>    
     
     <string name="labelTitle">Title</string>
     <string name="labelSubtitle">Subtitle</string>
@@ -68,19 +62,18 @@
     <string name="labelAddBook">Add Book</string>     
     <string name="labelCurrentCover">Current cover image</string>
     <string name="labelHaveRead">Have read?</string>   
-    <string name="labelSearchTerms">Enter search term(s)</string>   
-    <string name="labelMoreResults">-- Get more results --</string>	
-    <string name="labelExportCSV">Export (email) current book data list as a CSV file?</string> 
-    <string name="labelEmailAddress">Email Address</string>  
+    <string name="labelSearch">Add book(s) by searching</string>   
+    <string name="labelMoreResults">-- Get more results --</string>	  
+    <string name="labelEmailAddress">Email Address</string>     
 	
 	<string name="msgInvalidISBN">ISBN format invalid (not ISBN 10 or ISBN 13), cannot retrieve result.</string>	
 	<string name="msgFindError">Book not found using ISBN/product code %s (may not be an ISBN?).</string>	
 	<string name="msgRetrievingBookData">Retrieving book data...</string>	
-	<string name="msgBooksListEmpty">You don't have any books in your list yet. Use the Menu Add feature to add books.</string>
-	<string name="msgScanError">Whoops, that entry didn't work. The product code/ISBN result was %s. Please try again, or use a different entry method. (If you are having trouble scanning a book, check out Menu->Scanning Tips.)</string>
+	<string name="msgBookListEmpty">You don\'t have any books in your list yet. Use the action bar add features (above) to add books.</string>
+	<string name="msgScanError">Whoops, that entry didn\'t work. The product code/ISBN result was %s. Please try again, or use a different entry method. (If you are having trouble scanning a book, check out Menu->Scanning Tips.)</string>
 	<string name="msgDataSourceError">Book data source not found, internal error, or networking issue.</string>
 	<string name="msgISBNError">Book ISBN/product code not present.</string>    
-    <string name="msgScanningtips">*If the scanner works but recognizes a product rather than a book, try looking for a different bar code. Books often have multiple codes. The inside front cover may have another code that is different from the back. Especially for older paperback books, the inside cover code works more reliably.  &lt;br /&gt;&lt;br /&gt; *Make sure you are not scanning a sticker that has been placed over the bar code by a retailer. Many retailers do this, and the proprietary retailer codes will not scan. &lt;br /&gt;&lt;br /&gt; *Some books just do not scan. Product codes that cannot be interpreted as ISBNs will not work. In those cases try a web search for the title. It's still pretty quick, and it will likely work.</string>
+    <string name="msgScanningtips">*If the scanner works but recognizes a product rather than a book, try looking for a different bar code. Books often have multiple codes. The inside front cover may have another code that is different from the back. Especially for older paperback books, the inside cover code works more reliably.  &lt;br /&gt;&lt;br /&gt; *Make sure you are not scanning a sticker that has been placed over the bar code by a retailer. Many retailers do this, and the proprietary retailer codes will not scan. &lt;br /&gt;&lt;br /&gt; *Some books just do not scan. Product codes that cannot be interpreted as ISBNs will not work. In those cases try a web search for the title. It\'s still pretty quick, and it will likely work.</string>
     <string name="msgMinimumSave">Minimum of title and author(s) is required to save book (and book must be saved before managing cover image).</string>
     <string name="msgNoActivityGalleryError">No activity found to handle Gallery selection, cannot use this method.</string>
     <string name="msgBookUpdated">"Book updated</string>
@@ -97,10 +90,10 @@
     <string name="msgDeleteAllData">Are you sure (this will delete all data from database)?</string>
     <string name="msgExternalStorageNAError">External storage is not available, unable to export data.</string>
     <string name="msgDataDeleted">Data deleted</string>
-    <string name="msgExportingData">Exporting database...</string>
+    <string name="msgExportingData">Exporting data...</string>
     <string name="msgExportSuccess">Export successful!</string>
     <string name="msgExportError">Export failed</string>
-    <string name="msgImportingData">Importing database...</string>
+    <string name="msgImportingData">Importing data...</string>
     <string name="msgImportSuccess">Import successful!</string>
     <string name="msgImportError">Import failed</string>
     <string name="msgImportFileMissingError">Database backup file does not exist, cannot import.</string>
@@ -108,12 +101,11 @@
     <string name="msgSelectBookError">Unrecoverable error selecting book.</string>
     <string name="msgBookListStats">Book List Stats</string>
     <string name="msgResetAllCoverImages">Reset all cover images?</string>
-    <string name="msgResetAllCoverImagesExplain">This will use the network to try to find and replace all cover images.</string>
+    <string name="msgResetAllCoverImagesExplain">This will use the network to try to find and replace all cover images (can take a few minutes depending on number of books in database, and results may vary based on network state).</string>
     <string name="msgResetCoverImagesWarnTime">Resetting cover images, this could take a few minutes...</string>
     <string name="msgProcessingBookX">Processing book: %s.</string>   
     <string name="msgWarnDupe">Warning, your list already contains a book with the same title and ISBN as this one.</string>
     <string name="msgTapToBegin">Tap to begin</string> 
-    <string name="msgBookListEmpty">Book database is empty. Use the menu Add Book feature to add data.</string>
     
     <string name="prefSectApp">Application Preferences</string>
     <string name="prefTitleSplash">Enable splash screen?</string>
@@ -126,5 +118,22 @@
     <string name="prefTitleCoverImage">Book Cover Image Provider</string>
     <string name="prefSumCoverImage">Currently only OpenLibrary (future additions planned).</string>
 
+	
+	<!--  recent changes only for EN (some new, some renamed, need to be synced to other langs) -->
+	<string name="btnExportCSV">Export data to CSV file</string>
+    <string name="btnImportCSV">Import data from CSV file</string>
+    <string name="btnExportDB">Export DB to SD card</string>    
+    <string name="btnImportDB">Import DB from SD card</string>
+	<string name="labelImportCSV">Import CSV File</string>
+	<string name="msgImportCSVInstructions">Place a file named "bookworm.csv" in the "/sdcard/bookwormdata" directory. Then press Parse when you are ready to proceed.</string>
+	<string name="btnParse">Parse</string>   
+	<string name="btnImport">Import</string>   
+	<string name="btnDeleteData">Delete all data</string>
+	<string name="labelManageData">Manage Data</string>
+	<string name="menuManageData">Manage Data</string>
+	<string name="menuExportCSV">Export Data as CSV</string>   
+    <string name="labelExportCSV">Export (email) current book data list as a CSV file?</string> 
+    <string name="msgScannerNotPresent">"Barcode scanner may not be present, would like to check the market and try to install it?"</string>
+    <string name="labelInstallScanner">Install Barcode Scanner</string>
 	
 </resources>

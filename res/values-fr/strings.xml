@@ -7,11 +7,11 @@
 	<string name="aboutcontent">
 		<i>
 			Utilisez BookWorm de garder la trace des livres que vous avez lu et
-			vous avez l&#39;intention de lire. Tenir un registre des livres que
+			vous avez l\'intention de lire. Tenir un registre des livres que
 			vous pouvez	rapidement visualiser, trier, filtrer, et le taux.
     </i>
-		&lt;br /&gt; &lt;br /&gt; Pour plus d&#39;informations, et de faire
-		des commentaires ou signaler des problèmes, s&#39;il vous plaît
+		&lt;br /&gt; &lt;br /&gt; Pour plus d\'informations, et de faire
+		des commentaires ou signaler des problèmes, s\'il vous plaît
 		visitez le site &lt;a
 		href=&quot;http://code.google.com/p/and-bookworm/&quot;&gt; le site du
 		projet BookWorm &lt;/ a&gt;. &lt;br /&gt; &lt;br /&gt;
@@ -92,16 +92,16 @@
 		Sauver
   </string>
 	<string name="btnSelectImage">
-		Sélectionnez l&#39;image
+		Sélectionnez l\'image
   </string>
 	<string name="btnRetrieveImage">
-		Récupérer l&#39;image
+		Récupérer l\'image
   </string>
 	<string name="btnGenerateImage">
-		Générer l&#39;image
+		Générer l\'image
   </string>
 	<string name="btnExportData">
-		DB à l&#39;exportation de carte SD
+		DB à l\'exportation de carte SD
   </string>
 	<string name="btnImportData">
 		Importer DB de carte SD
@@ -151,7 +151,7 @@
 	<string name="labelHaveRead">
 		Vous avez lu?
   </string>
-	<string name="labelSearchTerms">
+	<string name="labelSearch">
 		Entrez les termes de recherche (s)
   </string>
 	<string name="labelMoreResults">
@@ -162,27 +162,27 @@
 		peut pas récupérer la suite.
 	</string>
 	<string name="msgFindError">
-		Livre pas trouvé à l&#39;aide ISBN / code de
-		produit% s (ne peut pas être
+		Livre pas trouvé à l\'aide ISBN / code de
+		produit %s (ne peut pas être
 		un numéro ISBN?).
   </string>
 	<string name="msgRetrievingBookData">
 		Récupération de données livre ...
   </string>
-	<string name="msgBooksListEmpty">
-		Vous n&#39;avez pas les livres dans votre liste
+	<string name="msgBookListEmpty">
+		Vous n\'avez pas les livres dans votre liste
 		pour le moment. Utilisez
-		le menu Ajout d&#39;une fonctionnalité à
+		le menu Ajout d\'une fonctionnalité à
 		ajouter des livres.
   </string>
 	<string name="msgScanError">
 		Oups, cette entrée ne fonctionne pas. Le code
 		produit / résultat ISBN
-		était% s. S&#39;il vous plaît essayer de
+		était% s. S\'il vous plaît essayer de
 		nouveau, ou utiliser une
-		méthode d&#39;entrée différents. (Si vous
+		méthode d\'entrée différents. (Si vous
 		rencontrez des problèmes de
-		numérisation d&#39;un livre, consultez
+		numérisation d\'un livre, consultez
 		Menu-&gt; conseils de
 		numérisation.)
   </string>
@@ -191,22 +191,22 @@
 		interne, ou un problème réseau.
 	</string>
 	<string name="msgISBNError">
-		Réservez code ISBN / produit n&#39;est pas présent.
+		Réservez code ISBN / produit n\'est pas présent.
 	</string>
 	<string name="msgScanningtips">
 		* Si le scanner fonctionne, mais reconnaît un
-		produit plutôt qu&#39;un
+		produit plutôt qu\'un
 		livre, essayez de rechercher un code-barres
 		différents. Livres ont
 		souvent plusieurs codes. La couverture à
-		l&#39;intérieur peut avoir un
+		l\'intérieur peut avoir un
 		autre code qui est différent de
-		l&#39;arrière. En particulier pour les
+		l\'arrière. En particulier pour les
 		livres de poche et plus, le code
 		intérieur de la couverture des œuvres
 		de façon plus fiable. &lt;br
 		/&gt; &lt;br /&gt; * Assurez-vous que
-		vous n&#39;êtes pas un
+		vous n\'êtes pas un
 		autocollant de numérisation qui a été placé sur
 		le code à barres par un
 		détaillant. De nombreux détaillants ce faire,
@@ -223,14 +223,14 @@
 		travailler.
   </string>
 	<string name="msgMinimumSave">
-		S&#39;il vous plaît enregistrer livre (avec un
+		S\'il vous plaît enregistrer livre (avec un
 		minimum de titre et
-		l&#39;auteur (s)) avant de tenter de gérer la
+		l\'auteur (s)) avant de tenter de gérer la
 		couverture de
-		l&#39;image.
+		l\'image.
   </string>
 	<string name="msgNoActivityGalleryError">
-		Aucune activité n&#39;a été trouvée pour traiter de
+		Aucune activité n\'a été trouvée pour traiter de
 		sélection Galerie, ne
 		peuvent pas utiliser cette méthode.
   </string>
@@ -244,7 +244,7 @@
 		Réservez sauvé
   </string>
 	<string name="msgBookSaveError">
-		Erreur livret d&#39;épargne, livre des informations
+		Erreur livret d\'épargne, livre des informations
 		non présentes, ou null
 		ID.
   </string>
@@ -252,16 +252,16 @@
 		Récupération image de couverture ...
   </string>
 	<string name="msgRetrieveCoverImageError">
-		l&#39;image d&#39;erreur couvrir la récupération,
-		le livre d&#39;information
-		n&#39;est pas présente, ou null ID.
+		l\'image d\'erreur couvrir la récupération,
+		le livre d\'information
+		n\'est pas présente, ou null ID.
   </string>
 	<string name="msgGenerateCoverImage">
-		Génération d&#39;image de couverture ...
+		Génération d\'image de couverture ...
   </string>
 	<string name="msgGenerateCoverImageError">
-		l&#39;image d&#39;erreur couvrent la production,
-		cahier d&#39;information
+		l\'image d\'erreur couvrent la production,
+		cahier d\'information
 		présente pas, ou null ID.
   </string>
 	<string name="msgSearching">
@@ -280,7 +280,7 @@
 		base de données)?
   </string>
 	<string name="msgExternalStorageNAError">
-		stockage externe n&#39;est pas disponible, ne peut
+		stockage externe n\'est pas disponible, ne peut
 		pas exporter des données.
 	</string>
 	<string name="msgDataDeleted">
@@ -290,10 +290,10 @@
 		Dase de données exportation...
   </string>
 	<string name="msgExportSuccess">
-		D&#39;exportation réussie!
+		D\'exportation réussie!
   </string>
 	<string name="msgExportError">
-		Echec de l&#39;export
+		Echec de l\'export
   </string>
 	<string name="msgImportingData">
 		Base de données importation ...
@@ -302,16 +302,16 @@
 		Importer un succès!
   </string>
 	<string name="msgImportError">
-		Échec de l&#39;importation
+		Échec de l\'importation
   </string>
 	<string name="msgImportFileMissingError">
 		Base de données du fichier de sauvegarde
-		n&#39;existe pas, ne peut pas
+		n\'existe pas, ne peut pas
 		importer.
   </string>
 	<string name="msgImportFileNonReadableError">
 		Base de données du fichier de sauvegarde existe,
-		mais n&#39;est pas
+		mais n\'est pas
 		lisible, ne peut pas importer.
   </string>
 	<string name="msgSelectBookError">
@@ -324,7 +324,7 @@
 		Réinitialiser toutes les images de couverture?
 	</string>
 	<string name="msgResetAllCoverImagesExplain">
-		Ce sera d&#39;utiliser le réseau pour essayer de
+		Ce sera d\'utiliser le réseau pour essayer de
 		trouver et de remplacer
 		toutes les images de couverture.
   </string>
@@ -338,22 +338,21 @@
 	<string name="msgWarnDupe">
 		Attention, votre liste contient déjà un livre
 		portant le même titre et
-		l&#39;ISBN que celui-ci.
+		l\'ISBN que celui-ci.
   </string>
 	<string name="msgTapToBegin">
 		Appuyez sur pour commencer
   </string>
-  <string name="msgBookListEmpty">Base de données du livre est vide. Utilisez le menu Ajout d'une fonctionnalité Livre d'ajouter des données.</string>
   
 	<string name="prefSectApp">
-		Préférences de l&#39;application
+		Préférences de l\'application
   </string>
 	<string name="prefTitleSplash">
-		Activer l&#39;écran de démarrage?
+		Activer l\'écran de démarrage?
   </string>
 	<string name="prefSumSplash">
 		Par défaut Splash montré une fois après
-		l&#39;installation, permettent de
+		l\'installation, permettent de
 		montrer à chaque démarrage.
   </string>
 	<string name="prefTitleDebugLog">

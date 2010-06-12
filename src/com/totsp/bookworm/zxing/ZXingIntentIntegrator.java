@@ -76,6 +76,8 @@ public final class ZXingIntentIntegrator {
 
    public static final int REQUEST_CODE = 0x0ba7c0de; // get it?
 
+   // TODO i18n this Activity!
+   
    private static final String DEFAULT_TITLE = "Install Barcode Scanner?";
    private static final String DEFAULT_MESSAGE =
             "This application requires Barcode Scanner. Would you like to install it?";
@@ -126,7 +128,7 @@ public final class ZXingIntentIntegrator {
       try {
          activity.startActivityForResult(intentScan, ZXingIntentIntegrator.REQUEST_CODE);
       } catch (ActivityNotFoundException e) {
-         Log.w(Constants.LOG_TAG, "BarCode Scanner (com.google.zxing.client.android.SCAN) Intent not present.");
+         Log.w(Constants.LOG_TAG, "Barcode Scanner (com.google.zxing.client.android.SCAN) Intent not present.");
          ZXingIntentIntegrator
                   .showDownloadDialog(activity, stringTitle, stringMessage, stringButtonYes, stringButtonNo);
       }
@@ -166,7 +168,7 @@ public final class ZXingIntentIntegrator {
             String formatName = intent.getStringExtra("SCAN_RESULT_FORMAT");
             return new ZXingIntentResult(contents, formatName);
          } else {
-            Log.e(Constants.LOG_TAG, "Barcode Scanner returned invalid result.");
+            Log.e(Constants.LOG_TAG, "Barcode Scanner returned an invalid result.");
             return new ZXingIntentResult(null, null);
          }
       }

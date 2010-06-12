@@ -8,7 +8,7 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<supports-screens largeScreens="false" />
 	<application android:name="BookWormApplication" android:icon="@drawable/books48"
-		android:label="@string/app_name">
+		android:label="@string/app_name" android:installLocation="auto">
 		<activity android:name=".Splash">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -17,14 +17,12 @@
 		</activity>
 		<activity android:name="Main" />
 		<activity android:name="About" />      
-		<activity android:name="BookAdd" />      
 		<activity android:name="BookForm" />      
 		<activity android:name="BookDetail" />      
-		<activity android:name="BookSearch" />            
-		<activity android:name="BookImport" />            
-		<activity android:name="BookEntryResult" />      
-		<activity android:name="Preferences" />      
-		<activity android:name="ManageData" />      
+		<activity android:name="BookSearch" />		
+		<activity android:name="BookEntryResult" />
+		<activity android:name="CSVImport" />                  
 		<activity android:name="HTMLScreen" />      
+		<activity android:name="Preferences" />		
 	</application>
 </manifest> 

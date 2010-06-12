@@ -3,11 +3,13 @@ package com.totsp.bookworm;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
@@ -37,27 +40,25 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.data.CsvManager;
+import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
+import com.totsp.bookworm.util.ExternalStorageUtil;
+import com.totsp.bookworm.util.FileUtil;
 import com.totsp.bookworm.util.StringUtil;
+import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main extends Activity {
 
-   private static final int MENU_SORT = 1;
-   private static final int MENU_BOOKADD = 2;
-   private static final int MENU_STATS = 3;
-   private static final int MENU_ABOUT = 4;
-   private static final int MENU_PREFS = 5;
-   // after first 5 next items go in "more" selection
-   private static final int MENU_EXPORT_CSV = 6;
-   private static final int MENU_IMPORT_CSV = 7;
-   private static final int MENU_MANAGE = 8;
-   private static final int MENU_RESET_COVER_IMAGES = 9;
+   private static final int MENU_STATS = 1;
+   private static final int MENU_PREFS = 2;
+   private static final int MENU_ABOUT = 3;
+   private static final int MENU_RESET_COVER_IMAGES = 4;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -69,6 +70,12 @@ public class Main extends Activity {
    private CursorAdapter adapter;
    private Cursor cursor;
 
+   private ImageView sortImage;
+   private ImageView addScanImage;
+   private ImageView addSearchImage;
+   private ImageView addFormImage;
+   private ImageView manageDataImage;
+
    private Bitmap coverImageMissing;
    private Bitmap star0;
    private Bitmap star1;
@@ -77,9 +84,12 @@ public class Main extends Activity {
    private Bitmap star4;
    private Bitmap star5;
 
+   private ImportDatabaseTask importDatabaseTask;
+   private ExportDatabaseTask exportDatabaseTask;
    private ResetAllCoverImagesTask resetAllCoverImagesTask;
 
    private AlertDialog.Builder sortDialog;
+   private AlertDialog.Builder manageDataDialog;
    private AlertDialog.Builder statsDialog;
 
    @Override
@@ -100,6 +110,50 @@ public class Main extends Activity {
       star4 = BitmapFactory.decodeResource(getResources(), R.drawable.star4);
       star5 = BitmapFactory.decodeResource(getResources(), R.drawable.star5);
 
+      // action bar images
+      sortImage = (ImageView) this.findViewById(R.id.actionsort);
+      sortImage.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            Main.this.sortDialog.show();
+         }
+      });
+      addScanImage = (ImageView) this.findViewById(R.id.actionaddscan);
+      addScanImage.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            try {
+               ZXingIntentIntegrator
+                        .initiateScan(Main.this, getString(R.string.labelInstallScanner),
+                                 getString(R.string.msgScannerNotPresent), getString(R.string.btnYes),
+                                 getString(R.string.btnNo));
+            } catch (ActivityNotFoundException e) {
+               // this doesn't need to be i18n, should only happen on emulator (or roms without Market)
+               Toast.makeText(Main.this, "Unable to search Market for Barcode scanner, scanning unavailable.",
+                        Toast.LENGTH_LONG).show();
+            }
+         }
+      });
+      addSearchImage = (ImageView) this.findViewById(R.id.actionaddsearch);
+      addSearchImage.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            Main.this.startActivity(new Intent(Main.this, BookSearch.class));
+         }
+      });
+      addFormImage = (ImageView) this.findViewById(R.id.actionaddform);
+      addFormImage.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            Main.this.application.selectedBook = null;
+            Main.this.startActivity(new Intent(Main.this, BookForm.class));
+         }
+      });
+      manageDataImage = (ImageView) this.findViewById(R.id.actionmanagedata);
+      manageDataImage.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            //startActivity(new Intent(Main.this, ManageData.class));
+            Main.this.manageDataDialog.show();
+         }
+      });
+
+      // listview
       bookListView = (ListView) findViewById(R.id.booklistview);
       bookListView.setEmptyView(findViewById(R.id.empty));
       bookListView.setTextFilterEnabled(true);
@@ -122,12 +176,11 @@ public class Main extends Activity {
             }
          }
       });
-
       registerForContextMenu(bookListView);
 
-      bindAdapter();
-
+      // addtl
       setupDialogs();
+      bindAdapter();
    }
 
    @Override
@@ -137,17 +190,11 @@ public class Main extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, Main.MENU_SORT, 1, getString(R.string.menuSortBooks))
-               .setIcon(android.R.drawable.ic_menu_sort_by_size);
-      menu.add(0, Main.MENU_BOOKADD, 2, getString(R.string.menuAddBook)).setIcon(android.R.drawable.ic_menu_add);
-      menu.add(0, Main.MENU_STATS, 3, getString(R.string.menuListStats)).setIcon(
+      menu.add(0, Main.MENU_STATS, 1, getString(R.string.menuListStats)).setIcon(
                android.R.drawable.ic_menu_info_details);
-      menu.add(0, Main.MENU_ABOUT, 4, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
-      menu.add(0, Main.MENU_PREFS, 5, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
-      menu.add(0, Main.MENU_EXPORT_CSV, 6, getString(R.string.menuExportCSV)).setIcon(android.R.drawable.ic_menu_send);
-      menu.add(0, Main.MENU_IMPORT_CSV, 7, "Import Data as CSV").setIcon(android.R.drawable.ic_menu_send);      
-      menu.add(0, Main.MENU_MANAGE, 8, getString(R.string.menuManageData)).setIcon(android.R.drawable.ic_menu_manage);
-      menu.add(0, Main.MENU_RESET_COVER_IMAGES, 9, getString(R.string.menuResetCoverImages)).setIcon(
+      menu.add(0, Main.MENU_PREFS, 2, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
+      menu.add(0, Main.MENU_ABOUT, 3, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
+      menu.add(0, Main.MENU_RESET_COVER_IMAGES, 4, getString(R.string.menuResetCoverImages)).setIcon(
                android.R.drawable.ic_menu_gallery);
       return super.onCreateOptionsMenu(menu);
    }
@@ -155,12 +202,6 @@ public class Main extends Activity {
    @Override
    public boolean onOptionsItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
-         case MENU_SORT:
-            sortDialog.show();
-            return true;
-         case MENU_BOOKADD:
-            startActivity(new Intent(Main.this, BookAdd.class));
-            return true;
          case MENU_STATS:
             BookListStats stats = application.dataManager.getStats();
             // TODO this stringbuilder is NOT i18n'd
@@ -179,45 +220,17 @@ public class Main extends Activity {
             statsDialog.setMessage(sb.toString());
             statsDialog.show();
             return true;
-         case MENU_ABOUT:
-            startActivity(new Intent(Main.this, About.class));
-            return true;
          case MENU_PREFS:
             startActivity(new Intent(Main.this, Preferences.class));
             return true;
-         case MENU_EXPORT_CSV:
-            new AlertDialog.Builder(Main.this).setMessage(R.string.labelExportCSV).setPositiveButton(
-                     Main.this.getString(R.string.btnYes), new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface arg0, final int arg1) {
-                           CsvManager exporter = new CsvManager();
-                           // TODO select the current FILTERED list of books?
-                           exporter.export(application.dataManager.selectAllBooks());
-                           // send email using chooser, with CSV as attach
-                           Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                           sendIntent.setType("text/csv");
-                           sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"
-                                    + DataConstants.EXTERNAL_DATA_PATH + File.separator
-                                    + CsvManager.EXPORT_FILENAME));
-                           sendIntent.putExtra(Intent.EXTRA_SUBJECT, "BookWorm CSV Export");
-                           sendIntent.putExtra(Intent.EXTRA_TEXT, "CSV export attached.");
-                           startActivity(Intent.createChooser(sendIntent, "Email:"));
-                        }
-                     }).setNegativeButton(Main.this.getString(R.string.btnNo), new DialogInterface.OnClickListener() {
-               public void onClick(final DialogInterface arg0, final int arg1) {
-               }
-            }).show();
-            return true;
-         case MENU_IMPORT_CSV:
-            startActivity(new Intent(Main.this, BookImport.class));
-            return true;
-         case MENU_MANAGE:
-            startActivity(new Intent(Main.this, ManageData.class));
+         case MENU_ABOUT:
+            startActivity(new Intent(Main.this, About.class));
             return true;
          case MENU_RESET_COVER_IMAGES:
             new AlertDialog.Builder(Main.this).setTitle(Main.this.getString(R.string.msgResetAllCoverImages))
                      .setMessage(Main.this.getString(R.string.msgResetAllCoverImagesExplain)).setPositiveButton(
                               Main.this.getString(R.string.btnYes), new DialogInterface.OnClickListener() {
-                                 public void onClick(final DialogInterface d, final int i) {
+                                 public void onClick(final DialogInterface d, final int i) {                                   
                                     Main.this.resetAllCoverImagesTask = new ResetAllCoverImagesTask();
                                     Main.this.resetAllCoverImagesTask.execute();
                                  }
@@ -274,6 +287,12 @@ public class Main extends Activity {
    public void onPause() {
       if ((resetAllCoverImagesTask != null) && resetAllCoverImagesTask.dialog.isShowing()) {
          resetAllCoverImagesTask.dialog.dismiss();
+      }
+      if ((this.exportDatabaseTask != null) && this.exportDatabaseTask.dialog.isShowing()) {
+         this.exportDatabaseTask.dialog.dismiss();
+      }
+      if ((this.importDatabaseTask != null) && this.importDatabaseTask.dialog.isShowing()) {
+         this.importDatabaseTask.dialog.dismiss();
       }
       // /Debug.stopMethodTracing();		
       super.onPause();
@@ -344,13 +363,114 @@ public class Main extends Activity {
                            break;
                      }
                      Main.this.application.lastMainListPosition = 0;
-                     //Main.this.adapter.notifyDataSetChanged();
+                     // Main.this.adapter.notifyDataSetChanged();
                      // TODO notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
-                     // need to research (shouldn't have to re-bind the entire adapter)
+                     // need to research (shouldn't have to re-bind the entire adapter, but for now doing so)
                      Main.this.bindAdapter();
                   }
                });
       sortDialog.create();
+
+      manageDataDialog = new AlertDialog.Builder(this);
+      manageDataDialog.setTitle(getString(R.string.labelManageData));
+      manageDataDialog.setItems(new CharSequence[] { getString(R.string.btnExportCSV),
+               getString(R.string.btnImportCSV), getString(R.string.btnExportDB), getString(R.string.btnImportDB),
+               getString(R.string.btnDeleteData) }, new DialogInterface.OnClickListener() {
+         public void onClick(DialogInterface d, int selected) {
+            switch (selected) {
+               case 0:
+                  new AlertDialog.Builder(Main.this).setMessage(R.string.labelExportCSV).setPositiveButton(
+                           Main.this.getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                              public void onClick(final DialogInterface arg0, final int arg1) {
+                                 CsvManager exporter = new CsvManager();
+                                 exporter.export(application.dataManager.selectAllBooks());
+                                 // send email using chooser, with CSV as attach
+                                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                                 sendIntent.setType("text/csv");
+                                 sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"
+                                          + DataConstants.EXTERNAL_DATA_PATH + File.separator
+                                          + CsvManager.EXPORT_FILENAME));
+                                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, "BookWorm CSV Export");
+                                 sendIntent.putExtra(Intent.EXTRA_TEXT, "CSV export attached.");
+                                 startActivity(Intent.createChooser(sendIntent, "Email:"));
+                              }
+                           }).setNegativeButton(Main.this.getString(R.string.btnNo),
+                           new DialogInterface.OnClickListener() {
+                              public void onClick(final DialogInterface arg0, final int arg1) {
+                              }
+                           }).show();
+                  break;
+               case 1:
+                  startActivity(new Intent(Main.this, CSVImport.class));
+                  break;
+               case 2:
+                  new AlertDialog.Builder(Main.this).setMessage(Main.this.getString(R.string.msgReplaceExistingExport))
+                           .setPositiveButton(Main.this.getString(R.string.btnYes),
+                                    new DialogInterface.OnClickListener() {
+                                       public void onClick(final DialogInterface arg0, final int arg1) {
+                                          if (ExternalStorageUtil.isExternalStorageAvail()) {
+                                             Log.i(Constants.LOG_TAG, "exporting database to external storage");
+                                             Main.this.exportDatabaseTask = new ExportDatabaseTask();
+                                             Main.this.exportDatabaseTask.execute();
+                                             Main.this.startActivity(new Intent(Main.this, Main.class));
+                                          } else {
+                                             Toast.makeText(Main.this,
+                                                      Main.this.getString(R.string.msgExternalStorageNAError),
+                                                      Toast.LENGTH_SHORT).show();
+                                          }
+                                       }
+                                    }).setNegativeButton(Main.this.getString(R.string.btnNo),
+                                    new DialogInterface.OnClickListener() {
+                                       public void onClick(final DialogInterface arg0, final int arg1) {
+                                       }
+                                    }).show();
+                  break;
+               case 3:
+                  new AlertDialog.Builder(Main.this).setMessage(Main.this.getString(R.string.msgReplaceExistingData))
+                           .setPositiveButton(Main.this.getString(R.string.btnYes),
+                                    new DialogInterface.OnClickListener() {
+                                       public void onClick(final DialogInterface arg0, final int arg1) {
+                                          if (ExternalStorageUtil.isExternalStorageAvail()) {
+                                             Log.i(Constants.LOG_TAG, "importing database from external storage");
+                                             Main.this.importDatabaseTask = new ImportDatabaseTask();
+                                             Main.this.importDatabaseTask.execute("bookworm", "bookwormdata");
+                                             // reset the db (else Main shows no data)
+                                             Main.this.application.dataManager.resetDb();
+                                             Main.this.startActivity(new Intent(Main.this, Main.class));
+                                          } else {
+                                             Toast.makeText(Main.this,
+                                                      Main.this.getString(R.string.msgExternalStorageNAError),
+                                                      Toast.LENGTH_SHORT).show();
+                                          }
+                                       }
+                                    }).setNegativeButton(Main.this.getString(R.string.btnNo),
+                                    new DialogInterface.OnClickListener() {
+                                       public void onClick(final DialogInterface arg0, final int arg1) {
+                                       }
+                                    }).show();
+                  break;
+               case 4:
+                  new AlertDialog.Builder(Main.this).setMessage(Main.this.getString(R.string.msgDeleteAllData))
+                           .setPositiveButton(Main.this.getString(R.string.btnYes),
+                                    new DialogInterface.OnClickListener() {
+                                       public void onClick(final DialogInterface arg0, final int arg1) {
+                                          Log.i(Constants.LOG_TAG, "deleting database");
+                                          Main.this.application.dataManager.deleteAllDataYesIAmSure();
+                                          Main.this.application.dataManager.resetDb();
+                                          Toast.makeText(Main.this, Main.this.getString(R.string.msgDataDeleted),
+                                                   Toast.LENGTH_SHORT).show();
+                                          Main.this.startActivity(new Intent(Main.this, Main.class));
+                                       }
+                                    }).setNegativeButton(Main.this.getString(R.string.btnNo),
+                                    new DialogInterface.OnClickListener() {
+                                       public void onClick(final DialogInterface arg0, final int arg1) {
+                                       }
+                                    }).show();
+                  break;
+            }
+         }
+      });
+      manageDataDialog.create();
 
       statsDialog = new AlertDialog.Builder(this);
       statsDialog.setTitle(getString(R.string.msgBookListStats));
@@ -491,6 +611,101 @@ public class Main extends Activity {
       }
    }
 
+   // AsyncTasks
+
+   // TODO don't need param types on these, don't use the params?
+   // could pass in the param strings for data dirs though
+   private class ExportDatabaseTask extends AsyncTask<String, Void, Boolean> {
+      private final ProgressDialog dialog = new ProgressDialog(Main.this);
+
+      @Override
+      protected void onPreExecute() {
+         this.dialog.setMessage(Main.this.getString(R.string.msgExportingData));
+         this.dialog.show();
+      }
+
+      @Override
+      protected Boolean doInBackground(final String... args) {
+
+         File dbFile = new File(DataConstants.DATABASE_PATH);
+
+         File exportDir = new File(DataConstants.EXTERNAL_DATA_PATH);
+         if (!exportDir.exists()) {
+            exportDir.mkdirs();
+         }
+         File file = new File(exportDir, dbFile.getName());
+
+         try {
+            file.createNewFile();
+            FileUtil.copyFile(dbFile, file);
+            return true;
+         } catch (IOException e) {
+            Log.e(Constants.LOG_TAG, e.getMessage(), e);
+            return false;
+         }
+      }
+
+      @Override
+      protected void onPostExecute(final Boolean success) {
+         if (this.dialog.isShowing()) {
+            this.dialog.dismiss();
+         }
+         if (success) {
+            Toast.makeText(Main.this, Main.this.getString(R.string.msgExportSuccess), Toast.LENGTH_SHORT).show();
+         } else {
+            Toast.makeText(Main.this, Main.this.getString(R.string.msgExportError), Toast.LENGTH_SHORT).show();
+         }
+      }
+   }
+
+   private class ImportDatabaseTask extends AsyncTask<String, Void, String> {
+      private final ProgressDialog dialog = new ProgressDialog(Main.this);
+
+      @Override
+      protected void onPreExecute() {
+         this.dialog.setMessage(Main.this.getString(R.string.msgImportingData));
+         this.dialog.show();
+      }
+
+      @Override
+      protected String doInBackground(final String... args) {
+
+         File dbBackupFile = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + DataConstants.DATABASE_NAME);
+         if (!dbBackupFile.exists()) {
+            return Main.this.getString(R.string.msgImportFileMissingError);
+         } else if (!dbBackupFile.canRead()) {
+            return Main.this.getString(R.string.msgImportFileNonReadableError);
+         }
+
+         File dbFile = new File(DataConstants.DATABASE_PATH);
+         if (dbFile.exists()) {
+            dbFile.delete();
+         }
+
+         try {
+            dbFile.createNewFile();
+            FileUtil.copyFile(dbBackupFile, dbFile);
+            return null;
+         } catch (IOException e) {
+            Log.e(Constants.LOG_TAG, e.getMessage(), e);
+            return e.getMessage();
+         }
+      }
+
+      @Override
+      protected void onPostExecute(final String errMsg) {
+         if (this.dialog.isShowing()) {
+            this.dialog.dismiss();
+         }
+         if (errMsg == null) {
+            Toast.makeText(Main.this, Main.this.getString(R.string.msgImportSuccess), Toast.LENGTH_SHORT).show();
+         } else {
+            Toast.makeText(Main.this, Main.this.getString(R.string.msgImportError) + ": " + errMsg, Toast.LENGTH_SHORT)
+                     .show();
+         }
+      }
+   }
+
    private class ResetAllCoverImagesTask extends AsyncTask<Void, String, Void> {
       private final ProgressDialog dialog = new ProgressDialog(Main.this);
 
@@ -498,7 +713,9 @@ public class Main extends Activity {
       protected void onPreExecute() {
          dialog.setMessage(Main.this.getString(R.string.msgResetCoverImagesWarnTime));
          dialog.show();
-         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         // keep screen on, and prevent orientation change, during potentially long running task
+         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);   
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
       }
 
       @Override
@@ -525,7 +742,9 @@ public class Main extends Activity {
          if (dialog.isShowing()) {
             dialog.dismiss();
          }
-         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         // reset screen and orientation params
+         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);         
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);         
       }
    }
 }
