@@ -8,6 +8,11 @@
 		android:layout_height="0dp" android:layout_weight="1"
 		android:drawSelectorOnTop="false" />
 
+	<TextView android:id="@+id/empty" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:gravity="center_horizontal"
+		android:layout_marginTop="50dp" android:text="@string/msgBookListEmpty"
+		style="@style/whitemed" />
+
 	<View android:layout_width="fill_parent" android:layout_height="1dp"
 		android:background="#333" />
 
@@ -49,12 +54,6 @@
 			android:src="@android:drawable/ic_menu_manage"
 			android:layout_gravity="center" />
 	</LinearLayout>
-
-    <!--  empty view -->
-	<TextView android:id="@+id/empty" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:gravity="center_horizontal"
-		android:layout_marginTop="50dp" android:text="@string/msgBookListEmpty"
-		style="@style/whitemed" />
 
 </LinearLayout>
 			
