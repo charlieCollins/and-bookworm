@@ -13,6 +13,7 @@ import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,8 +47,10 @@ import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.ExternalStorageUtil;
 import com.totsp.bookworm.util.FileUtil;
+import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.util.StringUtil;
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
+import com.totsp.bookworm.zxing.ZXingIntentResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +68,7 @@ public class Main extends Activity {
 
    BookWormApplication application;
    SharedPreferences prefs;
+   ConnectivityManager cMgr;
 
    private ListView bookListView;
    private CursorAdapter adapter;
@@ -99,6 +103,7 @@ public class Main extends Activity {
       setContentView(R.layout.main);
       application = (BookWormApplication) getApplication();
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      //cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
       resetAllCoverImagesTask = null;
 
@@ -120,22 +125,29 @@ public class Main extends Activity {
       addScanImage = (ImageView) this.findViewById(R.id.actionaddscan);
       addScanImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            try {
-               ZXingIntentIntegrator
-                        .initiateScan(Main.this, getString(R.string.labelInstallScanner),
-                                 getString(R.string.msgScannerNotPresent), getString(R.string.btnYes),
-                                 getString(R.string.btnNo));
-            } catch (ActivityNotFoundException e) {
-               // this doesn't need to be i18n, should only happen on emulator (or roms without Market)
-               Toast.makeText(Main.this, "Unable to search Market for Barcode scanner, scanning unavailable.",
-                        Toast.LENGTH_LONG).show();
+            if (NetworkUtil.connectionPresent(cMgr)) {
+               try {
+                  ZXingIntentIntegrator.initiateScan(Main.this, getString(R.string.labelInstallScanner),
+                           getString(R.string.msgScannerNotPresent), getString(R.string.btnYes),
+                           getString(R.string.btnNo));
+               } catch (ActivityNotFoundException e) {
+                  // this doesn't need to be i18n, should only happen on emulator (or roms without Market)
+                  Toast.makeText(Main.this, "Unable to search Market for Barcode scanner, scanning unavailable.",
+                           Toast.LENGTH_LONG).show();
+               }
+            } else {
+               Toast.makeText(Main.this, getString(R.string.msgNetworkNAError), Toast.LENGTH_LONG).show();
             }
          }
       });
       addSearchImage = (ImageView) this.findViewById(R.id.actionaddsearch);
       addSearchImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            Main.this.startActivity(new Intent(Main.this, BookSearch.class));
+            if (NetworkUtil.connectionPresent(cMgr)) {
+               Main.this.startActivity(new Intent(Main.this, BookSearch.class));
+            } else {
+               Toast.makeText(Main.this, getString(R.string.msgNetworkNAError), Toast.LENGTH_LONG).show();
+            }
          }
       });
       addFormImage = (ImageView) this.findViewById(R.id.actionaddform);
@@ -230,7 +242,7 @@ public class Main extends Activity {
             new AlertDialog.Builder(Main.this).setTitle(Main.this.getString(R.string.msgResetAllCoverImages))
                      .setMessage(Main.this.getString(R.string.msgResetAllCoverImagesExplain)).setPositiveButton(
                               Main.this.getString(R.string.btnYes), new DialogInterface.OnClickListener() {
-                                 public void onClick(final DialogInterface d, final int i) {                                   
+                                 public void onClick(final DialogInterface d, final int i) {
                                     Main.this.resetAllCoverImagesTask = new ResetAllCoverImagesTask();
                                     Main.this.resetAllCoverImagesTask.execute();
                                  }
@@ -314,6 +326,42 @@ public class Main extends Activity {
          return true;
       }
       return super.onKeyDown(keyCode, event);
+   }
+
+   @Override
+   public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+      ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+      if (scanResult != null) {
+         String isbn = scanResult.getContents();
+         if (application.debugEnabled) {
+            Log.d(Constants.LOG_TAG, "Scan result format was - " + scanResult.getFormatName());
+            Log.d(Constants.LOG_TAG, "Scan result contents are - " + scanResult.getContents());
+         }
+         if ((scanResult.getFormatName() != null) && !scanResult.getFormatName().equals("EAN_13")) {
+            // if it's not EAN 13 we are likely gonna have issues 
+            // we are using PRODUCT_MODE which limits to UPC and EAN
+            // we *might* be able to parse ISBN from UPC, but pattern is not understood, yet
+            // if it's EAN-8 though, we are screwed
+            // for example UPC 008819265580
+            if (scanResult.getFormatName().startsWith("UPC")) {
+               isbn = scanResult.getContents();
+               if (isbn.length() == 12) {
+                  if (isbn.startsWith("0")) {
+                     isbn = isbn.substring(1, isbn.length());
+                  }
+                  if (isbn.endsWith("0")) {
+                     isbn = isbn.substring(0, isbn.length() - 1);
+                  }
+               }
+               Log.w(Constants.LOG_TAG, "Scan result was a UPC code (not an EAN code), parsed into ISBN:" + isbn);
+            }
+         }
+
+         // handle scan result
+         Intent scanIntent = new Intent(this, BookEntryResult.class);
+         scanIntent.putExtra(Constants.ISBN, isbn);
+         startActivity(scanIntent);
+      }
    }
 
    private void bindAdapter() {
@@ -714,7 +762,7 @@ public class Main extends Activity {
          dialog.setMessage(Main.this.getString(R.string.msgResetCoverImagesWarnTime));
          dialog.show();
          // keep screen on, and prevent orientation change, during potentially long running task
-         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);   
+         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
          setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
       }
 
@@ -743,8 +791,8 @@ public class Main extends Activity {
             dialog.dismiss();
          }
          // reset screen and orientation params
-         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);         
-         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);         
+         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
       }
    }
 }
