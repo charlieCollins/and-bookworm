@@ -305,7 +305,7 @@ public class BookSearch extends Activity {
                }
             }
             if (addedCount > 0) {
-               BookSearch.this.selectorPosition++;
+               BookSearch.this.selectorPosition = BookSearch.this.selectorPosition + (addedCount - 1);
             }
          }
 
