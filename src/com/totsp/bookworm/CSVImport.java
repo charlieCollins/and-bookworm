@@ -1,12 +1,17 @@
 package com.totsp.bookworm;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -24,6 +29,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class CSVImport extends Activity {
+
+   private static final int MENU_CSV_HELP = 1;
 
    private BookWormApplication application;
 
@@ -48,7 +55,7 @@ public class CSVImport extends Activity {
       metaData = (TextView) this.findViewById(R.id.bookimportmetadata);
       metaData.setText("");
       data = (TextView) this.findViewById(R.id.bookimportdata);
-      data.setText("");      
+      data.setText("");
 
       parseButton = (Button) this.findViewById(R.id.bookimportparsebutton);
       importButton = (Button) this.findViewById(R.id.bookimportbutton);
@@ -63,8 +70,7 @@ public class CSVImport extends Activity {
          public void onClick(View v) {
             File f = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + "bookworm.csv");
             if (f == null || !f.exists() || !f.canRead()) {
-               Toast.makeText(CSVImport.this, getString(R.string.msgCsvFileNotFound),
-                        Toast.LENGTH_LONG).show();
+               Toast.makeText(CSVImport.this, getString(R.string.msgCsvFileNotFound), Toast.LENGTH_LONG).show();
             }
             // potentially AsyncTask this too? (could be an FC here with perfect timing, though this is very quick)
             CsvManager importer = new CsvManager();
@@ -98,6 +104,29 @@ public class CSVImport extends Activity {
       super.onPause();
    }
 
+   @Override
+   public boolean onCreateOptionsMenu(final Menu menu) {
+      menu.add(0, CSVImport.MENU_CSV_HELP, 1, getString(R.string.menuCsvHelp)).setIcon(
+               android.R.drawable.ic_menu_info_details);
+      return super.onCreateOptionsMenu(menu);
+   }
+
+   @Override
+   public boolean onOptionsItemSelected(final MenuItem item) {
+      switch (item.getItemId()) {
+         case MENU_CSV_HELP:
+            new AlertDialog.Builder(CSVImport.this).setTitle(getString(R.string.menuCsvHelp)).setMessage(
+                     Html.fromHtml(this.getString(R.string.msgCsvHelp))).setNeutralButton(
+                     getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface d, final int i) {
+                        }
+                     }).show();
+            return true;
+         default:
+            return super.onOptionsItemSelected(item);
+      }
+   }
+
    private void reset() {
       books = null;
       data.setText("");
@@ -106,9 +135,9 @@ public class CSVImport extends Activity {
       parseButton.setEnabled(true);
    }
 
-   private void populateData() {      
+   private void populateData() {
       metaData.setText(String.format(getString(R.string.msgCsvMetaData), books.size()));
-      
+
       String title = getString(R.string.labelTitle);
       StringBuilder sb = new StringBuilder();
       for (Book b : books) {
@@ -116,7 +145,7 @@ public class CSVImport extends Activity {
          sb.append("\n");
       }
       this.data.setText(sb.toString());
-      
+
       this.importButton.setEnabled(true);
       this.parseButton.setEnabled(false);
    }
@@ -135,7 +164,7 @@ public class CSVImport extends Activity {
          dialog.setMessage(getString(R.string.msgImportingData));
          dialog.show();
          // keep screen on, and prevent orientation change, during potentially long running task
-         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);   
+         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
          setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
       }
 
@@ -159,7 +188,7 @@ public class CSVImport extends Activity {
                   }
                }
             }
-            if (dupe) {              
+            if (dupe) {
                Log.i(Constants.LOG_TAG, "NOT Importing book: " + b.title + " because it appears to be a duplicate.");
                publishProgress(String.format(getString(R.string.msgCsvSkippingBook, b.title)));
             } else {
@@ -178,11 +207,11 @@ public class CSVImport extends Activity {
          }
 
          reset();
-      
+
          // reset screen and orientation params
-         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);         
-         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);  
-         
+         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
          startActivity(new Intent(CSVImport.this, Main.class));
       }
    }

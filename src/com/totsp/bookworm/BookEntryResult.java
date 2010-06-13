@@ -117,7 +117,7 @@ public class BookEntryResult extends Activity {
 
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, BookEntryResult.MENU_SCANNING_TIPS, 0, getResources().getString(R.string.menuScanTips)).setIcon(
+      menu.add(0, BookEntryResult.MENU_SCANNING_TIPS, 0, getString(R.string.menuScanTips)).setIcon(
                android.R.drawable.ic_menu_info_details);
       return super.onCreateOptionsMenu(menu);
    }
@@ -126,13 +126,12 @@ public class BookEntryResult extends Activity {
    public boolean onOptionsItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
          case MENU_SCANNING_TIPS:
-            new AlertDialog.Builder(BookEntryResult.this).setTitle(getResources().getString(R.string.menuScanTips))
-                     .setMessage(Html.fromHtml(this.getString(R.string.msgScanningtips))).setNeutralButton(
-                              getResources().getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
-                                 public void onClick(final DialogInterface d, final int i) {
-
-                                 }
-                              }).show();
+            new AlertDialog.Builder(BookEntryResult.this).setTitle(getString(R.string.menuScanTips)).setMessage(
+                     Html.fromHtml(this.getString(R.string.msgScanningtips))).setNeutralButton(
+                     getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface d, final int i) {
+                        }
+                     }).show();
             return true;
       }
       return super.onOptionsItemSelected(item);
@@ -276,7 +275,7 @@ public class BookEntryResult extends Activity {
                   if (BookUtil.areBooksEffectiveDupes(bean.book, b)) {
                      dupe = true;
                      break;
-                  }                  
+                  }
                }
                if (dupe) {
                   BookEntryResult.this.warnDupe.setVisibility(View.VISIBLE);
