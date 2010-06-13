@@ -24,9 +24,12 @@ public class BookWormApplication extends Application {
 
    Book selectedBook;
 
+   int lastMainListPosition;
+   
    String lastSearchTerm;
    int lastSearchListPosition;
-   int lastMainListPosition;
+   int lastSelectorPosition;
+   
    ArrayList<Book> bookCacheList;
 
    @Override

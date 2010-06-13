@@ -68,8 +68,6 @@ public class BookSearch extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      System.out.println("ONCREATE INVOKED");
-      
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
 
@@ -138,7 +136,10 @@ public class BookSearch extends Activity {
       // http://code.google.com/p/android/issues/detail?id=7115
       getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-      //this.restoreFromCache();
+      // if coming from the search entry result page, try to re-establish prev adapter contents and positions
+      if (getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false)) {
+         this.restoreFromCache();
+      }      
       this.bindAdapter();
    }
 
@@ -149,7 +150,6 @@ public class BookSearch extends Activity {
 
    @Override
    public void onPause() {
-      System.out.println("ONPAUSE INVOKED");
       if ((searchTask != null) && searchTask.dialog.isShowing()) {
          searchTask.dialog.dismiss();
       }
@@ -160,17 +160,18 @@ public class BookSearch extends Activity {
       if (searchPosition > 0) {
          application.lastSearchListPosition = searchPosition;
       }
-      /*
-       if (parsedBooks != null) {
-         ArrayList<Book> cacheList = new ArrayList<Book>();
-         // again, should be able to get/put all from adapter? (and not just brute local access)
-         for (int i = 0; i < adapter.getCount(); i++) {
-            Book b = adapter.getItem(i);
-            cacheList.add(adapter.getItem(i));
-         }
-         application.bookCacheList = cacheList;
+      if (selectorPosition > 0) {
+         application.lastSelectorPosition = selectorPosition;
       }
-       */
+      
+      // store the current adapter contents
+      ArrayList<Book> cacheList = new ArrayList<Book>();
+      // again, should be able to get/put all from adapter? (and not just brute local access)
+      for (int i = 0; i < adapter.getCount(); i++) {
+         cacheList.add(adapter.getItem(i));
+      }
+      application.bookCacheList = cacheList;      
+      
       super.onPause();
    }
 
@@ -225,11 +226,9 @@ public class BookSearch extends Activity {
    }
 
    private void restoreFromCache() {
-      System.out.println("RESTORE FROM CACHE INVOKED");
-      
       // use application object as quick/dirty cache for state      
       if (application.bookCacheList != null) {
-         selectorPosition = application.lastSearchListPosition;
+         selectorPosition = application.lastSelectorPosition;
          searchPosition = application.lastSearchListPosition;
          parsedBooks = application.bookCacheList;
       }
@@ -303,7 +302,6 @@ public class BookSearch extends Activity {
          BookSearch.this.prevSearchTerm = BookSearch.this.currSearchTerm;
          BookSearch.this.currSearchTerm = searchTerm;
          int startIndex = Integer.valueOf(args[1]); 
-         System.out.println("STARTINDEX - " + startIndex);
          if (searchTerm != null) {
             searchTerm = URLEncoder.encode(searchTerm);
             return gbs.getBooks(searchTerm, startIndex);
