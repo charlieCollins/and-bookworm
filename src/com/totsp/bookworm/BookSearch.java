@@ -61,8 +61,8 @@ public class BookSearch extends Activity {
       }
    };
 
-   // TODO data gone after ADD book (after onCreate invoked)
-   // need to clean this up a lot, too convoluted right now
+   // TODO need extensive testing after a lot of refactoring
+   // still have issues where after adding books the list seems to get shortened/reset 
    
    @Override
    public void onCreate(final Bundle savedInstanceState) {
