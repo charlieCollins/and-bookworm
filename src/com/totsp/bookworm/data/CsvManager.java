@@ -150,11 +150,7 @@ public class CsvManager {
                      }
                      long readStatus = 0;
                      if (parts[11] != null) {
-                        try {
-                           readStatus = Integer.valueOf(parts[11]);
-                        } catch (NumberFormatException e) {
-                           // ignore
-                        }
+                        readStatus = Boolean.valueOf(parts[11]) ? 1 : 0;
                      }
 
                      BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, null);
