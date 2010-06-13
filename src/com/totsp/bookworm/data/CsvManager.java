@@ -105,6 +105,7 @@ public class CsvManager {
 
    // this is VERY brittle and primitive, but small -- only supports specific BookWorm format files
    public ArrayList<Book> parseCSVFile(File f) {
+      // TODO protect against SQL injection attacks? risk very minor, it's your own DB, but still
       ArrayList<Book> books = new ArrayList<Book>();
       if (f.exists() && f.canRead()) {
          Log.i(Constants.LOG_TAG, "Parsing file:" + f.getAbsolutePath() + " for import into BookWorm database.");

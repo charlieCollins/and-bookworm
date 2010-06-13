@@ -132,7 +132,7 @@
 	<string name="labelManageData">Manage Data</string>
 	<string name="menuManageData">Manage Data</string>
 	<string name="menuExportCSV">Export Data as CSV</string>   
-    <string name="labelExportCSV">Export (email) current book data list as a CSV file?</string> 
+    <string name="labelExportCSV">Export current book data list as a CSV file to the SD card (and via email)?</string> 
     <string name="msgScannerNotPresent">Barcode scanner may not be present, would like to check the Market and try to install it?</string>
     <string name="labelInstallScanner">Install Barcode Scanner</string>
     <string name="msgCsvMetaData">Parsed %s books from import file. Click import (below list) to continue and import to database.</string>
