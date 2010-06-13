@@ -125,7 +125,7 @@ public class Main extends Activity {
       addScanImage = (ImageView) this.findViewById(R.id.actionaddscan);
       addScanImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            if (NetworkUtil.connectionPresent(cMgr)) {
+            if (!NetworkUtil.connectionPresent(cMgr)) {
                try {
                   ZXingIntentIntegrator.initiateScan(Main.this, getString(R.string.labelInstallScanner),
                            getString(R.string.msgScannerNotPresent), getString(R.string.btnYes),
@@ -143,7 +143,7 @@ public class Main extends Activity {
       addSearchImage = (ImageView) this.findViewById(R.id.actionaddsearch);
       addSearchImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            if (NetworkUtil.connectionPresent(cMgr)) {
+            if (!NetworkUtil.connectionPresent(cMgr)) {
                Main.this.startActivity(new Intent(Main.this, BookSearch.class));
             } else {
                Toast.makeText(Main.this, getString(R.string.msgNetworkNAError), Toast.LENGTH_LONG).show();
