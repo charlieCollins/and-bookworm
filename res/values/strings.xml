@@ -69,7 +69,7 @@
 	<string name="msgInvalidISBN">ISBN format invalid (not ISBN 10 or ISBN 13), cannot retrieve result.</string>	
 	<string name="msgFindError">Book not found using ISBN/product code %s (may not be an ISBN?).</string>	
 	<string name="msgRetrievingBookData">Retrieving book data...</string>	
-	<string name="msgBookListEmpty">You don\'t have any books in your list yet. Use the action bar add features (above) to add books.</string>
+	<string name="msgBookListEmpty">You don\'t have any books in your list yet. Use the action bar below to add books (by scanning, searching, or form entry).</string>
 	<string name="msgScanError">Whoops, that entry didn\'t work. The product code/ISBN result was %s. Please try again, or use a different entry method. (If you are having trouble scanning a book, check out Menu->Scanning Tips.)</string>
 	<string name="msgDataSourceError">Book data source not found, internal error, or networking issue.</string>
 	<string name="msgISBNError">Book ISBN/product code not present.</string>    

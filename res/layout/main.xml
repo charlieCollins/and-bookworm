@@ -8,18 +8,24 @@
 		android:layout_height="0dp" android:layout_weight="1"
 		android:drawSelectorOnTop="false" />
 
-	<TextView android:id="@+id/empty" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:gravity="center_horizontal"
-		android:layout_marginTop="50dp" android:text="@string/msgBookListEmpty"
-		style="@style/whitemed" />
+	<LinearLayout android:id="@+id/empty"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_marginTop="10dp" android:layout_marginBottom="10dp"
+		android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+		android:gravity="top">
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:layout_marginTop="50dp" android:text="@string/msgBookListEmpty"
+			style="@style/whitemed" />
+	</LinearLayout>
 
-	<View android:layout_width="fill_parent" android:layout_height="1dp"
+	<View android:layout_width="fill_parent" android:layout_height="2dp"
 		android:background="#333" />
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:id="@+id/mainactionbar" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:gravity="center"
-		android:padding="2dp" android:minHeight="55dp" android:orientation="horizontal">
+	<LinearLayout android:id="@+id/mainactionbar"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="bottom|center" android:padding="2dp"
+		android:minHeight="55dp" android:orientation="horizontal">
 
 		<ImageView android:id="@+id/actionsort"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
