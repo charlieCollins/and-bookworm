@@ -61,10 +61,15 @@ public class BookSearch extends Activity {
       }
    };
 
+   // TODO data gone after ADD book (after onCreate invoked)
+   // need to clean this up a lot, too convoluted right now
+   
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
+      System.out.println("ONCREATE INVOKED");
+      
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
 
@@ -86,7 +91,7 @@ public class BookSearch extends Activity {
                BookSearch.this.searchPosition = 0;
                BookSearch.this.selectorPosition = 0;
                BookSearch.this.prevSearchTerm = "";
-               BookSearch.this.parsedBooks.clear();
+               BookSearch.this.parsedBooks = new ArrayList<Book>();
                BookSearch.this.adapter.clear();
                BookSearch.this.adapter.notifyDataSetChanged();
                BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), "0");
@@ -104,7 +109,7 @@ public class BookSearch extends Activity {
             BookSearch.this.searchPosition = 0;
             BookSearch.this.selectorPosition = 0;
             BookSearch.this.prevSearchTerm = "";
-            BookSearch.this.parsedBooks.clear();
+            BookSearch.this.parsedBooks = new ArrayList<Book>();
             BookSearch.this.adapter.clear();
             BookSearch.this.adapter.notifyDataSetChanged();
             BookSearch.this.searchTask.execute(BookSearch.this.searchInput.getText().toString(), "0");
@@ -133,8 +138,8 @@ public class BookSearch extends Activity {
       // http://code.google.com/p/android/issues/detail?id=7115
       getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-      this.restoreFromCache();
-      this.resetAdapter();
+      //this.restoreFromCache();
+      this.bindAdapter();
    }
 
    @Override
@@ -142,28 +147,30 @@ public class BookSearch extends Activity {
       super.onStart();
    }
 
-   /*
-   @Override
-   public Object onRetainNonConfigurationInstance() {
-      // never pass a View/Drawable/Adapter etc here or will leak Activity
-      return true;
-   }
-   */
-
    @Override
    public void onPause() {
+      System.out.println("ONPAUSE INVOKED");
       if ((searchTask != null) && searchTask.dialog.isShowing()) {
          searchTask.dialog.dismiss();
       }
-      if (parsedBooks != null) {
-         application.bookCacheList = parsedBooks;
-      }
+      
       if (searchInput != null) {
          application.lastSearchTerm = searchInput.getText().toString();
       }
-      if (selectorPosition > 0) {
+      if (searchPosition > 0) {
          application.lastSearchListPosition = searchPosition;
       }
+      /*
+       if (parsedBooks != null) {
+         ArrayList<Book> cacheList = new ArrayList<Book>();
+         // again, should be able to get/put all from adapter? (and not just brute local access)
+         for (int i = 0; i < adapter.getCount(); i++) {
+            Book b = adapter.getItem(i);
+            cacheList.add(adapter.getItem(i));
+         }
+         application.bookCacheList = cacheList;
+      }
+       */
       super.onPause();
    }
 
@@ -194,7 +201,7 @@ public class BookSearch extends Activity {
       getMoreData.setBackgroundResource(android.R.color.transparent);
    }
    
-   private void resetAdapter() {
+   private void bindAdapter() {
       if (!parsedBooks.isEmpty() && !footerViewEnabled) {
          this.enableFooterView();         
       }
@@ -218,6 +225,8 @@ public class BookSearch extends Activity {
    }
 
    private void restoreFromCache() {
+      System.out.println("RESTORE FROM CACHE INVOKED");
+      
       // use application object as quick/dirty cache for state      
       if (application.bookCacheList != null) {
          selectorPosition = application.lastSearchListPosition;
@@ -320,7 +329,7 @@ public class BookSearch extends Activity {
          }
          
          BookSearch.this.disableFooterView();
-         BookSearch.this.resetAdapter();         
+         BookSearch.this.bindAdapter();         
       }
    }
 }
