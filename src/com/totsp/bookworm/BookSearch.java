@@ -96,7 +96,7 @@ public class BookSearch extends Activity {
       searchResults.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
             // don't redo the search, you have the BOOK itself (don't pass the ISBN, use the Book)
-            application.selectedBook = BookSearch.this.parsedBooks.get(index);
+            application.selectedBook = adapter.getItem(index);
 
             BookSearch.this.selectorPosition = index - 1;
             Intent intent = new Intent(BookSearch.this, BookEntryResult.class);
@@ -186,7 +186,6 @@ public class BookSearch extends Activity {
       if (!parsedBooks.isEmpty() && !footerViewEnabled) {
          this.enableFooterView();         
       }
-
       // TODO why can't I add all? must be doing this wrong
       if (!parsedBooks.isEmpty()) {
          if (!prevSearchTerm.equals(currSearchTerm)) {
@@ -203,7 +202,7 @@ public class BookSearch extends Activity {
 
       if (selectorPosition > 2) {
          searchResults.setSelection(selectorPosition - 1);
-      }
+      }     
    }
 
    private void restoreFromCache() {
@@ -296,7 +295,7 @@ public class BookSearch extends Activity {
          }
 
          if ((books != null) && !books.isEmpty()) {
-            BookSearch.this.selectorPosition = BookSearch.this.parsedBooks.size();
+            BookSearch.this.selectorPosition = BookSearch.this.parsedBooks.size() + 1;
             for (int i = 0; i < books.size(); i++) {
                Book b = books.get(i);
                if (!BookSearch.this.parsedBooks.contains(b)) {
