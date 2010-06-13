@@ -86,7 +86,7 @@ public class BookSearch extends Activity {
       searchInput.setOnKeyListener(new OnKeyListener() {
          public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-               // if the "search" button is repressed start over (diff from "get more results")
+               // if the "enter" key is pressed start over (diff from "get more results")
                BookSearch.this.searchTask = new SearchTask();               
                BookSearch.this.searchPosition = 0;
                BookSearch.this.selectorPosition = 0;
@@ -104,7 +104,7 @@ public class BookSearch extends Activity {
       searchButton = (Button) findViewById(R.id.bookentrysearchbutton);
       searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            // if the "search" button is repressed start over (diff from "get more results")
+            // if the "search" button is pressed start over (diff from "get more results")
             BookSearch.this.searchTask = new SearchTask();               
             BookSearch.this.searchPosition = 0;
             BookSearch.this.selectorPosition = 0;
