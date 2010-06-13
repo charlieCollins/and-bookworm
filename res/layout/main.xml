@@ -4,6 +4,13 @@
 	android:layout_height="fill_parent" android:paddingLeft="8dp"
 	android:paddingRight="8dp">
 
+	<ListView android:id="@+id/booklistview" android:layout_width="fill_parent"
+		android:layout_height="0dp" android:layout_weight="1"
+		android:drawSelectorOnTop="false" />
+
+	<View android:layout_width="fill_parent" android:layout_height="1dp"
+		android:background="#333" />
+
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/mainactionbar" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:gravity="center"
@@ -43,21 +50,11 @@
 			android:layout_gravity="center" />
 	</LinearLayout>
 
-	<View android:layout_width="fill_parent" android:layout_height="1dp"
-		android:background="#333" />
-
-	<ListView android:id="@+id/booklistview" android:layout_width="fill_parent"
-		android:layout_height="0dp" android:layout_weight="1"
-		android:drawSelectorOnTop="false" />
-
+    <!--  empty view -->
 	<TextView android:id="@+id/empty" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:gravity="center_horizontal"
 		android:layout_marginTop="50dp" android:text="@string/msgBookListEmpty"
 		style="@style/whitemed" />
 
-
-
-
-	<!--  android:cacheColorHint="#00000000" -->
 </LinearLayout>
 			
