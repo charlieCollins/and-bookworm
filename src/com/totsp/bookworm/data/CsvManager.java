@@ -118,7 +118,6 @@ public class CsvManager {
             while (scanner.hasNextLine()) {
                count++;
                String line = scanner.nextLine();
-               System.out.println("*** LINE - " + line);
                if (line != null && count > 1) {
                   String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                   if (parts != null && (parts.length == 12 || parts.length == 13)) {
