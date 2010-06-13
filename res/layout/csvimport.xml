@@ -15,7 +15,7 @@
 		<TextView android:id="@+id/bookimportexplain"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_marginTop="10dp" android:layout_marginLeft="5dp"
-			android:layout_marginRight="5dp" style="@style/black"
+			android:layout_marginRight="5dp" style="@style/blackmed"
 			android:gravity="center_horizontal" android:text="@string/msgImportCSVInstructions" />
 
 		<Button android:id="@+id/bookimportparsebutton"
