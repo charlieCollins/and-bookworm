@@ -294,16 +294,19 @@ public class BookSearch extends Activity {
             dialog.dismiss();
          }
 
-         if ((books != null) && !books.isEmpty()) {
-            BookSearch.this.selectorPosition = BookSearch.this.parsedBooks.size() + 1;
+         BookSearch.this.parsedBooks.clear();
+         if ((books != null) && !books.isEmpty()) {            
+            int addedCount = 0;
             for (int i = 0; i < books.size(); i++) {
                Book b = books.get(i);
                if (!BookSearch.this.parsedBooks.contains(b)) {
+                  addedCount++;
                   BookSearch.this.parsedBooks.add(b);
                }
             }
-         } else {
-            BookSearch.this.parsedBooks.clear();
+            if (addedCount > 0) {
+               BookSearch.this.selectorPosition++;
+            }
          }
 
          BookSearch.this.disableFooterView();
