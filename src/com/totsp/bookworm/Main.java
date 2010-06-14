@@ -104,9 +104,11 @@ public class Main extends Activity {
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
       cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-      resetAllCoverImagesTask = null;
+      resetAllCoverImagesTask = new ResetAllCoverImagesTask();
+      importDatabaseTask = new ImportDatabaseTask();
+      exportDatabaseTask = new ExportDatabaseTask();
 
-      coverImageMissing = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_cover_missing);
+      coverImageMissing = BitmapFactory.decodeResource(getResources(), R.drawable.book_cover_missing);
       star0 = BitmapFactory.decodeResource(getResources(), R.drawable.star0);
       star1 = BitmapFactory.decodeResource(getResources(), R.drawable.star1);
       star2 = BitmapFactory.decodeResource(getResources(), R.drawable.star2);
@@ -115,13 +117,13 @@ public class Main extends Activity {
       star5 = BitmapFactory.decodeResource(getResources(), R.drawable.star5);
 
       // action bar images
-      sortImage = (ImageView) this.findViewById(R.id.actionsort);
+      sortImage = (ImageView) findViewById(R.id.actionsort);
       sortImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            Main.this.sortDialog.show();
+            sortDialog.show();
          }
       });
-      addScanImage = (ImageView) this.findViewById(R.id.actionaddscan);
+      addScanImage = (ImageView) findViewById(R.id.actionaddscan);
       addScanImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
             if (!NetworkUtil.connectionPresent(cMgr)) {
@@ -139,28 +141,28 @@ public class Main extends Activity {
             }
          }
       });
-      addSearchImage = (ImageView) this.findViewById(R.id.actionaddsearch);
+      addSearchImage = (ImageView) findViewById(R.id.actionaddsearch);
       addSearchImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
             if (!NetworkUtil.connectionPresent(cMgr)) {
-               Main.this.startActivity(new Intent(Main.this, BookSearch.class));
+               startActivity(new Intent(Main.this, BookSearch.class));
             } else {
                Toast.makeText(Main.this, getString(R.string.msgNetworkNAError), Toast.LENGTH_LONG).show();
             }
          }
       });
-      addFormImage = (ImageView) this.findViewById(R.id.actionaddform);
+      addFormImage = (ImageView) findViewById(R.id.actionaddform);
       addFormImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            Main.this.application.selectedBook = null;
-            Main.this.startActivity(new Intent(Main.this, BookForm.class));
+            application.selectedBook = null;
+            startActivity(new Intent(Main.this, BookForm.class));
          }
       });
-      manageDataImage = (ImageView) this.findViewById(R.id.actionmanagedata);
+      manageDataImage = (ImageView) findViewById(R.id.actionmanagedata);
       manageDataImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
             //startActivity(new Intent(Main.this, ManageData.class));
-            Main.this.manageDataDialog.show();
+            manageDataDialog.show();
          }
       });
 
@@ -170,18 +172,18 @@ public class Main extends Activity {
       bookListView.setTextFilterEnabled(true);
       bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-            Main.this.cursor.moveToPosition(index);
+            cursor.moveToPosition(index);
             // NOTE - this is tricky, table doesn't have _id, but CursorAdapter requires it
             // in the query we used "book.bid as _id" so here we have to use _id too
-            int bookId = Main.this.cursor.getInt(Main.this.cursor.getColumnIndex("_id"));
-            Book book = Main.this.application.dataManager.selectBook(bookId);
+            int bookId = cursor.getInt(cursor.getColumnIndex("_id"));
+            Book book = application.dataManager.selectBook(bookId);
             if (book != null) {
-               if (Main.this.application.debugEnabled) {
+               if (application.debugEnabled) {
                   Log.d(Constants.LOG_TAG, "book selected - " + book.title);
                }
-               Main.this.application.lastMainListPosition = index;
-               Main.this.application.selectedBook = book;
-               Main.this.startActivity(new Intent(Main.this, BookDetail.class));
+               application.lastMainListPosition = index;
+               application.selectedBook = book;
+               startActivity(new Intent(Main.this, BookDetail.class));
             } else {
                Toast.makeText(Main.this, getString(R.string.msgSelectBookError), Toast.LENGTH_SHORT).show();
             }
@@ -242,8 +244,8 @@ public class Main extends Activity {
    @Override
    public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
       super.onCreateContextMenu(menu, v, menuInfo);
-      menu.add(0, Main.MENU_CONTEXT_EDIT, 0, this.getString(R.string.menuEditBook));
-      menu.add(0, Main.MENU_CONTEXT_DELETE, 1, this.getString(R.string.menuDeleteBook));
+      menu.add(0, Main.MENU_CONTEXT_EDIT, 0, getString(R.string.menuEditBook));
+      menu.add(0, Main.MENU_CONTEXT_DELETE, 1, getString(R.string.menuDeleteBook));
       menu.setHeaderTitle("Action");
    }
 
@@ -252,19 +254,19 @@ public class Main extends Activity {
       AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
       long bookId = info.id;
       final Book b = application.dataManager.selectBook(bookId);
-      Main.this.application.lastMainListPosition = info.position;
+      application.lastMainListPosition = info.position;
       switch (item.getItemId()) {
          case MENU_CONTEXT_EDIT:
-            Main.this.application.selectedBook = b;
-            Main.this.startActivity(new Intent(Main.this, BookForm.class));
+            application.selectedBook = b;
+            startActivity(new Intent(Main.this, BookForm.class));
             return true;
          case MENU_CONTEXT_DELETE:
             new AlertDialog.Builder(Main.this).setTitle(getString(R.string.menuDeleteBook)).setMessage(b.title)
                      .setPositiveButton(getString(R.string.btnYes), new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface d, final int i) {
-                           Main.this.application.imageManager.deleteBitmapSourceFile(b.title, b.id);
-                           Main.this.application.dataManager.deleteBook(b.id);
-                           Main.this.startActivity(Main.this.getIntent());
+                           application.imageManager.deleteBitmapSourceFile(b.title, b.id);
+                           application.dataManager.deleteBook(b.id);
+                           startActivity(getIntent());
                         }
                      }).setNegativeButton(getString(R.string.btnNo), new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface d, final int i) {
@@ -281,11 +283,11 @@ public class Main extends Activity {
       if ((resetAllCoverImagesTask != null) && resetAllCoverImagesTask.dialog.isShowing()) {
          resetAllCoverImagesTask.dialog.dismiss();
       }
-      if ((this.exportDatabaseTask != null) && this.exportDatabaseTask.dialog.isShowing()) {
-         this.exportDatabaseTask.dialog.dismiss();
+      if ((exportDatabaseTask != null) && exportDatabaseTask.dialog.isShowing()) {
+         exportDatabaseTask.dialog.dismiss();
       }
-      if ((this.importDatabaseTask != null) && this.importDatabaseTask.dialog.isShowing()) {
-         this.importDatabaseTask.dialog.dismiss();
+      if ((importDatabaseTask != null) && importDatabaseTask.dialog.isShowing()) {
+         importDatabaseTask.dialog.dismiss();
       }
       // /Debug.stopMethodTracing();		
       super.onPause();
@@ -370,32 +372,32 @@ public class Main extends Activity {
                   public void onClick(DialogInterface d, int selected) {
                      switch (selected) {
                         case 0:
-                           Main.this.saveSortOrder(DataConstants.ORDER_BY_TITLE_ASC);
+                           saveSortOrder(DataConstants.ORDER_BY_TITLE_ASC);
                            break;
                         case 1:
-                           Main.this.saveSortOrder(DataConstants.ORDER_BY_AUTHORS_ASC);
+                           saveSortOrder(DataConstants.ORDER_BY_AUTHORS_ASC);
                            break;
                         case 2:
-                           Main.this.saveSortOrder(DataConstants.ORDER_BY_RATING_DESC);
+                           saveSortOrder(DataConstants.ORDER_BY_RATING_DESC);
                            break;
                         case 3:
-                           Main.this.saveSortOrder(DataConstants.ORDER_BY_READ_DESC);
+                           saveSortOrder(DataConstants.ORDER_BY_READ_DESC);
                            break;
                         case 4:
-                           Main.this.saveSortOrder(DataConstants.ORDER_BY_SUBJECT_ASC);
+                           saveSortOrder(DataConstants.ORDER_BY_SUBJECT_ASC);
                            break;
                         case 5:
-                           Main.this.saveSortOrder(DataConstants.ORDER_BY_DATE_PUB_DESC);
+                           saveSortOrder(DataConstants.ORDER_BY_DATE_PUB_DESC);
                            break;
                         case 6:
-                           Main.this.saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
+                           saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
                            break;
                      }
-                     Main.this.application.lastMainListPosition = 0;
-                     // Main.this.adapter.notifyDataSetChanged();
+                     application.lastMainListPosition = 0;
+                     // adapter.notifyDataSetChanged();
                      // TODO notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
                      // need to research (shouldn't have to re-bind the entire adapter, but for now doing so)
-                     Main.this.bindAdapter();
+                     bindAdapter();
                   }
                });
       sortDialog.create();
@@ -438,17 +440,16 @@ public class Main extends Activity {
                            break;
                         case 2:
                            // EXPORT DB
-                           new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgReplaceExistingDBExport))
-                                    .setPositiveButton(getString(R.string.btnYes),
-                                             new DialogInterface.OnClickListener() {
+                           new AlertDialog.Builder(Main.this)
+                                    .setMessage(getString(R.string.msgReplaceExistingDBExport)).setPositiveButton(
+                                             getString(R.string.btnYes), new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
                                                    if (ExternalStorageUtil.isExternalStorageAvail()) {
                                                       Log
                                                                .i(Constants.LOG_TAG,
                                                                         "exporting database to external storage");
-                                                      Main.this.exportDatabaseTask = new ExportDatabaseTask();
-                                                      Main.this.exportDatabaseTask.execute();
-                                                      Main.this.startActivity(new Intent(Main.this, Main.class));
+                                                      exportDatabaseTask.execute();
+                                                      startActivity(new Intent(Main.this, Main.class));
                                                    } else {
                                                       Toast.makeText(Main.this,
                                                                getString(R.string.msgExternalStorageNAError),
@@ -470,11 +471,11 @@ public class Main extends Activity {
                                                    if (ExternalStorageUtil.isExternalStorageAvail()) {
                                                       Log.i(Constants.LOG_TAG,
                                                                "importing database from external storage");
-                                                      Main.this.importDatabaseTask = new ImportDatabaseTask();
-                                                      Main.this.importDatabaseTask.execute(DataConstants.DATABASE_NAME, DataConstants.EXTERNAL_DATA_PATH);
+                                                      importDatabaseTask.execute(DataConstants.DATABASE_NAME,
+                                                               DataConstants.EXTERNAL_DATA_PATH);
                                                       // reset the db (else Main shows no data)
-                                                      Main.this.application.dataManager.resetDb();
-                                                      Main.this.startActivity(new Intent(Main.this, Main.class));
+                                                      application.dataManager.resetDb();
+                                                      startActivity(new Intent(Main.this, Main.class));
                                                    } else {
                                                       Toast.makeText(Main.this,
                                                                getString(R.string.msgExternalStorageNAError),
@@ -541,8 +542,9 @@ public class Main extends Activity {
                                     .setMessage(getString(R.string.msgResetAllCoverImagesExplain)).setPositiveButton(
                                              getString(R.string.btnYes), new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface d, final int i) {
-                                                   Main.this.resetAllCoverImagesTask = new ResetAllCoverImagesTask();
-                                                   Main.this.resetAllCoverImagesTask.execute();
+                                                   if (adapter.getCount() > 0) {                                                      
+                                                      resetAllCoverImagesTask.execute();
+                                                   }
                                                 }
                                              }).setNegativeButton(getString(R.string.btnNo),
                                              new DialogInterface.OnClickListener() {
@@ -557,11 +559,11 @@ public class Main extends Activity {
                                              new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
                                                    Log.i(Constants.LOG_TAG, "deleting database");
-                                                   Main.this.application.dataManager.deleteAllDataYesIAmSure();
-                                                   Main.this.application.dataManager.resetDb();
+                                                   application.dataManager.deleteAllDataYesIAmSure();
+                                                   application.dataManager.resetDb();
                                                    Toast.makeText(Main.this, getString(R.string.msgDataDeleted),
                                                             Toast.LENGTH_SHORT).show();
-                                                   Main.this.startActivity(new Intent(Main.this, Main.class));
+                                                   startActivity(new Intent(Main.this, Main.class));
                                                 }
                                              }).setNegativeButton(getString(R.string.btnNo),
                                              new DialogInterface.OnClickListener() {
@@ -604,7 +606,7 @@ public class Main extends Activity {
    //
    private class BookCursorAdapter extends CursorAdapter implements FilterQueryProvider {
 
-      LayoutInflater vi = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
       public BookCursorAdapter(final Cursor c) {
          super(Main.this, c, true);
@@ -618,10 +620,10 @@ public class Main extends Activity {
             c = getCursor();
          } else {
             String pattern = "'%" + constraint + "%'";
-            String orderBy = Main.this.prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
-            c = Main.this.application.dataManager.getBookCursor(orderBy, "where book.tit like " + pattern);
+            String orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
+            c = application.dataManager.getBookCursor(orderBy, "where book.tit like " + pattern);
          }
-         Main.this.cursor = c;
+         cursor = c;
          return c;
       }
 
@@ -667,37 +669,37 @@ public class Main extends Activity {
             String title = c.getString(1);
             String authors = c.getString(10);
 
-            if (Main.this.application.debugEnabled) {
+            if (application.debugEnabled) {
                Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);
             }
 
             ImageView coverImage = holder.coverImage;
-            Bitmap coverImageBitmap = Main.this.application.imageManager.retrieveBitmap(title, id, true);
+            Bitmap coverImageBitmap = application.imageManager.retrieveBitmap(title, id, true);
             if (coverImageBitmap != null) {
                coverImage.setImageBitmap(coverImageBitmap);
             } else {
-               coverImage.setImageBitmap(Main.this.coverImageMissing);
+               coverImage.setImageBitmap(coverImageMissing);
             }
 
             ImageView ratingImage = holder.ratingImage;
             switch (rating) {
                case 0:
-                  ratingImage.setImageBitmap(Main.this.star0);
+                  ratingImage.setImageBitmap(star0);
                   break;
                case 1:
-                  ratingImage.setImageBitmap(Main.this.star1);
+                  ratingImage.setImageBitmap(star1);
                   break;
                case 2:
-                  ratingImage.setImageBitmap(Main.this.star2);
+                  ratingImage.setImageBitmap(star2);
                   break;
                case 3:
-                  ratingImage.setImageBitmap(Main.this.star3);
+                  ratingImage.setImageBitmap(star3);
                   break;
                case 4:
-                  ratingImage.setImageBitmap(Main.this.star4);
+                  ratingImage.setImageBitmap(star4);
                   break;
                case 5:
-                  ratingImage.setImageBitmap(Main.this.star5);
+                  ratingImage.setImageBitmap(star5);
                   break;
             }
 
@@ -722,8 +724,8 @@ public class Main extends Activity {
 
       @Override
       protected void onPreExecute() {
-         this.dialog.setMessage(getString(R.string.msgExportingData));
-         this.dialog.show();
+         dialog.setMessage(getString(R.string.msgExportingData));
+         dialog.show();
       }
 
       @Override
@@ -749,8 +751,8 @@ public class Main extends Activity {
 
       @Override
       protected void onPostExecute(final Boolean success) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
          if (success) {
             Toast.makeText(Main.this, getString(R.string.msgExportSuccess), Toast.LENGTH_SHORT).show();
@@ -765,8 +767,8 @@ public class Main extends Activity {
 
       @Override
       protected void onPreExecute() {
-         this.dialog.setMessage(getString(R.string.msgImportingData));
-         this.dialog.show();
+         dialog.setMessage(getString(R.string.msgImportingData));
+         dialog.show();
       }
 
       @Override
@@ -796,8 +798,8 @@ public class Main extends Activity {
 
       @Override
       protected void onPostExecute(final String errMsg) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
          if (errMsg == null) {
             Toast.makeText(Main.this, getString(R.string.msgImportSuccess), Toast.LENGTH_SHORT).show();
@@ -826,12 +828,12 @@ public class Main extends Activity {
 
       @Override
       protected Void doInBackground(final Void... args) {
-         Main.this.application.imageManager.clearAllBitmapSourceFiles();
-         ArrayList<Book> books = Main.this.application.dataManager.selectAllBooks();
+         application.imageManager.clearAllBitmapSourceFiles();
+         ArrayList<Book> books = application.dataManager.selectAllBooks();
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
             publishProgress(String.format(getString(R.string.msgProcessingBookX, b.title)));
-            Main.this.application.imageManager.resetCoverImage(b);
+            application.imageManager.resetCoverImage(b);
             SystemClock.sleep(100); // sleep a little, too many requests too quickly with large data sets is bad mojo
          }
          return null;
@@ -839,7 +841,7 @@ public class Main extends Activity {
 
       @Override
       protected void onPostExecute(final Void v) {
-         Main.this.adapter.notifyDataSetChanged();
+         adapter.notifyDataSetChanged();
          if (dialog.isShowing()) {
             dialog.dismiss();
          }
