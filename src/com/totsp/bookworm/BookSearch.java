@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,7 @@ public class BookSearch extends Activity {
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
 
-      searchTask = new SearchTask();
+      searchTask = null;
 
       adapter = new BookSearchAdapter(new ArrayList<Book>());
 
@@ -106,6 +107,16 @@ public class BookSearch extends Activity {
             if ((totalItemCount > 0) && (firstVisibleItem + visibleItemCount == totalItemCount)
                      && ((searchTerm != null) && !searchTerm.equals(""))) {
                selectorPosition = totalItemCount;
+               if (searchTask != null && !searchTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+                  Log
+                           .w(Constants.LOG_TAG,
+                                    "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
+                  if (searchTask.dialog.isShowing()) {
+                     searchTask.dialog.dismiss();
+                  }
+                  searchTask.cancel(true);
+               }
+               searchTask = new SearchTask();
                searchTask.execute(searchTerm, String.valueOf(searchPosition));
             }
          }
@@ -132,6 +143,16 @@ public class BookSearch extends Activity {
       prevSearchTerm = "";
       adapter.clear();
       adapter.notifyDataSetChanged();
+      if (searchTask != null && !searchTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+         Log
+                  .w(Constants.LOG_TAG,
+                           "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
+         if (searchTask.dialog.isShowing()) {
+            searchTask.dialog.dismiss();
+         }
+         searchTask.cancel(true);
+      }
+      searchTask = new SearchTask();
       searchTask.execute(searchTerm, "0");
    }
 
@@ -145,13 +166,13 @@ public class BookSearch extends Activity {
       persistToCache();
       super.onPause();
    }
-   
+
    @Override
    public void onSaveInstanceState(Bundle outState) {
       persistToCache();
       super.onSaveInstanceState(outState);
    }
-  
+
    @Override
    public void onRestoreInstanceState(Bundle inState) {
       super.onRestoreInstanceState(inState);
@@ -170,7 +191,7 @@ public class BookSearch extends Activity {
 
    private void persistToCache() {
       // use application object as quick/dirty cache for state 
-      
+
       // both onPause and onSaveInstanceState invoke this
       // onPause is used when Activity is killed, onSaveInstanceState
       // both must be used because there are occasions when onPause is called and onSave is not, and vice versa 
@@ -197,10 +218,10 @@ public class BookSearch extends Activity {
       }
       application.bookCacheList = cacheList;
    }
-   
+
    private void restoreFromCache() {
       // use application object as quick/dirty cache for state 
-      
+
       if (application.bookCacheList != null) {
          selectorPosition = application.lastSelectorPosition;
          searchPosition = application.lastSearchListPosition;

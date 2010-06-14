@@ -104,9 +104,12 @@ public class Main extends Activity {
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
       cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-      resetAllCoverImagesTask = new ResetAllCoverImagesTask();
-      importDatabaseTask = new ImportDatabaseTask();
-      exportDatabaseTask = new ExportDatabaseTask();
+      // AsyncTasks are great, and really annoying at the same time
+      // hard to prevent FCs when you need an instance handle to clean up in onPause, but you can execute only ONCE
+      // (should be idempotent and execute as many times as you want, once instance handle)
+      resetAllCoverImagesTask = null;
+      importDatabaseTask = null;
+      exportDatabaseTask = null;
 
       coverImageMissing = BitmapFactory.decodeResource(getResources(), R.drawable.book_cover_missing);
       star0 = BitmapFactory.decodeResource(getResources(), R.drawable.star0);
@@ -418,6 +421,7 @@ public class Main extends Activity {
                                              new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
                                                    if (ExternalStorageUtil.isExternalStorageAvail()) {
+                                                      // TODO AsyncTask here?
                                                       CsvManager exporter = new CsvManager();
                                                       exporter.export(application.dataManager.selectAllBooks());
                                                       Toast.makeText(Main.this, getString(R.string.msgExportSuccess),
@@ -448,6 +452,17 @@ public class Main extends Activity {
                                                       Log
                                                                .i(Constants.LOG_TAG,
                                                                         "exporting database to external storage");
+                                                      if (exportDatabaseTask != null
+                                                               && !exportDatabaseTask.getStatus().equals(
+                                                                        AsyncTask.Status.FINISHED)) {
+                                                         Log
+                                                                  .w(Constants.LOG_TAG,
+                                                                           "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
+                                                         if (exportDatabaseTask.dialog.isShowing()) {
+                                                            exportDatabaseTask.dialog.dismiss();
+                                                         }
+                                                         exportDatabaseTask.cancel(true);
+                                                      }
                                                       exportDatabaseTask.execute();
                                                       startActivity(new Intent(Main.this, Main.class));
                                                    } else {
@@ -471,6 +486,18 @@ public class Main extends Activity {
                                                    if (ExternalStorageUtil.isExternalStorageAvail()) {
                                                       Log.i(Constants.LOG_TAG,
                                                                "importing database from external storage");
+                                                      if (importDatabaseTask != null
+                                                               && !importDatabaseTask.getStatus().equals(
+                                                                        AsyncTask.Status.FINISHED)) {
+                                                         Log
+                                                                  .w(Constants.LOG_TAG,
+                                                                           "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
+                                                         if (exportDatabaseTask.dialog.isShowing()) {
+                                                            importDatabaseTask.dialog.dismiss();
+                                                         }
+                                                         importDatabaseTask.cancel(true);
+                                                      }
+                                                      importDatabaseTask = new ImportDatabaseTask();
                                                       importDatabaseTask.execute(DataConstants.DATABASE_NAME,
                                                                DataConstants.EXTERNAL_DATA_PATH);
                                                       // reset the db (else Main shows no data)
@@ -544,6 +571,18 @@ public class Main extends Activity {
                                        .setPositiveButton(getString(R.string.btnYes),
                                                 new DialogInterface.OnClickListener() {
                                                    public void onClick(final DialogInterface d, final int i) {
+                                                      if (resetAllCoverImagesTask != null
+                                                               && !resetAllCoverImagesTask.getStatus().equals(
+                                                                        AsyncTask.Status.FINISHED)) {
+                                                         Log
+                                                                  .w(Constants.LOG_TAG,
+                                                                           "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
+                                                         if (resetAllCoverImagesTask.dialog.isShowing()) {
+                                                            resetAllCoverImagesTask.dialog.dismiss();
+                                                         }
+                                                         resetAllCoverImagesTask.cancel(true);
+                                                      }
+                                                      resetAllCoverImagesTask = new ResetAllCoverImagesTask();
                                                       resetAllCoverImagesTask.execute();
                                                    }
                                                 }).setNegativeButton(getString(R.string.btnNo),
