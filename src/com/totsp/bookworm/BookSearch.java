@@ -54,8 +54,6 @@ public class BookSearch extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      System.out.println("ONCREATE");
-      
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
 
@@ -104,10 +102,6 @@ public class BookSearch extends Activity {
       });
       searchResults.setOnScrollListener(new OnScrollListener() {
          public void onScroll(AbsListView v, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            ///System.out.println("onScroll ");
-            ///System.out.println("  firstVisibleItem - " + firstVisibleItem);
-            ///System.out.println("  visibleItemCount - " + visibleItemCount);
-            ///System.out.println("  totalItemCount - " + totalItemCount);
             String searchTerm = searchInput.getText().toString();
             if ((totalItemCount > 0) && (firstVisibleItem + visibleItemCount == totalItemCount)
                      && ((searchTerm != null) && !searchTerm.equals(""))) {
@@ -144,7 +138,6 @@ public class BookSearch extends Activity {
    @Override
    public void onStart() {
       super.onStart();
-      System.out.println(" ONSTART");
    }
 
    @Override
@@ -156,10 +149,12 @@ public class BookSearch extends Activity {
    @Override
    public void onSaveInstanceState(Bundle outState) {
       persistToCache();
+      super.onSaveInstanceState(outState);
    }
-   
+  
    @Override
    public void onRestoreInstanceState(Bundle inState) {
+      super.onRestoreInstanceState(inState);
       restoreFromCache();
    }
 
@@ -174,6 +169,12 @@ public class BookSearch extends Activity {
    }
 
    private void persistToCache() {
+      // use application object as quick/dirty cache for state 
+      
+      // both onPause and onSaveInstanceState invoke this
+      // onPause is used when Activity is killed, onSaveInstanceState
+      // both must be used because there are occasions when onPause is called and onSave is not, and vice versa 
+      // (depends on stack and system state)
       if ((searchTask != null) && searchTask.dialog.isShowing()) {
          searchTask.dialog.dismiss();
       }
@@ -198,8 +199,8 @@ public class BookSearch extends Activity {
    }
    
    private void restoreFromCache() {
-      //System.out.println("RESTORE FROM CACHE");
-      // use application object as quick/dirty cache for state      
+      // use application object as quick/dirty cache for state 
+      
       if (application.bookCacheList != null) {
          selectorPosition = application.lastSelectorPosition;
          searchPosition = application.lastSearchListPosition;
@@ -216,10 +217,6 @@ public class BookSearch extends Activity {
       if (adapter.getCount() > selectorPosition) {
          searchResults.setSelection(selectorPosition);
       }
-
-      //System.out.println("  adapter - " + adapter.getCount());
-      //System.out.println("  selectorPosition - " + selectorPosition);
-      //System.out.println("  searchPosition - " + searchPosition);
    }
 
    // static and package access as an Android optimization (used in inner class)
