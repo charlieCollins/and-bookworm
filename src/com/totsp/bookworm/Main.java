@@ -405,7 +405,7 @@ public class Main extends Activity {
       manageDataDialog.setItems(new CharSequence[] { getString(R.string.btnExportCSV),
                getString(R.string.btnImportCSV), getString(R.string.btnExportDB), getString(R.string.btnImportDB),
                getString(R.string.btnEmailCSV), getString(R.string.btnEmailDB),
-               getString(R.string.btnResetCoverImages, getString(R.string.btnDeleteData)) },
+               getString(R.string.btnResetCoverImages), getString(R.string.btnDeleteData) },
                new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface d, int selected) {
                      switch (selected) {

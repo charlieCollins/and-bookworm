@@ -121,10 +121,10 @@
 	<string name="menuStats">Stats</string>
 	<string name="btnEmailCSV">Email CSV backup</string>
     <string name="btnEmailDB">Email DB backup</string>
-	<string name="btnExportCSV">Export data to CSV file</string>
-    <string name="btnImportCSV">Import data from CSV file</string>
-    <string name="btnExportDB">Export DB to SD card</string>    
-    <string name="btnImportDB">Import DB from SD card</string>
+	<string name="btnExportCSV">Export CSV file to SD card</string>
+    <string name="btnImportCSV">Import CSV file from SD card</string>
+    <string name="btnExportDB">Export DB file to SD card</string>    
+    <string name="btnImportDB">Import DB file from SD card</string>
 	<string name="labelImportCSV">Import CSV File</string>
 	<string name="msgImportCSVInstructions">Place a file named <i>bookworm.csv</i> in the <i>sdcard/bookwormdata</i> directory. Then press Parse when you are ready to proceed. See Menu->CSV Help for more information.</string>
 	<string name="btnParse">Parse</string>   
