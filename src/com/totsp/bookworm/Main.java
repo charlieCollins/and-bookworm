@@ -538,19 +538,20 @@ public class Main extends Activity {
                            break;
                         case 6:
                            // RESET ALL COVER IMAGES
-                           new AlertDialog.Builder(Main.this).setTitle(getString(R.string.msgResetAllCoverImages))
-                                    .setMessage(getString(R.string.msgResetAllCoverImagesExplain)).setPositiveButton(
-                                             getString(R.string.btnYes), new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface d, final int i) {
-                                                   if (adapter.getCount() > 0) {
+                           if (adapter != null && adapter.getCount() > 0) {
+                              new AlertDialog.Builder(Main.this).setTitle(getString(R.string.msgResetAllCoverImages))
+                                       .setMessage(getString(R.string.msgResetAllCoverImagesExplain))
+                                       .setPositiveButton(getString(R.string.btnYes),
+                                                new DialogInterface.OnClickListener() {
+                                                   public void onClick(final DialogInterface d, final int i) {
                                                       resetAllCoverImagesTask.execute();
                                                    }
-                                                }
-                                             }).setNegativeButton(getString(R.string.btnNo),
-                                             new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface d, final int i) {
-                                                }
-                                             }).show();
+                                                }).setNegativeButton(getString(R.string.btnNo),
+                                                new DialogInterface.OnClickListener() {
+                                                   public void onClick(final DialogInterface d, final int i) {
+                                                   }
+                                                }).show();
+                           }
                            break;
                         case 7:
                            // DELETE ALL DATA
