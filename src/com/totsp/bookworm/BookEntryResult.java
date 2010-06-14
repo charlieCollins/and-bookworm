@@ -29,6 +29,8 @@ import com.totsp.bookworm.util.TaskUtil;
 
 import java.util.ArrayList;
 
+// TODO this class needs work, convoluted logic at this point after incremental changes
+// a lot of side effect crap, need to split out AsyncTasks and make simplify this
 public class BookEntryResult extends Activity {
 
    public static final String FROM_RESULT = "FROM_RESULT";
@@ -44,7 +46,7 @@ public class BookEntryResult extends Activity {
    TextView bookAuthors;
    TextView warnDupe;
 
-   Book book;
+   //Book book;
 
    boolean fromSearch;
 
@@ -71,7 +73,7 @@ public class BookEntryResult extends Activity {
       bookAddButton.setVisibility(View.INVISIBLE);
       bookAddButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            bookAddClick();
+            bookAddClick(application.selectedBook);
          }
       });
 
@@ -139,8 +141,8 @@ public class BookEntryResult extends Activity {
       return super.onOptionsItemSelected(item);
    }
 
-   private void bookAddClick() {
-      if ((book != null) && (book.isbn10 != null)) {
+   private void bookAddClick(final Book book) {
+      if (book != null) {
          // TODO check for book exists using more than just ISBN or title 
          // (these are not unique - use a combination maybe?)
          // if book exists do not resave, or allow user to choose?
@@ -148,7 +150,11 @@ public class BookEntryResult extends Activity {
          if (book.coverImage != null) {
             application.imageManager.storeBitmap(book.coverImage, book.title, bookId);
          }
+      } else {
+         Log.e(Constants.LOG_TAG, "BookEntryResult bookAddClick invoked on null book.");
       }
+      
+      // where to next (back to Search, or to Main)
       if (fromSearch) {
          // if from search results, return to search
          Intent intent = new Intent(BookEntryResult.this, BookSearch.class);
@@ -167,6 +173,7 @@ public class BookEntryResult extends Activity {
    //
    // AsyncTasks
    //
+   // TODO cleanup SetupBookTask so that it doesn't work two ways (ISBN or Book), if necc make two tasks
    private class SetupBookResultTask extends AsyncTask<String, Void, BookMessageBean> {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
 
@@ -199,19 +206,18 @@ public class BookEntryResult extends Activity {
       @Override
       protected BookMessageBean doInBackground(final String... isbns) {
          BookMessageBean bean = new BookMessageBean();
-
-         // if we have the book (it was passed in), use it
+         // if we have the book (it was passed in to ctor), use it
          if (book != null) {
             bean.book = book;
          }
          // else, use the isbn to retrieve the data and create the book
          else {
-
             if (isbns[0] != null) {
                bean.code = isbns[0];
                if (gbs != null) {
                   book = gbs.getBook(isbns[0]);
                   bean.book = book;
+                  application.selectedBook = book;
                   if (bean.book == null) {
                      Log.e(Constants.LOG_TAG,
                               "GetBookDataTask book returned from data source null (using product code/ISBN - "
@@ -235,7 +241,6 @@ public class BookEntryResult extends Activity {
                         + " skipped because network was not available.");
             }
          }
-
          return bean;
       }
 
