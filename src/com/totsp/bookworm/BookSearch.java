@@ -54,6 +54,8 @@ public class BookSearch extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
+      System.out.println("ONCREATE");
+      
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
 
@@ -142,10 +144,36 @@ public class BookSearch extends Activity {
    @Override
    public void onStart() {
       super.onStart();
+      System.out.println(" ONSTART");
    }
 
    @Override
    public void onPause() {
+      persistToCache();
+      super.onPause();
+   }
+   
+   @Override
+   public void onSaveInstanceState(Bundle outState) {
+      persistToCache();
+   }
+   
+   @Override
+   public void onRestoreInstanceState(Bundle inState) {
+      restoreFromCache();
+   }
+
+   // go back to Main on back from here
+   @Override
+   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+      if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
+         startActivity(new Intent(BookSearch.this, Main.class));
+         return true;
+      }
+      return super.onKeyDown(keyCode, event);
+   }
+
+   private void persistToCache() {
       if ((searchTask != null) && searchTask.dialog.isShowing()) {
          searchTask.dialog.dismiss();
       }
@@ -167,25 +195,8 @@ public class BookSearch extends Activity {
          cacheList.add(adapter.getItem(i));
       }
       application.bookCacheList = cacheList;
-
-      //System.out.println("  cacheList - " + cacheList.size());
-      //System.out.println("  adapter end - " + adapter.getCount());
-      //System.out.println("  selectorPosition - " + selectorPosition);
-      //System.out.println("  searchPosition - " + searchPosition);
-
-      super.onPause();
    }
-
-   // go back to Main on back from here
-   @Override
-   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-      if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
-         startActivity(new Intent(BookSearch.this, Main.class));
-         return true;
-      }
-      return super.onKeyDown(keyCode, event);
-   }
-
+   
    private void restoreFromCache() {
       //System.out.println("RESTORE FROM CACHE");
       // use application object as quick/dirty cache for state      
@@ -244,7 +255,7 @@ public class BookSearch extends Activity {
          }
 
          holder = (ViewHolder) item.getTag();
-         holder.text1.setText(books.get(position).title + " POS:" + position);
+         holder.text1.setText(books.get(position).title);
          holder.text2.setText(StringUtil.contractAuthors(books.get(position).authors));
          return item;
       }
