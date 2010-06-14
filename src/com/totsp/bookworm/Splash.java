@@ -20,7 +20,7 @@ public class Splash extends Activity {
       application = (BookWormApplication) getApplication();
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
    }
-   
+
    @Override
    public void onStart() {
       super.onStart();

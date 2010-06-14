@@ -77,7 +77,7 @@ public final class ZXingIntentIntegrator {
    public static final int REQUEST_CODE = 0x0ba7c0de; // get it?
 
    // TODO i18n this Activity!
-   
+
    private static final String DEFAULT_TITLE = "Install Barcode Scanner?";
    private static final String DEFAULT_MESSAGE =
             "This application requires Barcode Scanner. Would you like to install it?";

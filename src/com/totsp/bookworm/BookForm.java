@@ -82,10 +82,9 @@ public class BookForm extends TabActivity {
       // (we have to have a book first, before we can manage cover image)
       tabHost.setOnTabChangedListener(new OnTabChangeListener() {
          public void onTabChanged(final String tabName) {
-            if (tabName.equals("tab2") && (BookForm.this.application.selectedBook == null)) {
-               Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgMinimumSave), Toast.LENGTH_LONG)
-                        .show();
-               BookForm.this.tabHost.setCurrentTab(0);
+            if (tabName.equals("tab2") && (application.selectedBook == null)) {
+               Toast.makeText(BookForm.this, getString(R.string.msgMinimumSave), Toast.LENGTH_LONG).show();
+               tabHost.setCurrentTab(0);
             }
          }
       });
@@ -109,10 +108,9 @@ public class BookForm extends TabActivity {
                      .toString().equals("")))
                      && ((bookAuthors != null) && (bookAuthors.getText() != null) && (!bookAuthors.getText().toString()
                               .equals("")))) {
-               BookForm.this.saveEdits();
+               saveEdits();
             } else {
-               Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgMinimumSave), Toast.LENGTH_LONG)
-                        .show();
+               Toast.makeText(BookForm.this, getString(R.string.msgMinimumSave), Toast.LENGTH_LONG).show();
             }
          }
       });
@@ -121,12 +119,11 @@ public class BookForm extends TabActivity {
       selectCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             try {
-               BookForm.this.tabHost.setCurrentTab(0);
-               BookForm.this.startActivityForResult(new Intent(Intent.ACTION_PICK,
+               tabHost.setCurrentTab(0);
+               startActivityForResult(new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), BookForm.SELECT_IMAGE);
             } catch (ActivityNotFoundException e) {
-               Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgNoActivityGalleryError),
-                        Toast.LENGTH_LONG).show();
+               Toast.makeText(BookForm.this, getString(R.string.msgNoActivityGalleryError), Toast.LENGTH_LONG).show();
             }
          }
       });
@@ -134,16 +131,16 @@ public class BookForm extends TabActivity {
       retrieveCoverButton = (Button) findViewById(R.id.bookformretrievecoverbutton);
       retrieveCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookForm.this.RetrieveCoverImageTask = new RetrieveCoverImageTask();
-            BookForm.this.RetrieveCoverImageTask.execute(BookForm.this.application.selectedBook);
+            RetrieveCoverImageTask = new RetrieveCoverImageTask();
+            RetrieveCoverImageTask.execute(application.selectedBook);
          }
       });
 
       generateCoverButton = (Button) findViewById(R.id.bookformgeneratecoverbutton);
       generateCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            BookForm.this.generateCoverImageTask = new GenerateCoverImageTask();
-            BookForm.this.generateCoverImageTask.execute(BookForm.this.application.selectedBook);
+            generateCoverImageTask = new GenerateCoverImageTask();
+            generateCoverImageTask.execute(application.selectedBook);
          }
       });
 
@@ -190,11 +187,11 @@ public class BookForm extends TabActivity {
             Uri selectedImageUri = data.getData();
             InputStream is = null;
             try {
-               is = BookForm.this.getContentResolver().openInputStream(selectedImageUri);
+               is = getContentResolver().openInputStream(selectedImageUri);
                Bitmap bitmap = BitmapFactory.decodeStream(is);
-               Book book = BookForm.this.application.selectedBook;
+               Book book = application.selectedBook;
                if ((bitmap != null) && (book != null)) {
-                  BookForm.this.application.imageManager.storeBitmap(bitmap, book.title, book.id);
+                  application.imageManager.storeBitmap(bitmap, book.title, book.id);
                }
             } catch (FileNotFoundException e) {
                Log.e(Constants.LOG_TAG, e.getMessage(), e);
@@ -208,9 +205,9 @@ public class BookForm extends TabActivity {
                }
             }
 
-            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
+            Toast.makeText(BookForm.this, getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookForm.this, BookDetail.class);
-            BookForm.this.startActivity(intent);
+            startActivity(intent);
          }
       }
    }
@@ -310,7 +307,7 @@ public class BookForm extends TabActivity {
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(BookForm.this.getString(R.string.msgSavingBookInfo));
+         dialog.setMessage(getString(R.string.msgSavingBookInfo));
          dialog.show();
       }
 
@@ -318,17 +315,17 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
-            BookForm.this.application.dataManager.updateBook(book);
-            BookForm.this.application.establishSelectedBook(book.id);
+            application.dataManager.updateBook(book);
+            application.establishSelectedBook(book.id);
             return true;
          } else if ((book != null) && (book.id == 0)) {
             newBook = true;
-            long bookId = BookForm.this.application.dataManager.insertBook(book);
+            long bookId = application.dataManager.insertBook(book);
             if (bookId > 0) {
-               BookForm.this.application.establishSelectedBook(bookId);
+               application.establishSelectedBook(bookId);
                // also auto store generated cover with new form based book insert
-               Bitmap generatedCover = BookForm.this.application.imageManager.createCoverImage(book.title);
-               BookForm.this.application.imageManager.storeBitmap(generatedCover, book.title, bookId);
+               Bitmap generatedCover = application.imageManager.createCoverImage(book.title);
+               application.imageManager.storeBitmap(generatedCover, book.title, bookId);
                return true;
             }
          }
@@ -341,15 +338,15 @@ public class BookForm extends TabActivity {
             dialog.dismiss();
          }
          if (!b) {
-            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookSaveError), Toast.LENGTH_LONG).show();
+            Toast.makeText(BookForm.this, getString(R.string.msgBookSaveError), Toast.LENGTH_LONG).show();
          } else {
-            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookSaved), Toast.LENGTH_SHORT).show();
+            Toast.makeText(BookForm.this, getString(R.string.msgBookSaved), Toast.LENGTH_SHORT).show();
             if (!newBook) {
                Intent intent = new Intent(BookForm.this, BookDetail.class);
                intent.putExtra("RELOAD_AFTER_EDIT", true);
-               BookForm.this.startActivity(intent);
+               startActivity(intent);
             } else {
-               BookForm.this.setExistingViewData();
+               setExistingViewData();
             }
          }
       }
@@ -360,7 +357,7 @@ public class BookForm extends TabActivity {
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(BookForm.this.getString(R.string.msgRetrieveCoverImage));
+         dialog.setMessage(getString(R.string.msgRetrieveCoverImage));
          dialog.show();
       }
 
@@ -368,7 +365,7 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
-            BookForm.this.application.imageManager.resetCoverImage(book);
+            application.imageManager.resetCoverImage(book);
             return true;
          }
          return false;
@@ -380,12 +377,11 @@ public class BookForm extends TabActivity {
             dialog.dismiss();
          }
          if (!b) {
-            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgRetrieveCoverImageError),
-                     Toast.LENGTH_LONG).show();
+            Toast.makeText(BookForm.this, getString(R.string.msgRetrieveCoverImageError), Toast.LENGTH_LONG).show();
          } else {
-            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
+            Toast.makeText(BookForm.this, getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookForm.this, BookDetail.class);
-            BookForm.this.startActivity(intent);
+            startActivity(intent);
          }
       }
    }
@@ -395,7 +391,7 @@ public class BookForm extends TabActivity {
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(BookForm.this.getString(R.string.msgGenerateCoverImage));
+         dialog.setMessage(getString(R.string.msgGenerateCoverImage));
          dialog.show();
       }
 
@@ -403,8 +399,8 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
-            Bitmap generatedCover = BookForm.this.application.imageManager.createCoverImage(book.title);
-            BookForm.this.application.imageManager.storeBitmap(generatedCover, book.title, book.id);
+            Bitmap generatedCover = application.imageManager.createCoverImage(book.title);
+            application.imageManager.storeBitmap(generatedCover, book.title, book.id);
             return true;
          }
          return false;
@@ -416,12 +412,11 @@ public class BookForm extends TabActivity {
             dialog.dismiss();
          }
          if (!b) {
-            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgGenerateCoverImageError),
-                     Toast.LENGTH_LONG).show();
+            Toast.makeText(BookForm.this, getString(R.string.msgGenerateCoverImageError), Toast.LENGTH_LONG).show();
          } else {
-            Toast.makeText(BookForm.this, BookForm.this.getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
+            Toast.makeText(BookForm.this, getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(BookForm.this, BookDetail.class);
-            BookForm.this.startActivity(intent);
+            startActivity(intent);
          }
       }
    }

@@ -134,7 +134,7 @@ public class ImageManager {
       Bitmap coverImageBitmap = null;
 
       String isbn = b.isbn10;
-      if (isbn == null || isbn.equals("")) {
+      if ((isbn == null) || isbn.equals("")) {
          isbn = b.isbn13;
       }
 
@@ -225,7 +225,7 @@ public class ImageManager {
 
    private String parseLine(final int wordStart, final int maxLineLength, final String[] words) {
       String line = "";
-      if ((words != null && words.length > 0) && (wordStart < words.length)) {
+      if (((words != null) && (words.length > 0)) && (wordStart < words.length)) {
          for (int i = wordStart; i < words.length; i++) {
             try {
                if (line == null) {

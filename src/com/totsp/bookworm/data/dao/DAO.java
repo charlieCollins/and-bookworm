@@ -22,7 +22,7 @@ public interface DAO<T> {
 
    // return a Cursor that can be used for Android ListViews
    public Cursor getCursor(final String orderBy, final String whereClauseLimit);
-   
+
    public T select(final long id);
 
    // TODO prefer array over collections

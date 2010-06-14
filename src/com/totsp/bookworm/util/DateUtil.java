@@ -13,15 +13,15 @@ public final class DateUtil {
       // add more formats here if needed, and yes, create every time, not thread safe      
       SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
       SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy");
-      DATE_FORMATS.add(dateFormat1);
-      DATE_FORMATS.add(dateFormat2);
+      DateUtil.DATE_FORMATS.add(dateFormat1);
+      DateUtil.DATE_FORMATS.add(dateFormat2);
    }
-   
+
    private DateUtil() {
    }
 
    public static final Date parse(final String s) {
-      for (SimpleDateFormat format : DATE_FORMATS) {
+      for (SimpleDateFormat format : DateUtil.DATE_FORMATS) {
          try {
             return format.parse(s);
          } catch (ParseException e) {
@@ -32,7 +32,7 @@ public final class DateUtil {
 
    public static final String format(final Date d) {
       if (d != null) {
-         for (SimpleDateFormat format : DATE_FORMATS) {
+         for (SimpleDateFormat format : DateUtil.DATE_FORMATS) {
             String dateString = format.format(d);
             if ((dateString != null) && (dateString.length() > 0)) {
                return dateString;

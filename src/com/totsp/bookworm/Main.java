@@ -542,7 +542,7 @@ public class Main extends Activity {
                                     .setMessage(getString(R.string.msgResetAllCoverImagesExplain)).setPositiveButton(
                                              getString(R.string.btnYes), new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface d, final int i) {
-                                                   if (adapter.getCount() > 0) {                                                      
+                                                   if (adapter.getCount() > 0) {
                                                       resetAllCoverImagesTask.execute();
                                                    }
                                                 }

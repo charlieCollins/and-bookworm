@@ -88,14 +88,14 @@ public class HttpHelper {
       client = new DefaultHttpClient(cm, params);
       // add gzip decompressor to handle gzipped content in responses 
       // (default we *do* always send accept encoding gzip header in request)
-      client.addResponseInterceptor(new HttpResponseInterceptor() {
+      HttpHelper.client.addResponseInterceptor(new HttpResponseInterceptor() {
          public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
             HttpEntity entity = response.getEntity();
             Header contentEncodingHeader = entity.getContentEncoding();
             if (contentEncodingHeader != null) {
                HeaderElement[] codecs = contentEncodingHeader.getElements();
                for (int i = 0; i < codecs.length; i++) {
-                  if (codecs[i].getName().equalsIgnoreCase(GZIP)) {
+                  if (codecs[i].getName().equalsIgnoreCase(HttpHelper.GZIP)) {
                      response.setEntity(new GzipDecompressingEntity(response.getEntity()));
                      return;
                   }
@@ -177,8 +177,8 @@ public class HttpHelper {
       // process headers using request interceptor
       final Map<String, String> sendHeaders = new HashMap<String, String>();
       // add encoding header for gzip if not present
-      if (!sendHeaders.containsKey(ACCEPT_ENCODING)) {
-         sendHeaders.put(ACCEPT_ENCODING, GZIP);
+      if (!sendHeaders.containsKey(HttpHelper.ACCEPT_ENCODING)) {
+         sendHeaders.put(HttpHelper.ACCEPT_ENCODING, HttpHelper.GZIP);
       }
       if ((headers != null) && (headers.size() > 0)) {
          sendHeaders.putAll(headers);

@@ -18,8 +18,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RatingBar.OnRatingBarChangeListener;
 
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.StringUtil;
 import com.totsp.bookworm.util.DateUtil;
+import com.totsp.bookworm.util.StringUtil;
 
 import java.util.Date;
 
@@ -62,13 +62,13 @@ public class BookDetail extends Activity {
       readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
          public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
             // TODO not sure why change listener fires when onCreate is init, but does
-            BookDetail.this.saveReadStatusEdit();
+            saveReadStatusEdit();
          }
       });
 
       ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
          public void onRatingChanged(final RatingBar rb, final float val, final boolean b) {
-            BookDetail.this.saveRatingEdit();
+            saveRatingEdit();
          }
       });
 
@@ -95,7 +95,7 @@ public class BookDetail extends Activity {
       Book book = application.selectedBook;
       if (book != null) {
          book.bookUserData.rating = (Math.round(ratingBar.getRating()));
-         BookDetail.this.application.dataManager.updateBook(book);
+         application.dataManager.updateBook(book);
       }
    }
 
@@ -103,7 +103,7 @@ public class BookDetail extends Activity {
       Book book = application.selectedBook;
       if (book != null) {
          book.bookUserData.read = (readStatus.isChecked());
-         BookDetail.this.application.dataManager.updateBook(book);
+         application.dataManager.updateBook(book);
       }
    }
 

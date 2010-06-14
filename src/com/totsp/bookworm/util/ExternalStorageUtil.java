@@ -7,7 +7,7 @@ public final class ExternalStorageUtil {
    public static boolean isExternalStorageAvail() {
       return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
    }
-   
-   private ExternalStorageUtil() {      
-   }   
+
+   private ExternalStorageUtil() {
+   }
 }

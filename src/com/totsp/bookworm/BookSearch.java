@@ -59,7 +59,7 @@ public class BookSearch extends Activity {
 
       searchTask = new SearchTask();
 
-      adapter = new BookSearchAdapter(new ArrayList<Book>());     
+      adapter = new BookSearchAdapter(new ArrayList<Book>());
 
       searchInput = (EditText) findViewById(R.id.bookentrysearchinput);
       // if user hits "enter" on keyboard, go ahead and submit, no need for newlines in the search box
@@ -67,8 +67,8 @@ public class BookSearch extends Activity {
          public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                // if the "enter" key is pressed start over (diff from "get more results")
-               String searchTerm = BookSearch.this.searchInput.getText().toString();
-               if (searchTerm != null && !searchTerm.equals("")) {
+               String searchTerm = searchInput.getText().toString();
+               if ((searchTerm != null) && !searchTerm.equals("")) {
                   newSearch(searchTerm);
                }
                return true;
@@ -81,8 +81,8 @@ public class BookSearch extends Activity {
       searchButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             // if the "search" button is pressed start over (diff from "get more results")
-            String searchTerm = BookSearch.this.searchInput.getText().toString();
-            if (searchTerm != null && !searchTerm.equals("")) {
+            String searchTerm = searchInput.getText().toString();
+            if ((searchTerm != null) && !searchTerm.equals("")) {
                newSearch(searchTerm);
             }
          }
@@ -94,10 +94,10 @@ public class BookSearch extends Activity {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
             // don't redo the search, you have the BOOK itself (don't pass the ISBN, use the Book)
             application.selectedBook = adapter.getItem(index);
-            BookSearch.this.selectorPosition = index;
+            selectorPosition = index;
             Intent intent = new Intent(BookSearch.this, BookEntryResult.class);
             intent.putExtra(BookSearch.FROM_SEARCH, true);
-            BookSearch.this.startActivity(intent);
+            startActivity(intent);
          }
       });
       searchResults.setOnScrollListener(new OnScrollListener() {
@@ -106,13 +106,14 @@ public class BookSearch extends Activity {
             ///System.out.println("  firstVisibleItem - " + firstVisibleItem);
             ///System.out.println("  visibleItemCount - " + visibleItemCount);
             ///System.out.println("  totalItemCount - " + totalItemCount);
-            String searchTerm = BookSearch.this.searchInput.getText().toString();
-            if (totalItemCount > 0 && firstVisibleItem + visibleItemCount == totalItemCount
-                     && (searchTerm != null && !searchTerm.equals(""))) {
-               BookSearch.this.selectorPosition = totalItemCount;               
-               BookSearch.this.searchTask.execute(searchTerm, String.valueOf(searchPosition));
+            String searchTerm = searchInput.getText().toString();
+            if ((totalItemCount > 0) && (firstVisibleItem + visibleItemCount == totalItemCount)
+                     && ((searchTerm != null) && !searchTerm.equals(""))) {
+               selectorPosition = totalItemCount;
+               searchTask.execute(searchTerm, String.valueOf(searchPosition));
             }
          }
+
          public void onScrollStateChanged(AbsListView v, int scrollState) {
          }
       });
@@ -125,17 +126,17 @@ public class BookSearch extends Activity {
 
       // if coming from the search entry result page, try to re-establish prev adapter contents and positions
       if (getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false)) {
-         this.restoreFromCache();
+         restoreFromCache();
       }
    }
 
    private void newSearch(final String searchTerm) {
-      BookSearch.this.searchPosition = 0;
-      BookSearch.this.selectorPosition = 0;
-      BookSearch.this.prevSearchTerm = "";
-      BookSearch.this.adapter.clear();
-      BookSearch.this.adapter.notifyDataSetChanged();
-      BookSearch.this.searchTask.execute(searchTerm, "0");
+      searchPosition = 0;
+      selectorPosition = 0;
+      prevSearchTerm = "";
+      adapter.clear();
+      adapter.notifyDataSetChanged();
+      searchTask.execute(searchTerm, "0");
    }
 
    @Override
@@ -184,7 +185,7 @@ public class BookSearch extends Activity {
       }
       return super.onKeyDown(keyCode, event);
    }
-   
+
    private void restoreFromCache() {
       //System.out.println("RESTORE FROM CACHE");
       // use application object as quick/dirty cache for state      
@@ -199,10 +200,10 @@ public class BookSearch extends Activity {
       if (application.lastSearchTerm != null) {
          searchInput.setText(application.lastSearchTerm);
       }
-      
+
       adapter.notifyDataSetChanged();
       if (adapter.getCount() > selectorPosition) {
-         searchResults.setSelection(selectorPosition);      
+         searchResults.setSelection(selectorPosition);
       }
 
       //System.out.println("  adapter - " + adapter.getCount());
@@ -220,11 +221,11 @@ public class BookSearch extends Activity {
    private class BookSearchAdapter extends ArrayAdapter<Book> {
       private ArrayList<Book> books;
 
-      LayoutInflater vi = (LayoutInflater) BookSearch.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-      BookSearchAdapter(ArrayList<Book> books) {
-         super(BookSearch.this, R.layout.search_list_item, books);
-         this.books = books;
+      BookSearchAdapter(ArrayList<Book> bks) {
+         super(BookSearch.this, R.layout.search_list_item, bks);
+         books = bks;
       }
 
       @Override
@@ -259,20 +260,20 @@ public class BookSearch extends Activity {
       private final GoogleBookDataSource gbs = new GoogleBookDataSource();
 
       public SearchTask() {
-         gbs.setDebugEnabled(BookSearch.this.application.debugEnabled);
+         gbs.setDebugEnabled(application.debugEnabled);
       }
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(BookSearch.this.getString(R.string.msgSearching));
+         dialog.setMessage(getString(R.string.msgSearching));
          dialog.show();
       }
 
       @Override
       protected ArrayList<Book> doInBackground(final String... args) {
          String searchTerm = args[0];
-         BookSearch.this.prevSearchTerm = BookSearch.this.currSearchTerm;
-         BookSearch.this.currSearchTerm = searchTerm;
+         prevSearchTerm = currSearchTerm;
+         currSearchTerm = searchTerm;
          int startIndex = Integer.valueOf(args[1]);
          if (searchTerm != null) {
             searchTerm = URLEncoder.encode(searchTerm);
@@ -292,11 +293,11 @@ public class BookSearch extends Activity {
          }
 
          if ((books != null) && !books.isEmpty()) {
-            BookSearch.this.searchPosition += adapter.getCount();
+            searchPosition += adapter.getCount();
             for (int i = 0; i < books.size(); i++) {
                Book b = books.get(i);
                // TODO check for dupes?
-               adapter.add(b);               
+               adapter.add(b);
             }
          }
 

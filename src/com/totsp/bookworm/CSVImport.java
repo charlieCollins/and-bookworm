@@ -52,13 +52,13 @@ public class CSVImport extends Activity {
 
       importTask = new ImportTask();
 
-      metaData = (TextView) this.findViewById(R.id.bookimportmetadata);
+      metaData = (TextView) findViewById(R.id.bookimportmetadata);
       metaData.setText("");
-      data = (TextView) this.findViewById(R.id.bookimportdata);
+      data = (TextView) findViewById(R.id.bookimportdata);
       data.setText("");
 
-      parseButton = (Button) this.findViewById(R.id.bookimportparsebutton);
-      importButton = (Button) this.findViewById(R.id.bookimportbutton);
+      parseButton = (Button) findViewById(R.id.bookimportparsebutton);
+      importButton = (Button) findViewById(R.id.bookimportbutton);
       importButton.setEnabled(false);
 
       if (!ExternalStorageUtil.isExternalStorageAvail()) {
@@ -69,24 +69,24 @@ public class CSVImport extends Activity {
       parseButton.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
             File f = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + "bookworm.csv");
-            if (f == null || !f.exists() || !f.canRead()) {
+            if ((f == null) || !f.exists() || !f.canRead()) {
                Toast.makeText(CSVImport.this, getString(R.string.msgCsvFileNotFound), Toast.LENGTH_LONG).show();
             }
             // potentially AsyncTask this too? (could be an FC here with perfect timing, though this is very quick)
             CsvManager importer = new CsvManager();
             ArrayList<Book> parsedBooks = importer.parseCSVFile(f);
-            if (parsedBooks == null || parsedBooks.isEmpty()) {
+            if ((parsedBooks == null) || parsedBooks.isEmpty()) {
                Toast.makeText(CSVImport.this, getString(R.string.msgCsvUnableToParse), Toast.LENGTH_LONG);
             } else {
-               CSVImport.this.books = parsedBooks;
-               CSVImport.this.populateData();
+               books = parsedBooks;
+               populateData();
             }
          }
       });
 
       importButton.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            if (books != null && !books.isEmpty()) {
+            if ((books != null) && !books.isEmpty()) {
                importTask.execute(books);
             }
             Toast.makeText(CSVImport.this, getString(R.string.msgImportSuccess), Toast.LENGTH_LONG);
@@ -116,8 +116,8 @@ public class CSVImport extends Activity {
       switch (item.getItemId()) {
          case MENU_CSV_HELP:
             new AlertDialog.Builder(CSVImport.this).setTitle(getString(R.string.menuCsvHelp)).setMessage(
-                     Html.fromHtml(this.getString(R.string.msgCsvHelp))).setNeutralButton(
-                     getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
+                     Html.fromHtml(getString(R.string.msgCsvHelp))).setNeutralButton(getString(R.string.btnDismiss),
+                     new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface d, final int i) {
                         }
                      }).show();
@@ -144,10 +144,10 @@ public class CSVImport extends Activity {
          sb.append(title + ": " + b.title);
          sb.append("\n");
       }
-      this.data.setText(sb.toString());
+      data.setText(sb.toString());
 
-      this.importButton.setEnabled(true);
-      this.parseButton.setEnabled(false);
+      importButton.setEnabled(true);
+      parseButton.setEnabled(false);
    }
 
    //
@@ -178,7 +178,7 @@ public class CSVImport extends Activity {
          ArrayList<Book> taskBooks = args[0];
          for (Book b : taskBooks) {
             boolean dupe = false;
-            ArrayList<Book> potentialDupes = CSVImport.this.application.dataManager.selectAllBooksByTitle(b.title);
+            ArrayList<Book> potentialDupes = application.dataManager.selectAllBooksByTitle(b.title);
             if (potentialDupes != null) {
                for (int i = 0; i < potentialDupes.size(); i++) {
                   Book b2 = potentialDupes.get(i);

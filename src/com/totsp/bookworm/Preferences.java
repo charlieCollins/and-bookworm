@@ -8,6 +8,6 @@ public class Preferences extends PreferenceActivity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.addPreferencesFromResource(R.layout.preferences);
+      addPreferencesFromResource(R.layout.preferences);
    }
 }

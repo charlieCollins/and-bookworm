@@ -14,13 +14,13 @@ public class HTMLScreen extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.setContentView(R.layout.html_view);
-      WebView webview = (WebView) this.findViewById(R.id.webkit);
-      Uri u = this.getIntent().getData();
+      WebView webview = (WebView) findViewById(R.id.webkit);
+      Uri u = getIntent().getData();
       webview.loadUrl(u.toString());
-      Button done = (Button) this.findViewById(R.id.closeButton);
+      Button done = (Button) findViewById(R.id.closeButton);
       done.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            HTMLScreen.this.finish();
+            finish();
          }
       });
    }

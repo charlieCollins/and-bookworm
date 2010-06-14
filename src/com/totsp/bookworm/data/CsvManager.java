@@ -39,7 +39,7 @@ public class CsvManager {
    private boolean saveCSVStringAsFile(final String csv) {
       if (ExternalStorageUtil.isExternalStorageAvail()) {
          try {
-            File file = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + EXPORT_FILENAME);
+            File file = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + CsvManager.EXPORT_FILENAME);
             file.createNewFile(); // ok if returns false, overwrite         
             FileWriter out = new FileWriter(file);
             out.write(csv);
@@ -66,12 +66,12 @@ public class CsvManager {
       StringBuilder sb = new StringBuilder();
       sb
                .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status\n");
-      if (books != null && !books.isEmpty()) {
+      if ((books != null) && !books.isEmpty()) {
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
             sb.append(cleanString(b.title) + ",");
             sb.append(b.subTitle != null ? cleanString(b.subTitle) + "," : ",");
-            if (b.authors != null && !b.authors.isEmpty()) {
+            if ((b.authors != null) && !b.authors.isEmpty()) {
                for (int j = 0; j < b.authors.size(); j++) {
                   Author a = b.authors.get(j);
                   if (j == 0) {
@@ -118,9 +118,9 @@ public class CsvManager {
             while (scanner.hasNextLine()) {
                count++;
                String line = scanner.nextLine();
-               if (line != null && count > 1) {
+               if ((line != null) && (count > 1)) {
                   String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                  if (parts != null && (parts.length == 12 || parts.length == 13)) {
+                  if ((parts != null) && ((parts.length == 12) || (parts.length == 13))) {
                      Book b = new Book();
                      b.title = parts[0];
                      b.subTitle = parts[1];
@@ -157,8 +157,8 @@ public class CsvManager {
                      books.add(b);
                   } else {
                      Log.w(Constants.LOG_TAG, "Warning, not including line " + count
-                              + " from import file because it does not parse into 12 or 13 parts (parsed as " + parts.length
-                              + ").");
+                              + " from import file because it does not parse into 12 or 13 parts (parsed as "
+                              + parts.length + ").");
                   }
                }
             }
