@@ -26,11 +26,9 @@
 	<string name="menuDeleteBook">Delete Book</string>
 	<string name="menuEditBookDetails">Edit Book Details</string>
 	<string name="menuManageCoverImage">Manage Cover Image</string>
-	<string name="menuSortBooks">Sort Books</string>
-	<string name="menuListStats">List Stats</string>
+	<string name="menuSortBooks">Sort Books</string>	
 	<string name="menuAbout">About</string>
 	<string name="menuPrefs">Prefs</string>	
-	<string name="menuResetCoverImages">Reset All Cover Images</string>
 	
 	<string name="btnYes">Yes</string>
 	<string name="btnNo">No</string>
@@ -120,6 +118,9 @@
 
 	
 	<!--  recent changes only for EN (some new, some renamed, need to be synced to other langs) -->
+	<string name="menuStats">Stats</string>
+	<string name="btnEmailCSV">Email CSV backup</string>
+    <string name="btnEmailDB">Email DB backup</string>
 	<string name="btnExportCSV">Export data to CSV file</string>
     <string name="btnImportCSV">Import data from CSV file</string>
     <string name="btnExportDB">Export DB to SD card</string>    
@@ -130,9 +131,6 @@
 	<string name="btnImport">Import</string>   
 	<string name="btnDeleteData">Delete all data</string>
 	<string name="labelManageData">Manage Data</string>
-	<string name="menuManageData">Manage Data</string>
-	<string name="menuExportCSV">Export Data as CSV</string>   
-    <string name="labelExportCSV">Export current book data list as a CSV file to the SD card (and via email)?</string> 
     <string name="msgScannerNotPresent">Barcode scanner may not be present, would like to check the Market and try to install it?</string>
     <string name="labelInstallScanner">Install Barcode Scanner</string>
     <string name="msgCsvMetaData">Parsed %s books from import file. Click import (below list) to continue and import to database.</string>
@@ -143,5 +141,7 @@
     <string name="msgNetworkNAError">No network connection right now, cannot complete the requested action. Please try again once the network is available.</string>
     <string name="menuCsvHelp">CSV Help</string>
     <string name="msgCsvHelp">*BooKWorm requires a specific CSV import file and a specific CSV import format. The required file location is "/sdcard/bookwormdata/bookworm.csv". The required format is 12 fields (comma separated, fields with commas within them must be quoted or escaped): Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status. &lt;br /&gt;&lt;br /&gt; *The CSV import process will skip the first line of the import file (this is usually the header), and any duplicate entries (books with the same title and ISBN, or title and authors if the ISBN is not present, as content in your database). &lt;br /&gt;&lt;br /&gt; *The easiest way to see an example of the format is to use the export as CSV feature. The export feature will place a CSV export file of your current database at the correct location (/sdcard/bookwormdata/bookworm.csv) and then can also email the file to you. You can inspect this file to see an example of the format. &lt;br /&gt;&lt;br /&gt; *You can export XLS files as CSV, or rename TXT files to .csv, as long as they are in the correct format, and place them in the correct location, and BookWorm will import them.</string>
+    <string name="btnResetCoverImages">Reset All Cover Images</string>
+    <string name="msgExportBeforeEmail">Export backup file not found. Please use the export feature before trying to email.</string>
 	
 </resources>
