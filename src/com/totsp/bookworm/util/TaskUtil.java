@@ -1,4 +1,4 @@
-package com.totsp.bookworm.data.dao;
+package com.totsp.bookworm.util;
 
 import android.app.Dialog;
 import android.os.AsyncTask;
@@ -17,10 +17,13 @@ public final class TaskUtil {
    // if an old instance is still around (orientation change, fast clicks, etc., problems ensue
    // this is an attempt to consolidate handling around AsyncTask
    
-   public static void pauseTask(final AsyncTask<?,?,?> t, final Dialog d) {
+   public static void dismissDialog(final Dialog d) {
       if (d != null && d.isShowing()) {
          d.dismiss();
       }
+   }
+   
+   public static void pauseTask(final AsyncTask<?,?,?> t) {     
       if (t != null) {
          if (!t.isCancelled() && !t.getStatus().equals(AsyncTask.Status.FINISHED)) {
             Log.w(Constants.LOG_TAG, "AsyncTask not finished at onPause (status " + t.getStatus() + "), trying to cancel.");

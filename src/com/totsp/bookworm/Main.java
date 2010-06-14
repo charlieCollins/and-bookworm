@@ -43,13 +43,13 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.CsvManager;
 import com.totsp.bookworm.data.DataConstants;
-import com.totsp.bookworm.data.dao.TaskUtil;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.ExternalStorageUtil;
 import com.totsp.bookworm.util.FileUtil;
 import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.util.StringUtil;
+import com.totsp.bookworm.util.TaskUtil;
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
 
@@ -284,9 +284,18 @@ public class Main extends Activity {
 
    @Override
    public void onPause() {
-      TaskUtil.pauseTask(resetAllCoverImagesTask, resetAllCoverImagesTask.dialog);
-      TaskUtil.pauseTask(exportDatabaseTask, exportDatabaseTask.dialog);
-      TaskUtil.pauseTask(importDatabaseTask, importDatabaseTask.dialog);      
+      if (resetAllCoverImagesTask != null) {
+         TaskUtil.dismissDialog(resetAllCoverImagesTask.dialog);
+      }
+      if (exportDatabaseTask != null) {
+         TaskUtil.dismissDialog(exportDatabaseTask.dialog);
+      }
+      if (importDatabaseTask != null) {
+         TaskUtil.dismissDialog(importDatabaseTask.dialog);
+      }
+      TaskUtil.pauseTask(resetAllCoverImagesTask);
+      TaskUtil.pauseTask(exportDatabaseTask);
+      TaskUtil.pauseTask(importDatabaseTask);      
       
       // /Debug.stopMethodTracing();		
       super.onPause();

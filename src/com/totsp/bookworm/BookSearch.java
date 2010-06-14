@@ -24,9 +24,9 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
-import com.totsp.bookworm.data.dao.TaskUtil;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.StringUtil;
+import com.totsp.bookworm.util.TaskUtil;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -147,7 +147,10 @@ public class BookSearch extends Activity {
 
    @Override
    public void onPause() {
-      TaskUtil.pauseTask(searchTask, searchTask.dialog);
+      if (searchTask != null) {
+         TaskUtil.dismissDialog(searchTask.dialog);
+      }
+      TaskUtil.pauseTask(searchTask);
       persistToCache();
       super.onPause();
    }

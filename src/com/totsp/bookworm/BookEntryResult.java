@@ -21,11 +21,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
-import com.totsp.bookworm.data.dao.TaskUtil;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.util.StringUtil;
+import com.totsp.bookworm.util.TaskUtil;
 
 import java.util.ArrayList;
 
@@ -99,8 +99,11 @@ public class BookEntryResult extends Activity {
    }
 
    @Override
-   public void onPause() {
-      TaskUtil.pauseTask(setupBookResultTask, setupBookResultTask.dialog);
+   public void onPause() {      
+      if (setupBookResultTask != null) {
+         TaskUtil.dismissDialog(setupBookResultTask.dialog);
+      }
+      TaskUtil.pauseTask(setupBookResultTask);
       super.onPause();
    }
 

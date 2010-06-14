@@ -23,9 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
-import com.totsp.bookworm.data.dao.TaskUtil;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.StringUtil;
+import com.totsp.bookworm.util.TaskUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -167,9 +167,18 @@ public class BookForm extends TabActivity {
    @Override
    public void onPause() {
       bookTitleFormTab = null;
-      TaskUtil.pauseTask(generateCoverImageTask, generateCoverImageTask.dialog);
-      TaskUtil.pauseTask(retrieveCoverImageTask, retrieveCoverImageTask.dialog);
-      TaskUtil.pauseTask(saveBookTask, saveBookTask.dialog);
+      if (generateCoverImageTask != null) {
+         TaskUtil.dismissDialog(generateCoverImageTask.dialog);
+      }
+      if (retrieveCoverImageTask != null) {
+         TaskUtil.dismissDialog(retrieveCoverImageTask.dialog);
+      }
+      if (saveBookTask != null) {
+         TaskUtil.dismissDialog(saveBookTask.dialog);
+      }
+      TaskUtil.pauseTask(generateCoverImageTask);
+      TaskUtil.pauseTask(retrieveCoverImageTask);
+      TaskUtil.pauseTask(saveBookTask);
       super.onPause();
    }
 
