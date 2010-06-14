@@ -244,14 +244,6 @@
 	<string name="msgSearching">
 		Suchen...
   </string>
-	<string name="msgReplaceExistingExport">
-		Sind Sie sicher (dies wird einen bestehenden älteren
-		Export ersetzen)?
-  </string>
-	<string name="msgReplaceExistingData">
-		Sind Sie sicher (dieser wird alle vorhandenen
-		aktuellen Daten
-		ersetzen)? </string>
 	<string name="msgDeleteAllData">
 		Sind Sie sicher (dies wird alle Daten aus der
 		Datenbank löschen)?

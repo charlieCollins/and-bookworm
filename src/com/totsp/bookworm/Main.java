@@ -411,7 +411,7 @@ public class Main extends Activity {
                      switch (selected) {
                         case 0:
                            // EXPORT CSV
-                           new AlertDialog.Builder(Main.this).setMessage(R.string.msgReplaceExistingExport)
+                           new AlertDialog.Builder(Main.this).setMessage(R.string.msgReplaceExistingCSVExport)
                                     .setPositiveButton(getString(R.string.btnYes),
                                              new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
@@ -438,7 +438,7 @@ public class Main extends Activity {
                            break;
                         case 2:
                            // EXPORT DB
-                           new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgReplaceExistingExport))
+                           new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgReplaceExistingDBExport))
                                     .setPositiveButton(getString(R.string.btnYes),
                                              new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
@@ -463,7 +463,7 @@ public class Main extends Activity {
                            break;
                         case 3:
                            // IMPORT DB
-                           new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgReplaceExistingData))
+                           new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgReplaceExistingDB))
                                     .setPositiveButton(getString(R.string.btnYes),
                                              new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
@@ -471,7 +471,7 @@ public class Main extends Activity {
                                                       Log.i(Constants.LOG_TAG,
                                                                "importing database from external storage");
                                                       Main.this.importDatabaseTask = new ImportDatabaseTask();
-                                                      Main.this.importDatabaseTask.execute("bookworm", "bookwormdata");
+                                                      Main.this.importDatabaseTask.execute(DataConstants.DATABASE_NAME, DataConstants.EXTERNAL_DATA_PATH);
                                                       // reset the db (else Main shows no data)
                                                       Main.this.application.dataManager.resetDb();
                                                       Main.this.startActivity(new Intent(Main.this, Main.class));

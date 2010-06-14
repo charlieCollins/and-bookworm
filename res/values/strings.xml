@@ -82,9 +82,7 @@
     <string name="msgRetrieveCoverImageError">Error retrieving cover image, book information not present, or ID null.</string>
     <string name="msgGenerateCoverImage">Generating cover image...</string>
     <string name="msgGenerateCoverImageError">Error generating cover image, book information not present, or ID null.</string>
-    <string name="msgSearching">Searching...</string>
-    <string name="msgReplaceExistingExport">Are you sure (this will replace any existing prior export)?</string>
-    <string name="msgReplaceExistingData">Are you sure (this will replace any existing current data)?"</string>
+    <string name="msgSearching">Searching...</string>    
     <string name="msgDeleteAllData">Are you sure (this will delete all data from database)?</string>
     <string name="msgExternalStorageNAError">External storage is not available, unable to export data.</string>
     <string name="msgDataDeleted">Data deleted</string>
@@ -121,10 +119,10 @@
 	<string name="menuStats">Stats</string>
 	<string name="btnEmailCSV">Email CSV backup</string>
     <string name="btnEmailDB">Email DB backup</string>
-	<string name="btnExportCSV">Export CSV file to SD card</string>
-    <string name="btnImportCSV">Import CSV file from SD card</string>
-    <string name="btnExportDB">Export DB file to SD card</string>    
-    <string name="btnImportDB">Import DB file from SD card</string>
+	<string name="btnExportCSV">Export CSV to SD card</string>
+    <string name="btnImportCSV">Import CSV from SD card</string>
+    <string name="btnExportDB">Export DB to SD card</string>    
+    <string name="btnImportDB">Import DB from SD card</string>
 	<string name="labelImportCSV">Import CSV File</string>
 	<string name="msgImportCSVInstructions">Place a file named <i>bookworm.csv</i> in the <i>sdcard/bookwormdata</i> directory. Then press Parse when you are ready to proceed. See Menu->CSV Help for more information.</string>
 	<string name="btnParse">Parse</string>   
@@ -143,5 +141,8 @@
     <string name="msgCsvHelp">*BooKWorm requires a specific CSV import file and a specific CSV import format. The required file location is "/sdcard/bookwormdata/bookworm.csv". The required format is 12 fields (comma separated, fields with commas within them must be quoted or escaped): Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status. &lt;br /&gt;&lt;br /&gt; *The CSV import process will skip the first line of the import file (this is usually the header), and any duplicate entries (books with the same title and ISBN, or title and authors if the ISBN is not present, as content in your database). &lt;br /&gt;&lt;br /&gt; *The easiest way to see an example of the format is to use the export as CSV feature. The export feature will place a CSV export file of your current database at the correct location (/sdcard/bookwormdata/bookworm.csv) and then can also email the file to you. You can inspect this file to see an example of the format. &lt;br /&gt;&lt;br /&gt; *You can export XLS files as CSV, or rename TXT files to .csv, as long as they are in the correct format, and place them in the correct location, and BookWorm will import them.</string>
     <string name="btnResetCoverImages">Reset All Cover Images</string>
     <string name="msgExportBeforeEmail">Export backup file not found. Please use the export feature before trying to email.</string>
+    <string name="msgReplaceExistingCSVExport">Are you sure (this will replace any existing prior CSV export)?</string>
+    <string name="msgReplaceExistingDBExport">Are you sure (this will replace any existing prior DB export)?</string>
+    <string name="msgReplaceExistingDB">Are you sure (this will replace all current application data)?"</string>
 	
 </resources>
