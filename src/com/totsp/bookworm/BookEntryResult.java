@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
+import com.totsp.bookworm.data.dao.TaskUtil;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.NetworkUtil;
@@ -76,8 +77,6 @@ public class BookEntryResult extends Activity {
 
       fromSearch = getIntent().getBooleanExtra(BookSearch.FROM_SEARCH, false);
 
-      // TODO refactor SetupBookResultTask to take what it needs as execute args and NOT re-instantiate
-      // (as it is, this could cause FCs, we may have different instances floating around)
       // several other activities can populate this one
       // *EITHER* use application.selectedBook (if from SEARCH)
       // or ISBN must be present as intent extra to proceed (in which case request will be made to get data)
@@ -101,9 +100,7 @@ public class BookEntryResult extends Activity {
 
    @Override
    public void onPause() {
-      if ((setupBookResultTask != null) && setupBookResultTask.dialog.isShowing()) {
-         setupBookResultTask.dialog.dismiss();
-      }
+      TaskUtil.pauseTask(setupBookResultTask, setupBookResultTask.dialog);
       super.onPause();
    }
 

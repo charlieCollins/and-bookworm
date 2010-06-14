@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.totsp.bookworm.data.CsvManager;
 import com.totsp.bookworm.data.DataConstants;
+import com.totsp.bookworm.data.dao.TaskUtil;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.ExternalStorageUtil;
@@ -98,9 +99,7 @@ public class CSVImport extends Activity {
 
    @Override
    public void onPause() {
-      if ((importTask != null) && importTask.dialog.isShowing()) {
-         importTask.dialog.dismiss();
-      }
+      TaskUtil.pauseTask(importTask, importTask.dialog);
       super.onPause();
    }
 

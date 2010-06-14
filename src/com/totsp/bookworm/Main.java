@@ -43,6 +43,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.CsvManager;
 import com.totsp.bookworm.data.DataConstants;
+import com.totsp.bookworm.data.dao.TaskUtil;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.ExternalStorageUtil;
@@ -283,15 +284,10 @@ public class Main extends Activity {
 
    @Override
    public void onPause() {
-      if ((resetAllCoverImagesTask != null) && resetAllCoverImagesTask.dialog.isShowing()) {
-         resetAllCoverImagesTask.dialog.dismiss();
-      }
-      if ((exportDatabaseTask != null) && exportDatabaseTask.dialog.isShowing()) {
-         exportDatabaseTask.dialog.dismiss();
-      }
-      if ((importDatabaseTask != null) && importDatabaseTask.dialog.isShowing()) {
-         importDatabaseTask.dialog.dismiss();
-      }
+      TaskUtil.pauseTask(resetAllCoverImagesTask, resetAllCoverImagesTask.dialog);
+      TaskUtil.pauseTask(exportDatabaseTask, exportDatabaseTask.dialog);
+      TaskUtil.pauseTask(importDatabaseTask, importDatabaseTask.dialog);      
+      
       // /Debug.stopMethodTracing();		
       super.onPause();
    }
@@ -452,17 +448,7 @@ public class Main extends Activity {
                                                       Log
                                                                .i(Constants.LOG_TAG,
                                                                         "exporting database to external storage");
-                                                      if (exportDatabaseTask != null
-                                                               && !exportDatabaseTask.getStatus().equals(
-                                                                        AsyncTask.Status.FINISHED)) {
-                                                         Log
-                                                                  .w(Constants.LOG_TAG,
-                                                                           "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
-                                                         if (exportDatabaseTask.dialog.isShowing()) {
-                                                            exportDatabaseTask.dialog.dismiss();
-                                                         }
-                                                         exportDatabaseTask.cancel(true);
-                                                      }
+                                                      // TODO check prev task state
                                                       exportDatabaseTask.execute();
                                                       startActivity(new Intent(Main.this, Main.class));
                                                    } else {
@@ -486,17 +472,7 @@ public class Main extends Activity {
                                                    if (ExternalStorageUtil.isExternalStorageAvail()) {
                                                       Log.i(Constants.LOG_TAG,
                                                                "importing database from external storage");
-                                                      if (importDatabaseTask != null
-                                                               && !importDatabaseTask.getStatus().equals(
-                                                                        AsyncTask.Status.FINISHED)) {
-                                                         Log
-                                                                  .w(Constants.LOG_TAG,
-                                                                           "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
-                                                         if (exportDatabaseTask.dialog.isShowing()) {
-                                                            importDatabaseTask.dialog.dismiss();
-                                                         }
-                                                         importDatabaseTask.cancel(true);
-                                                      }
+                                                      // TODO check prev task state
                                                       importDatabaseTask = new ImportDatabaseTask();
                                                       importDatabaseTask.execute(DataConstants.DATABASE_NAME,
                                                                DataConstants.EXTERNAL_DATA_PATH);
@@ -571,17 +547,7 @@ public class Main extends Activity {
                                        .setPositiveButton(getString(R.string.btnYes),
                                                 new DialogInterface.OnClickListener() {
                                                    public void onClick(final DialogInterface d, final int i) {
-                                                      if (resetAllCoverImagesTask != null
-                                                               && !resetAllCoverImagesTask.getStatus().equals(
-                                                                        AsyncTask.Status.FINISHED)) {
-                                                         Log
-                                                                  .w(Constants.LOG_TAG,
-                                                                           "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
-                                                         if (resetAllCoverImagesTask.dialog.isShowing()) {
-                                                            resetAllCoverImagesTask.dialog.dismiss();
-                                                         }
-                                                         resetAllCoverImagesTask.cancel(true);
-                                                      }
+                                                      // TODO check prev task state
                                                       resetAllCoverImagesTask = new ResetAllCoverImagesTask();
                                                       resetAllCoverImagesTask.execute();
                                                    }

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
+import com.totsp.bookworm.data.dao.TaskUtil;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.StringUtil;
 
@@ -57,7 +58,7 @@ public class BookForm extends TabActivity {
    private Button generateCoverButton;
 
    // keep handle to AsyncTasks so cleanup in onPause can be done
-   private RetrieveCoverImageTask RetrieveCoverImageTask;
+   private RetrieveCoverImageTask retrieveCoverImageTask;
    private GenerateCoverImageTask generateCoverImageTask;
    private SaveBookTask saveBookTask;
 
@@ -67,7 +68,7 @@ public class BookForm extends TabActivity {
       setContentView(R.layout.bookform);
       application = (BookWormApplication) getApplication();
 
-      RetrieveCoverImageTask = null;
+      retrieveCoverImageTask = null;
       generateCoverImageTask = null;
       saveBookTask = null;
 
@@ -131,8 +132,8 @@ public class BookForm extends TabActivity {
       retrieveCoverButton = (Button) findViewById(R.id.bookformretrievecoverbutton);
       retrieveCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            RetrieveCoverImageTask = new RetrieveCoverImageTask();
-            RetrieveCoverImageTask.execute(application.selectedBook);
+            retrieveCoverImageTask = new RetrieveCoverImageTask();
+            retrieveCoverImageTask.execute(application.selectedBook);
          }
       });
 
@@ -166,15 +167,9 @@ public class BookForm extends TabActivity {
    @Override
    public void onPause() {
       bookTitleFormTab = null;
-      if ((generateCoverImageTask != null) && generateCoverImageTask.dialog.isShowing()) {
-         generateCoverImageTask.dialog.dismiss();
-      }
-      if ((RetrieveCoverImageTask != null) && RetrieveCoverImageTask.dialog.isShowing()) {
-         RetrieveCoverImageTask.dialog.dismiss();
-      }
-      if ((saveBookTask != null) && saveBookTask.dialog.isShowing()) {
-         saveBookTask.dialog.dismiss();
-      }
+      TaskUtil.pauseTask(generateCoverImageTask, generateCoverImageTask.dialog);
+      TaskUtil.pauseTask(retrieveCoverImageTask, retrieveCoverImageTask.dialog);
+      TaskUtil.pauseTask(saveBookTask, saveBookTask.dialog);
       super.onPause();
    }
 

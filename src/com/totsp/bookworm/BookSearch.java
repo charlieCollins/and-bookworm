@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +24,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
+import com.totsp.bookworm.data.dao.TaskUtil;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.StringUtil;
 
@@ -107,15 +107,7 @@ public class BookSearch extends Activity {
             if ((totalItemCount > 0) && (firstVisibleItem + visibleItemCount == totalItemCount)
                      && ((searchTerm != null) && !searchTerm.equals(""))) {
                selectorPosition = totalItemCount;
-               if (searchTask != null && !searchTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-                  Log
-                           .w(Constants.LOG_TAG,
-                                    "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
-                  if (searchTask.dialog.isShowing()) {
-                     searchTask.dialog.dismiss();
-                  }
-                  searchTask.cancel(true);
-               }
+               // TODO check prev task state
                searchTask = new SearchTask();
                searchTask.execute(searchTerm, String.valueOf(searchPosition));
             }
@@ -143,15 +135,7 @@ public class BookSearch extends Activity {
       prevSearchTerm = "";
       adapter.clear();
       adapter.notifyDataSetChanged();
-      if (searchTask != null && !searchTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-         Log
-                  .w(Constants.LOG_TAG,
-                           "Odd Android state, ready to start new AsyncTask but previous not null and not FINISHED, attempt to cancel.");
-         if (searchTask.dialog.isShowing()) {
-            searchTask.dialog.dismiss();
-         }
-         searchTask.cancel(true);
-      }
+      // TODO check prev task state
       searchTask = new SearchTask();
       searchTask.execute(searchTerm, "0");
    }
@@ -163,6 +147,7 @@ public class BookSearch extends Activity {
 
    @Override
    public void onPause() {
+      TaskUtil.pauseTask(searchTask, searchTask.dialog);
       persistToCache();
       super.onPause();
    }
