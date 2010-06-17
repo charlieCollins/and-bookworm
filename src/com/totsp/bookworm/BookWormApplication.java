@@ -5,13 +5,12 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.totsp.bookworm.BookSearch.BookSearchStateBean;
 import com.totsp.bookworm.data.BookDataSource;
 import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
-
-import java.util.ArrayList;
 
 public class BookWormApplication extends Application {
 
@@ -26,11 +25,11 @@ public class BookWormApplication extends Application {
 
    int lastMainListPosition;
 
-   String lastSearchTerm;
-   int lastSearchListPosition;
-   int lastSelectorPosition;
-
-   ArrayList<Book> bookCacheList;
+   //ArrayList<Book> bookCacheList;
+   // TODO use onRetainNonConfigurationInstance for quick config state/cache
+   // for longer term cache use state bean relative to Activity referenced via application
+   BookSearchStateBean bookSearchStateBean;
+   
 
    @Override
    public void onCreate() {

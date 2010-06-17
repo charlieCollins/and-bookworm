@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,7 @@ public class BookSearch extends Activity {
    BookSearchAdapter adapter;
 
    private SearchTask searchTask;
+   boolean lastTaskComplete;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -104,11 +106,16 @@ public class BookSearch extends Activity {
       searchResults.setOnScrollListener(new OnScrollListener() {
          public void onScroll(AbsListView v, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             String searchTerm = searchInput.getText().toString();
-            if ((totalItemCount > 0) && (firstVisibleItem + visibleItemCount == totalItemCount)
-                     && ((searchTerm != null) && !searchTerm.equals(""))) {
+            ///System.out.println("\nfirstVisibleItem - " + firstVisibleItem);
+            ///System.out.println("visibleItemCount - " + visibleItemCount);
+            ///System.out.println("totalItemCount - " + totalItemCount);
+            if (totalItemCount > 0 && (firstVisibleItem + visibleItemCount == totalItemCount)
+                     && (searchTerm != null && !searchTerm.equals("")) && lastTaskComplete) {
+               lastTaskComplete = false;
                selectorPosition = totalItemCount;
                // TODO check prev task state
                searchTask = new SearchTask();
+               //searchPosition
                searchTask.execute(searchTerm, String.valueOf(searchPosition));
             }
          }
@@ -125,7 +132,7 @@ public class BookSearch extends Activity {
 
       // if coming from the search entry result page, try to re-establish prev adapter contents and positions
       if (getIntent().getBooleanExtra(BookEntryResult.FROM_RESULT, false)) {
-         restoreFromCache();
+         restoreFromStateBean(application.bookSearchStateBean);
       }
    }
 
@@ -135,7 +142,6 @@ public class BookSearch extends Activity {
       prevSearchTerm = "";
       adapter.clear();
       adapter.notifyDataSetChanged();
-      // TODO check prev task state
       searchTask = new SearchTask();
       searchTask.execute(searchTerm, "0");
    }
@@ -151,20 +157,24 @@ public class BookSearch extends Activity {
          TaskUtil.dismissDialog(searchTask.dialog);
       }
       TaskUtil.pauseTask(searchTask);
-      persistToCache();
+      application.bookSearchStateBean = createStateBean();
       super.onPause();
    }
 
    @Override
    public void onSaveInstanceState(Bundle outState) {
-      persistToCache();
       super.onSaveInstanceState(outState);
    }
 
    @Override
    public void onRestoreInstanceState(Bundle inState) {
       super.onRestoreInstanceState(inState);
-      restoreFromCache();
+      restoreFromStateBean((BookSearchStateBean) getLastNonConfigurationInstance());
+   }
+
+   @Override
+   public Object onRetainNonConfigurationInstance() {
+      return createStateBean();
    }
 
    // go back to Main on back from here
@@ -177,26 +187,40 @@ public class BookSearch extends Activity {
       return super.onKeyDown(keyCode, event);
    }
 
-   private void persistToCache() {
-      // use application object as quick/dirty cache for state 
+   // use application object as quick/dirty cache for state
+   // onRetainNonConfigurationInstance uses this to quickly save state on config changes
+   // onPause uses this to save state longer term, when user "adds" book and then comes BACK to search   
+   // TODO document this pattern 
+   // onRetainNonConfigurationInstance, onSaveInstanceState/onRestoreInstanceState, createStateBean/restoreFromStateBean
 
-      // both onPause and onSaveInstanceState invoke this
-      // onPause is used when Activity is killed, onSaveInstanceState
-      // both must be used because there are occasions when onPause is called and onSave is not, and vice versa 
-      // (depends on stack and system state)
-      if ((searchTask != null) && searchTask.dialog.isShowing()) {
-         searchTask.dialog.dismiss();
-      }
+   // restore from state bean (called from onRestoreInstanceState (using lastNonConfigurationInstance) and from onCreate (using application))
+   private void restoreFromStateBean(BookSearchStateBean bean) {
+      if (bean != null) {
+         selectorPosition = bean.lastSelectorPosition;
+         searchPosition = bean.lastSearchPosition;
+         currSearchTerm = bean.lastSearchTerm;
+         searchInput.setText(currSearchTerm);
 
-      if (searchInput != null) {
-         application.lastSearchTerm = searchInput.getText().toString();
+         if (bean.books != null && !bean.books.isEmpty()) {
+            for (Book b : bean.books) {
+               adapter.add(b);
+            }
+
+            adapter.notifyDataSetChanged();
+            if (adapter.getCount() > selectorPosition) {
+               searchResults.setSelection(selectorPosition);
+            }
+         }
+         // any time we restore state, we can assume lastTaskComplete true (we don't want to prevent more data)
+         lastTaskComplete = true;
       }
-      if (searchPosition > 0) {
-         application.lastSearchListPosition = searchPosition;
-      }
-      if (selectorPosition > 0) {
-         application.lastSelectorPosition = selectorPosition;
-      }
+   }
+
+   private BookSearchStateBean createStateBean() {
+      BookSearchStateBean bean = new BookSearchStateBean();
+      bean.lastSearchPosition = this.searchPosition;
+      bean.lastSearchTerm = this.currSearchTerm;
+      bean.lastSelectorPosition = this.selectorPosition;
 
       // store the current adapter contents
       ArrayList<Book> cacheList = new ArrayList<Book>();
@@ -204,28 +228,8 @@ public class BookSearch extends Activity {
       for (int i = 0; i < adapter.getCount(); i++) {
          cacheList.add(adapter.getItem(i));
       }
-      application.bookCacheList = cacheList;
-   }
-
-   private void restoreFromCache() {
-      // use application object as quick/dirty cache for state 
-
-      if (application.bookCacheList != null) {
-         selectorPosition = application.lastSelectorPosition;
-         searchPosition = application.lastSearchListPosition;
-         for (Book b : application.bookCacheList) {
-            adapter.add(b);
-         }
-      }
-
-      if (application.lastSearchTerm != null) {
-         searchInput.setText(application.lastSearchTerm);
-      }
-
-      adapter.notifyDataSetChanged();
-      if (adapter.getCount() > selectorPosition) {
-         searchResults.setSelection(selectorPosition);
-      }
+      bean.books = cacheList;
+      return bean;
    }
 
    // static and package access as an Android optimization (used in inner class)
@@ -310,16 +314,34 @@ public class BookSearch extends Activity {
          }
 
          if ((books != null) && !books.isEmpty()) {
-            searchPosition += adapter.getCount();
+
+            if (application.debugEnabled) {
+               Log.d(Constants.LOG_TAG, "Books parsed from data source:");
+            }
+
             for (int i = 0; i < books.size(); i++) {
                Book b = books.get(i);
                // TODO check for dupes?
                adapter.add(b);
+
+               if (application.debugEnabled) {
+                  Log.d(Constants.LOG_TAG, "  Book(" + i + "): " + b.title + " "
+                           + StringUtil.contractAuthors(b.authors));
+               }
             }
          }
 
-         searchPosition = adapter.getCount();
+         searchPosition += adapter.getCount() + 1;
          adapter.notifyDataSetChanged();
+         lastTaskComplete = true;
       }
+   }
+
+   // state bean
+   class BookSearchStateBean {
+      ArrayList<Book> books;
+      String lastSearchTerm;
+      int lastSearchPosition;
+      int lastSelectorPosition;
    }
 }

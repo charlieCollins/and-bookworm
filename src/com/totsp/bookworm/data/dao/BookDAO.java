@@ -20,8 +20,8 @@ public class BookDAO implements DAO<Book> {
    private static final String QUERY_CURSOR_PREFIX =
             "select book.bid as _id, book.tit, book.subtit, book.subject, book.pub, book.datepub, book.format, "
                      + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb, group_concat(author.name) as authors "
-                     + "from book join bookuserdata on book.bid = bookuserdata.bid "
-                     + "join bookauthor on bookauthor.bid = book.bid join author on author.aid = bookauthor.aid";
+                     + "from book left outer join bookuserdata on book.bid = bookuserdata.bid "
+                     + "left outer join bookauthor on bookauthor.bid = book.bid left outer join author on author.aid = bookauthor.aid";
 
    private final SQLiteStatement bookInsertStmt;
    private static final String BOOK_INSERT =
