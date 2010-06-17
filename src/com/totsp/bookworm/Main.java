@@ -295,8 +295,8 @@ public class Main extends Activity {
       }
       TaskUtil.pauseTask(resetAllCoverImagesTask);
       TaskUtil.pauseTask(exportDatabaseTask);
-      TaskUtil.pauseTask(importDatabaseTask);      
-      
+      TaskUtil.pauseTask(importDatabaseTask);
+
       // /Debug.stopMethodTracing();		
       super.onPause();
    }
@@ -328,12 +328,12 @@ public class Main extends Activity {
             Log.d(Constants.LOG_TAG, "Scan result format was - " + scanResult.getFormatName());
             Log.d(Constants.LOG_TAG, "Scan result contents are - " + scanResult.getContents());
          }
-         
+
          // if someone presses scan, then just does nothing (no scan) just ignore
          if (scanResult.getFormatName() == null) {
             return;
          }
-         
+
          if ((scanResult.getFormatName() != null) && !scanResult.getFormatName().equals("EAN_13")) {
             // if it's not EAN 13 we are likely gonna have issues 
             // we are using PRODUCT_MODE which limits to UPC and EAN
@@ -463,7 +463,7 @@ public class Main extends Activity {
                                                       Log
                                                                .i(Constants.LOG_TAG,
                                                                         "exporting database to external storage");
-                                                      // TODO check prev task state
+                                                      exportDatabaseTask = new ExportDatabaseTask();
                                                       exportDatabaseTask.execute();
                                                       startActivity(new Intent(Main.this, Main.class));
                                                    } else {
