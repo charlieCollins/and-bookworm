@@ -84,7 +84,7 @@
     <string name="msgGenerateCoverImageError">Error generating cover image, book information not present, or ID null.</string>
     <string name="msgSearching">Searching...</string>    
     <string name="msgDeleteAllData">Are you sure (this will delete all data from database)?</string>
-    <string name="msgExternalStorageNAError">External storage is not available, unable to export data.</string>
+    <string name="msgExternalStorageNAError">External storage is not available at this time (may not be present, or may be mounted to a PC?).</string>
     <string name="msgDataDeleted">Data deleted</string>
     <string name="msgExportingData">Exporting data...</string>
     <string name="msgExportSuccess">Export successful!</string>
