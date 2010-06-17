@@ -200,6 +200,7 @@ public class BookSearch extends Activity {
          if (bean.books != null && !bean.books.isEmpty()) {
             for (Book b : bean.books) {
                boolean dupe = false;
+               // this is very inefficient, but should be relatively small collections here, and must prevent dupes
                for (Book ab : adapter.books) {
                   if (BookUtil.areBooksEffectiveDupes(ab, b)) {
                      if (application.debugEnabled) {
