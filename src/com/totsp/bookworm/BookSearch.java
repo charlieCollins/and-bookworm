@@ -332,10 +332,25 @@ public class BookSearch extends Activity {
 
             for (int i = 0; i < books.size(); i++) {
                Book b = books.get(i);
-               adapter.add(b);
-               if (application.debugEnabled) {
-                  Log.d(Constants.LOG_TAG, "  Book(" + i + "): " + b.title + " "
-                           + StringUtil.contractAuthors(b.authors));
+               boolean dupe = false;
+               // this is very inefficient, need to figure out logical error (why dupes to begin with at this point)
+               for (Book ab : adapter.books) {
+                  if (BookUtil.areBooksEffectiveDupes(ab, b)) {
+                     if (application.debugEnabled) {
+                        Log.d(Constants.LOG_TAG,
+                                 "duplicate book detected on BookSearch searchTask, it will not be added - " + b.title
+                                          + " " + StringUtil.contractAuthors(b.authors));
+                     }
+                     dupe = true;
+                     break;
+                  }
+               }
+               if (!dupe) {
+                  adapter.add(b);
+                  if (application.debugEnabled) {
+                     Log.d(Constants.LOG_TAG, "  Book(" + i + "): " + b.title + " "
+                              + StringUtil.contractAuthors(b.authors));
+                  }
                }
             }
          }
