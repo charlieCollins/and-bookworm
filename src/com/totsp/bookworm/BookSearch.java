@@ -26,6 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.StringUtil;
 import com.totsp.bookworm.util.TaskUtil;
 
@@ -106,16 +107,11 @@ public class BookSearch extends Activity {
       searchResults.setOnScrollListener(new OnScrollListener() {
          public void onScroll(AbsListView v, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             String searchTerm = searchInput.getText().toString();
-            ///System.out.println("\nfirstVisibleItem - " + firstVisibleItem);
-            ///System.out.println("visibleItemCount - " + visibleItemCount);
-            ///System.out.println("totalItemCount - " + totalItemCount);
             if (totalItemCount > 0 && (firstVisibleItem + visibleItemCount == totalItemCount)
                      && (searchTerm != null && !searchTerm.equals("")) && lastTaskComplete) {
                lastTaskComplete = false;
-               selectorPosition = totalItemCount;
-               // TODO check prev task state
+               ///selectorPosition = totalItemCount;
                searchTask = new SearchTask();
-               //searchPosition
                searchTask.execute(searchTerm, String.valueOf(searchPosition));
             }
          }
@@ -203,11 +199,25 @@ public class BookSearch extends Activity {
 
          if (bean.books != null && !bean.books.isEmpty()) {
             for (Book b : bean.books) {
-               adapter.add(b);
+               boolean dupe = false;
+               for (Book ab : adapter.books) {
+                  if (BookUtil.areBooksEffectiveDupes(ab, b)) {
+                     if (application.debugEnabled) {
+                        Log.d(Constants.LOG_TAG,
+                                 "duplicate book detected on BookSearch restoreFromStateBean, it will not be added - "
+                                          + b.title + " " + StringUtil.contractAuthors(b.authors));
+                     }
+                     dupe = true;
+                     break;
+                  }
+               }
+               if (!dupe) {
+                  adapter.add(b);
+               }
             }
 
             adapter.notifyDataSetChanged();
-            if (adapter.getCount() > selectorPosition) {
+            if (adapter.getCount() >= selectorPosition) {
                searchResults.setSelection(selectorPosition);
             }
          }
@@ -218,9 +228,9 @@ public class BookSearch extends Activity {
 
    private BookSearchStateBean createStateBean() {
       BookSearchStateBean bean = new BookSearchStateBean();
-      bean.lastSearchPosition = this.searchPosition;
-      bean.lastSearchTerm = this.currSearchTerm;
-      bean.lastSelectorPosition = this.selectorPosition;
+      bean.lastSearchPosition = searchPosition;
+      bean.lastSearchTerm = currSearchTerm;
+      bean.lastSelectorPosition = selectorPosition;
 
       // store the current adapter contents
       ArrayList<Book> cacheList = new ArrayList<Book>();
@@ -321,9 +331,7 @@ public class BookSearch extends Activity {
 
             for (int i = 0; i < books.size(); i++) {
                Book b = books.get(i);
-               // TODO check for dupes?
                adapter.add(b);
-
                if (application.debugEnabled) {
                   Log.d(Constants.LOG_TAG, "  Book(" + i + "): " + b.title + " "
                            + StringUtil.contractAuthors(b.authors));
