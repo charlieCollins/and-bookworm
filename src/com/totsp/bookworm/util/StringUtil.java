@@ -39,6 +39,9 @@ public final class StringUtil {
             }
          }
       }
+      if (result == null) {
+         result = "";
+      }
       return result;
    }
 
