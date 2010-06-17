@@ -862,7 +862,9 @@ public class Main extends Activity {
 
       @Override
       protected void onPostExecute(final Void v) {
-         adapter.notifyDataSetChanged();
+         if (adapter != null) {
+            adapter.notifyDataSetChanged();
+         }
          if (dialog.isShowing()) {
             dialog.dismiss();
          }
