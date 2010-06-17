@@ -223,27 +223,34 @@ public class ImageManager {
       return key;
    }
 
+   // TODO clean this up, make it more robust, this is fugly
    private String parseLine(final int wordStart, final int maxLineLength, final String[] words) {
       String line = "";
-      if (((words != null) && (words.length > 0)) && (wordStart < words.length)) {
-         for (int i = wordStart; i < words.length; i++) {
-            try {
-               if (line == null) {
-                  line = words[i];
-               } else {
-                  line += " " + words[i];
+      try {
+         if (((words != null) && (words.length > 0)) && (wordStart < words.length)) {
+            for (int i = wordStart; i < words.length; i++) {
+               try {
+                  if (line == null) {
+                     line = words[i];
+                  } else {
+                     line += " " + words[i];
+                  }
+                  if (line.length() >= maxLineLength - 2) {
+                     break;
+                  }
+               } catch (ArrayIndexOutOfBoundsException e) {
+                  // very rare error on line 232 above reported in market (has happened 4 times)
+                  // must be some strange titles that are causing this (I have never been able to repro)
+                  // if it happens, log it, and just return empty String to avoid FC?
+                  Log
+                           .i(Constants.LOG_TAG,
+                                    "Error parsing title string into words, returning line up to this point.", e);
+                  return line;
                }
-               if (line.length() >= maxLineLength - 2) {
-                  break;
-               }
-            } catch (ArrayIndexOutOfBoundsException e) {
-               // very rare error on line 232 above reported in market (has happened 4 times)
-               // must be some strange titles that are causing this (I have never been able to repro)
-               // if it happens, log it, and just return empty String to avoid FC?
-               Log.i(Constants.LOG_TAG, "Error parsing title string into words, returning line up to this point.", e);
-               return line;
             }
          }
+      } catch (Exception e) {
+         Log.e(Constants.LOG_TAG, "Error parsing title line, will return empty string (generated title will be wrong).");
       }
       return line;
    }
