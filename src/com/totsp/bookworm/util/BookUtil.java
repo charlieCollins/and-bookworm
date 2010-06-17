@@ -8,16 +8,40 @@ public final class BookUtil {
    }
 
    public static boolean areBooksEffectiveDupes(final Book b1, final Book b2) {
-      boolean result = false;
-      if (((b1.title != null) && (b2.title != null) && b1.title.equals(b2.title) && ((b1.isbn10 != null) && b1.isbn10
-               .equals(b2.isbn10)))
-               || ((b1.isbn13 != null) && b1.isbn13.equals(b2.isbn13))) {
-         result = true;
-      } else if ((b1.title != null) && (b2.title != null) && b1.title.equals(b2.title) && (b1.authors != null)
-               && (b2.authors != null)
-               && StringUtil.contractAuthors(b1.authors).equals(StringUtil.contractAuthors(b2.authors))) {
-         result = true;
+
+      if (b1 != null && b2 == null) {
+         return false;
+      } else if (b1 == null && b2 != null) {
+         return false;
+      } else if (b1 != null && b2 != null) {
+
+         String b1Title = b1.title;
+         String b2Title = b2.title;
+         String b1Authors = StringUtil.contractAuthors(b1.authors);
+         String b2Authors = StringUtil.contractAuthors(b2.authors);
+
+         if (b1Title != null && b2Title == null) {
+            return false;
+         } else if (b1Title == null && b2Title != null) {
+            return false;
+         } else if (b1Title != null && b2Title != null) {
+            if (!b1Title.equals(b2Title)) {
+               return false;
+            } else {
+               if (b1Authors != null && b2Authors == null) {
+                  return false;
+               } else if (b1Authors == null && b2Authors != null) {
+                  return false;
+               } else if (b1Authors != null && b2Authors != null) {
+                  if (!b1Authors.equals(b2Authors)) {
+                     return false;
+                  } else {
+                     return true;
+                  }
+               }
+            }
+         }
       }
-      return result;
+      return false;
    }
 }

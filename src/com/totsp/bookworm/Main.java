@@ -296,6 +296,9 @@ public class Main extends Activity {
       TaskUtil.pauseTask(resetAllCoverImagesTask);
       TaskUtil.pauseTask(exportDatabaseTask);
       TaskUtil.pauseTask(importDatabaseTask);
+      
+      // cleanup any other activity long term state from application
+      application.bookSearchStateBean = null;
 
       // /Debug.stopMethodTracing();		
       super.onPause();

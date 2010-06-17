@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -52,7 +53,8 @@ public class BookSearch extends Activity {
    BookSearchAdapter adapter;
 
    private SearchTask searchTask;
-   boolean lastTaskComplete;
+   boolean allowSearchContinue;
+   boolean prevSearchResultCount;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -108,10 +110,13 @@ public class BookSearch extends Activity {
          public void onScroll(AbsListView v, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             String searchTerm = searchInput.getText().toString();
             if (totalItemCount > 0 && (firstVisibleItem + visibleItemCount == totalItemCount)
-                     && (searchTerm != null && !searchTerm.equals("")) && lastTaskComplete) {
-               lastTaskComplete = false;
-               selectorPosition = totalItemCount;
+                     && (searchTerm != null && !searchTerm.equals("")) && allowSearchContinue) {
+               allowSearchContinue = false;
+               selectorPosition = totalItemCount - 5;
                searchTask = new SearchTask();
+               if (application.debugEnabled) {
+                  Log.d(Constants.LOG_TAG, "search for term " + searchTerm + " starting at position " + searchPosition);
+               }
                searchTask.execute(searchTerm, String.valueOf(searchPosition));
             }
          }
@@ -139,6 +144,9 @@ public class BookSearch extends Activity {
       adapter.clear();
       adapter.notifyDataSetChanged();
       searchTask = new SearchTask();
+      if (application.debugEnabled) {
+         Log.i(Constants.LOG_TAG, "new search for term " + searchTerm + " starting at pos 0");
+      }
       searchTask.execute(searchTerm, "0");
    }
 
@@ -201,7 +209,8 @@ public class BookSearch extends Activity {
             for (Book b : bean.books) {
                boolean dupe = false;
                // this is very inefficient, but should be relatively small collections here, and must prevent dupes
-               for (Book ab : adapter.books) {
+               for (int j = 0; j < adapter.getCount(); j++) {
+                  Book ab = adapter.getItem(j);
                   if (BookUtil.areBooksEffectiveDupes(ab, b)) {
                      if (application.debugEnabled) {
                         Log.d(Constants.LOG_TAG,
@@ -222,8 +231,8 @@ public class BookSearch extends Activity {
                searchResults.setSelection(selectorPosition);
             }
          }
-         // any time we restore state, we can assume lastTaskComplete true (we don't want to prevent more data)
-         lastTaskComplete = true;
+         // any time we restore state, we can assume allowSearchContinue true (we don't want to prevent more data)
+         allowSearchContinue = true;
       }
    }
 
@@ -315,7 +324,7 @@ public class BookSearch extends Activity {
       }
 
       @Override
-      protected void onPostExecute(final ArrayList<Book> books) {
+      protected void onPostExecute(final ArrayList<Book> searchBooks) {
          if (dialog.isShowing()) {
             dialog.dismiss();
          }
@@ -325,20 +334,20 @@ public class BookSearch extends Activity {
          }
 
          int dupeCount = 0;
-         if ((books != null) && !books.isEmpty()) {
-
+         int addCount = 0;
+         if (searchBooks != null && !searchBooks.isEmpty()) {
             if (application.debugEnabled) {
                Log.d(Constants.LOG_TAG, "Books parsed from data source:");
-            }            
-            
-            for (int i = 0; i < books.size(); i++) {
-               Book b = books.get(i);
+            }
+            for (int i = 0; i < searchBooks.size(); i++) {
+               Book b = searchBooks.get(i);
                boolean dupe = false;
                // this is very inefficient, need to figure out logical error (why dupes to begin with at this point)
-               for (Book ab : adapter.books) {
+               for (int j = 0; j < adapter.getCount(); j++) {
+                  Book ab = adapter.getItem(j);
                   if (BookUtil.areBooksEffectiveDupes(ab, b)) {
                      if (application.debugEnabled) {
-                        Log.d(Constants.LOG_TAG,
+                        Log.i(Constants.LOG_TAG,
                                  "duplicate book detected on BookSearch searchTask, it will not be added - " + b.title
                                           + " " + StringUtil.contractAuthors(b.authors));
                      }
@@ -348,6 +357,7 @@ public class BookSearch extends Activity {
                   }
                }
                if (!dupe) {
+                  addCount++;
                   adapter.add(b);
                   if (application.debugEnabled) {
                      Log.d(Constants.LOG_TAG, "  Book(" + i + "): " + b.title + " "
@@ -357,9 +367,16 @@ public class BookSearch extends Activity {
             }
          }
 
-         searchPosition = adapter.getCount() + dupeCount + 1;
+         searchPosition = adapter.getCount() + 1;
+         //searchPosition += 10;         
+
          adapter.notifyDataSetChanged();
-         lastTaskComplete = true;
+         if (addCount > 0) {
+            allowSearchContinue = true;
+         } else {
+            Toast.makeText(BookSearch.this, "No more results found for this term, please try another search term.",
+                     Toast.LENGTH_LONG).show();
+         }
       }
    }
 
