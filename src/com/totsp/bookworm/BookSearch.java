@@ -324,12 +324,13 @@ public class BookSearch extends Activity {
             adapter.clear();
          }
 
+         int dupeCount = 0;
          if ((books != null) && !books.isEmpty()) {
 
             if (application.debugEnabled) {
                Log.d(Constants.LOG_TAG, "Books parsed from data source:");
-            }
-
+            }            
+            
             for (int i = 0; i < books.size(); i++) {
                Book b = books.get(i);
                boolean dupe = false;
@@ -342,6 +343,7 @@ public class BookSearch extends Activity {
                                           + " " + StringUtil.contractAuthors(b.authors));
                      }
                      dupe = true;
+                     dupeCount++;
                      break;
                   }
                }
@@ -355,7 +357,7 @@ public class BookSearch extends Activity {
             }
          }
 
-         searchPosition += adapter.getCount() + 1;
+         searchPosition = adapter.getCount() + dupeCount + 1;
          adapter.notifyDataSetChanged();
          lastTaskComplete = true;
       }
