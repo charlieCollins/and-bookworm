@@ -328,6 +328,12 @@ public class Main extends Activity {
             Log.d(Constants.LOG_TAG, "Scan result format was - " + scanResult.getFormatName());
             Log.d(Constants.LOG_TAG, "Scan result contents are - " + scanResult.getContents());
          }
+         
+         // if someone presses scan, then just does nothing (no scan) just ignore
+         if (scanResult.getFormatName() == null) {
+            return;
+         }
+         
          if ((scanResult.getFormatName() != null) && !scanResult.getFormatName().equals("EAN_13")) {
             // if it's not EAN 13 we are likely gonna have issues 
             // we are using PRODUCT_MODE which limits to UPC and EAN
