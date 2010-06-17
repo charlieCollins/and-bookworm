@@ -110,7 +110,7 @@ public class BookSearch extends Activity {
             if (totalItemCount > 0 && (firstVisibleItem + visibleItemCount == totalItemCount)
                      && (searchTerm != null && !searchTerm.equals("")) && lastTaskComplete) {
                lastTaskComplete = false;
-               ///selectorPosition = totalItemCount;
+               selectorPosition = totalItemCount;
                searchTask = new SearchTask();
                searchTask.execute(searchTerm, String.valueOf(searchPosition));
             }
