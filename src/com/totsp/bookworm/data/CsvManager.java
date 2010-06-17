@@ -154,7 +154,9 @@ public class CsvManager {
 
                      BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, null);
                      b.bookUserData = bud;
-                     books.add(b);
+                     if (b.title != null) {
+                        books.add(b);
+                     }
                   } else {
                      Log.w(Constants.LOG_TAG, "Warning, not including line " + count
                               + " from import file because it does not parse into 12 or 13 parts (parsed as "

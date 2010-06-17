@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -193,10 +194,14 @@ public class CSVImport extends Activity {
             if (dupe) {
                Log.i(Constants.LOG_TAG, "NOT Importing book: " + b.title + " because it appears to be a duplicate.");
                publishProgress(String.format(getString(R.string.msgCsvSkippingBook, b.title)));
+               // sleep because loop is too fast to see messages
+               SystemClock.sleep(800);
             } else {
                Log.i(Constants.LOG_TAG, "Importing book: " + b.title);
                publishProgress(String.format(getString(R.string.msgCsvImportingBook, b.title)));
-               application.dataManager.insertBook(b);
+               // sleep because loop is too fast to see messages
+               SystemClock.sleep(800);
+               application.dataManager.insertBook(b);               
             }
          }
          return null;
