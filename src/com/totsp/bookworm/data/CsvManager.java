@@ -170,6 +170,7 @@ public class CsvManager {
             }
          }
       }
+      Log.i(Constants.LOG_TAG, "Parsed " + books.size() + " books from CSV file.");
       return books;
    }
 

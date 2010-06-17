@@ -76,8 +76,8 @@ public class CSVImport extends Activity {
             // potentially AsyncTask this too? (could be an FC here with perfect timing, though this is very quick)
             CsvManager importer = new CsvManager();
             ArrayList<Book> parsedBooks = importer.parseCSVFile(f);
-            if ((parsedBooks == null) || parsedBooks.isEmpty()) {
-               Toast.makeText(CSVImport.this, getString(R.string.msgCsvUnableToParse), Toast.LENGTH_LONG);
+            if (parsedBooks == null || parsedBooks.isEmpty()) {
+               Toast.makeText(CSVImport.this, getString(R.string.msgCsvUnableToParse), Toast.LENGTH_LONG).show();
             } else {
                books = parsedBooks;
                populateData();
@@ -90,7 +90,7 @@ public class CSVImport extends Activity {
             if ((books != null) && !books.isEmpty()) {
                importTask.execute(books);
             }
-            Toast.makeText(CSVImport.this, getString(R.string.msgImportSuccess), Toast.LENGTH_LONG);
+            Toast.makeText(CSVImport.this, getString(R.string.msgImportSuccess), Toast.LENGTH_LONG).show();
             reset();
          }
       });
