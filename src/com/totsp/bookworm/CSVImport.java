@@ -195,12 +195,12 @@ public class CSVImport extends Activity {
                Log.i(Constants.LOG_TAG, "NOT Importing book: " + b.title + " because it appears to be a duplicate.");
                publishProgress(String.format(getString(R.string.msgCsvSkippingBook, b.title)));
                // sleep because loop is too fast to see messages
-               SystemClock.sleep(800);
+               SystemClock.sleep(500);
             } else {
                Log.i(Constants.LOG_TAG, "Importing book: " + b.title);
                publishProgress(String.format(getString(R.string.msgCsvImportingBook, b.title)));
                // sleep because loop is too fast to see messages
-               SystemClock.sleep(800);
+               SystemClock.sleep(500);
                application.dataManager.insertBook(b);               
             }
          }
