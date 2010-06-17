@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.totsp.bookworm" android:versionCode="14"
-	android:versionName="1.0.13">
+	package="com.totsp.bookworm" android:installLocation="auto"
+	android:versionCode="14" android:versionName="1.0.13">
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<supports-screens largeScreens="false" />
-	<application android:name="BookWormApplication" android:icon="@drawable/books48"
-		android:label="@string/app_name" android:installLocation="auto">
+	<application android:name="BookWormApplication"
+		android:icon="@drawable/books48" android:label="@string/app_name">
 		<activity android:name=".Splash">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -16,13 +16,13 @@
 			</intent-filter>
 		</activity>
 		<activity android:name="Main" />
-		<activity android:name="About" />      
-		<activity android:name="BookForm" />      
-		<activity android:name="BookDetail" />      
-		<activity android:name="BookSearch" />		
+		<activity android:name="About" />
+		<activity android:name="BookForm" />
+		<activity android:name="BookDetail" />
+		<activity android:name="BookSearch" />
 		<activity android:name="BookEntryResult" />
-		<activity android:name="CSVImport" />                  
-		<activity android:name="HTMLScreen" />      
-		<activity android:name="Preferences" />		
+		<activity android:name="CSVImport" />
+		<activity android:name="HTMLScreen" />
+		<activity android:name="Preferences" />
 	</application>
 </manifest> 
