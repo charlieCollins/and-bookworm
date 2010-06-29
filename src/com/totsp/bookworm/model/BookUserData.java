@@ -1,5 +1,9 @@
 package com.totsp.bookworm.model;
 
+/**
+ * Defines user metadata structure for a single book.
+ *
+ */
 public final class BookUserData {
 
    // NOTE - no accessors/mutators by design, Android optimization
@@ -7,15 +11,20 @@ public final class BookUserData {
    public long id;
    public long bookId;
    public long rating;
+   public boolean own;
+   public boolean lent;
    public boolean read;
    public String blurb;
 
    public BookUserData() {
    }
 
-   public BookUserData(final long bookId, final long rating, final boolean read, final String blurb) {
+   public BookUserData(final long bookId, final long rating, final boolean own,
+		               final boolean lent, final boolean read, final String blurb) {
       this.bookId = bookId;
       this.rating = rating;
+      this.own = own;
+      this.lent = lent;
       this.read = read;
       this.blurb = blurb;
    }
@@ -27,8 +36,8 @@ public final class BookUserData {
       }
       if (obj instanceof BookUserData) {
          BookUserData lhs = (BookUserData) obj;
-         if ((lhs.id == id) && (lhs.bookId == bookId) && (lhs.rating == rating) && (lhs.read == read)
-                  && (lhs.blurb.equals(blurb))) {
+         // id and bookId uniquely identify instance
+         if ((lhs.id == id) && (lhs.bookId == bookId)) {
             return true;
          }
       }
@@ -38,13 +47,12 @@ public final class BookUserData {
    @Override
    public int hashCode() {
       int result = 31;
-      result += id;
+      
+      // id and bookId uniquely identify instance
+      // Note that the hashcode is only unique for 65534 books
+      result += id << 16;
       result += bookId;
-      result += rating;
-      result += read ? 1 : 0;
-      if (blurb != null) {
-         result += blurb.hashCode();
-      }
+
       return result;
    }
 }

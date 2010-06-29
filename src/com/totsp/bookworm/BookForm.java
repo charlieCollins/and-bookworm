@@ -32,6 +32,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 
+
+/**
+ * Defines the "Edit Book" form.
+ * Displayed as a book details tab and a cover image tab. Book details
+ * are general details only and do not include user metadata such as ratings.
+ *
+ */
 public class BookForm extends TabActivity {
 
    private static final int SELECT_IMAGE = 0;

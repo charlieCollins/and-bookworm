@@ -40,22 +40,46 @@
 		:( android:ellipsize="end"
 	-->
 
+   <TextView android:id="@+id/bookownstatuslabel" 
+        android:layout_width="wrap_content" android:layout_height="wrap_content" 
+        android:layout_marginTop="15dp" android:layout_marginLeft="20dp" 
+        android:layout_marginRight="10dp" android:layout_below="@+id/bookcover" 
+        android:gravity="right" 
+        android:text="@string/labelOwn" style="@style/blacksmall" />	
+	<CheckBox android:id="@+id/bookownstatus"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginTop="1dp" android:layout_marginRight="2dp"
+		android:layout_below="@+id/bookcover" android:layout_toRightOf="@+id/bookownstatuslabel"
+		android:gravity="right" />
+
+    <TextView android:id="@+id/booklentstatuslabel" 
+        android:layout_width="wrap_content" android:layout_height="wrap_content" 
+        android:layout_marginTop="15dp" android:layout_marginLeft="10dp" 
+        android:layout_marginRight="10dp" android:layout_below="@+id/bookcover" 
+        android:layout_toRightOf="@+id/bookownstatus" android:gravity="right" 
+        android:text="@string/labelLent" style="@style/blacksmall" />	
+	<CheckBox android:id="@+id/booklentstatus"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginTop="1dp" android:layout_marginRight="2dp"
+		android:layout_below="@+id/bookcover" android:layout_toRightOf="@+id/booklentstatuslabel"
+		android:gravity="right" />
+	
 	<TextView android:id="@+id/bookreadstatuslabel"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_marginTop="12dp" android:layout_marginLeft="5dp"
-		android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
-		android:layout_toRightOf="@id/bookcover" android:gravity="right"
+		android:layout_marginRight="10dp" android:layout_below="@+id/bookcover"
+		android:layout_toRightOf="@+id/booklentstatus" android:gravity="right"
 		android:text="@string/labelHaveRead" style="@style/blacksmall" />
 	<CheckBox android:id="@+id/bookreadstatus"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_marginTop="1dp" android:layout_marginRight="2dp"
-		android:layout_below="@id/bookauthors" android:layout_toRightOf="@id/bookreadstatuslabel"
+		android:layout_below="@+id/bookcover" android:layout_toRightOf="@id/bookreadstatuslabel"
 		android:gravity="right" />
 
 	<RatingBar android:id="@+id/bookrating" android:layout_width="285dip"
-		android:layout_height="wrap_content" android:layout_marginTop="10dp"
+		android:layout_height="wrap_content" android:layout_marginTop="20dp"
 		android:layout_marginLeft="15dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/bookcover" android:gravity="center_horizontal"
+		android:layout_below="@+id/bookreadstatuslabel" android:gravity="center_horizontal"
 		android:numStars="5" android:stepSize="1.0" />
 
 	<TextView android:id="@+id/booksubject" android:layout_width="fill_parent"

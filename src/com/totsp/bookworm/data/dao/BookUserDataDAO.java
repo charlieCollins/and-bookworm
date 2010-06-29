@@ -18,8 +18,9 @@ public class BookUserDataDAO implements DAO<BookUserData> {
    private final SQLiteStatement bookUserDataInsertStmt;
    private static final String BOOKUSERDATA_INSERT =
             "insert into " + DataConstants.BOOKUSERDATA_TABLE + "(" + DataConstants.BOOKID + ","
+            		 + DataConstants.OWNSTATUS + "," + DataConstants.LENTSTATUS + ","  
                      + DataConstants.READSTATUS + "," + DataConstants.RATING + "," + DataConstants.BLURB
-                     + ") values (?, ?, ?, ?)";
+                     + ") values (?, ?, ?, ?, ?, ?)";
 
    private SQLiteDatabase db;
 
@@ -39,13 +40,16 @@ public class BookUserDataDAO implements DAO<BookUserData> {
    public BookUserData select(final long id) {
       BookUserData b = null;
       Cursor c =
-               db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] { DataConstants.READSTATUS,
+               db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] { DataConstants.OWNSTATUS, 
+            		    DataConstants.LENTSTATUS, DataConstants.READSTATUS,
                         DataConstants.RATING, DataConstants.BLURB }, DataConstants.BOOKUSERDATAID + " = ?",
                         new String[] { String.valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new BookUserData();
-         b.read = (c.getInt(0) == 0 ? false : true);
-         b.rating = (c.getInt(1));
+         b.own = (c.getInt(0) == 0 ? false : true);
+         b.lent = (c.getInt(1) == 0 ? false : true);
+         b.read = (c.getInt(2) == 0 ? false : true);
+         b.rating = (c.getInt(3));
          // TODO not yet persisting user blurb
       }
       if (!c.isClosed()) {
@@ -57,13 +61,16 @@ public class BookUserDataDAO implements DAO<BookUserData> {
    public BookUserData selectByBookId(final long bookId) {
       BookUserData b = null;
       Cursor c =
-               db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] { DataConstants.READSTATUS,
+               db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] { DataConstants.OWNSTATUS, 
+           		    	DataConstants.LENTSTATUS, DataConstants.READSTATUS,
                         DataConstants.RATING, DataConstants.BLURB }, DataConstants.BOOKID + " = ?",
                         new String[] { String.valueOf(bookId) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new BookUserData();
-         b.read = (c.getInt(0) == 0 ? false : true);
-         b.rating = (c.getInt(1));
+         b.own = (c.getInt(0) == 0 ? false : true);
+         b.lent = (c.getInt(1) == 0 ? false : true);
+         b.read = (c.getInt(2) == 0 ? false : true);
+         b.rating = (c.getInt(3));
          // TODO not yet persisting user blurb
       }
       if (!c.isClosed()) {
@@ -82,10 +89,12 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       long id = 0L;
       bookUserDataInsertStmt.clearBindings();
       bookUserDataInsertStmt.bindLong(1, b.bookId);
-      bookUserDataInsertStmt.bindLong(2, b.read ? 1 : 0);
-      bookUserDataInsertStmt.bindLong(3, b.rating);
+      bookUserDataInsertStmt.bindLong(2, b.own ? 1 : 0);
+      bookUserDataInsertStmt.bindLong(3, b.lent ? 1 : 0);
+      bookUserDataInsertStmt.bindLong(4, b.read ? 1 : 0);
+      bookUserDataInsertStmt.bindLong(5, b.rating);
       if (b.blurb != null) {
-         bookUserDataInsertStmt.bindString(4, b.blurb);
+         bookUserDataInsertStmt.bindString(6, b.blurb);
       }
       try {
          id = bookUserDataInsertStmt.executeInsert();
@@ -109,6 +118,8 @@ public class BookUserDataDAO implements DAO<BookUserData> {
          insert(b);
       } else {
          final ContentValues values = new ContentValues();
+         values.put(DataConstants.OWNSTATUS, b.own ? 1 : 0);
+         values.put(DataConstants.LENTSTATUS, b.lent ? 1 : 0);
          values.put(DataConstants.READSTATUS, b.read ? 1 : 0);
          values.put(DataConstants.RATING, b.rating);
          values.put(DataConstants.BLURB, b.blurb);

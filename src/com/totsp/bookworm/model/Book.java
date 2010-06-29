@@ -4,6 +4,13 @@ import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 
+
+/**
+ * Defines a single book entry in database.
+ * As well as the publisher data for the book, each entry also contains a  
+ * user-specific metadata object to hold info such as personal ratings.
+ *
+ */
 public final class Book {
 
    // NOTE - no accessors/mutators by design, Android optimization

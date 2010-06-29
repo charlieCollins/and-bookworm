@@ -31,6 +31,11 @@ import java.util.ArrayList;
 
 // TODO this class needs work, convoluted logic at this point after incremental changes
 // a lot of side effect crap, need to split out AsyncTasks and make simplify this
+
+/**
+ * Book search results activity.
+ * 
+ */
 public class BookEntryResult extends Activity {
 
    public static final String FROM_RESULT = "FROM_RESULT";
@@ -73,7 +78,7 @@ public class BookEntryResult extends Activity {
       bookAddButton.setVisibility(View.INVISIBLE);
       bookAddButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            bookAddClick(application.selectedBook);
+            bookAdd(application.selectedBook);
          }
       });
 
@@ -141,17 +146,21 @@ public class BookEntryResult extends Activity {
       return super.onOptionsItemSelected(item);
    }
 
-   private void bookAddClick(final Book book) {
+   private void bookAdd(final Book book) {
       if (book != null) {
          // TODO check for book exists using more than just ISBN or title 
          // (these are not unique - use a combination maybe?)
          // if book exists do not resave, or allow user to choose?
+    	  
+     	 book.bookUserData.own = application.defaultOwnEnabled;
+    	 book.bookUserData.read = application.defaultReadEnabled;
+    	 
          long bookId = application.dataManager.insertBook(book);
          if (book.coverImage != null) {
             application.imageManager.storeBitmap(book.coverImage, book.title, bookId);
          }
       } else {
-         Log.e(Constants.LOG_TAG, "BookEntryResult bookAddClick invoked on null book.");
+         Log.e(Constants.LOG_TAG, "BookEntryResult bookAdd invoked on null book.");
       }
       
       // where to next (back to Search, or to Main)
@@ -165,6 +174,11 @@ public class BookEntryResult extends Activity {
       }
    }
 
+   /**
+    * Displays invalid scan message
+    * 
+    * @param bean  Book data with the invalid scan code
+    */
    private void setViewsForInvalidEntry(final BookMessageBean bean) {
       bookCover.setImageResource(R.drawable.book_invalid_isbn);
       bookAuthors.setText(String.format(getString(R.string.msgScanError), bean.code));
@@ -268,9 +282,7 @@ public class BookEntryResult extends Activity {
                bean.book.coverImage = generatedCover;
             }
 
-            book = bean.book;
-            bookAddButton.setVisibility(View.VISIBLE);
-
+ 
             // check for dupes and warn if title and either isbn match
             ArrayList<Book> potentialDupes = application.dataManager.selectAllBooksByTitle(bean.book.title);
             if (potentialDupes != null) {
@@ -285,6 +297,14 @@ public class BookEntryResult extends Activity {
                }
                if (dupe) {
                   warnDupe.setVisibility(View.VISIBLE);
+               }
+               if (application.fastScanEnabled && !dupe) {
+            	   bookAdd(book);   
+               }
+               else
+               {
+                   book = bean.book;
+                   bookAddButton.setVisibility(View.VISIBLE);
                }
             }
          } else {

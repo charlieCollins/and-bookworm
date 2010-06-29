@@ -19,7 +19,8 @@ public class BookDAO implements DAO<Book> {
 
    private static final String QUERY_CURSOR_PREFIX =
             "select book.bid as _id, book.tit, book.subtit, book.subject, book.pub, book.datepub, book.format, "
-                     + "bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb, group_concat(author.name) as authors "
+                     + "bookuserdata.ostat, bookuserdata.lstat, bookuserdata.rstat, bookuserdata.rat, bookuserdata.blurb, "
+                     + "group_concat(author.name) as authors "
                      + "from book left outer join bookuserdata on book.bid = bookuserdata.bid "
                      + "left outer join bookauthor on bookauthor.bid = book.bid left outer join author on author.aid = bookauthor.aid";
 
@@ -207,7 +208,9 @@ public class BookDAO implements DAO<Book> {
                insertBookAuthorData(bookId, authorIds);
 
                // insert bookuserdata
-               bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read, null));
+               bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating,
+            		                                   b.bookUserData.own, b.bookUserData.lent,  
+            		                                   b.bookUserData.read, null));
 
                db.setTransactionSuccessful();
             } else {
@@ -258,7 +261,8 @@ public class BookDAO implements DAO<Book> {
 
             // update/insert book user data
             bookUserDataDAO.delete(b.id);
-            bookUserDataDAO.insert(new BookUserData(b.id, b.bookUserData.rating, b.bookUserData.read, null));
+            bookUserDataDAO.insert(new BookUserData(b.id, b.bookUserData.rating, b.bookUserData.own, 
+            		                                b.bookUserData.lent, b.bookUserData.read, null));
 
             // update book
             final ContentValues values = new ContentValues();
@@ -331,6 +335,8 @@ public class BookDAO implements DAO<Book> {
          b.bookUserData.bookId = b.id;
          BookUserData userData = bookUserDataDAO.selectByBookId(b.id);
          if (userData != null) {
+            b.bookUserData.own = (userData.own);
+            b.bookUserData.lent = (userData.lent);
             b.bookUserData.read = (userData.read);
             b.bookUserData.rating = (userData.rating);
          }

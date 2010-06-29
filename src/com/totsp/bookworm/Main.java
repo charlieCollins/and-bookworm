@@ -322,6 +322,11 @@ public class Main extends Activity {
       return super.onKeyDown(keyCode, event);
    }
 
+   /*
+    * (non-Javadoc)
+    * Receives result from barcode scanner API and determines ISBN
+    * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+    */
    @Override
    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
       ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
@@ -685,13 +690,13 @@ public class Main extends Activity {
             // getColumnIndex fails? (explicit works)
             /*
              * bid = 0 tit = 1 subtit = 2 subject = 3 pub = 4 datepub = 5
-             * format = 6 rstat = 7 rat = 8 blurb = 9 authors = 10
+             * format = 6 ostat = 7 lstat = 8 rstat = 9 rat = 10 blurb = 11 authors = 12
              */
 
-            int rating = c.getInt(8);
-            int readStatus = c.getInt(7);
+            int rating = c.getInt(10);
+            int readStatus = c.getInt(9);
             String title = c.getString(1);
-            String authors = c.getString(10);
+            String authors = c.getString(12);
 
             if (application.debugEnabled) {
                Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);

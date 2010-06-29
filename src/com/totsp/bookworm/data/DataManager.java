@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class DataManager {
 
-   private static final int DATABASE_VERSION = 10;
+   private static final int DATABASE_VERSION = 11;
 
    private SQLiteDatabase db;
 
@@ -203,6 +203,8 @@ public class DataManager {
          sb.append("CREATE TABLE " + DataConstants.BOOKUSERDATA_TABLE + " (");
          sb.append(DataConstants.BOOKUSERDATAID + " INTEGER PRIMARY KEY, ");
          sb.append(DataConstants.BOOKID + " INTEGER, ");
+         sb.append(DataConstants.OWNSTATUS + " INTEGER, ");
+         sb.append(DataConstants.LENTSTATUS + " INTEGER, ");
          sb.append(DataConstants.READSTATUS + " INTEGER, ");
          sb.append(DataConstants.RATING + " INTEGER, ");
          sb.append(DataConstants.BLURB + " TEXT, ");
@@ -226,11 +228,11 @@ public class DataManager {
                   .i(Constants.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"
                            + newVersion);
          // export old data first, then upgrade, then import
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOK_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.AUTHOR_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOKUSERDATA_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOKAUTHOR_TABLE);
-         onCreate(db);
+         if (oldVersion < 11)
+         {
+             db.execSQL("ALTER TABLE " + DataConstants.BOOKUSERDATA_TABLE + " ADD COLUMN " + DataConstants.OWNSTATUS + " INTEGER");
+             db.execSQL("ALTER TABLE " + DataConstants.BOOKUSERDATA_TABLE + " ADD COLUMN " + DataConstants.LENTSTATUS + " INTEGER");
+         }
       }
 
       public boolean isDbCreated() {

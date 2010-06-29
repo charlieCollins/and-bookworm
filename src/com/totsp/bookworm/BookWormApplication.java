@@ -15,7 +15,11 @@ import com.totsp.bookworm.model.Book;
 public class BookWormApplication extends Application {
 
    boolean debugEnabled;
-
+   boolean fastScanEnabled;
+   boolean defaultOwnEnabled;
+   boolean defaultReadEnabled;
+   
+   
    SharedPreferences prefs;
    BookDataSource bookDataSource;
    DataManager dataManager;
@@ -64,7 +68,18 @@ public class BookWormApplication extends Application {
          throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
       }
    }
-
+   
+   /**
+    * Updates all application preference variables on application startup or when
+    * preferences are changed.
+    */
+   public void updatePreferences() {
+	   debugEnabled = prefs.getBoolean("debugenabled", false);
+	   fastScanEnabled = prefs.getBoolean("fastscanenabled", false);
+	   defaultOwnEnabled = prefs.getBoolean("defaultownenabled", false);
+	   defaultReadEnabled = prefs.getBoolean("defaultreadenabled", false);
+   }
+   
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id
    public void establishSelectedBook(final long id) {
       selectedBook = dataManager.selectBook(id);

@@ -28,8 +28,7 @@ public class Splash extends Activity {
    }
 
    private void initPrefs() {
-      boolean debugEnabled = prefs.getBoolean("debugenabled", false);
-      application.debugEnabled = debugEnabled;
+      application.updatePreferences(); 
 
       boolean splashSeenOnce = prefs.getBoolean("splashseenonce", false);
       if (!splashSeenOnce) {

@@ -65,7 +65,7 @@ public class CsvManager {
    private String getCSVString(final ArrayList<Book> books) {
       StringBuilder sb = new StringBuilder();
       sb
-               .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status\n");
+               .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating, User Owned Status, User Lent Status, User Read Status\n");
       if ((books != null) && !books.isEmpty()) {
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
@@ -93,6 +93,8 @@ public class CsvManager {
             sb.append(DateUtil.format(new Date(b.datePubStamp)) + ",");
             if (b.bookUserData != null) {
                sb.append(b.bookUserData.rating + ",");
+               sb.append(b.bookUserData.own + ",");
+               sb.append(b.bookUserData.lent + ",");
                sb.append(b.bookUserData.read);
             } else {
                sb.append(" , ");
@@ -120,7 +122,7 @@ public class CsvManager {
                String line = scanner.nextLine();
                if ((line != null) && (count > 1)) {
                   String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                  if ((parts != null) && ((parts.length == 12) || (parts.length == 13))) {
+                  if ((parts != null) && ((parts.length == 14) || (parts.length == 15))) {
                      Book b = new Book();
                      b.title = parts[0];
                      b.subTitle = parts[1];
@@ -147,12 +149,24 @@ public class CsvManager {
                            // ignore
                         }
                      }
-                     long readStatus = 0;
+                     long ownStatus = 0;
                      if (parts[11] != null) {
-                        readStatus = Boolean.valueOf(parts[11]) ? 1 : 0;
+                    	 ownStatus = Boolean.valueOf(parts[11]) ? 1 : 0;
                      }
 
-                     BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, null);
+                     long lentStatus = 0;
+                     if (parts[12] != null) {
+                    	 lentStatus = Boolean.valueOf(parts[12]) ? 1 : 0;
+                     }
+
+                     long readStatus = 0;
+                     if (parts[13] != null) {
+                        readStatus = Boolean.valueOf(parts[13]) ? 1 : 0;
+                     }
+
+                     BookUserData bud = new BookUserData(0L, rating, ownStatus == 1 ? true : false, 
+                    		                             lentStatus == 1 ? true : false, 
+                    		                             readStatus == 1 ? true : false, null);
                      b.bookUserData = bud;
                      if (b.title != null) {
                         books.add(b);

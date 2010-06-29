@@ -23,6 +23,12 @@ import com.totsp.bookworm.util.StringUtil;
 
 import java.util.Date;
 
+
+/**
+ * Defines the details view screen for a single book.
+ * Detail includes the cover image and all book data as well as providing
+ * an interface to modify user metadata for the book (eg. ratings, etc).
+ */
 public class BookDetail extends Activity {
 
    private static final int MENU_EDIT = 0;
@@ -39,6 +45,8 @@ public class BookDetail extends Activity {
    private TextView bookDatePub;
    private TextView bookPublisher;
 
+   private CheckBox ownStatus;
+   private CheckBox lentStatus;
    private CheckBox readStatus;
    private RatingBar ratingBar;
 
@@ -56,9 +64,24 @@ public class BookDetail extends Activity {
       bookDatePub = (TextView) findViewById(R.id.bookdatepub);
       bookPublisher = (TextView) findViewById(R.id.bookpublisher);
 
+      ownStatus = (CheckBox) findViewById(R.id.bookownstatus);
+      lentStatus = (CheckBox) findViewById(R.id.booklentstatus);
       readStatus = (CheckBox) findViewById(R.id.bookreadstatus);
       ratingBar = (RatingBar) findViewById(R.id.bookrating);
 
+      ownStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+          public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
+             saveOwnStatusEdit();
+          }
+       });
+
+      lentStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+          public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
+             // TODO not sure why change listener fires when onCreate is init, but does
+             saveLentStatusEdit();
+          }
+       });
+      
       readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
          public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
             // TODO not sure why change listener fires when onCreate is init, but does
@@ -99,6 +122,22 @@ public class BookDetail extends Activity {
       }
    }
 
+   private void saveOwnStatusEdit() {
+	      Book book = application.selectedBook;
+	      if (book != null) {
+	         book.bookUserData.own = (ownStatus.isChecked());
+	         application.dataManager.updateBook(book);
+	      }
+	   }
+
+   private void saveLentStatusEdit() {
+	      Book book = application.selectedBook;
+	      if (book != null) {
+	         book.bookUserData.lent = (lentStatus.isChecked());
+	         application.dataManager.updateBook(book);
+	      }
+	   }
+
    private void saveReadStatusEdit() {
       Book book = application.selectedBook;
       if (book != null) {
@@ -123,14 +162,20 @@ public class BookDetail extends Activity {
          bookTitle.setText(book.title);
          bookSubTitle.setText(book.subTitle);
          ratingBar.setRating(book.bookUserData.rating);
+         ownStatus.setChecked(book.bookUserData.own);
+         lentStatus.setChecked(book.bookUserData.lent);
          readStatus.setChecked(book.bookUserData.read);
-         bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
          bookAuthors.setText(StringUtil.contractAuthors(book.authors));
 
-         // we leave publisher and subject out of landscape layout         
-         if (bookSubject != null) {
-            bookSubject.setText(book.subject);
+         // we leave publication date publisher and subject out of landscape layout 
+         // TODO could add these back if size specific layouts are added
+         if (bookDatePub != null) {
+             bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
          }
+         
+         if (bookSubject != null) {
+             bookSubject.setText(book.subject);
+          }
 
          if (bookPublisher != null) {
             bookPublisher.setText(book.publisher);

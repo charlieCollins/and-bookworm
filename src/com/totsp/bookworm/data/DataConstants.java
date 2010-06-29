@@ -45,6 +45,8 @@ public class DataConstants {
    public static final String DATEPUB = "datepub";
    public static final String NAME = "name";
    public static final String RATING = "rat";
+   public static final String OWNSTATUS = "ostat";
+   public static final String LENTSTATUS = "lstat";
    public static final String READSTATUS = "rstat";
    public static final String BLURB = "blurb";
    public static final String DESCRIPTION = "desc";
