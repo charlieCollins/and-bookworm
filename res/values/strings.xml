@@ -59,9 +59,9 @@
     <string name="labelReadstatus">Read status</string>
     <string name="labelAddBook">Add Book</string>     
     <string name="labelCurrentCover">Current cover image</string>
-    <string name="labelHaveRead">Read?</string>   
-    <string name="labelOwn">Own?</string>   
-    <string name="labelLent">Lent?</string>   
+    <string name="labelHaveRead">Read</string>   
+    <string name="labelOwn">Own</string>   
+    <string name="labelLent">Lent</string>   
     <string name="labelSearch">Add book(s) by searching</string>   
     <string name="labelMoreResults">-- Get more results --</string>	  
     <string name="labelEmailAddress">Email Address</string>     

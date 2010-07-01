@@ -31,7 +31,7 @@
 
 	<TextView android:id="@+id/bookauthors" android:layout_width="wrap_content"
 		android:layout_height="100dp" android:layout_marginTop="15dp"
-		android:layout_marginLeft="5dp" android:layout_marginRight="10dp"
+		android:layout_marginLeft="5dp" android:layout_marginRight="15dp"
 		android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
 		android:maxHeight="150dp" android:maxLines="4" android:gravity="center_horizontal"
 		style="@style/blackmed" />
@@ -43,7 +43,7 @@
    <TextView android:id="@+id/bookownstatuslabel" 
         android:layout_width="wrap_content" android:layout_height="wrap_content" 
         android:layout_marginTop="15dp" android:layout_marginLeft="20dp" 
-        android:layout_marginRight="10dp" android:layout_below="@+id/bookcover" 
+        android:layout_marginRight="5dp" android:layout_below="@+id/bookcover" 
         android:gravity="right" 
         android:text="@string/labelOwn" style="@style/blacksmall" />	
 	<CheckBox android:id="@+id/bookownstatus"
@@ -55,7 +55,7 @@
     <TextView android:id="@+id/booklentstatuslabel" 
         android:layout_width="wrap_content" android:layout_height="wrap_content" 
         android:layout_marginTop="15dp" android:layout_marginLeft="10dp" 
-        android:layout_marginRight="10dp" android:layout_below="@+id/bookcover" 
+        android:layout_marginRight="5dp" android:layout_below="@+id/bookcover" 
         android:layout_toRightOf="@+id/bookownstatus" android:gravity="right" 
         android:text="@string/labelLent" style="@style/blacksmall" />	
 	<CheckBox android:id="@+id/booklentstatus"
@@ -66,8 +66,8 @@
 	
 	<TextView android:id="@+id/bookreadstatuslabel"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_marginTop="12dp" android:layout_marginLeft="5dp"
-		android:layout_marginRight="10dp" android:layout_below="@+id/bookcover"
+		android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
+		android:layout_marginRight="5dp" android:layout_below="@+id/bookcover"
 		android:layout_toRightOf="@+id/booklentstatus" android:gravity="right"
 		android:text="@string/labelHaveRead" style="@style/blacksmall" />
 	<CheckBox android:id="@+id/bookreadstatus"
@@ -100,4 +100,7 @@
 		android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
 		android:layout_toRightOf="@id/bookpublisher" android:gravity="right"
 		style="@style/blacksmall" />
+				
+	<include layout="@layout/bookdetaildrawer"/>
+
 </RelativeLayout>

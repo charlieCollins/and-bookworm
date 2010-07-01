@@ -44,6 +44,7 @@ public class BookDetail extends Activity {
    private TextView bookSubject;
    private TextView bookDatePub;
    private TextView bookPublisher;
+   private TextView bookDetailContent;
 
    private CheckBox ownStatus;
    private CheckBox lentStatus;
@@ -63,6 +64,7 @@ public class BookDetail extends Activity {
       bookSubject = (TextView) findViewById(R.id.booksubject);
       bookDatePub = (TextView) findViewById(R.id.bookdatepub);
       bookPublisher = (TextView) findViewById(R.id.bookpublisher);
+      bookDetailContent = (TextView) findViewById(R.id.bookdetailcontent);
 
       ownStatus = (CheckBox) findViewById(R.id.bookownstatus);
       lentStatus = (CheckBox) findViewById(R.id.booklentstatus);
@@ -166,6 +168,11 @@ public class BookDetail extends Activity {
          lentStatus.setChecked(book.bookUserData.lent);
          readStatus.setChecked(book.bookUserData.read);
          bookAuthors.setText(StringUtil.contractAuthors(book.authors));
+         bookDetailContent.setText(book.title + "\n\n" +
+        		                   book.description + "\n\n" + 
+        		                   book.format + "\n\n" + 
+        		                   book.publisher + ", " + DateUtil.format(new Date(book.datePubStamp))
+        		                   );
 
          // we leave publication date publisher and subject out of landscape layout 
          // TODO could add these back if size specific layouts are added
