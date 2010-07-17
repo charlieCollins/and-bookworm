@@ -9,8 +9,10 @@ import android.util.Log;
 
 import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.data.dao.BookDAO;
+import com.totsp.bookworm.data.dao.GroupDAO;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
+import com.totsp.bookworm.model.Group;
 
 import java.util.ArrayList;
 
@@ -23,19 +25,21 @@ import java.util.ArrayList;
  */
 public class DataManager {
 
-   private static final int DATABASE_VERSION = 11;
+   private static final int DATABASE_VERSION = 12;
 
    private SQLiteDatabase db;
 
    private BookDAO bookDAO;
+   private GroupDAO groupDAO;
 
    public DataManager(final Context context) {
       OpenHelper openHelper = new OpenHelper(context);
       db = openHelper.getWritableDatabase();
       Log.i(Constants.LOG_TAG, "DataManager created, db open status: " + db.isOpen());
 
-      // app only needs access to book DAO at present (can't create authors on their own, etc.)
+      // app only needs access to book & group DAO at present (can't create authors on their own, etc.)
       bookDAO = new BookDAO(db);
+      groupDAO = new GroupDAO(db);
 
       if (openHelper.isDbCreated()) {
          // insert default data here if needed
@@ -98,6 +102,53 @@ public class DataManager {
       return bookDAO.getCursor(orderBy, whereClauseLimit);
    }
 
+   public Group selectGroup(final long id) {
+	   return groupDAO.select(id);
+   }
+
+   public long insertGroup(final Group s) {
+	   return groupDAO.insert(s);
+   }
+
+   public void updateGroup(final Group s) {
+	   groupDAO.update(s);
+   }
+
+   public void deleteGroup(final long id) {
+	   groupDAO.delete(id);
+   }
+
+   public Cursor getGroupCursor(final String orderBy, final String whereClauseLimit) {
+	   return groupDAO.getCursor(orderBy, whereClauseLimit);
+   }
+
+   public boolean isInGroup(final long groupId, final long bookId) {
+	   return groupDAO.isInGroup(groupId, bookId);
+   }
+
+   public void setIsInGroup(final long groupId, final long bookId, boolean inGroup) {
+	   if (inGroup) {
+		   // Insert new books at end of group by default
+		   groupDAO.insertBook(groupId, bookId, 
+				                getCountFromTable(DataConstants.GROUP_ITEMS_TABLE, "where gid=" + groupId) + 1);
+	   }
+	   else
+	   {
+		   groupDAO.deleteBook(groupId, bookId);
+	   }
+   }
+
+   public void insertBookInGroup(final long groupId, final long bookId) {
+	   // Insert new books at end of group by default
+	   groupDAO.insertBook(groupId, bookId, 
+			                getCountFromTable(DataConstants.GROUP_ITEMS_TABLE, "where gid=" + groupId) + 1);
+   }
+
+   public void deleteBookInGroup(final long groupId, final long bookId) {
+	   groupDAO.deleteBook(groupId, bookId);
+   }	
+   
+      
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
       Log.i(Constants.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");
@@ -107,6 +158,7 @@ public class DataManager {
          db.delete(DataConstants.BOOKAUTHOR_TABLE, null, null);
          db.delete(DataConstants.BOOKUSERDATA_TABLE, null, null);
          db.delete(DataConstants.BOOK_TABLE, null, null);
+         groupDAO.deleteTable();
          db.setTransactionSuccessful();
       } finally {
          db.endTransaction();
@@ -219,13 +271,15 @@ public class DataManager {
          db.execSQL("CREATE UNIQUE INDEX uidxBookIdForUserData ON " + DataConstants.BOOKUSERDATA_TABLE + "("
                   + DataConstants.BOOKID + " COLLATE NOCASE)");
 
+         GroupDAO.onCreate(db);
+         
+         
          dbCreated = true;
       }
 
       @Override
       public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-         Log
-                  .i(Constants.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"
+         Log.i(Constants.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"
                            + newVersion);
          // export old data first, then upgrade, then import
          if (oldVersion < 11)
@@ -233,6 +287,7 @@ public class DataManager {
              db.execSQL("ALTER TABLE " + DataConstants.BOOKUSERDATA_TABLE + " ADD COLUMN " + DataConstants.OWNSTATUS + " INTEGER");
              db.execSQL("ALTER TABLE " + DataConstants.BOOKUSERDATA_TABLE + " ADD COLUMN " + DataConstants.LENTSTATUS + " INTEGER");
          }
+         GroupDAO.onUpgrade(db, oldVersion, newVersion);
       }
 
       public boolean isDbCreated() {

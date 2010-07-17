@@ -88,18 +88,6 @@
 		android:layout_below="@id/bookrating" style="@style/blacksmall"
 		android:lines="1" android:ellipsize="end" />
 
-	<TextView android:id="@+id/bookpublisher"
-		android:layout_width="150dp" android:layout_height="wrap_content"
-		android:layout_marginTop="3dp" android:layout_marginBottom="10dp"
-		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/booksubject" style="@style/blacksmall"
-		android:lines="1" android:ellipsize="end" />
-	<TextView android:id="@+id/bookdatepub" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_marginTop="2dp"
-		android:layout_marginBottom="12dp" android:layout_marginLeft="3dp"
-		android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
-		android:layout_toRightOf="@id/bookpublisher" android:gravity="right"
-		style="@style/blacksmall" />
 				
 	<include layout="@layout/bookdetaildrawer"/>
 

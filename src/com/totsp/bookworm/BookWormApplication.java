@@ -11,6 +11,7 @@ import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.model.Group;
 
 public class BookWormApplication extends Application {
 
@@ -26,6 +27,7 @@ public class BookWormApplication extends Application {
    ImageManager imageManager;
 
    Book selectedBook;
+   Group selectedGroup;
 
    int lastMainListPosition;
 
@@ -85,6 +87,13 @@ public class BookWormApplication extends Application {
       selectedBook = dataManager.selectBook(id);
    }
 
+      
+   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id
+   public void establishSelectedGroup(final long id) {
+      selectedGroup = dataManager.selectGroup(id);
+   }
+
+   
    @Override
    public void onTerminate() {
       // not guaranteed to be called

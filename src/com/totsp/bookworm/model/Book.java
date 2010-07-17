@@ -25,6 +25,8 @@ public final class Book {
    public String description = "";
    public String format = "";
    public String subject = "";
+   public String group = "";
+   public long groupOrder = 0L;
    public long datePubStamp = 0L;
    public ArrayList<Author> authors;
 

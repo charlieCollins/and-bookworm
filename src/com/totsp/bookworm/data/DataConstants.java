@@ -27,17 +27,24 @@ public class DataConstants {
    public static final String ORDER_BY_PUB_DESC = "book.pub desc, book.tit asc";
    public static final String ORDER_BY_DATE_PUB_ASC = "book.datepub asc, book.tit asc";
    public static final String ORDER_BY_DATE_PUB_DESC = "book.datepub desc, book.tit asc";
+   public static final String ORDER_BY_GROUP_NAME_ASC = "groups.name asc";
 
    public static final String BOOK_TABLE = "book";
    public static final String BOOKUSERDATA_TABLE = "bookuserdata";
    public static final String BOOKAUTHOR_TABLE = "bookauthor";
    public static final String AUTHOR_TABLE = "author";
+   public static final String GROUP_TABLE = "groups";
+   public static final String GROUP_ITEMS_TABLE = "groupitems";
 
    public static final String BOOKID = "bid";
    public static final String BOOKUSERDATAID = "budid";
    public static final String BOOKAUTHORID = "baid";
    public static final String BOOKLISTID = "blid";
    public static final String AUTHORID = "aid";
+   public static final String GROUP_ID = "gid";
+   public static final String GROUP_BOOK_ID = "gbid";
+   public static final String GROUP_BOOK_NUM = "gbnum";
+
    public static final String ISBN10 = "isbn10";
    public static final String ISBN13 = "isbn13";
    public static final String TITLE = "tit";
@@ -53,6 +60,9 @@ public class DataConstants {
    public static final String PUBLISHER = "pub";
    public static final String FORMAT = "format";
    public static final String SUBJECT = "subject";
+   public static final String GROUPORDER = "sorder";
+    
+
 
    private DataConstants() {
    }

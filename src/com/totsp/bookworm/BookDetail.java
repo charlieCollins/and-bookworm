@@ -169,6 +169,7 @@ public class BookDetail extends Activity {
          readStatus.setChecked(book.bookUserData.read);
          bookAuthors.setText(StringUtil.contractAuthors(book.authors));
          bookDetailContent.setText(book.title + "\n\n" +
+        		 				   book.subject + "\n\n" +
         		                   book.description + "\n\n" + 
         		                   book.format + "\n\n" + 
         		                   book.publisher + ", " + DateUtil.format(new Date(book.datePubStamp))

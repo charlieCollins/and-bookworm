@@ -24,5 +24,7 @@
 		<activity android:name="CSVImport" />
 		<activity android:name="HTMLScreen" />
 		<activity android:name="Preferences" />
+		<activity android:name="GroupForm" />
+		<activity android:name="GroupList" />
 	</application>
 </manifest> 

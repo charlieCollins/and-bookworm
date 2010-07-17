@@ -62,6 +62,7 @@ public class Main extends Activity {
    private static final int MENU_ABOUT = 1;
    private static final int MENU_PREFS = 2;
    private static final int MENU_STATS = 3;
+   private static final int MENU_GROUP = 4;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -210,6 +211,7 @@ public class Main extends Activity {
       menu.add(0, Main.MENU_ABOUT, 1, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 2, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
       menu.add(0, Main.MENU_STATS, 3, getString(R.string.menuStats)).setIcon(android.R.drawable.ic_menu_info_details);
+      menu.add(0, Main.MENU_GROUP, 4, getString(R.string.menuGroup)).setIcon(android.R.drawable.ic_menu_agenda);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -240,6 +242,11 @@ public class Main extends Activity {
             statsDialog.setMessage(sb.toString());
             statsDialog.show();
             return true;
+            
+         case MENU_GROUP:
+             startActivity(new Intent(Main.this, GroupList.class));
+             return true;
+            
          default:
             return super.onOptionsItemSelected(item);
       }

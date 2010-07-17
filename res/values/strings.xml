@@ -112,10 +112,10 @@
     <string name="prefSumDebugLog">Enable to get detailed logs.</string>  
     <string name="prefTitleFastScan">Enable quick scanning?</string>
     <string name="prefSumFastScan">Enable to scan books without prompts.</string>  
-    <string name="prefTitleDefaultOwn">\"Own?\" checked by default?</string>
-    <string name="prefSumDefaultOwn">Enable to automatically check \"Own?\" for new books.</string>  
-    <string name="prefTitleDefaultRead">\"Read?\" checked by default?</string>
-    <string name="prefSumDefaultRead">Enable to automatically check \"Read?\" for new books.</string>  
+    <string name="prefTitleDefaultOwn">\"Own\" checked by default?</string>
+    <string name="prefSumDefaultOwn">Enable to automatically check \"Own\" for new books.</string>  
+    <string name="prefTitleDefaultRead">\"Read\" checked by default?</string>
+    <string name="prefSumDefaultRead">Enable to automatically check \"Read\" for new books.</string>  
     <string name="prefSectDataProvider">Data Provider Preferences</string>
     <string name="prefTitleBookData">Book Data Provider</string>
     <string name="prefSumBookData">Currently only Google Books (future additions planned).</string>
@@ -152,5 +152,15 @@
     <string name="msgReplaceExistingCSVExport">Are you sure (this will replace any existing prior CSV export)?</string>
     <string name="msgReplaceExistingDBExport">Are you sure (this will replace any existing prior DB export)?</string>
     <string name="msgReplaceExistingDB">Are you sure (this will replace all current application data)?"</string>
+    <string name="promptGroup">Select group"</string>
+    <string name="menuGroup">Groups"</string>    
+    <string name="labelGroup">"Group name"</string>
+     <string name="labelGroupDescription">"Group description"</string>
+    <string name="msgSavingGroupInfo">Saving group info...</string>
+    <string name="msgGroupSaved">Group saved</string>
+    <string name="msgGroupSaveError">Error saving group, group information not present, or ID null.</string>
+    <string name="msgReorderGroup">Select new position in groups.</string>
+    <string name="titleGroupList">BookWorm - Groups</string>
+    <string name="titleGroupForm">BookWorm - Groups Editor</string>
 	
 </resources>
