@@ -38,7 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class GroupList extends Activity {
+public class TagBatchList extends Activity {
 	
 	private static final long NO_BOOK_SELECTED = 0;
 	
@@ -46,40 +46,41 @@ public class GroupList extends Activity {
 	private SharedPreferences prefs;
 
 	//! ArrayAdapter connects the spinner widget to array-based data.
-	private CursorAdapter groupAdapter;
+	private CursorAdapter tagAdapter;
 	private CursorAdapter booksAdapter;
 
-	private Spinner groupSelector;
+	private Spinner tagSelector;
 	private ListView bookListView;
 	private Bitmap coverImageMissing;
-	private Cursor groupCursor;
+	private Cursor tagCursor;
 	private Cursor booksCursor;
 
-	private ImageView sortGroupImage;
-	private ImageView filterGroupImage;
+	private ImageView sortTagImage;
+	private ImageView filterTagImage;
 	private ImageView addGroupImage;
-	private ImageView editGroupImage;
+	private ImageView editTagImage;
 	protected long selectedBookId;
-	protected boolean onlyShowGroup;
+	protected boolean onlyShowTagged;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.grouplist);
-		setTitle(R.string.titleGroupList);
+		setContentView(R.layout.tagbatchlist);
+		setTitle(R.string.titleTagBatchList);
 		
 		selectedBookId = NO_BOOK_SELECTED;
-		onlyShowGroup = false;
+		onlyShowTagged = false;
 
 		application = (BookWormApplication) getApplication();
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 		coverImageMissing = BitmapFactory.decodeResource(getResources(), R.drawable.book_cover_missing);
-		groupSelector = (Spinner) findViewById(R.id.groupselector);
-		
+		tagSelector = (Spinner) findViewById(R.id.tagselector);
+				
 		bookListView = (ListView) findViewById(R.id.bookfilterview);
 	    bookListView.setEmptyView(findViewById(R.id.empty));
 		bookListView.setTextFilterEnabled(true);
+				
 		setupActionBar();
 		bindAdapters();
 	}
@@ -89,45 +90,45 @@ public class GroupList extends Activity {
 	 * action buttons.
 	 */
 	private void setupActionBar() {
-		sortGroupImage = (ImageView) findViewById(R.id.groupactionsort);
+		sortTagImage = (ImageView) findViewById(R.id.tagactionsort);
 		
-		filterGroupImage = (ImageView) findViewById(R.id.groupactionfilter);
-		filterGroupImage.setOnClickListener(new OnClickListener() {			
+		filterTagImage = (ImageView) findViewById(R.id.tagactionfilter);
+		filterTagImage.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				onlyShowGroup = !onlyShowGroup;				
+				onlyShowTagged = !onlyShowTagged;				
 			}
 		});
 		
-		addGroupImage = (ImageView) findViewById(R.id.groupadd);
+		addGroupImage = (ImageView) findViewById(R.id.tagadd);
 		addGroupImage.setOnClickListener(new OnClickListener() {		
 			public void onClick(View v) {
-				application.selectedGroup = null;
-				startActivity(new Intent(GroupList.this, GroupForm.class));			
+				application.selectedTag = null;
+				startActivity(new Intent(TagBatchList.this, TagEditor.class));			
 			}
 		});
 
-		editGroupImage = (ImageView) findViewById(R.id.groupedit);
-		editGroupImage.setOnClickListener(new OnClickListener() {		
+		editTagImage = (ImageView) findViewById(R.id.tagedit);
+		editTagImage.setOnClickListener(new OnClickListener() {		
 			public void onClick(View v) {
-				startActivity(new Intent(GroupList.this, GroupForm.class));			
+				startActivity(new Intent(TagBatchList.this, TagEditor.class));			
 			}
 		});
 	}
 
 
 	/**
-	 * Bind cursor adapters for group dropdown and book list views
+	 * Bind cursor adapters for tag dropdown and book list views
 	 */
 	private void bindAdapters() {
-		String orderBy = DataConstants.ORDER_BY_GROUP_NAME_ASC;
-		groupCursor = application.dataManager.getGroupCursor(orderBy, null);
-		if ((groupCursor != null) && (groupCursor.getCount() > 0)) {
-			startManagingCursor(groupCursor);
-			groupAdapter = new GroupCursorAdapter(groupCursor);
-			groupSelector.setAdapter(groupAdapter);
-	        OnItemSelectedListener groupListener = new GroupOnItemSelectedListener();
-	        groupSelector.setOnItemSelectedListener(groupListener);
+		String orderBy = DataConstants.ORDER_BY_TAG_TEXT_ASC;
+		tagCursor = application.dataManager.getTagCursor(orderBy, null);
+		if ((tagCursor != null) && (tagCursor.getCount() > 0)) {
+			startManagingCursor(tagCursor);
+			tagAdapter = new TagCursorAdapter(tagCursor);
+			tagSelector.setAdapter(tagAdapter);
+	        OnItemSelectedListener tagOnItemSelectedListener = new TagOnItemSelectedListener();
+	        tagSelector.setOnItemSelectedListener(tagOnItemSelectedListener);
 		}
 
 		orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
@@ -148,14 +149,14 @@ public class GroupList extends Activity {
 
 	// static and package access as an Android optimization 
 	// (used in inner class)
-	static class GroupViewHolder {
+	static class TagViewHolder {
 		TextView name;
 	}
 
-	private class GroupCursorAdapter extends CursorAdapter {
+	private class TagCursorAdapter extends CursorAdapter {
 
-		public GroupCursorAdapter(final Cursor c) {
-			super(GroupList.this, c, true);
+		public TagCursorAdapter(final Cursor c) {
+			super(TagBatchList.this, c, true);
 		}
 
 		@Override
@@ -168,7 +169,7 @@ public class GroupList extends Activity {
 			// use ViewHolder pattern to avoid extra trips to findViewById
 			View v = new TextView(context);
 
-			GroupViewHolder holder = new GroupViewHolder();
+			TagViewHolder holder = new TagViewHolder();
 			holder.name = (TextView) v;
 			holder.name.setLines(1);
 			holder.name.setTextColor(android.graphics.Color.BLACK);
@@ -181,7 +182,7 @@ public class GroupList extends Activity {
 
 		private void populateView(final View v, final Cursor c) {
 			// use ViewHolder pattern to avoid extra trips to findViewById
-			GroupViewHolder holder = (GroupViewHolder) v.getTag();
+			TagViewHolder holder = (TagViewHolder) v.getTag();
 
 			if ((c != null) && !c.isClosed()) {
 				long id = c.getLong(0);
@@ -204,7 +205,7 @@ public class GroupList extends Activity {
 		ImageView coverImage;
 		TextView title;
 		TextView authors;
-		CheckBox inGroup;
+		CheckBox isTagged;
 	}
 
 	//
@@ -215,7 +216,7 @@ public class GroupList extends Activity {
 		LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		public BookCursorAdapter(final Cursor c) {
-			super(GroupList.this, c, true);
+			super(TagBatchList.this, c, true);
 			setFilterQueryProvider(this);
 		}
 
@@ -241,12 +242,12 @@ public class GroupList extends Activity {
 		@Override
 		public View newView(final Context context, final Cursor c, final ViewGroup parent) {
 			// use ViewHolder pattern to avoid extra trips to findViewById
-			View v = vi.inflate(R.layout.group_list_items, parent, false);
+			View v = vi.inflate(R.layout.tag_list_items, parent, false);
 			BookViewHolder holder = new BookViewHolder();
-			holder.coverImage = (ImageView) v.findViewById(R.id.group_list_items_image);
-			holder.title = (TextView) v.findViewById(R.id.group_list_items_title);
-			holder.authors = (TextView) v.findViewById(R.id.group_list_items_authors);
-			holder.inGroup = (CheckBox) v.findViewById(R.id.group_list_items_in_group);
+			holder.coverImage = (ImageView) v.findViewById(R.id.tag_list_items_image);
+			holder.title = (TextView) v.findViewById(R.id.tag_list_items_title);
+			holder.authors = (TextView) v.findViewById(R.id.tag_list_items_authors);
+			holder.isTagged = (CheckBox) v.findViewById(R.id.tag_list_items_tagged);
 			v.setTag(holder);
 			populateView(v, c);
 			return v;
@@ -266,15 +267,15 @@ public class GroupList extends Activity {
 				// getColumnIndex fails? (explicit works)
 				/*
 				 * bid = 0 tit = 1 subtit = 2 subject = 3 pub = 4 datepub = 5
-				 * format = 6 ostat = 7 lstat = 8 rstat = 9 rat = 10 blurb = 11 authors = 12
+				 * format = 6 rstat = 7 rat = 8 blurb = 9 authors = 10
 				 */
 
 				boolean inGroup = false;
-				if (application.selectedGroup != null) {
-					inGroup = application.dataManager.isInGroup(application.selectedGroup.id, id);
+				if (application.selectedTag != null) {
+					inGroup = application.dataManager.isTagged(application.selectedTag.id, id);
 				}
 				String title = c.getString(1);
-				String authors = c.getString(12);
+				String authors = c.getString(10);
 
 				if (application.debugEnabled) {
 					Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);
@@ -293,15 +294,15 @@ public class GroupList extends Activity {
 					@Override
 					public boolean onLongClick(View v) {
 						// TODO Implement drag&drop group order editting here
-						if (GroupList.this.onlyShowGroup && 
-								GroupList.this.selectedBookId == GroupList.NO_BOOK_SELECTED) {							
-							Toast.makeText(GroupList.this, getString(R.string.msgReorderGroup), 
+						if (TagBatchList.this.onlyShowTagged && 
+								TagBatchList.this.selectedBookId == TagBatchList.NO_BOOK_SELECTED) {							
+							Toast.makeText(TagBatchList.this, getString(R.string.msgReorderTag), 
 									Toast.LENGTH_LONG).show();
-							GroupList.this.selectedBookId = (Long) v.getTag();
+							TagBatchList.this.selectedBookId = (Long) v.getTag();
 						}
 						if (application.debugEnabled) {
-							Log.d(Constants.LOG_TAG, "Selected Id: " + String.valueOf(GroupList.this.selectedBookId));
-							Log.d(Constants.LOG_TAG, "Filtered = " + String.valueOf(onlyShowGroup));
+							Log.d(Constants.LOG_TAG, "Selected Id: " + String.valueOf(TagBatchList.this.selectedBookId));
+							Log.d(Constants.LOG_TAG, "Filtered = " + String.valueOf(onlyShowTagged));
 						}
 						return false;
 					}
@@ -311,16 +312,16 @@ public class GroupList extends Activity {
 					@Override
 					public void onClick(View v) {
 						// TODO Implement drag&drop group order editting here
-						if (GroupList.this.onlyShowGroup && 
-								GroupList.this.selectedBookId != GroupList.NO_BOOK_SELECTED) {							
+						if (TagBatchList.this.onlyShowTagged && 
+								TagBatchList.this.selectedBookId != TagBatchList.NO_BOOK_SELECTED) {							
 
 							if (application.debugEnabled) {
-								Log.d(Constants.LOG_TAG, "Moved book: " + String.valueOf(GroupList.this.selectedBookId));
+								Log.d(Constants.LOG_TAG, "Moved book: " + String.valueOf(TagBatchList.this.selectedBookId));
 								Log.d(Constants.LOG_TAG, "to: " + String.valueOf((Long) v.getTag()));
-								Log.d(Constants.LOG_TAG, "Filtered = " + String.valueOf(onlyShowGroup));
+								Log.d(Constants.LOG_TAG, "Filtered = " + String.valueOf(onlyShowTagged));
 							}
 
-							GroupList.this.selectedBookId = NO_BOOK_SELECTED;
+							TagBatchList.this.selectedBookId = NO_BOOK_SELECTED;
 						}
 					}
 				});
@@ -328,12 +329,12 @@ public class GroupList extends Activity {
 				holder.title.setText(title);
 				holder.authors.setText(StringUtil.addSpacesToCSVString(authors));
 
-				holder.inGroup.setChecked(inGroup);
-				holder.inGroup.setId((int) id);
-				holder.inGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				holder.isTagged.setChecked(inGroup);
+				holder.isTagged.setId((int) id);
+				holder.isTagged.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView,	boolean isChecked) {
-						application.dataManager.setIsInGroup(application.selectedGroup.id, buttonView.getId(), 
+						application.dataManager.addTagToBook(application.selectedTag.id, buttonView.getId(), 
 								isChecked);
 						
 					}					
@@ -348,7 +349,7 @@ public class GroupList extends Activity {
      *  {@link android.widget.AdapterView.OnItemSelectedListener} interface for
      *  the group selection spinner
      */
-    public class GroupOnItemSelectedListener implements OnItemSelectedListener {
+    public class TagOnItemSelectedListener implements OnItemSelectedListener {
 
         /**
          * Callback triggered when the user selects an item in the group spinner.
@@ -366,7 +367,7 @@ public class GroupList extends Activity {
             // TODO not sure why change listener fires when onCreate is init, but does
             Cursor cursor = (Cursor) parent.getItemAtPosition(pos);
             long groupId = cursor.getLong(0);
-            application.selectedGroup = application.dataManager.selectGroup(groupId);
+            application.selectedTag = application.dataManager.selectTag(groupId);
             booksAdapter.notifyDataSetChanged();
         }
 

@@ -11,13 +11,12 @@ import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.model.Group;
+import com.totsp.bookworm.model.Tag;
 
 public class BookWormApplication extends Application {
 
    boolean debugEnabled;
    boolean fastScanEnabled;
-   boolean defaultOwnEnabled;
    boolean defaultReadEnabled;
    
    
@@ -27,7 +26,7 @@ public class BookWormApplication extends Application {
    ImageManager imageManager;
 
    Book selectedBook;
-   Group selectedGroup;
+   Tag selectedTag;
 
    int lastMainListPosition;
 
@@ -78,7 +77,6 @@ public class BookWormApplication extends Application {
    public void updatePreferences() {
 	   debugEnabled = prefs.getBoolean("debugenabled", false);
 	   fastScanEnabled = prefs.getBoolean("fastscanenabled", false);
-	   defaultOwnEnabled = prefs.getBoolean("defaultownenabled", false);
 	   defaultReadEnabled = prefs.getBoolean("defaultreadenabled", false);
    }
    
@@ -90,7 +88,7 @@ public class BookWormApplication extends Application {
       
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id
    public void establishSelectedGroup(final long id) {
-      selectedGroup = dataManager.selectGroup(id);
+      selectedTag = dataManager.selectTag(id);
    }
 
    

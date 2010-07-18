@@ -3,24 +3,25 @@
 	android:layout_width="fill_parent" android:layout_height="wrap_content"
 	android:padding="1dp">
 
-	<ImageView android:id="@+id/group_list_items_image"
+	<ImageView android:id="@+id/tag_list_items_image"
 		android:layout_width="54dp" android:layout_height="70dp"
 		android:minWidth="54dp" android:minHeight="70dp"
 		android:layout_marginRight="10dp" android:background="@drawable/border1" />
 
-	<TextView android:id="@+id/group_list_items_title"
+	<TextView android:id="@+id/tag_list_items_title"
         android:layout_width="185dp" android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/group_list_items_image" android:maxLines="2"
+        android:layout_toRightOf="@id/tag_list_items_image" android:maxLines="2"
         android:ellipsize="end" style="@style/whitesmall" />
-    <TextView android:id="@+id/group_list_items_authors"
+    <TextView android:id="@+id/tag_list_items_authors"
         android:layout_width="185dp" android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/group_list_items_image"
-        android:layout_below="@id/group_list_items_title" android:maxLines="2"
+        android:layout_toRightOf="@id/tag_list_items_image"
+        android:layout_below="@id/tag_list_items_title" android:maxLines="2"
         android:ellipsize="end" style="@style/greytiny" />   
 
-	<CheckBox android:id="@+id/group_list_items_in_group"
+	<CheckBox android:id="@+id/tag_list_items_tagged"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_marginLeft="5dp" android:layout_marginRight="3dp"
-		android:layout_toRightOf="@id/group_list_items_authors"
+		android:layout_toRightOf="@id/tag_list_items_authors"
 		android:gravity="right" android:enabled="true" android:focusable="true" />
+	
 </RelativeLayout>

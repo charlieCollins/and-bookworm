@@ -65,7 +65,7 @@ public class CsvManager {
    private String getCSVString(final ArrayList<Book> books) {
       StringBuilder sb = new StringBuilder();
       sb
-               .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Group, GroupOrder, Format,Subject,Publisher,Published Date,User Rating, User Owned Status, User Lent Status, User Read Status\n");
+               .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status\n");
       if ((books != null) && !books.isEmpty()) {
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
@@ -87,16 +87,12 @@ public class CsvManager {
             sb.append(b.isbn10 != null ? cleanString(b.isbn10) + "," : ",");
             sb.append(b.isbn13 != null ? cleanString(b.isbn13) + "," : ",");
             sb.append(b.description != null ? cleanString(b.description) + "," : ",");
-            sb.append(b.group != null ? cleanString(b.group) + "," : ",");
-            sb.append(b.groupOrder + ",");            
             sb.append(b.format != null ? cleanString(b.format) + "," : ",");
             sb.append(b.subject != null ? cleanString(b.subject) + "," : ",");
             sb.append(b.publisher != null ? cleanString(b.publisher) + "," : ",");
             sb.append(DateUtil.format(new Date(b.datePubStamp)) + ",");
             if (b.bookUserData != null) {
                sb.append(b.bookUserData.rating + ",");
-               sb.append(b.bookUserData.own + ",");
-               sb.append(b.bookUserData.lent + ",");
                sb.append(b.bookUserData.read);
             } else {
                sb.append(" , ");
@@ -113,8 +109,8 @@ public class CsvManager {
       ArrayList<Book> books = new ArrayList<Book>();
       if (f.exists() && f.canRead()) {
          Log.i(Constants.LOG_TAG, "Parsing file:" + f.getAbsolutePath() + " for import into BookWorm database.");
-         // "Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Group, GroupOrder, Format,
-         //    Subject,Publisher,Published Date,User Rating,User Own Status, User Lent Status, User Read Status\n"
+         // "Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,
+         //    Subject,Publisher,Published Date,User Rating,User Read Status\n"
          Scanner scanner = null;
          int count = 0;
          try {
@@ -124,7 +120,7 @@ public class CsvManager {
                String line = scanner.nextLine();
                if ((line != null) && (count > 1)) {
                   String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                  if ((parts != null) && ((parts.length == 16) || (parts.length == 17))) {
+                  if ((parts != null) && ((parts.length == 12) || (parts.length == 13))) {
                      Book b = new Book();
                      b.title = parts[0];
                      b.subTitle = parts[1];
@@ -134,51 +130,36 @@ public class CsvManager {
                      }
                      b.isbn10 = parts[3];
                      b.isbn13 = parts[4];
-                     b.description = parts[5];
-                     b.group = parts[6];
-                     b.groupOrder = Integer.valueOf(parts[7]);
-                     
-                     b.format = parts[8];
-                     b.subject = parts[9];
-                     b.publisher = parts[10];
-                     Date date = DateUtil.parse(parts[11]);
+                     b.description = parts[5];                     
+                     b.format = parts[6];
+                     b.subject = parts[7];
+                     b.publisher = parts[8];
+                     Date date = DateUtil.parse(parts[9]);
                      if (date != null) {
                         b.datePubStamp = date.getTime();
                      }
 
                      long rating = 0;
-                     if (parts[12] != null) {
+                     if (parts[10] != null) {
                         try {
-                           rating = Integer.valueOf(parts[12]);
+                           rating = Integer.valueOf(parts[10]);
                         } catch (NumberFormatException e) {
                            // ignore
                         }
                      }
-                     long ownStatus = 0;
-                     if (parts[13] != null) {
-                    	 ownStatus = Boolean.valueOf(parts[13]) ? 1 : 0;
-                     }
-
-                     long lentStatus = 0;
-                     if (parts[14] != null) {
-                    	 lentStatus = Boolean.valueOf(parts[14]) ? 1 : 0;
-                     }
-
                      long readStatus = 0;
-                     if (parts[15] != null) {
-                        readStatus = Boolean.valueOf(parts[15]) ? 1 : 0;
+                     if (parts[11] != null) {
+                        readStatus = Boolean.valueOf(parts[11]) ? 1 : 0;
                      }
 
-                     BookUserData bud = new BookUserData(0L, rating, ownStatus == 1 ? true : false, 
-                    		                             lentStatus == 1 ? true : false, 
-                    		                             readStatus == 1 ? true : false, null);
+                     BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, null);
                      b.bookUserData = bud;
                      if (b.title != null) {
                         books.add(b);
                      }
                   } else {
                      Log.w(Constants.LOG_TAG, "Warning, not including line " + count
-                              + " from import file because it does not parse into 16 or 17 parts (parsed as "
+                              + " from import file because it does not parse into 12 or 13 parts (parsed as "
                               + parts.length + ").");
                   }
                }

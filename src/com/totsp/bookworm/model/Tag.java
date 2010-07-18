@@ -1,31 +1,30 @@
 package com.totsp.bookworm.model;
 
 /**
- * Item group data model.
- * Used to collect items in an ordered group (eg. a group of books).
+ * Markup tag class.
+ * Provides a simple text tag that can be applied to  multiple items.
  * @author Jason Liick
  */
-public final class Group {
+public final class Tag {
 
 	// NOTE - no accessors/mutators by design, Android optimization
 	public long id;
-	public String name;
-	public String description;
+	public String text;
 
 
-	 public Group() {
+	 public Tag() {
 	 }
 
-	 public Group(final String name) {
+	 public Tag(final String name) {
 		 id = 0L;
-		 this.name = name;
+		 this.text = name;
 	 }
 
 	 @Override
 	 public String toString() {
 		 StringBuilder sb = new StringBuilder();
-		 sb.append("Group-");
-		 sb.append(" name:" + name);
+		 sb.append("Tag-");
+		 sb.append(" name:" + text);
 		 return sb.toString();
 	 }
 
@@ -34,9 +33,9 @@ public final class Group {
 		 if (obj == this) {
 			 return true;
 		 }
-		 if (obj instanceof Group) {
-			 Group lhs = (Group) obj;
-			 if ((lhs.id == id) && (lhs.name.equals(this.name))) {
+		 if (obj instanceof Tag) {
+			 Tag lhs = (Tag) obj;
+			 if ((lhs.id == id) && (lhs.text.equals(this.text))) {
 				 return true;
 			 }
 		 }
@@ -47,8 +46,8 @@ public final class Group {
 	 public int hashCode() {
 		 int result = 31;
 		 result += id;
-	     if (name != null) {
-	    	 result += name.hashCode();
+	     if (text != null) {
+	    	 result += text.hashCode();
 	     }
 	     return result;
 	 }

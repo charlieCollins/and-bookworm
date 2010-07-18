@@ -57,12 +57,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * BookWorm primary activity.
+ * Provides a sortable list of books along with an interface to add new ones. 
+ */
 public class Main extends Activity {
 
    private static final int MENU_ABOUT = 1;
    private static final int MENU_PREFS = 2;
    private static final int MENU_STATS = 3;
-   private static final int MENU_GROUP = 4;
+   private static final int MENU_TAGS = 4;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -211,7 +215,7 @@ public class Main extends Activity {
       menu.add(0, Main.MENU_ABOUT, 1, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 2, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
       menu.add(0, Main.MENU_STATS, 3, getString(R.string.menuStats)).setIcon(android.R.drawable.ic_menu_info_details);
-      menu.add(0, Main.MENU_GROUP, 4, getString(R.string.menuGroup)).setIcon(android.R.drawable.ic_menu_agenda);
+      menu.add(0, Main.MENU_TAGS, 4, getString(R.string.menuGroup)).setIcon(R.drawable.ic_menu_tag);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -243,8 +247,8 @@ public class Main extends Activity {
             statsDialog.show();
             return true;
             
-         case MENU_GROUP:
-             startActivity(new Intent(Main.this, GroupList.class));
+         case MENU_TAGS:
+             startActivity(new Intent(Main.this, TagBatchList.class));
              return true;
             
          default:
@@ -697,13 +701,13 @@ public class Main extends Activity {
             // getColumnIndex fails? (explicit works)
             /*
              * bid = 0 tit = 1 subtit = 2 subject = 3 pub = 4 datepub = 5
-             * format = 6 ostat = 7 lstat = 8 rstat = 9 rat = 10 blurb = 11 authors = 12
+             * format = 6 rstat = 7 rat = 8 blurb = 9 authors = 10
              */
 
-            int rating = c.getInt(10);
-            int readStatus = c.getInt(9);
+            int rating = c.getInt(8);
+            int readStatus = c.getInt(7);
             String title = c.getString(1);
-            String authors = c.getString(12);
+            String authors = c.getString(10);
 
             if (application.debugEnabled) {
                Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);

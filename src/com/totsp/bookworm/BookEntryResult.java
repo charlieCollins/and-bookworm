@@ -152,7 +152,6 @@ public class BookEntryResult extends Activity {
          // (these are not unique - use a combination maybe?)
          // if book exists do not resave, or allow user to choose?
     	  
-     	 book.bookUserData.own = application.defaultOwnEnabled;
     	 book.bookUserData.read = application.defaultReadEnabled;
     	 
          long bookId = application.dataManager.insertBook(book);
