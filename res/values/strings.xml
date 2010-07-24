@@ -155,7 +155,9 @@
     <string name="msgTagSaved">Tag saved</string>
     <string name="msgTagSaveError">Error saving tag: Duplicate tags not allowed.</string>
     <string name="msgReorderTag">Select new position in tag group.</string>
+    <string name="msgNoTagsFound">No tags found</string>
     <string name="titleTagBatchList">BookWorm - Tags</string>
     <string name="titleTagEditor">BookWorm - Tag Editor</string>
+    <string name="menuSelectTags">Select Tags</string>
 	
 </resources>

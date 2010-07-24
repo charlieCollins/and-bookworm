@@ -1,7 +1,11 @@
 package com.totsp.bookworm;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,6 +38,7 @@ public class BookDetail extends Activity {
    private static final int MENU_EDIT = 0;
    private static final int MENU_WEB_GOOGLE = 1;
    private static final int MENU_WEB_AMAZON = 2;
+   private static final int MENU_SELECT_TAGS = 3;
 
    private BookWormApplication application;
 
@@ -48,6 +53,10 @@ public class BookDetail extends Activity {
 
    private CheckBox readStatus;
    private RatingBar ratingBar;
+   private AlertDialog.Builder tagDialog;
+   private Cursor tagCursor;
+   
+   private long bookId;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -79,9 +88,12 @@ public class BookDetail extends Activity {
             saveRatingEdit();
          }
       });
+      
+      bookId = application.selectedBook.id;
 
+      setupDialogs();
       setViewData();
-   }
+    }
 
    @Override
    public void onPause() {
@@ -127,7 +139,7 @@ public class BookDetail extends Activity {
          } else {
             bookCover.setImageResource(R.drawable.book_cover_missing);
          }
-
+         bookId = book.id;
          bookTitle.setText(book.title);
          bookSubTitle.setText(book.subTitle);
          ratingBar.setRating(book.bookUserData.rating);
@@ -181,8 +193,10 @@ public class BookDetail extends Activity {
    @Override
    public boolean onCreateOptionsMenu(final Menu menu) {
       menu.add(0, BookDetail.MENU_EDIT, 0, getString(R.string.menuEdit)).setIcon(android.R.drawable.ic_menu_edit);
-      menu.add(0, BookDetail.MENU_WEB_GOOGLE, 1, null).setIcon(R.drawable.google);
-      menu.add(0, BookDetail.MENU_WEB_AMAZON, 2, null).setIcon(R.drawable.amazon);
+      menu.add(0, BookDetail.MENU_SELECT_TAGS, 1, getString(R.string.menuSelectTags)).setIcon(R.drawable.ic_menu_tag);
+      menu.add(0, BookDetail.MENU_WEB_GOOGLE, 2, null).setIcon(R.drawable.google);
+      menu.add(0, BookDetail.MENU_WEB_AMAZON, 3, null).setIcon(R.drawable.amazon);
+      
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -204,8 +218,42 @@ public class BookDetail extends Activity {
                               + "&index=books");
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             return true;
+            
+         case MENU_SELECT_TAGS:
+            tagDialog.show();
+            return true;
+            
          default:
             return super.onOptionsItemSelected(item);
       }
+   }
+   
+   private void setupDialogs() {
+	   tagCursor = application.dataManager.getTagSelectorCursor(bookId);
+	   tagDialog = new AlertDialog.Builder(this);
+	   tagDialog.setTitle("Select Tags");
+	   if ((tagCursor != null) && (tagCursor.getCount() > 0)) {
+		   startManagingCursor(tagCursor);
+		
+		   tagDialog.setMultiChoiceItems(tagCursor, new String("tagged"), new String("taggedText"),
+				   new OnMultiChoiceClickListener() {
+			
+				@Override
+				public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+					tagCursor.moveToPosition(which);
+					if (application.debugEnabled) {
+						Log.v(Constants.LOG_TAG, "Selected Tag: " + tagCursor.getString(1));
+					}
+					application.dataManager.setBookTagged(bookId, tagCursor.getLong(0), isChecked);
+					tagCursor.requery();
+				}
+			});
+	   }
+	   else
+	   {
+		   tagDialog.setMessage(R.string.msgNoTagsFound)
+		   		.setCancelable(true);
+	   }
+	   tagDialog.create();
    }
 }

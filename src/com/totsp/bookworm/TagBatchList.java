@@ -334,7 +334,7 @@ public class TagBatchList extends Activity {
 				holder.isTagged.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView,	boolean isChecked) {
-						application.dataManager.addTagToBook(application.selectedTag.id, buttonView.getId(), 
+						application.dataManager.setBookTagged(buttonView.getId(), application.selectedTag.id, 
 								isChecked);
 						
 					}					

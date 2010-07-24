@@ -12,7 +12,6 @@ import android.util.Log;
 
 import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.data.DataConstants;
-import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.model.Tag;
 
 
@@ -28,8 +27,9 @@ public class TagDAO implements DAO<Tag>{
 		"select tags.tid as _id, tags.ttext from tags";
 
 
-	private static final String QUERY_GROUP_BY_BOOK_ID_PREFIX =
-		"select tags.ttext from tags join book on book.tbid = tags.tid";
+	private static final String QUERY_TAGS_BY_BOOK_ID =
+		"select tags.ttext from tags join tagbooks on (tagbooks.tid=tags.tid)" 
+		+ " join book on (book.bid = tagbooks.bid) where book.bid=? order by tags.ttext asc";
 
 	/*
 	 * Prefix for a query to return all books in the specified tags.
@@ -42,7 +42,10 @@ public class TagDAO implements DAO<Tag>{
 		+ "from book "
 		+ "left outer join bookauthor on bookauthor.bid = book.bid left outer join author on author.aid = bookauthor.aid";
 
-
+	private static final String QUERY_TAG_SELECTOR_BY_BOOK_ID =
+		"select distinct tags.tid as _id, tags.ttext as taggedText, "
+		+ "(exists (select * from tagbooks where tagbooks.tid=tags.tid and tagbooks.bid=?)) as tagged "
+		+ "from tags order by tags.ttext asc";	
 
 	private final SQLiteStatement tagInsertStmt;
 	private static final String TAG_INSERT =
@@ -143,6 +146,55 @@ public class TagDAO implements DAO<Tag>{
 	}
 	
 
+	/**
+	 * Queries the tags with a calculated column indicating whether each tag is applied to the specified book.
+	 * Used to generate a cursor that can be used to populate a multi-select tag ListView for a single book.
+	 * 
+	 * @param bookId ID of book against which tags are applied
+	 * 
+	 * @return  Cursor containing columns named _id, tagText and tagged
+	 */
+	public Cursor getSelectorCursor(final long bookId) {
+		try {
+			return db.rawQuery(QUERY_TAG_SELECTOR_BY_BOOK_ID, new String[] { String.valueOf(bookId) });				
+		} catch (SQLException e) {
+			Log.d(Constants.LOG_TAG, "TagDAO", e);
+			return null;
+		}
+	}
+	
+	
+	/**
+	 * Returns a string containing all of the tags which are applied against the specified book.
+	 * 
+	 * @param bookId  Book to query
+	 * @return        String containing comma separated tag text
+	 */
+	public String getTagsString(final long bookId) {
+		StringBuilder sb = new StringBuilder();
+		int numRows;
+		
+		try {
+			Cursor c = db.rawQuery(QUERY_TAGS_BY_BOOK_ID, new String[] { String.valueOf(bookId) });	
+			numRows = c.getCount();
+			c.moveToFirst();
+			for (int i = 0; i < numRows; i++) {
+				sb.append(c.getString(0));
+				if (i < numRows-1) {
+					sb.append(", ");
+				}
+				c.moveToNext();
+			}
+			if (!c.isClosed()) {
+				c.close();
+			}
+		} catch (SQLException e) {
+			Log.d(Constants.LOG_TAG, "TagDAO", e);
+		}
+		
+		return sb.toString();		
+	}
+	
 	@Override
 	public Cursor getCursor(final String orderBy, final String whereClauseLimit) {
 		// note that query MUST have a column named _id

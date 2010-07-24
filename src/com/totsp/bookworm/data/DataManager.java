@@ -55,6 +55,7 @@ public class DataManager {
          db = SQLiteDatabase.openDatabase(DataConstants.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
          // since we pass db into DAO, have to recreate DAO if db is re-opened
          bookDAO = new BookDAO(db);
+         tagDAO = new TagDAO(db);
       }
    }
 
@@ -127,13 +128,31 @@ public class DataManager {
    public Cursor getTagCursor(final String orderBy, final String whereClauseLimit) {
 	   return tagDAO.getCursor(orderBy, whereClauseLimit);
    }
+   
+   public Cursor getTagSelectorCursor(final long bookId) {
+	   return tagDAO.getSelectorCursor(bookId);
+   }
 
+   /**
+    * Queries whether the tag is linked to the specified book.
+    * 
+    * @param tagId   ID of tag to query.
+    * @param bookId  ID of book to query
+    * @return        True if the tag is linked to the book, false otherwise
+    */
    public boolean isTagged(final long tagId, final long bookId) {
 	   return tagDAO.isTagged(tagId, bookId);
    }
 
-   public void addTagToBook(final long tagId, final long bookId, boolean inGroup) {
-	   if (inGroup) {
+   /**
+    * Sets whether a tag is linked to a specified book.
+    * 
+    * @param bookId ID of book to be tagged/un-tagged.
+    * @param tagId  ID of tag to be added or removed.
+    * @param tagged Tagged state. If true, adds the tag to the book, otherwise the tag link is removed.
+    */
+   public void setBookTagged(final long bookId, final long tagId, boolean tagged) {
+	   if (tagged) {
 		   // Insert new books at end of group by default
 		   tagDAO.insertBook(tagId, bookId);
 	   }
@@ -148,11 +167,23 @@ public class DataManager {
 	   tagDAO.insertBook(tagId, bookId);
    }
 
+
    public void removeTagFromBook(final long tagId, final long bookId) {
 	   tagDAO.deleteBook(tagId, bookId);
    }	
+
+   /**
+    * Returns a string containing all of the tags which are applied against the specified book.
+    * 
+    * @param bookId  Book to query
+    * @return        String containing comma separated tag text
+    */
+   public String getBookTagsString(final long bookId) {
+	   return tagDAO.getTagsString(bookId);
+   }
+
+
    
-      
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
       Log.i(Constants.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");
