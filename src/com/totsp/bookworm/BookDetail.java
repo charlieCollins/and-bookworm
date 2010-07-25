@@ -9,8 +9,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -42,6 +46,10 @@ public class BookDetail extends Activity {
    private CheckBox readStatus;
    private RatingBar ratingBar;
 
+   private TextView bookDetailTitle;
+   private EditText bookDetailNote;
+   private Button bookDetailButton;
+
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -58,6 +66,30 @@ public class BookDetail extends Activity {
 
       readStatus = (CheckBox) findViewById(R.id.bookreadstatus);
       ratingBar = (RatingBar) findViewById(R.id.bookrating);
+
+      // detail slider
+      bookDetailTitle = (TextView) findViewById(R.id.bookdetailtitle);
+      bookDetailNote = (EditText) findViewById(R.id.bookdetailnote);
+      bookDetailNote.setEnabled(false);
+
+      bookDetailButton = (Button) findViewById(R.id.bookdetailbutton);
+      bookDetailButton.setText("Edit");
+      bookDetailButton.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            if (bookDetailNote.isEnabled()) {
+               if (bookDetailNote.getText() != null) {
+                  Book book = application.selectedBook;
+                  book.bookUserData.blurb = bookDetailNote.getText().toString();
+                  application.dataManager.updateBook(book);
+               }
+               bookDetailNote.setEnabled(false);               
+               bookDetailButton.setText("Edit");
+            } else {
+               bookDetailNote.setEnabled(true);
+               bookDetailButton.setText("Save");
+            }
+         }
+      });
 
       readStatus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
          public void onCheckedChanged(final CompoundButton button, final boolean isChecked) {
@@ -126,6 +158,9 @@ public class BookDetail extends Activity {
          readStatus.setChecked(book.bookUserData.read);
          bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
          bookAuthors.setText(StringUtil.contractAuthors(book.authors));
+
+         bookDetailTitle.setText(book.title);
+         bookDetailNote.setText(book.bookUserData.blurb);
 
          // we leave publisher and subject out of landscape layout         
          if (bookSubject != null) {

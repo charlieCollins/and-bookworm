@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
@@ -93,6 +94,7 @@ public class Main extends Activity {
    private ResetAllCoverImagesTask resetAllCoverImagesTask;
 
    private AlertDialog.Builder sortDialog;
+   private boolean sortDialogIsShowing;
    private AlertDialog.Builder manageDataDialog;
    private AlertDialog.Builder statsDialog;
 
@@ -123,8 +125,11 @@ public class Main extends Activity {
       // action bar images
       sortImage = (ImageView) findViewById(R.id.actionsort);
       sortImage.setOnClickListener(new OnClickListener() {
-         public void onClick(View v) {
-            sortDialog.show();
+         public void onClick(View v) { 
+            if (!sortDialogIsShowing) {
+               sortDialogIsShowing = true;
+               sortDialog.show();
+            }
          }
       });
       addScanImage = (ImageView) findViewById(R.id.actionaddscan);
@@ -201,7 +206,7 @@ public class Main extends Activity {
    }
 
    @Override
-   public void onStart() {
+   public void onStart() {      
       super.onStart();
    }
 
@@ -387,6 +392,7 @@ public class Main extends Activity {
                getString(R.string.labelDatepub), getString(R.string.labelPublisher) },
                new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface d, int selected) {
+                     sortDialogIsShowing = false;
                      switch (selected) {
                         case 0:
                            saveSortOrder(DataConstants.ORDER_BY_TITLE_ASC);
@@ -417,6 +423,11 @@ public class Main extends Activity {
                      bindAdapter();
                   }
                });
+      sortDialog.setOnCancelListener(new OnCancelListener() {
+         public void onCancel(DialogInterface d) {
+            sortDialogIsShowing = false;
+         }
+      });
       sortDialog.create();
 
       manageDataDialog = new AlertDialog.Builder(this);

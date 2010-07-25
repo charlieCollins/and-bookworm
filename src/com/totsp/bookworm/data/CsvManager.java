@@ -65,7 +65,7 @@ public class CsvManager {
    private String getCSVString(final ArrayList<Book> books) {
       StringBuilder sb = new StringBuilder();
       sb
-               .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status\n");
+               .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status, User Note [optional]\n");
       if ((books != null) && !books.isEmpty()) {
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
@@ -93,9 +93,10 @@ public class CsvManager {
             sb.append(DateUtil.format(new Date(b.datePubStamp)) + ",");
             if (b.bookUserData != null) {
                sb.append(b.bookUserData.rating + ",");
-               sb.append(b.bookUserData.read);
+               sb.append(b.bookUserData.read + ",");               
+               sb.append(b.bookUserData.blurb != null ? b.bookUserData.blurb : "");
             } else {
-               sb.append(" , ");
+               sb.append(" , ,");
             }
             sb.append("\n");
          }
@@ -110,7 +111,7 @@ public class CsvManager {
       if (f.exists() && f.canRead()) {
          Log.i(Constants.LOG_TAG, "Parsing file:" + f.getAbsolutePath() + " for import into BookWorm database.");
          // "Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,
-         //    Subject,Publisher,Published Date,User Rating,User Read Status\n"
+         //    Subject,Publisher,Published Date,User Rating,User Read Status, User Note\n"
          Scanner scanner = null;
          int count = 0;
          try {
@@ -125,7 +126,8 @@ public class CsvManager {
                      b.title = parts[0];
                      b.subTitle = parts[1];
                      if (parts[2] != null) {
-                        String authors = parts[2].replace('|', '"');
+                        String authors = parts[2].replace('|', ',');
+                        System.out.println("Authors before expanded - " + authors);
                         b.authors = StringUtil.expandAuthors(authors);
                      }
                      b.isbn10 = parts[3];
@@ -151,8 +153,13 @@ public class CsvManager {
                      if (parts[11] != null) {
                         readStatus = Boolean.valueOf(parts[11]) ? 1 : 0;
                      }
+                     
+                     String note = null;
+                     if (parts.length > 12) {
+                        note = parts[12];
+                     }
 
-                     BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, null);
+                     BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, note);
                      b.bookUserData = bud;
                      if (b.title != null) {
                         books.add(b);

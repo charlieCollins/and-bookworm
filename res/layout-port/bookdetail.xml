@@ -76,4 +76,6 @@
 		android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
 		android:layout_toRightOf="@id/bookpublisher" android:gravity="right"
 		style="@style/blacksmall" />
+
+	<include layout="@layout/bookdetaildrawer" />
 </RelativeLayout>
