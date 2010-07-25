@@ -32,14 +32,15 @@
 					android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
 					android:layout_marginRight="10dp" android:layout_below="@id/bookdetailnotelabel"
 					android:autoLink="all" android:autoText="true" android:capitalize="sentences"
-					android:freezesText="true" android:gravity="left" />
+					android:freezesText="true" android:gravity="left" 
+					style="?android:attr/textViewStyle" android:background="@null" android:textColor="@android:color/white"/>
 
 				<LinearLayout android:orientation="horizontal"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
 					android:layout_below="@id/bookdetailnote" android:gravity="center">
 					<Button android:id="@+id/bookdetailbutton"
 						android:layout_width="150dp" android:layout_height="wrap_content"
-						android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
+						android:layout_marginTop="25dp" android:layout_marginBottom="10dp"
 						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
 						style="@style/black" />
 				</LinearLayout>
