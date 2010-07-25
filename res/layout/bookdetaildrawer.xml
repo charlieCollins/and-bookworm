@@ -10,23 +10,22 @@
 			android:layout_height="wrap_content" android:src="@drawable/tab_expand" />
 
 		<ScrollView android:id="@id/bookdetaildrawercontent"
-			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			android:layout_width="fill_parent" android:layout_height="fill_parent" android:background="#000">
 			<RelativeLayout android:orientation="vertical"
-				android:layout_width="fill_parent" android:layout_height="fill_parent"
-				android:background="@drawable/book_bgrnd_noheader_textarea"
+				android:layout_width="fill_parent" android:layout_height="fill_parent"				
 				android:gravity="center_horizontal">
 
 				<TextView android:id="@+id/bookdetailtitle"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
 					android:layout_marginTop="20dp" android:layout_marginLeft="10dp"
-					android:layout_marginRight="10dp" style="@style/subtitleblack"
+					android:layout_marginRight="10dp" style="@style/whitebold"
 					android:maxLines="2" android:ellipsize="end" android:gravity="center" />
 
 				<TextView android:id="@+id/bookdetailnotelabel"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
 					android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
 					android:layout_marginRight="10dp" android:layout_below="@id/bookdetailtitle"
-					style="@style/blackmedbold" android:gravity="center"
+					style="@style/whitemedbold" android:gravity="center"
 					android:text="Notes" />
 				<EditText android:id="@+id/bookdetailnote"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
