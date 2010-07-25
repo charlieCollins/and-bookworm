@@ -70,10 +70,11 @@ public class BookDetail extends Activity {
       // detail slider
       bookDetailTitle = (TextView) findViewById(R.id.bookdetailtitle);
       bookDetailNote = (EditText) findViewById(R.id.bookdetailnote);
+      bookDetailNote.setTextColor(android.R.color.primary_text_light);
       bookDetailNote.setEnabled(false);
 
       bookDetailButton = (Button) findViewById(R.id.bookdetailbutton);
-      bookDetailButton.setText("Edit");
+      bookDetailButton.setText(getString(R.string.btnEdit));
       bookDetailButton.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
             if (bookDetailNote.isEnabled()) {
@@ -83,10 +84,10 @@ public class BookDetail extends Activity {
                   application.dataManager.updateBook(book);
                }
                bookDetailNote.setEnabled(false);               
-               bookDetailButton.setText("Edit");
+               bookDetailButton.setText(getString(R.string.btnEdit));
             } else {
                bookDetailNote.setEnabled(true);
-               bookDetailButton.setText("Save");
+               bookDetailButton.setText(getString(R.string.btnSave));
             }
          }
       });

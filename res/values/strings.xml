@@ -41,7 +41,7 @@
     <string name="btnSearchWeb">Search the web</string>   
     <string name="btnSearch">Search</string>   
     <string name="btnUseForm">Use form</string>   
-    <string name="btnSave">Save</string>   
+    <string name="btnSave">Save</string>    
     <string name="btnSelectImage">Select from gallery</string>   
     <string name="btnRetrieveImage">Retrieve from web</string>   
     <string name="btnGenerateImage">Generate from title</string>    
@@ -128,6 +128,7 @@
 	<string name="btnParse">Parse</string>   
 	<string name="btnImport">Import</string>   
 	<string name="btnDeleteData">Delete all data</string>
+	<string name="btnEdit">Edit</string>   
 	<string name="labelManageData">Manage Data</string>
     <string name="msgScannerNotPresent">Barcode scanner may not be present, would like to check the Market and try to install it?</string>
     <string name="labelInstallScanner">Install Barcode Scanner</string>
@@ -144,5 +145,5 @@
     <string name="msgReplaceExistingCSVExport">Are you sure (this will replace any existing prior CSV export)?</string>
     <string name="msgReplaceExistingDBExport">Are you sure (this will replace any existing prior DB export)?</string>
     <string name="msgReplaceExistingDB">Are you sure (this will replace all current application data)?"</string>
-	
+    <string name="labelNotes">Notes</string>	
 </resources>
