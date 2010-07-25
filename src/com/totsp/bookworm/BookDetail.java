@@ -70,7 +70,6 @@ public class BookDetail extends Activity {
       // detail slider
       bookDetailTitle = (TextView) findViewById(R.id.bookdetailtitle);
       bookDetailNote = (EditText) findViewById(R.id.bookdetailnote);
-      bookDetailNote.setTextColor(android.R.color.primary_text_light);
       bookDetailNote.setEnabled(false);
 
       bookDetailButton = (Button) findViewById(R.id.bookdetailbutton);

@@ -32,7 +32,7 @@
 					android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
 					android:layout_marginRight="10dp" android:layout_below="@id/bookdetailnotelabel"
 					android:autoLink="all" android:autoText="true" android:capitalize="sentences"
-					android:freezesText="true" style="@style/black" android:gravity="left" />
+					android:freezesText="true" android:gravity="left" />
 
 				<LinearLayout android:orientation="horizontal"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
