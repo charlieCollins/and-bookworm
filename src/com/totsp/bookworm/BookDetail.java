@@ -46,9 +46,8 @@ public class BookDetail extends Activity {
    private TextView bookTitle;
    private TextView bookSubTitle;
    private TextView bookAuthors;
-   private TextView bookSubject;
-   private TextView bookDatePub;
-   private TextView bookPublisher;
+   private TextView bookTags;
+
    private TextView bookDetailContent;
 
    private CheckBox readStatus;
@@ -68,9 +67,7 @@ public class BookDetail extends Activity {
       bookTitle = (TextView) findViewById(R.id.booktitle);
       bookSubTitle = (TextView) findViewById(R.id.booksubtitle);
       bookAuthors = (TextView) findViewById(R.id.bookauthors);
-      bookSubject = (TextView) findViewById(R.id.booksubject);
-      bookDatePub = (TextView) findViewById(R.id.bookdatepub);
-      bookPublisher = (TextView) findViewById(R.id.bookpublisher);
+      bookTags = (TextView) findViewById(R.id.booktags);
       bookDetailContent = (TextView) findViewById(R.id.bookdetailcontent);
 
       readStatus = (CheckBox) findViewById(R.id.bookreadstatus);
@@ -144,7 +141,6 @@ public class BookDetail extends Activity {
          bookSubTitle.setText(book.subTitle);
          ratingBar.setRating(book.bookUserData.rating);
          readStatus.setChecked(book.bookUserData.read);
-         bookDatePub.setText(DateUtil.format(new Date(book.datePubStamp)));
          bookAuthors.setText(StringUtil.contractAuthors(book.authors));
          bookDetailContent.setText(book.title + "\n\n" +
         		 				   book.subject + "\n\n" +
@@ -152,15 +148,7 @@ public class BookDetail extends Activity {
         		                   book.format + "\n\n" + 
         		                   book.publisher + ", " + DateUtil.format(new Date(book.datePubStamp))
         		                   );
-
-         // we leave publisher and subject out of landscape layout         
-         if (bookSubject != null) {
-            bookSubject.setText(book.subject);
-         }
-
-         if (bookPublisher != null) {
-            bookPublisher.setText(book.publisher);
-         }
+         bookTags.setText(application.dataManager.getBookTagsString(bookId));
       }
    }
 

@@ -1,28 +1,27 @@
 package com.totsp.bookworm;
 
-import com.totsp.bookworm.model.Tag;
-import com.totsp.bookworm.util.TaskUtil;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.totsp.bookworm.model.Tag;
+import com.totsp.bookworm.util.TaskUtil;
 
 
 /**
  * Tag editing and display activity.
  */
 public class TagEditor extends Activity {
+	private Spinner template;
 	private EditText name;
-	private EditText description;
 	private Button saveButton;
 
 	private BookWormApplication application;
@@ -36,7 +35,15 @@ public class TagEditor extends Activity {
 		application = (BookWormApplication) getApplication();
 		setTitle(R.string.titleTagEditor);
 
-		name = (EditText)findViewById(R.id.tagtext);
+		template = (Spinner) findViewById(R.id.tagtemplate);
+		
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this, R.array.tagtemplates, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        template.setAdapter(adapter);
+		
+		// TODO: Parse tag text into template and text
+        name = (EditText)findViewById(R.id.tagtext);
 					
 		if (application.selectedTag != null) {
 			name.setText(application.selectedTag.text);
@@ -65,9 +72,9 @@ public class TagEditor extends Activity {
 	protected void onRestoreInstanceState(final Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		if (application.selectedTag == null) {
-			long groupId = savedInstanceState.getLong(Constants.GROUP_ID, 0L);
-			if (groupId > 0) {
-				application.establishSelectedGroup(groupId);
+			long tagId = savedInstanceState.getLong(Constants.TAG_ID, 0L);
+			if (tagId > 0) {
+				application.establishSelectedTag(tagId);
 				setExistingViewData();
 			}
 		}
@@ -76,16 +83,16 @@ public class TagEditor extends Activity {
 	@Override
 	protected void onSaveInstanceState(final Bundle saveState) {
 		if (application.selectedTag != null) {
-			saveState.putLong(Constants.GROUP_ID, application.selectedTag.id);
+			saveState.putLong(Constants.TAG_ID, application.selectedTag.id);
 		}
 		super.onSaveInstanceState(saveState);
 	}
 
 
 	private void setExistingViewData() {
-		Tag group = application.selectedTag;
-		if (group != null) {
-			name.setText(group.text);
+		Tag tag = application.selectedTag;
+		if (tag != null) {
+			name.setText(tag.text);
 		}
 	}
 
@@ -94,17 +101,23 @@ public class TagEditor extends Activity {
 	 */
 	private void saveEdits() {
 		// establish newGroup
-		Tag newGroup = new Tag();
-		newGroup.text = (name.getText().toString());
+		Tag editedTag = new Tag();
+		if (template.getSelectedItemId() == 0) {
+			editedTag.text = (name.getText().toString());
+		}
+		else
+		{
+			editedTag.text = (template.getSelectedItem().toString() + " " + name.getText().toString());
+		}
 
 		// save settings from existing Group, if present (if we are editing)
-		Tag tag = application.selectedTag;
-		if (tag != null) {
-			newGroup.id = (tag.id);
+		Tag selectedTag = application.selectedTag;
+		if (selectedTag != null) {
+			editedTag.id = (selectedTag.id);
 		}
 
 		saveTagTask = new SaveTagTask();
-		saveTagTask.execute(newGroup);
+		saveTagTask.execute(editedTag);
 	}
 
 	/**
@@ -127,12 +140,12 @@ public class TagEditor extends Activity {
 			
 			if ((tag != null) && (tag.id > 0)) {
 				application.dataManager.updateTag(tag);
-				application.establishSelectedGroup(tag.id);
+				application.establishSelectedTag(tag.id);
 				return true;
 			} else if ((tag != null) && (tag.id == 0)) {
 				long tagId = application.dataManager.insertTag(tag);
 				if (tagId > 0) {
-					application.establishSelectedGroup(tagId);
+					application.establishSelectedTag(tagId);
 					return true;
 				}
 			}

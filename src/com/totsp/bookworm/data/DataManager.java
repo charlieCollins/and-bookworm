@@ -161,6 +161,16 @@ public class DataManager {
 		   tagDAO.deleteBook(tagId, bookId);
 	   }
    }
+   
+   /**
+    * Toggles the current tag link state for the specified book and tag.
+    * 
+    * @param bookId ID of book to be tagged/un-tagged.
+    * @param tagId  ID of tag to be toggled.
+    */
+   public void toggleBookTagged(final long bookId, final long tagId) {
+	   setBookTagged(bookId, tagId, !isTagged(tagId, bookId));
+   }
 
    public void addTagToBook(final long tagId, final long bookId) {
 	   // Insert new books at end of group by default

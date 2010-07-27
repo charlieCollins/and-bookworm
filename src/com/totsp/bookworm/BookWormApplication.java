@@ -87,7 +87,7 @@ public class BookWormApplication extends Application {
 
       
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id
-   public void establishSelectedGroup(final long id) {
+   public void establishSelectedTag(final long id) {
       selectedTag = dataManager.selectTag(id);
    }
 

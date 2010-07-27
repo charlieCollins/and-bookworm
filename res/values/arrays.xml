@@ -23,4 +23,10 @@
 	<string-array name="bookcoverimageproviderkeys">
 		<item>2</item>
 	</string-array>
+	
+	<string-array name="tagtemplates">
+		<item>No template</item>
+		<item>Genre: </item>
+		<item>Series: </item>
+	</string-array>
 </resources>

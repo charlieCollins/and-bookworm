@@ -32,12 +32,6 @@
 		android:layout_gravity="left" android:gravity="left" style="@style/black"
 		android:maxWidth="230dp" android:maxLines="2" android:ellipsize="end" />
 
-	<TextView android:id="@+id/bookdatepub" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_marginTop="5dp"
-		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookauthors"
-		android:gravity="left" style="@style/blacksmall" />
-
 	<TextView android:id="@+id/bookreadstatuslabel"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_marginTop="12dp" android:layout_marginLeft="8dp"
@@ -51,11 +45,18 @@
 		android:gravity="right" />
 
 	<RatingBar android:id="@+id/bookrating" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_marginTop="20dp"
+		android:layout_height="wrap_content" android:layout_marginTop="15dp"
 		android:layout_marginLeft="8dp" android:layout_marginRight="10dp"
-		android:layout_marginBottom="10dp" android:layout_below="@id/bookreadstatuslabel"
+		android:layout_marginBottom="0dp" android:layout_below="@id/bookreadstatuslabel"
 		android:layout_toRightOf="@id/bookcover" android:gravity="center_horizontal"
 		android:numStars="5" android:stepSize="1.0" />
+		
+	<TextView android:id="@+id/booktags" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="0dp"
+		android:layout_marginLeft="10dp" android:layout_marginRight="15dp"
+		android:layout_marginBottom="15dp"
+		android:layout_below="@id/bookrating" style="@style/blacktiny"
+		android:ellipsize="end" android:maxLines="3"/>		
 		
 	<include layout="@layout/bookdetaildrawer"/>
 

@@ -28,6 +28,17 @@ public class DataConstants {
    public static final String ORDER_BY_DATE_PUB_ASC = "book.datepub asc, book.tit asc";
    public static final String ORDER_BY_DATE_PUB_DESC = "book.datepub desc, book.tit asc";
    public static final String ORDER_BY_TAG_TEXT_ASC = "tags.ttext asc";
+   public static final String ORDER_BY_TAG_POSITION_ASC = "tagbooks.tbid asc";
+   
+   // Filters are designed to work with String.format to allow complex filter criteria (eg authors)
+   public static final String FILTER_BY_AUTHOR = "where book.bid in (select bookauthor.bid from bookauthor " 
+	                                                           + "join author on (bookauthor.aid=author.aid) " 
+	                                                           + "where author.name glob '*%s*')";
+   public static final String FILTER_BY_TITLE = "where book.tit glob '*%s*'";
+   public static final String FILTER_BY_SUBJECT = "where book.subject glob '*%s*'";
+   public static final String FILTER_BY_PUBLISHER = "where book.pub glob '*%s*'";
+   public static final String FILTER_BY_TAG = "where tag.ttext glob '*%s*'";
+   public static final String FILTER_BY_CURRENT_TAG = "where tagbooks.tid=%s";
 
    public static final String BOOK_TABLE = "book";
    public static final String BOOKUSERDATA_TABLE = "bookuserdata";
