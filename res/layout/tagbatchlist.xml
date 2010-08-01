@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:paddingLeft="8dp"
+	android:paddingRight="8dp">
+
+	<LinearLayout android:id="@+id/tagspinnerbar"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="top|center" android:padding="2dp"
+		android:clipChildren="true"
+		android:minHeight="55dp" android:orientation="horizontal">
+		
+		<Spinner android:id="@+id/tagselector" 
+		 	android:layout_width="fill_parent"	android:layout_height="fill_parent" 
+	        android:drawSelectorOnTop = "true"
+	        android:prompt = "@string/promptTag"		/>
+	        
+    </LinearLayout>
+    
+	<ListView android:id="@+id/bookfilterview" 
+		android:layout_width="fill_parent"	android:layout_height="0dp" 
+		android:layout_weight="7"
+		android:drawSelectorOnTop="false" />
+
+	<View android:layout_width="fill_parent" android:layout_height="2dp"
+		android:background="#333" />
+
+	<LinearLayout android:id="@+id/tagactionbar"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="bottom|center" android:padding="2dp"
+		android:minHeight="55dp" android:orientation="horizontal">
+
+		<ImageView android:id="@+id/tagactionsort"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:src="@android:drawable/ic_menu_sort_by_size"
+			android:layout_gravity="center" />
+		<ImageView android:id="@+id/tagactionfilter"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:src="@drawable/ic_menu_filter"
+			android:layout_gravity="center" />
+		<ImageView android:id="@+id/tagadd"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:src="@android:drawable/ic_menu_add"
+			android:layout_gravity="center" />
+		<ImageView android:id="@+id/tagedit"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:src="@android:drawable/ic_menu_edit"
+			android:layout_gravity="center" />
+
+	</LinearLayout>
+
+</LinearLayout>
+			

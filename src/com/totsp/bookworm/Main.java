@@ -58,11 +58,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * BookWorm primary activity.
+ * Provides a sortable list of books along with an interface to add new ones. 
+ */
 public class Main extends Activity {
 
    private static final int MENU_ABOUT = 1;
    private static final int MENU_PREFS = 2;
    private static final int MENU_STATS = 3;
+   private static final int MENU_TAGS = 4;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -215,6 +220,7 @@ public class Main extends Activity {
       menu.add(0, Main.MENU_ABOUT, 1, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 2, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
       menu.add(0, Main.MENU_STATS, 3, getString(R.string.menuStats)).setIcon(android.R.drawable.ic_menu_info_details);
+      menu.add(0, Main.MENU_TAGS, 4, getString(R.string.menuGroup)).setIcon(R.drawable.ic_menu_tag);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -245,6 +251,11 @@ public class Main extends Activity {
             statsDialog.setMessage(sb.toString());
             statsDialog.show();
             return true;
+            
+         case MENU_TAGS:
+             startActivity(new Intent(Main.this, TagBatchList.class));
+             return true;
+            
          default:
             return super.onOptionsItemSelected(item);
       }
@@ -327,6 +338,11 @@ public class Main extends Activity {
       return super.onKeyDown(keyCode, event);
    }
 
+   /*
+    * (non-Javadoc)
+    * Receives result from barcode scanner API and determines ISBN
+    * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+    */
    @Override
    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
       ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);

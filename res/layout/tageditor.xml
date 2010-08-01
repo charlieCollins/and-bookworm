@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd_noheader_textarea">
+
+
+	<Spinner android:id="@+id/tagtemplate" 
+		android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp"
+		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+		android:layout_alignParentLeft="false" android:layout_alignParentRight="false" 
+		android:prompt="@string/promptTagTemplate"/>
+
+	<EditText android:id="@+id/tagtext" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="20dp"
+		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+		android:layout_below="@id/tagtemplate"
+		android:gravity="center_horizontal"
+		android:autoText="true" android:capitalize="words"
+		android:freezesText="true" android:hint="@string/labelTag" 
+		android:maxLines="2" android:ellipsize="end" />
+
+	<Button android:id="@+id/savetag"
+		android:layout_width="150dp" android:layout_height="wrap_content"
+		android:layout_marginTop="15dp" android:layout_marginBottom="10dp"
+		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+		android:layout_below="@id/tagtext" android:gravity="center"
+		android:text="@string/btnSave" style="@style/black" />
+	
+
+</RelativeLayout>

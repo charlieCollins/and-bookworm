@@ -9,8 +9,10 @@ import android.util.Log;
 
 import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.data.dao.BookDAO;
+import com.totsp.bookworm.data.dao.TagDAO;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
+import com.totsp.bookworm.model.Tag;
 
 import java.util.ArrayList;
 
@@ -23,19 +25,21 @@ import java.util.ArrayList;
  */
 public class DataManager {
 
-   private static final int DATABASE_VERSION = 10;
+   private static final int DATABASE_VERSION = 11;
 
    private SQLiteDatabase db;
 
    private BookDAO bookDAO;
+   private TagDAO tagDAO;
 
    public DataManager(final Context context) {
       OpenHelper openHelper = new OpenHelper(context);
       db = openHelper.getWritableDatabase();
       Log.i(Constants.LOG_TAG, "DataManager created, db open status: " + db.isOpen());
 
-      // app only needs access to book DAO at present (can't create authors on their own, etc.)
+      // app only needs access to book & tag DAO at present (can't create authors on their own, etc.)
       bookDAO = new BookDAO(db);
+      tagDAO = new TagDAO(db);
 
       if (openHelper.isDbCreated()) {
          // insert default data here if needed
@@ -51,6 +55,7 @@ public class DataManager {
          db = SQLiteDatabase.openDatabase(DataConstants.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
          // since we pass db into DAO, have to recreate DAO if db is re-opened
          bookDAO = new BookDAO(db);
+         tagDAO = new TagDAO(db);
       }
    }
 
@@ -98,6 +103,97 @@ public class DataManager {
       return bookDAO.getCursor(orderBy, whereClauseLimit);
    }
 
+   public Tag selectTag(final long id) {
+	   return tagDAO.select(id);
+   }
+
+
+   public Tag selectTag(final String name) {
+	   return tagDAO.select(name);
+   }
+
+   public long insertTag(final Tag tag) {
+	   return tagDAO.insert(tag);
+   }
+
+   public void updateTag(final Tag tag) {
+	   tagDAO.update(tag);
+   }
+
+   public void deleteTag(final long id) {
+	   tagDAO.delete(id);
+   }
+   
+
+   public Cursor getTagCursor(final String orderBy, final String whereClauseLimit) {
+	   return tagDAO.getCursor(orderBy, whereClauseLimit);
+   }
+   
+   public Cursor getTagSelectorCursor(final long bookId) {
+	   return tagDAO.getSelectorCursor(bookId);
+   }
+
+   /**
+    * Queries whether the tag is linked to the specified book.
+    * 
+    * @param tagId   ID of tag to query.
+    * @param bookId  ID of book to query
+    * @return        True if the tag is linked to the book, false otherwise
+    */
+   public boolean isTagged(final long tagId, final long bookId) {
+	   return tagDAO.isTagged(tagId, bookId);
+   }
+
+   /**
+    * Sets whether a tag is linked to a specified book.
+    * 
+    * @param bookId ID of book to be tagged/un-tagged.
+    * @param tagId  ID of tag to be added or removed.
+    * @param tagged Tagged state. If true, adds the tag to the book, otherwise the tag link is removed.
+    */
+   public void setBookTagged(final long bookId, final long tagId, boolean tagged) {
+	   if (tagged) {
+		   // Insert new books at end of group by default
+		   tagDAO.insertBook(tagId, bookId);
+	   }
+	   else
+	   {
+		   tagDAO.deleteBook(tagId, bookId);
+	   }
+   }
+   
+   /**
+    * Toggles the current tag link state for the specified book and tag.
+    * 
+    * @param bookId ID of book to be tagged/un-tagged.
+    * @param tagId  ID of tag to be toggled.
+    */
+   public void toggleBookTagged(final long bookId, final long tagId) {
+	   setBookTagged(bookId, tagId, !isTagged(tagId, bookId));
+   }
+
+   public void addTagToBook(final long tagId, final long bookId) {
+	   // Insert new books at end of group by default
+	   tagDAO.insertBook(tagId, bookId);
+   }
+
+
+   public void removeTagFromBook(final long tagId, final long bookId) {
+	   tagDAO.deleteBook(tagId, bookId);
+   }	
+
+   /**
+    * Returns a string containing all of the tags which are applied against the specified book.
+    * 
+    * @param bookId  Book to query
+    * @return        String containing comma separated tag text
+    */
+   public String getBookTagsString(final long bookId) {
+	   return tagDAO.getTagsString(bookId);
+   }
+
+
+   
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
       Log.i(Constants.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");
@@ -107,6 +203,7 @@ public class DataManager {
          db.delete(DataConstants.BOOKAUTHOR_TABLE, null, null);
          db.delete(DataConstants.BOOKUSERDATA_TABLE, null, null);
          db.delete(DataConstants.BOOK_TABLE, null, null);
+         tagDAO.deleteTable();
          db.setTransactionSuccessful();
       } finally {
          db.endTransaction();
@@ -128,7 +225,8 @@ public class DataManager {
       return stats;
    }
 
-   private int getCountFromTable(final String table, final String whereClause) {
+  // Changed to protected scope to allow method to be exposed for automated testing 
+   protected int getCountFromTable(final String table, final String whereClause) {
       int result = 0;
       Cursor c = db.rawQuery("select count(*) from " + table + " " + whereClause, null);
       if (c.moveToFirst()) {
@@ -217,20 +315,28 @@ public class DataManager {
          db.execSQL("CREATE UNIQUE INDEX uidxBookIdForUserData ON " + DataConstants.BOOKUSERDATA_TABLE + "("
                   + DataConstants.BOOKID + " COLLATE NOCASE)");
 
+         TagDAO.onCreate(db);
+         
+         
          dbCreated = true;
       }
 
       @Override
       public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-         Log
-                  .i(Constants.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"
+         Log.i(Constants.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"
                            + newVersion);
          // export old data first, then upgrade, then import
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOK_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.AUTHOR_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOKUSERDATA_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOKAUTHOR_TABLE);
-         onCreate(db);
+         if (oldVersion < 10) {
+            db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOK_TABLE);
+         	db.execSQL("DROP TABLE IF EXISTS " + DataConstants.AUTHOR_TABLE);
+         	db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOKUSERDATA_TABLE);
+         	db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOKAUTHOR_TABLE);
+         	onCreate(db);
+         }
+         else
+         {
+	         TagDAO.onUpgrade(db, oldVersion, newVersion);
+	     }
       }
 
       public boolean isDbCreated() {

@@ -11,17 +11,22 @@ import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.model.Tag;
 
 public class BookWormApplication extends Application {
 
    boolean debugEnabled;
-
+   boolean fastScanEnabled;
+   boolean defaultReadEnabled;
+   
+   
    SharedPreferences prefs;
    BookDataSource bookDataSource;
    DataManager dataManager;
    ImageManager imageManager;
 
    Book selectedBook;
+   Tag selectedTag;
 
    int lastMainListPosition;
 
@@ -64,12 +69,29 @@ public class BookWormApplication extends Application {
          throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
       }
    }
-
+   
+   /**
+    * Updates all application preference variables on application startup or when
+    * preferences are changed.
+    */
+   public void updatePreferences() {
+	   debugEnabled = prefs.getBoolean("debugenabled", false);
+	   fastScanEnabled = prefs.getBoolean("fastscanenabled", false);
+	   defaultReadEnabled = prefs.getBoolean("defaultreadenabled", false);
+   }
+   
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id
    public void establishSelectedBook(final long id) {
       selectedBook = dataManager.selectBook(id);
    }
 
+      
+   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id
+   public void establishSelectedTag(final long id) {
+      selectedTag = dataManager.selectTag(id);
+   }
+
+   
    @Override
    public void onTerminate() {
       // not guaranteed to be called

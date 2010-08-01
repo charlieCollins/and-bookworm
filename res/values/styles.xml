@@ -26,7 +26,7 @@
 		<item name="android:textColor">#7a1819</item>
 		<item name="android:textStyle">bold</item>
 	</style>
-	
+
 	<style name="whitebold">
 		<item name="android:textSize">20sp</item>
 		<item name="android:textColor">#fff</item>
@@ -39,11 +39,6 @@
 	<style name="whitemed">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#fff</item>
-    </style>
-    <style name="whitemedbold">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#fff</item>
-        <item name="android:textStyle">bold</item>
     </style>
 	<style name="whitesmall">
 		<item name="android:textSize">16sp</item>
@@ -89,7 +84,10 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">#000</item>
     </style>
-
+	<style name="blacktiny">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#000</item>
+    </style>
 	<style name="greytiny">
 		<item name="android:textSize">12sp</item>
 		<item name="android:textColor">#BFBBBC</item>

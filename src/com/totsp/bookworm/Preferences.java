@@ -9,5 +9,18 @@ public class Preferences extends PreferenceActivity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       addPreferencesFromResource(R.layout.preferences);
+      
+      
+   }
+   
+   /*
+    * Updates application preferences variables when the preference screen is closed.
+    * (non-Javadoc)
+    * @see android.preference.PreferenceActivity#onStop()
+    */
+   @Override
+   public void onStop() {
+	   ((BookWormApplication) getApplication()).updatePreferences();
+	   super.onStop();
    }
 }

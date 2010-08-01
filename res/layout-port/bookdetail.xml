@@ -31,7 +31,7 @@
 
 	<TextView android:id="@+id/bookauthors" android:layout_width="wrap_content"
 		android:layout_height="100dp" android:layout_marginTop="15dp"
-		android:layout_marginLeft="5dp" android:layout_marginRight="10dp"
+		android:layout_marginLeft="5dp" android:layout_marginRight="15dp"
 		android:layout_below="@id/booksubtitle" android:layout_toRightOf="@id/bookcover"
 		android:maxHeight="150dp" android:maxLines="4" android:gravity="center_horizontal"
 		style="@style/blackmed" />
@@ -53,29 +53,16 @@
 		android:gravity="right" />
 
 	<RatingBar android:id="@+id/bookrating" android:layout_width="285dip"
-		android:layout_height="wrap_content" android:layout_marginTop="10dp"
+		android:layout_height="wrap_content" android:layout_marginTop="20dp"
 		android:layout_marginLeft="15dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/bookcover" android:gravity="center_horizontal"
+		android:layout_below="@+id/bookreadstatuslabel" android:gravity="center_horizontal"
 		android:numStars="5" android:stepSize="1.0" />
 
-	<TextView android:id="@+id/booksubject" android:layout_width="fill_parent"
+	<TextView android:id="@+id/booktags" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_marginTop="5dp"
 		android:layout_marginLeft="10dp" android:layout_marginRight="15dp"
-		android:layout_below="@id/bookrating" style="@style/blacksmall"
-		android:lines="1" android:ellipsize="end" />
-
-	<TextView android:id="@+id/bookpublisher"
-		android:layout_width="150dp" android:layout_height="wrap_content"
-		android:layout_marginTop="3dp" android:layout_marginBottom="10dp"
-		android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-		android:layout_below="@id/booksubject" style="@style/blacksmall"
-		android:lines="1" android:ellipsize="end" />
-	<TextView android:id="@+id/bookdatepub" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_marginTop="2dp"
-		android:layout_marginBottom="12dp" android:layout_marginLeft="3dp"
-		android:layout_marginRight="10dp" android:layout_below="@id/booksubject"
-		android:layout_toRightOf="@id/bookpublisher" android:gravity="right"
-		style="@style/blacksmall" />
-
-	<include layout="@layout/bookdetaildrawer" />
+		android:layout_below="@id/bookrating" style="@style/blacktiny"
+		android:ellipsize="end" android:maxLines="3"/>		
+		
+	<include layout="@layout/bookdetaildrawer"/>
 </RelativeLayout>

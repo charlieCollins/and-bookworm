@@ -207,8 +207,7 @@ public class BookDAO implements DAO<Book> {
                insertBookAuthorData(bookId, authorIds);
 
                // insert bookuserdata
-               bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read,
-                        b.bookUserData.blurb));
+               bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read, null));
 
                db.setTransactionSuccessful();
             } else {
@@ -259,8 +258,7 @@ public class BookDAO implements DAO<Book> {
 
             // update/insert book user data
             bookUserDataDAO.delete(b.id);
-            bookUserDataDAO.insert(new BookUserData(b.id, b.bookUserData.rating, b.bookUserData.read,
-                     b.bookUserData.blurb));
+            bookUserDataDAO.insert(new BookUserData(b.id, b.bookUserData.rating, b.bookUserData.read, null));
 
             // update book
             final ContentValues values = new ContentValues();
@@ -295,8 +293,7 @@ public class BookDAO implements DAO<Book> {
          ArrayList<Author> authors = authorDAO.selectByBookId(id);
          db
                   .delete(DataConstants.BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String
-                           .valueOf(b.id) });    
-         bookUserDataDAO.delete(id);
+                           .valueOf(b.id) });
          db.delete(DataConstants.BOOK_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) });
          // if no other books by same author, also delete author
          for (int i = 0; i < authors.size(); i++) {
@@ -334,9 +331,8 @@ public class BookDAO implements DAO<Book> {
          b.bookUserData.bookId = b.id;
          BookUserData userData = bookUserDataDAO.selectByBookId(b.id);
          if (userData != null) {
-            b.bookUserData.read = userData.read;
-            b.bookUserData.rating = userData.rating;
-            b.bookUserData.blurb = userData.blurb;
+            b.bookUserData.read = (userData.read);
+            b.bookUserData.rating = (userData.rating);
          }
       }
       return b;

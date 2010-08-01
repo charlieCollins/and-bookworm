@@ -1,5 +1,9 @@
 package com.totsp.bookworm.model;
 
+/**
+ * Defines user metadata structure for a single book.
+ *
+ */
 public final class BookUserData {
 
    // NOTE - no accessors/mutators by design, Android optimization

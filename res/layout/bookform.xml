@@ -21,20 +21,46 @@
 						android:layout_marginRight="10dp" android:gravity="center"
 						style="@style/subsubtitledkred" />
 
+					<!--
+						<TextView android:id="@+id/booktitlelabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/bookentereditlabel"
+						android:gravity="left" style="@style/black"
+						android:text="@string/labelTitle" />
+					-->
 					<EditText android:id="@+id/booktitleform"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/bookentereditlabel"
 						android:gravity="left" android:autoText="true" android:capitalize="words"
 						android:freezesText="true" android:hint="@string/labelTitle" />
-					
+					<!--
+						<TextView android:id="@+id/booksubtitlelabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/booktitleform" android:gravity="left"
+						style="@style/black" android:text="@string/labelSubtitle" />
+					-->
 					<EditText android:id="@+id/booksubtitle"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/booktitleform"
 						android:gravity="left" android:autoText="true" android:capitalize="words"
 						android:freezesText="true" android:hint="@string/labelSubtitle" />
-					
+					<!--
+						<TextView android:id="@+id/bookisbn10label"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/booksubtitle" android:gravity="left"
+						style="@style/black" android:text="@string/labelIsbn10" />
+					-->
 					<EditText android:id="@+id/bookisbn10"
 						android:layout_width="135dp" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
@@ -42,7 +68,15 @@
 						android:gravity="left" android:maxLength="10" android:autoText="true"
 						android:capitalize="words" android:freezesText="true"
 						android:hint="@string/labelIsbn10" />
-					
+					<!--
+						<TextView android:id="@+id/bookisbn13label"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/bookisbn10" android:gravity="left"
+						style="@style/black" android:text="@string/labelIsbn13" />
+					-->
 					<EditText android:id="@+id/bookisbn13"
 						android:layout_width="190dp" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="2dp"
@@ -50,21 +84,45 @@
 						android:layout_toRightOf="@id/bookisbn10" android:gravity="left"
 						android:maxLength="13" android:autoText="true" android:capitalize="words"
 						android:freezesText="true" android:hint="@string/labelIsbn13" />
-					
+					<!--
+						<TextView android:id="@+id/bookauthorslabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/bookisbn13" android:gravity="left"
+						style="@style/black" android:text="@string/labelAuthors" />
+					-->
 					<EditText android:id="@+id/bookauthors"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/bookisbn10"
 						android:gravity="left" android:autoText="true" android:capitalize="words"
 						android:freezesText="true" android:hint="@string/labelAuthors" />
-					
+					<!--
+						<TextView android:id="@+id/booksubjectlabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/bookauthors" android:gravity="left"
+						style="@style/black" android:text="@string/labelSubject" />
+					-->
 					<EditText android:id="@+id/booksubject"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
 						android:layout_marginRight="10dp" android:layout_below="@id/bookauthors"
 						android:gravity="left" android:autoText="true" android:capitalize="words"
 						android:freezesText="true" android:hint="@string/labelSubject" />
-					
+					<!--
+						<TextView android:id="@+id/bookpublisherlabel"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
+						android:layout_marginRight="10dp"
+						android:layout_below="@id/booksubject" android:gravity="left"
+						style="@style/black" android:text="@string/labelPublisher" />
+					-->
 					<EditText android:id="@+id/bookpublisher"
 						android:layout_width="fill_parent" android:layout_height="wrap_content"
 						android:layout_marginTop="5dp" android:layout_marginLeft="10dp"
