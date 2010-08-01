@@ -192,13 +192,11 @@ public class BookEntryResult extends Activity {
 
       private Book book;
       //private String coverImageProviderKey;
-      // NOTE - hard coded to GoogleBookDataSource for now
-      private final GoogleBookDataSource gbs;
-
+      
       public SetupBookResultTask() {
-         gbs = (GoogleBookDataSource) application.bookDataSource;
-         if (application.debugEnabled && (gbs != null)) {
-            gbs.setDebugEnabled(true);
+    	 application.establishBookDataSourceFromProvider();
+         if (application.debugEnabled && (application.bookDataSource != null)) {
+        	 application.bookDataSource.setDebugEnabled(true);
          }
       }
 
@@ -227,8 +225,8 @@ public class BookEntryResult extends Activity {
          else {
             if (isbns[0] != null) {
                bean.code = isbns[0];
-               if (gbs != null) {
-                  book = gbs.getBook(isbns[0]);
+               if (application.bookDataSource != null) {
+                  book = application.bookDataSource.getBook(isbns[0]);
                   bean.book = book;
                   application.selectedBook = book;
                   if (bean.book == null) {

@@ -114,7 +114,7 @@
     <string name="prefSumDefaultRead">Enable to automatically check \"Read\" for new books.</string>  
     <string name="prefSectDataProvider">Data Provider Preferences</string>
     <string name="prefTitleBookData">Book Data Provider</string>
-    <string name="prefSumBookData">Currently only Google Books (future additions planned).</string>
+    <string name="prefSumBookData">Defaults to search all providers.</string>
     <string name="prefTitleCoverImage">Book Cover Image Provider</string>
     <string name="prefSumCoverImage">Currently only OpenLibrary (future additions planned).</string>
 

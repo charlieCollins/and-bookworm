@@ -2,11 +2,15 @@
 <resources>
 
 	<string-array name="bookdataprovidernames">
+		<item>All</item>
 		<item>Google Books</item>
+		<item>Open Library</item>
 	</string-array>
 
 	<string-array name="bookdataproviderkeys">
+		<item>com.totsp.bookworm.data.CompoundDataSource</item>
 		<item>com.totsp.bookworm.data.GoogleBookDataSource</item>
+		<item>com.totsp.bookworm.data.OpenLibraryDataSource</item>
 	</string-array>
 
 	<!--

@@ -3,6 +3,7 @@ package com.totsp.bookworm.data;
 import android.util.Log;
 import android.util.Xml;
 
+import com.totsp.bookworm.BookWormApplication;
 import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.NetworkUtil;
@@ -104,4 +105,9 @@ public class GoogleBookDataSource implements BookDataSource {
       ArrayList<Book> books = saxHandler.getBooks();
       return books;
    }
+
+	@Override
+	public void setContext(BookWormApplication bookWormApplication) {
+		// TODO Auto-generated method stub
+	}
 }

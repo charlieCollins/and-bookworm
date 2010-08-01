@@ -138,6 +138,7 @@ public class BookSearch extends Activity {
    }
 
    private void newSearch(final String searchTerm) {
+      application.establishBookDataSourceFromProvider();
       searchPosition = 0;
       selectorPosition = 0;
       prevSearchTerm = "";
@@ -297,11 +298,8 @@ public class BookSearch extends Activity {
    private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(BookSearch.this);
 
-      // TODO hard coded to GoolgeBookDataSource for now
-      private final GoogleBookDataSource gbs = new GoogleBookDataSource();
-
       public SearchTask() {
-         gbs.setDebugEnabled(application.debugEnabled);
+         application.bookDataSource.setDebugEnabled(application.debugEnabled);
       }
 
       @Override
@@ -318,7 +316,7 @@ public class BookSearch extends Activity {
          int startIndex = Integer.valueOf(args[1]);
          if (searchTerm != null) {
             searchTerm = URLEncoder.encode(searchTerm);
-            return gbs.getBooks(searchTerm, startIndex);
+            return application.bookDataSource.getBooks(searchTerm, startIndex);
          }
          return null;
       }

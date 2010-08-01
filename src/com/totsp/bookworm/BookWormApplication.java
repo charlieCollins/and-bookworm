@@ -50,7 +50,7 @@ public class BookWormApplication extends Application {
       establishBookDataSourceFromProvider();
    }
 
-   private void establishBookDataSourceFromProvider() {
+   public void establishBookDataSourceFromProvider() {
       // hard coded to one provider for now
       String className = prefs.getString("dataproviderpref", GoogleBookDataSource.class.getCanonicalName());
       Log.i(Constants.LOG_TAG, "establishing book data provider using class name - " + className);
@@ -58,6 +58,7 @@ public class BookWormApplication extends Application {
          Class<?> clazz = Class.forName(className);
          // NOTE - validate that clazz is of BookDataSource type?
          bookDataSource = (BookDataSource) clazz.newInstance();
+         bookDataSource.setContext(this);
       } catch (ClassNotFoundException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
          throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
