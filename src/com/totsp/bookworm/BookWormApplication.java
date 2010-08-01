@@ -61,13 +61,13 @@ public class BookWormApplication extends Application {
          bookDataSource.setContext(this);
       } catch (ClassNotFoundException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
-         throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
+         throw new RuntimeException("Error, unable to establish data provider. " + e.getMessage());
       } catch (IllegalAccessException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
-         throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
+         throw new RuntimeException("Error, unable to establish data provider. " + e.getMessage());
       } catch (InstantiationException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
-         throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
+         throw new RuntimeException("Error, unable to establish data provider. " + e.getMessage());
       }
    }
    
