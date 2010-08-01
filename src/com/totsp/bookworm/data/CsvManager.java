@@ -93,7 +93,7 @@ public class CsvManager {
             sb.append(DateUtil.format(new Date(b.datePubStamp)) + ",");
             if (b.bookUserData != null) {
                sb.append(b.bookUserData.rating + ",");
-               sb.append(b.bookUserData.read + ",");               
+               sb.append(b.bookUserData.read + ",");
                sb.append(b.bookUserData.blurb != null ? b.bookUserData.blurb : "");
             } else {
                sb.append(" , ,");
@@ -124,6 +124,7 @@ public class CsvManager {
                   if ((parts != null) && ((parts.length == 12) || (parts.length == 13))) {
                      Book b = new Book();
                      b.title = parts[0];
+                     b.title = b.title.replaceAll("^\"(.*)\"", "$1");
                      b.subTitle = parts[1];
                      if (parts[2] != null) {
                         String authors = parts[2].replace('|', ',');
@@ -131,11 +132,24 @@ public class CsvManager {
                         b.authors = StringUtil.expandAuthors(authors);
                      }
                      b.isbn10 = parts[3];
+                     // Make up for leading 0's lost to numeric conversion
+                     while (b.isbn10.length() < 10) {
+                        b.isbn10 = "0" + b.isbn10;
+                     }
+
                      b.isbn13 = parts[4];
+                     while (b.isbn13.length() < 13) {
+                        b.isbn13 = "0" + b.isbn13;
+                     }
+
                      b.description = parts[5];
+                     b.description = b.description.replaceAll("^\"(.*)\"", "$1");
                      b.format = parts[6];
+                     b.format = b.format.replaceAll("^\"(.*)\"", "$1");
                      b.subject = parts[7];
+                     b.subject = b.subject.replaceAll("^\"(.*)\"", "$1");
                      b.publisher = parts[8];
+                     b.publisher = b.publisher.replaceAll("^\"(.*)\"", "$1");
                      Date date = DateUtil.parse(parts[9]);
                      if (date != null) {
                         b.datePubStamp = date.getTime();
@@ -153,7 +167,7 @@ public class CsvManager {
                      if (parts[11] != null) {
                         readStatus = Boolean.valueOf(parts[11]) ? 1 : 0;
                      }
-                     
+
                      String note = null;
                      if (parts.length > 12) {
                         note = parts[12];

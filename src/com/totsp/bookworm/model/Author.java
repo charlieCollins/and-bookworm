@@ -24,26 +24,36 @@ public final class Author {
    }
 
    @Override
-   public boolean equals(final Object obj) {
-      if (obj == this) {
-         return true;
-      }
-      if (obj instanceof Author) {
-         Author lhs = (Author) obj;
-         if ((lhs.id == id) && (lhs.name.equals(this.name))) {
-            return true;
-         }
-      }
-      return false;
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (int) (this.id ^ (this.id >>> 32));
+      result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+      return result;
    }
 
    @Override
-   public int hashCode() {
-      int result = 31;
-      result += id;
-      if (name != null) {
-         result += name.hashCode();
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
       }
-      return result;
+      if (obj == null) {
+         return false;
+      }
+      if (!(obj instanceof Author)) {
+         return false;
+      }
+      Author other = (Author) obj;
+      if (this.id != other.id) {
+         return false;
+      }
+      if (this.name == null) {
+         if (other.name != null) {
+            return false;
+         }
+      } else if (!this.name.equals(other.name)) {
+         return false;
+      }
+      return true;
    }
 }

@@ -109,8 +109,8 @@ public class BookSearch extends Activity {
       searchResults.setOnScrollListener(new OnScrollListener() {
          public void onScroll(AbsListView v, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             String searchTerm = searchInput.getText().toString();
-            if (totalItemCount > 0 && (firstVisibleItem + visibleItemCount == totalItemCount)
-                     && (searchTerm != null && !searchTerm.equals("")) && allowSearchContinue) {
+            if ((totalItemCount > 0) && (firstVisibleItem + visibleItemCount == totalItemCount)
+                     && ((searchTerm != null) && !searchTerm.equals("")) && allowSearchContinue) {
                allowSearchContinue = false;
                selectorPosition = totalItemCount - 5;
                searchTask = new SearchTask();
@@ -205,7 +205,7 @@ public class BookSearch extends Activity {
          currSearchTerm = bean.lastSearchTerm;
          searchInput.setText(currSearchTerm);
 
-         if (bean.books != null && !bean.books.isEmpty()) {
+         if ((bean.books != null) && !bean.books.isEmpty()) {
             for (Book b : bean.books) {
                boolean dupe = false;
                // this is very inefficient, but should be relatively small collections here, and must prevent dupes
@@ -335,7 +335,7 @@ public class BookSearch extends Activity {
 
          int dupeCount = 0;
          int addCount = 0;
-         if (searchBooks != null && !searchBooks.isEmpty()) {
+         if ((searchBooks != null) && !searchBooks.isEmpty()) {
             if (application.debugEnabled) {
                Log.d(Constants.LOG_TAG, "Books parsed from data source:");
             }

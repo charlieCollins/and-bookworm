@@ -250,7 +250,9 @@ public class ImageManager {
             }
          }
       } catch (Exception e) {
-         Log.e(Constants.LOG_TAG, "Error parsing title line, will return empty string (generated title will be wrong).");
+         Log
+                  .e(Constants.LOG_TAG,
+                           "Error parsing title line, will return empty string (generated title will be wrong).");
       }
       return line;
    }

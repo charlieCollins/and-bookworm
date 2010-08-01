@@ -15,10 +15,12 @@ public final class StringUtil {
          if (in.contains(",")) {
             String[] authorsArray = in.split(",\\s*");
             for (int i = 0; i < authorsArray.length; i++) {
+               authorsArray[i] = authorsArray[i].replaceAll("^[\"]?(.*?)[\"]?$", "$1");
                authors.add(new Author(authorsArray[i]));
             }
          } else {
-            authors.add(new Author(in));
+            String authorName = in.replaceAll("^[\"]?(.*?)[\"]?$", "$1");
+            authors.add(new Author(authorName));
          }
       }
       return authors;

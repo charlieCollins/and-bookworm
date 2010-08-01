@@ -58,11 +58,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * BookWorm primary activity.
+ * Provides a sortable list of books along with an interface to add new ones. 
+ */
 public class Main extends Activity {
 
    private static final int MENU_ABOUT = 1;
    private static final int MENU_PREFS = 2;
    private static final int MENU_STATS = 3;
+   private static final int MENU_TAGS = 4;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -125,7 +130,7 @@ public class Main extends Activity {
       // action bar images
       sortImage = (ImageView) findViewById(R.id.actionsort);
       sortImage.setOnClickListener(new OnClickListener() {
-         public void onClick(View v) { 
+         public void onClick(View v) {
             if (!sortDialogIsShowing) {
                sortDialogIsShowing = true;
                sortDialog.show();
@@ -206,7 +211,7 @@ public class Main extends Activity {
    }
 
    @Override
-   public void onStart() {      
+   public void onStart() {
       super.onStart();
    }
 
@@ -215,6 +220,7 @@ public class Main extends Activity {
       menu.add(0, Main.MENU_ABOUT, 1, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 2, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
       menu.add(0, Main.MENU_STATS, 3, getString(R.string.menuStats)).setIcon(android.R.drawable.ic_menu_info_details);
+      menu.add(0, Main.MENU_TAGS, 4, getString(R.string.menuGroup)).setIcon(R.drawable.ic_menu_tag);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -245,6 +251,11 @@ public class Main extends Activity {
             statsDialog.setMessage(sb.toString());
             statsDialog.show();
             return true;
+
+         case MENU_TAGS:
+            startActivity(new Intent(Main.this, TagBatchList.class));
+            return true;
+
          default:
             return super.onOptionsItemSelected(item);
       }
@@ -301,7 +312,7 @@ public class Main extends Activity {
       TaskUtil.pauseTask(resetAllCoverImagesTask);
       TaskUtil.pauseTask(exportDatabaseTask);
       TaskUtil.pauseTask(importDatabaseTask);
-      
+
       // cleanup any other activity long term state from application
       application.bookSearchStateBean = null;
 
@@ -327,6 +338,11 @@ public class Main extends Activity {
       return super.onKeyDown(keyCode, event);
    }
 
+   /*
+    * (non-Javadoc)
+    * Receives result from barcode scanner API and determines ISBN
+    * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+    */
    @Override
    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
       ZXingIntentResult scanResult = ZXingIntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
@@ -570,7 +586,7 @@ public class Main extends Activity {
                            break;
                         case 6:
                            // RESET ALL COVER IMAGES
-                           if (adapter != null && adapter.getCount() > 0) {
+                           if ((adapter != null) && (adapter.getCount() > 0)) {
                               new AlertDialog.Builder(Main.this).setTitle(getString(R.string.msgResetAllCoverImages))
                                        .setMessage(getString(R.string.msgResetAllCoverImagesExplain))
                                        .setPositiveButton(getString(R.string.btnYes),
@@ -593,7 +609,6 @@ public class Main extends Activity {
                                     .setPositiveButton(getString(R.string.btnYes),
                                              new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
-                                                   Log.i(Constants.LOG_TAG, "deleting database");
                                                    application.dataManager.deleteAllDataYesIAmSure();
                                                    application.dataManager.resetDb();
                                                    Toast.makeText(Main.this, getString(R.string.msgDataDeleted),

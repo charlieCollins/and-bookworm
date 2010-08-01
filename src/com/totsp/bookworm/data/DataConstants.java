@@ -13,31 +13,48 @@ public class DataConstants {
    public static final String EXTERNAL_DATA_PATH =
             Environment.getExternalStorageDirectory() + "/" + DataConstants.EXTERNAL_DATA_DIR_NAME;
 
-   public static final String ORDER_BY_AUTHORS_ASC = "authors COLLATE NOCASE asc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_AUTHORS_DESC = "authors COLLATE NOCASE desc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_TITLE_ASC = "book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_TITLE_DESC = "book.tit COLLATE NOCASE desc";
-   public static final String ORDER_BY_SUBJECT_ASC = "book.subject COLLATE NOCASE asc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_SUBJECT_DESC = "book.subject COLLATE NOCASE desc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_RATING_ASC = "bookuserdata.rat asc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_READ_ASC = "bookuserdata.rstat asc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_READ_DESC = "bookuserdata.rstat desc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_PUB_ASC = "book.pub COLLATE NOCASE asc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_PUB_DESC = "book.pub COLLATE NOCASE desc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_DATE_PUB_ASC = "book.datepub asc, book.tit COLLATE NOCASE asc";
-   public static final String ORDER_BY_DATE_PUB_DESC = "book.datepub desc, book.tit COLLATE NOCASE asc";
+   public static final String ORDER_BY_AUTHORS_ASC = "authors asc, book.tit asc";
+   public static final String ORDER_BY_AUTHORS_DESC = "authors desc, book.tit asc";
+   public static final String ORDER_BY_TITLE_ASC = "book.tit asc";
+   public static final String ORDER_BY_TITLE_DESC = "book.tit desc";
+   public static final String ORDER_BY_SUBJECT_ASC = "book.subject asc, book.tit asc";
+   public static final String ORDER_BY_SUBJECT_DESC = "book.subject desc, book.tit asc";
+   public static final String ORDER_BY_RATING_ASC = "bookuserdata.rat asc, book.tit asc";
+   public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc, book.tit asc";
+   public static final String ORDER_BY_READ_ASC = "bookuserdata.rstat asc, book.tit asc";
+   public static final String ORDER_BY_READ_DESC = "bookuserdata.rstat desc, book.tit asc";
+   public static final String ORDER_BY_PUB_ASC = "book.pub asc, book.tit asc";
+   public static final String ORDER_BY_PUB_DESC = "book.pub desc, book.tit asc";
+   public static final String ORDER_BY_DATE_PUB_ASC = "book.datepub asc, book.tit asc";
+   public static final String ORDER_BY_DATE_PUB_DESC = "book.datepub desc, book.tit asc";
+   public static final String ORDER_BY_TAG_TEXT_ASC = "tags.ttext asc";
+   public static final String ORDER_BY_TAG_POSITION_ASC = "tagbooks.tbid asc";
+
+   // Filters are designed to work with String.format to allow complex filter criteria (eg authors)
+   public static final String FILTER_BY_AUTHOR =
+            "where book.bid in (select bookauthor.bid from bookauthor " + "join author on (bookauthor.aid=author.aid) "
+                     + "where author.name glob '*%s*')";
+   public static final String FILTER_BY_TITLE = "where book.tit glob '*%s*'";
+   public static final String FILTER_BY_SUBJECT = "where book.subject glob '*%s*'";
+   public static final String FILTER_BY_PUBLISHER = "where book.pub glob '*%s*'";
+   public static final String FILTER_BY_TAG = "where tag.ttext glob '*%s*'";
+   public static final String FILTER_BY_CURRENT_TAG = "where tagbooks.tid=%s";
 
    public static final String BOOK_TABLE = "book";
    public static final String BOOKUSERDATA_TABLE = "bookuserdata";
    public static final String BOOKAUTHOR_TABLE = "bookauthor";
    public static final String AUTHOR_TABLE = "author";
+   public static final String TAG_TABLE = "tags";
+   public static final String TAG_BOOKS_TABLE = "tagbooks";
 
    public static final String BOOKID = "bid";
    public static final String BOOKUSERDATAID = "budid";
    public static final String BOOKAUTHORID = "baid";
    public static final String BOOKLISTID = "blid";
    public static final String AUTHORID = "aid";
+   public static final String TAG_ID = "tid";
+   public static final String TAG_BOOK_ID = "tbid";
+
    public static final String ISBN10 = "isbn10";
    public static final String ISBN13 = "isbn13";
    public static final String TITLE = "tit";
@@ -51,6 +68,7 @@ public class DataConstants {
    public static final String PUBLISHER = "pub";
    public static final String FORMAT = "format";
    public static final String SUBJECT = "subject";
+   public static final String TAGTEXT = "ttext";
 
    private DataConstants() {
    }

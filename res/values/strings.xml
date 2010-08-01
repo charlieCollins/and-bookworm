@@ -41,7 +41,7 @@
     <string name="btnSearchWeb">Search the web</string>   
     <string name="btnSearch">Search</string>   
     <string name="btnUseForm">Use form</string>   
-    <string name="btnSave">Save</string>    
+    <string name="btnSave">Save</string>   
     <string name="btnSelectImage">Select from gallery</string>   
     <string name="btnRetrieveImage">Retrieve from web</string>   
     <string name="btnGenerateImage">Generate from title</string>    
@@ -107,7 +107,11 @@
     <string name="prefTitleSplash">Enable splash screen?</string>
     <string name="prefSumSplash">By default Splash shown once after install, enable to show at each start.</string>
     <string name="prefTitleDebugLog">Enable debug logging?</string>
-    <string name="prefSumDebugLog">Enable and then exit/restart app to get detailed logs.</string>    
+    <string name="prefSumDebugLog">Enable to get detailed logs.</string>  
+    <string name="prefTitleFastScan">Enable quick scanning?</string>
+    <string name="prefSumFastScan">Enable to scan books without prompts.</string>  
+    <string name="prefTitleDefaultRead">\"Read\" checked by default?</string>
+    <string name="prefSumDefaultRead">Enable to automatically check \"Read\" for new books.</string>  
     <string name="prefSectDataProvider">Data Provider Preferences</string>
     <string name="prefTitleBookData">Book Data Provider</string>
     <string name="prefSumBookData">Currently only Google Books (future additions planned).</string>
@@ -128,7 +132,6 @@
 	<string name="btnParse">Parse</string>   
 	<string name="btnImport">Import</string>   
 	<string name="btnDeleteData">Delete all data</string>
-	<string name="btnEdit">Edit</string>   
 	<string name="labelManageData">Manage Data</string>
     <string name="msgScannerNotPresent">Barcode scanner may not be present, would like to check the Market and try to install it?</string>
     <string name="labelInstallScanner">Install Barcode Scanner</string>
@@ -139,11 +142,23 @@
     <string name="msgCsvImportingBook">Importing book:\n%s</string>
     <string name="msgNetworkNAError">No network connection right now, cannot complete the requested action. Please try again once the network is available.</string>
     <string name="menuCsvHelp">CSV Help</string>
-    <string name="msgCsvHelp">*BooKWorm requires a specific CSV import file and a specific CSV import format. The required file location is "/sdcard/bookwormdata/bookworm.csv". The required format is 12 or 13 fields (comma separated, fields with commas within them must be quoted or escaped): Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status[,User Note]. &lt;br /&gt;&lt;br /&gt; *The CSV import process will skip the first line of the import file (this is usually the header), and any duplicate entries (books with the same title and ISBN, or title and authors if the ISBN is not present, as content in your database). &lt;br /&gt;&lt;br /&gt; *The easiest way to see an example of the format is to use the export as CSV feature. The export feature will place a CSV export file of your current database at the correct location (/sdcard/bookwormdata/bookworm.csv). &lt;br /&gt;&lt;br /&gt; *You can export XLS files as CSV, or rename TXT files to .csv, as long as they are in the correct format, and you place them in the correct location, BookWorm will import them.</string>
+    <string name="msgCsvHelp">*BooKWorm requires a specific CSV import file and a specific CSV import format. The required file location is "/sdcard/bookwormdata/bookworm.csv". The required format is 12 fields (comma separated, fields with commas within them must be quoted or escaped): Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status. &lt;br /&gt;&lt;br /&gt; *The CSV import process will skip the first line of the import file (this is usually the header), and any duplicate entries (books with the same title and ISBN, or title and authors if the ISBN is not present, as content in your database). &lt;br /&gt;&lt;br /&gt; *The easiest way to see an example of the format is to use the export as CSV feature. The export feature will place a CSV export file of your current database at the correct location (/sdcard/bookwormdata/bookworm.csv). &lt;br /&gt;&lt;br /&gt; *You can export XLS files as CSV, or rename TXT files to .csv, as long as they are in the correct format, and you place them in the correct location, BookWorm will import them.</string>
     <string name="btnResetCoverImages">Reset All Cover Images</string>
     <string name="msgExportBeforeEmail">Export backup file not found. Please use the export feature before trying to email.</string>
     <string name="msgReplaceExistingCSVExport">Are you sure (this will replace any existing prior CSV export)?</string>
     <string name="msgReplaceExistingDBExport">Are you sure (this will replace any existing prior DB export)?</string>
     <string name="msgReplaceExistingDB">Are you sure (this will replace all current application data)?"</string>
-    <string name="labelNotes">Notes</string>	
+    <string name="promptTag">Select tag"</string>
+    <string name="menuGroup">Tags"</string>    
+    <string name="labelTag">"Tag name"</string>
+    <string name="msgSavingTagInfo">Saving tag info...</string>
+    <string name="msgTagSaved">Tag saved</string>
+    <string name="msgTagSaveError">Error saving tag: Duplicate tags not allowed.</string>
+    <string name="msgReorderTag">Select new position in tag group.</string>
+    <string name="msgNoTagsFound">No tags found</string>
+    <string name="titleTagBatchList">BookWorm - Tags</string>
+    <string name="titleTagEditor">BookWorm - Tag Editor</string>
+    <string name="menuSelectTags">Select Tags</string>
+	<string name="btnFilterBy">Filter by</string>	
+	<string name="promptTagTemplate">Select template</string>	
 </resources>

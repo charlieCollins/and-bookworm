@@ -11,10 +11,13 @@ import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.model.Tag;
 
 public class BookWormApplication extends Application {
 
    boolean debugEnabled;
+   boolean fastScanEnabled;
+   boolean defaultReadEnabled;
 
    SharedPreferences prefs;
    BookDataSource bookDataSource;
@@ -22,6 +25,7 @@ public class BookWormApplication extends Application {
    ImageManager imageManager;
 
    Book selectedBook;
+   Tag selectedTag;
 
    int lastMainListPosition;
 
@@ -29,7 +33,6 @@ public class BookWormApplication extends Application {
    // TODO use onRetainNonConfigurationInstance for quick config state/cache
    // for longer term cache use state bean relative to Activity referenced via application
    BookSearchStateBean bookSearchStateBean;
-   
 
    @Override
    public void onCreate() {
@@ -65,9 +68,24 @@ public class BookWormApplication extends Application {
       }
    }
 
+   /**
+    * Updates all application preference variables on application startup or when
+    * preferences are changed.
+    */
+   public void updatePreferences() {
+      debugEnabled = prefs.getBoolean("debugenabled", false);
+      fastScanEnabled = prefs.getBoolean("fastscanenabled", false);
+      defaultReadEnabled = prefs.getBoolean("defaultreadenabled", false);
+   }
+
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id
    public void establishSelectedBook(final long id) {
       selectedBook = dataManager.selectBook(id);
+   }
+
+   // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id
+   public void establishSelectedTag(final long id) {
+      selectedTag = dataManager.selectTag(id);
    }
 
    @Override

@@ -15,6 +15,12 @@ import com.totsp.bookworm.model.BookUserData;
 
 import java.util.ArrayList;
 
+/**
+ * DAO for Book entity (that currently also uses the Author and BookUserData DAOs).
+ * 
+ * @author ccollins
+ *
+ */
 public class BookDAO implements DAO<Book> {
 
    private static final String QUERY_CURSOR_PREFIX =
@@ -41,16 +47,62 @@ public class BookDAO implements DAO<Book> {
    public BookDAO(SQLiteDatabase db) {
       this.db = db;
 
+      // right now BookDAO is in charge of BOOK and BOOKAUTHOR
+      // and it uses BookUseDataDAO and AuthorDAO
+
       // TODO refactor other DAOs out, make each DAO handle its own abstraction
-      // (ok to combine the DAOs at the manager/service layer, but not inside another DAO - bad mojo)
+      // (ok to combine the DAOs at the manager/service layer, but maybe not inside another DAO?)
       // here we wire in other DAOs manually, for now (not cleanest approach, but simple)
       // (other DAOs are not used elsewhere at present, can't create just an author, for ex)
+
       bookUserDataDAO = new BookUserDataDAO(db);
       authorDAO = new AuthorDAO(db);
 
       // statements
       bookInsertStmt = db.compileStatement(BookDAO.BOOK_INSERT);
       bookAuthorInsertStmt = db.compileStatement(BookDAO.BOOKAUTHOR_INSERT);
+   }
+
+   @Override
+   public void deleteAll() {
+      bookUserDataDAO.deleteAll();
+      db.delete(DataConstants.BOOKAUTHOR_TABLE, null, null);         
+      db.delete(DataConstants.BOOK_TABLE, null, null);      
+   }
+
+   public static void onCreate(SQLiteDatabase db) {
+      StringBuilder sb = new StringBuilder();
+
+      // book table
+      sb.append("CREATE TABLE " + DataConstants.BOOK_TABLE + " (");
+      sb.append(DataConstants.BOOKID + " INTEGER PRIMARY KEY, ");
+      sb.append(DataConstants.ISBN10 + " TEXT, ");
+      sb.append(DataConstants.ISBN13 + " TEXT, ");
+      sb.append(DataConstants.TITLE + " TEXT, ");
+      sb.append(DataConstants.SUBTITLE + " TEXT, ");
+      sb.append(DataConstants.PUBLISHER + " TEXT, ");
+      sb.append(DataConstants.DESCRIPTION + " TEXT, ");
+      sb.append(DataConstants.FORMAT + " TEXT, ");
+      sb.append(DataConstants.SUBJECT + " TEXT, ");
+      sb.append(DataConstants.DATEPUB + " INTEGER");
+      sb.append(");");
+      db.execSQL(sb.toString());
+
+      // bookauthor table
+      sb.setLength(0);
+      sb.append("CREATE TABLE " + DataConstants.BOOKAUTHOR_TABLE + " (");
+      sb.append(DataConstants.BOOKAUTHORID + " INTEGER PRIMARY KEY, ");
+      sb.append(DataConstants.BOOKID + " INTEGER, ");
+      sb.append(DataConstants.AUTHORID + " INTEGER, ");
+      sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + DataConstants.BOOK_TABLE + "("
+               + DataConstants.BOOKID + "), ");
+      sb.append("FOREIGN KEY(" + DataConstants.AUTHORID + ") REFERENCES " + DataConstants.AUTHOR_TABLE + "("
+               + DataConstants.AUTHORID + ") ");
+      sb.append(");");
+      db.execSQL(sb.toString());
+   }
+
+   public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
    }
 
    public Cursor getCursor(final String orderBy, final String whereClauseLimit) {
@@ -111,7 +163,7 @@ public class BookDAO implements DAO<Book> {
    public ArrayList<Book> selectAllBooksByAuthor(final String name) {
       ArrayList<Book> set = new ArrayList<Book>();
       Author a = authorDAO.select(name);
-      // TODO do this in a single join
+      // TODO do this in a single join (else make a separate BookAuthorDAO?)
       if (a != null) {
          Cursor c =
                   db.query(DataConstants.BOOKAUTHOR_TABLE, new String[] { DataConstants.BOOKID },
@@ -119,7 +171,7 @@ public class BookDAO implements DAO<Book> {
                            null);
          if (c.moveToFirst()) {
             do {
-               // makes an addtl query for every name, not the best approach here
+               // makes an addtl query for every name, not best approach here
                Book b = select(c.getLong(0));
                set.add(b);
             } while (c.moveToNext());
@@ -207,8 +259,7 @@ public class BookDAO implements DAO<Book> {
                insertBookAuthorData(bookId, authorIds);
 
                // insert bookuserdata
-               bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read,
-                        b.bookUserData.blurb));
+               bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read, null));
 
                db.setTransactionSuccessful();
             } else {
@@ -259,8 +310,7 @@ public class BookDAO implements DAO<Book> {
 
             // update/insert book user data
             bookUserDataDAO.delete(b.id);
-            bookUserDataDAO.insert(new BookUserData(b.id, b.bookUserData.rating, b.bookUserData.read,
-                     b.bookUserData.blurb));
+            bookUserDataDAO.insert(new BookUserData(b.id, b.bookUserData.rating, b.bookUserData.read, null));
 
             // update book
             final ContentValues values = new ContentValues();
@@ -295,8 +345,7 @@ public class BookDAO implements DAO<Book> {
          ArrayList<Author> authors = authorDAO.selectByBookId(id);
          db
                   .delete(DataConstants.BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String
-                           .valueOf(b.id) });    
-         bookUserDataDAO.delete(id);
+                           .valueOf(b.id) });
          db.delete(DataConstants.BOOK_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(id) });
          // if no other books by same author, also delete author
          for (int i = 0; i < authors.size(); i++) {
@@ -334,9 +383,8 @@ public class BookDAO implements DAO<Book> {
          b.bookUserData.bookId = b.id;
          BookUserData userData = bookUserDataDAO.selectByBookId(b.id);
          if (userData != null) {
-            b.bookUserData.read = userData.read;
-            b.bookUserData.rating = userData.rating;
-            b.bookUserData.blurb = userData.blurb;
+            b.bookUserData.read = (userData.read);
+            b.bookUserData.rating = (userData.rating);
          }
       }
       return b;
@@ -358,5 +406,4 @@ public class BookDAO implements DAO<Book> {
    public void deleteBookAuthorData(final long bookId) {
       db.delete(DataConstants.BOOKAUTHOR_TABLE, DataConstants.BOOKID + " = ?", new String[] { String.valueOf(bookId) });
    }
-
 }

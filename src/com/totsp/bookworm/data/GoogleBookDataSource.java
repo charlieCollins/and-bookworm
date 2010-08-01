@@ -65,6 +65,7 @@ public class GoogleBookDataSource implements BookDataSource {
       }
 
       ArrayList<Book> books = parseResponse(response);
+      // TODO: Use returned multi-volume query to get single-volume reference in order to extract full description.
       if ((books != null) && !books.isEmpty()) {
          return books.get(0);
       }

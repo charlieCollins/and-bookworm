@@ -8,34 +8,46 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
+import com.totsp.bookworm.data.dao.AuthorDAO;
 import com.totsp.bookworm.data.dao.BookDAO;
+import com.totsp.bookworm.data.dao.BookUserDataDAO;
+import com.totsp.bookworm.data.dao.TagDAO;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
+import com.totsp.bookworm.model.Tag;
 
 import java.util.ArrayList;
 
 /**
  * Android DataManager to encapsulate SQL and DB details.
- * Includes SQLiteOpenHelper.
+ * Includes SQLiteOpenHelper, and uses DAO objects (in specified order)
+ * to create/update and clear tables, and manipulate data.
  *
  * @author ccollins
  *
  */
 public class DataManager {
 
-   private static final int DATABASE_VERSION = 10;
+   private static final int DATABASE_VERSION = 11;
 
    private SQLiteDatabase db;
 
+   private AuthorDAO authorDAO;
    private BookDAO bookDAO;
+   private TagDAO tagDAO;
 
    public DataManager(final Context context) {
       OpenHelper openHelper = new OpenHelper(context);
       db = openHelper.getWritableDatabase();
       Log.i(Constants.LOG_TAG, "DataManager created, db open status: " + db.isOpen());
 
-      // app only needs access to book DAO at present (can't create authors on their own, etc.)
+      // DAOs are all needed here for onCreate/onUpgrade/deleteAll, etc.
+      // in some cases though they are not used to manipulate data directly
+      // (rather they are nested, see bookDAO, which includes authorDAO, for now)
+      // (future they probably should be more separated)
+      authorDAO = new AuthorDAO(db);
       bookDAO = new BookDAO(db);
+      tagDAO = new TagDAO(db);
 
       if (openHelper.isDbCreated()) {
          // insert default data here if needed
@@ -50,7 +62,9 @@ public class DataManager {
       if (!db.isOpen()) {
          db = SQLiteDatabase.openDatabase(DataConstants.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
          // since we pass db into DAO, have to recreate DAO if db is re-opened
+         authorDAO = new AuthorDAO(db);
          bookDAO = new BookDAO(db);
+         tagDAO = new TagDAO(db);
       }
    }
 
@@ -98,23 +112,86 @@ public class DataManager {
       return bookDAO.getCursor(orderBy, whereClauseLimit);
    }
 
+   public Tag selectTag(final long id) {
+      return tagDAO.select(id);
+   }
+
+   public Tag selectTag(final String name) {
+      return tagDAO.select(name);
+   }
+
+   public long insertTag(final Tag tag) {
+      return tagDAO.insert(tag);
+   }
+
+   public void updateTag(final Tag tag) {
+      tagDAO.update(tag);
+   }
+
+   public void deleteTag(final long id) {
+      tagDAO.delete(id);
+   }
+
+   public Cursor getTagCursor(final String orderBy, final String whereClauseLimit) {
+      return tagDAO.getCursor(orderBy, whereClauseLimit);
+   }
+
+   public Cursor getTagSelectorCursor(final long bookId) {
+      return tagDAO.getSelectorCursor(bookId);
+   }
+
+   public boolean isTagged(final long tagId, final long bookId) {
+      return tagDAO.isTagged(tagId, bookId);
+   }
+
+   public void setBookTagged(final long bookId, final long tagId, boolean tagged) {
+      if (tagged) {
+         // Insert new books at end of group by default
+         tagDAO.insertBook(tagId, bookId);
+      } else {
+         tagDAO.deleteBook(tagId, bookId);
+      }
+   }
+
+   public void toggleBookTagged(final long bookId, final long tagId) {
+      setBookTagged(bookId, tagId, !isTagged(tagId, bookId));
+   }
+
+   public void addTagToBook(final long tagId, final long bookId) {
+      // Insert new books at end of group by default
+      tagDAO.insertBook(tagId, bookId);
+   }
+
+   public void removeTagFromBook(final long tagId, final long bookId) {
+      tagDAO.deleteBook(tagId, bookId);
+   }
+
+   public String getBookTagsString(final long bookId) {
+      return tagDAO.getTagsString(bookId);
+   }
+
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
       Log.i(Constants.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");
       db.beginTransaction();
-      try {
-         db.delete(DataConstants.AUTHOR_TABLE, null, null);
-         db.delete(DataConstants.BOOKAUTHOR_TABLE, null, null);
-         db.delete(DataConstants.BOOKUSERDATA_TABLE, null, null);
-         db.delete(DataConstants.BOOK_TABLE, null, null);
+      try {  
+         // TODO I think there is a NASTY Android bug lurking hereabouts (need to investigate)
+         // if one of these deletes gets a message such as:
+         // "sqlite returned: error code = 17, msg = prepared statement aborts at 7: [DELETE FROM author]"
+         // the NO EXCEPTION IS THROWN (and note that Android makes SQLException unchecked)
+         // this means the trans will commit and continue on, this is very bad
+         // (noticed this when I had bug in BookDAO that DROPPED table rather than delete rows from here)        
+         authorDAO.deleteAll();         
+         bookDAO.deleteAll();
+         tagDAO.deleteAll();
          db.setTransactionSuccessful();
-      } finally {
+      } finally {      
          db.endTransaction();
       }
       db.execSQL("vacuum");
    }
 
-   // stats specific
+   // stats specific (should be separated out, and more detailed)
    public BookListStats getStats() {
       BookListStats stats = new BookListStats();
       stats.totalBooks = getCountFromTable(DataConstants.BOOK_TABLE, "");
@@ -128,7 +205,8 @@ public class DataManager {
       return stats;
    }
 
-   private int getCountFromTable(final String table, final String whereClause) {
+   // protected scope to allow method to be exposed for automated testing 
+   protected int getCountFromTable(final String table, final String whereClause) {
       int result = 0;
       Cursor c = db.rawQuery("select count(*) from " + table + " " + whereClause, null);
       if (c.moveToFirst()) {
@@ -147,7 +225,7 @@ public class DataManager {
    //
    // SQLiteOpenHelper   
    //
-   private static class OpenHelper extends SQLiteOpenHelper {
+   private static class OpenHelper extends SQLiteOpenHelper {      
 
       private boolean dbCreated;
 
@@ -158,65 +236,10 @@ public class DataManager {
       @Override
       public void onCreate(final SQLiteDatabase db) {
          Log.i(Constants.LOG_TAG, "BookWorm DataHelper.OpenHelper onCreate creating database bookworm.db");
-
-         // using StringBuilder here because it is easier to read/reuse lines
-         StringBuilder sb = new StringBuilder();
-
-         // book table
-         sb.append("CREATE TABLE " + DataConstants.BOOK_TABLE + " (");
-         sb.append(DataConstants.BOOKID + " INTEGER PRIMARY KEY, ");
-         sb.append(DataConstants.ISBN10 + " TEXT, ");
-         sb.append(DataConstants.ISBN13 + " TEXT, ");
-         sb.append(DataConstants.TITLE + " TEXT, ");
-         sb.append(DataConstants.SUBTITLE + " TEXT, ");
-         sb.append(DataConstants.PUBLISHER + " TEXT, ");
-         sb.append(DataConstants.DESCRIPTION + " TEXT, ");
-         sb.append(DataConstants.FORMAT + " TEXT, ");
-         sb.append(DataConstants.SUBJECT + " TEXT, ");
-         sb.append(DataConstants.DATEPUB + " INTEGER");
-         sb.append(");");
-         db.execSQL(sb.toString());
-
-         // author table
-         sb.setLength(0);
-         sb.append("CREATE TABLE " + DataConstants.AUTHOR_TABLE + " (");
-         sb.append(DataConstants.AUTHORID + " INTEGER PRIMARY KEY, ");
-         sb.append(DataConstants.NAME + " TEXT");
-         sb.append(");");
-         db.execSQL(sb.toString());
-
-         // bookauthor table
-         sb.setLength(0);
-         sb.append("CREATE TABLE " + DataConstants.BOOKAUTHOR_TABLE + " (");
-         sb.append(DataConstants.BOOKAUTHORID + " INTEGER PRIMARY KEY, ");
-         sb.append(DataConstants.BOOKID + " INTEGER, ");
-         sb.append(DataConstants.AUTHORID + " INTEGER, ");
-         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + DataConstants.BOOK_TABLE + "("
-                  + DataConstants.BOOKID + "), ");
-         sb.append("FOREIGN KEY(" + DataConstants.AUTHORID + ") REFERENCES " + DataConstants.AUTHOR_TABLE + "("
-                  + DataConstants.AUTHORID + ") ");
-         sb.append(");");
-         db.execSQL(sb.toString());
-
-         // bookdata table (users book data, ratings, reviews, etc)
-         sb.setLength(0);
-         sb.append("CREATE TABLE " + DataConstants.BOOKUSERDATA_TABLE + " (");
-         sb.append(DataConstants.BOOKUSERDATAID + " INTEGER PRIMARY KEY, ");
-         sb.append(DataConstants.BOOKID + " INTEGER, ");
-         sb.append(DataConstants.READSTATUS + " INTEGER, ");
-         sb.append(DataConstants.RATING + " INTEGER, ");
-         sb.append(DataConstants.BLURB + " TEXT, ");
-         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + DataConstants.BOOK_TABLE + "("
-                  + DataConstants.BOOKID + ") ");
-         sb.append(");");
-         db.execSQL(sb.toString());
-
-         // constraints         
-         db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON " + DataConstants.AUTHOR_TABLE + "(" + DataConstants.NAME
-                  + " COLLATE NOCASE)");
-         db.execSQL("CREATE UNIQUE INDEX uidxBookIdForUserData ON " + DataConstants.BOOKUSERDATA_TABLE + "("
-                  + DataConstants.BOOKID + " COLLATE NOCASE)");
-
+         AuthorDAO.onCreate(db);
+         BookDAO.onCreate(db);
+         BookUserDataDAO.onCreate(db);
+         TagDAO.onCreate(db);
          dbCreated = true;
       }
 
@@ -225,12 +248,10 @@ public class DataManager {
          Log
                   .i(Constants.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"
                            + newVersion);
-         // export old data first, then upgrade, then import
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOK_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.AUTHOR_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOKUSERDATA_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOKAUTHOR_TABLE);
-         onCreate(db);
+         AuthorDAO.onUpgrade(db, oldVersion, newVersion);
+         BookDAO.onUpgrade(db, oldVersion, newVersion);
+         BookUserDataDAO.onUpgrade(db, oldVersion, newVersion);
+         TagDAO.onUpgrade(db, oldVersion, newVersion);         
       }
 
       public boolean isDbCreated() {

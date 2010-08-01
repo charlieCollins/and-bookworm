@@ -1,50 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-	<SlidingDrawer android:id="@+id/bookdetaildrawer"
-		android:layout_width="match_parent" android:layout_height="match_parent"
-		android:handle="@+id/bookdetaildrawerhandle" android:content="@+id/bookdetaildrawercontent"
-		android:allowSingleTap="true" android:orientation="horizontal">
+	 <SlidingDrawer android:id="@+id/bookdetaildrawer"     
+ 		android:layout_width="match_parent" android:layout_height="match_parent"     
+ 		android:handle="@+id/bookdetailhandle" android:content="@+id/bookdetailcontent" 
+ 		android:allowSingleTap="true" android:orientation="horizontal" >
+ 		<ImageView android:id="@id/bookdetailhandle"
+ 			android:layout_marginTop="5dp"
+	 		android:layout_width="wrap_content" android:layout_height="wrap_content"
+	 		android:src="@drawable/tab_expand" />
+	   
+	 	<TextView android:id="@id/bookdetailcontent" 
+	 		android:layout_width="match_parent" android:layout_height="match_parent"
+	 		android:background="@drawable/book_bgrnd_noheader_textarea"
+	 		style="@style/blacksmall" android:padding="10dp"  /> 
+	</SlidingDrawer>	
 
-		<ImageView android:id="@id/bookdetaildrawerhandle"
-			android:layout_marginTop="5dp" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:src="@drawable/tab_expand" />
-
-		<ScrollView android:id="@id/bookdetaildrawercontent"
-			android:layout_width="fill_parent" android:layout_height="fill_parent" android:background="#000">
-			<RelativeLayout android:orientation="vertical"
-				android:layout_width="fill_parent" android:layout_height="fill_parent"				
-				android:gravity="center_horizontal">
-
-				<TextView android:id="@+id/bookdetailtitle"
-					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:layout_marginTop="20dp" android:layout_marginLeft="10dp"
-					android:layout_marginRight="10dp" style="@style/whitebold"
-					android:maxLines="2" android:ellipsize="end" android:gravity="center" />
-
-				<TextView android:id="@+id/bookdetailnotelabel"
-					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
-					android:layout_marginRight="10dp" android:layout_below="@id/bookdetailtitle"
-					style="@style/whitemedbold" android:gravity="center"
-					android:text="@string/labelNotes" />
-				<EditText android:id="@+id/bookdetailnote"
-					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:layout_marginTop="10dp" android:layout_marginLeft="10dp"
-					android:layout_marginRight="10dp" android:layout_below="@id/bookdetailnotelabel"
-					android:autoLink="all" android:autoText="true" android:capitalize="sentences"
-					android:freezesText="true" android:gravity="left" 
-					style="?android:attr/textViewStyle" android:background="@null" android:textColor="@android:color/white"/>
-
-				<LinearLayout android:orientation="horizontal"
-					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:layout_below="@id/bookdetailnote" android:gravity="center">
-					<Button android:id="@+id/bookdetailbutton"
-						android:layout_width="150dp" android:layout_height="wrap_content"
-						android:layout_marginTop="25dp" android:layout_marginBottom="10dp"
-						android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
-						style="@style/black" />
-				</LinearLayout>
-			</RelativeLayout>
-		</ScrollView>
-	</SlidingDrawer>
 </merge>
