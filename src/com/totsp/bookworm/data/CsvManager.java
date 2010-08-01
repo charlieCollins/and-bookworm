@@ -65,7 +65,7 @@ public class CsvManager {
    private String getCSVString(final ArrayList<Book> books) {
       StringBuilder sb = new StringBuilder();
       sb
-               .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status\n");
+               .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status, User Note [optional]\n");
       if ((books != null) && !books.isEmpty()) {
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
@@ -93,9 +93,10 @@ public class CsvManager {
             sb.append(DateUtil.format(new Date(b.datePubStamp)) + ",");
             if (b.bookUserData != null) {
                sb.append(b.bookUserData.rating + ",");
-               sb.append(b.bookUserData.read);
+               sb.append(b.bookUserData.read + ",");               
+               sb.append(b.bookUserData.blurb != null ? b.bookUserData.blurb : "");
             } else {
-               sb.append(" , ");
+               sb.append(" , ,");
             }
             sb.append("\n");
          }
@@ -110,7 +111,7 @@ public class CsvManager {
       if (f.exists() && f.canRead()) {
          Log.i(Constants.LOG_TAG, "Parsing file:" + f.getAbsolutePath() + " for import into BookWorm database.");
          // "Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,
-         //    Subject,Publisher,Published Date,User Rating,User Read Status\n"
+         //    Subject,Publisher,Published Date,User Rating,User Read Status, User Note\n"
          Scanner scanner = null;
          int count = 0;
          try {
@@ -123,17 +124,32 @@ public class CsvManager {
                   if ((parts != null) && ((parts.length == 12) || (parts.length == 13))) {
                      Book b = new Book();
                      b.title = parts[0];
+                     b.title = b.title.replaceAll("^\"(.*)\"", "$1");
                      b.subTitle = parts[1];
                      if (parts[2] != null) {
-                        String authors = parts[2].replace('|', '"');
+                        String authors = parts[2].replace('|', ',');
+                        System.out.println("Authors before expanded - " + authors);
                         b.authors = StringUtil.expandAuthors(authors);
                      }
                      b.isbn10 = parts[3];
+                     // Make up for leading 0's lost to numeric conversion
+                     while (b.isbn10.length() < 10) {
+                    	 b.isbn10 = "0" + b.isbn10;
+                     }
+                     
                      b.isbn13 = parts[4];
-                     b.description = parts[5];                     
+                     while (b.isbn13.length() < 13) {
+                    	 b.isbn13 = "0" + b.isbn13;
+                     }
+                    
+                     b.description = parts[5];   
+                     b.description = b.description.replaceAll("^\"(.*)\"", "$1");
                      b.format = parts[6];
+                     b.format = b.format.replaceAll("^\"(.*)\"", "$1");
                      b.subject = parts[7];
+                     b.subject = b.subject.replaceAll("^\"(.*)\"", "$1");
                      b.publisher = parts[8];
+                     b.publisher  = b.publisher.replaceAll("^\"(.*)\"", "$1");
                      Date date = DateUtil.parse(parts[9]);
                      if (date != null) {
                         b.datePubStamp = date.getTime();
@@ -151,8 +167,13 @@ public class CsvManager {
                      if (parts[11] != null) {
                         readStatus = Boolean.valueOf(parts[11]) ? 1 : 0;
                      }
+                     
+                     String note = null;
+                     if (parts.length > 12) {
+                        note = parts[12];
+                     }
 
-                     BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, null);
+                     BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, note);
                      b.bookUserData = bud;
                      if (b.title != null) {
                         books.add(b);

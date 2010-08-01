@@ -86,7 +86,9 @@ public class BookDetail extends Activity {
          }
       });
       
-      bookId = application.selectedBook.id;
+      if (application.selectedBook != null) {
+    	  bookId = application.selectedBook.id;
+      }
 
       setupDialogs();
       setViewData();
