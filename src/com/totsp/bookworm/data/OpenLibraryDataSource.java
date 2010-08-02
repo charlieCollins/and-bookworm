@@ -51,21 +51,16 @@ public class OpenLibraryDataSource implements BookDataSource {
          return null;
       }
 
-      ArrayList<Book> books = new ArrayList<Book>();
+      Book book = null;
       try {
-         books = parseResponse(response, isbn);
+         book = parseResponse(response, isbn);
       } catch (JSONException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         Log.e(Constants.LOG_TAG, e.getMessage(), e);
       }
-      if ((books != null) && !books.isEmpty()) {
-         return books.get(0);
-      }
-      return null;
+      return book;
    }
 
-   private ArrayList<Book> parseResponse(String response, String isbn) throws JSONException {
-      ArrayList<Book> books = new ArrayList<Book>();
+   private Book parseResponse(String response, String isbn) throws JSONException {
 
       int stop = response.length() - 2;
       String jsonString = response.substring(15, stop);
@@ -126,21 +121,17 @@ public class OpenLibraryDataSource implements BookDataSource {
          book.format = (jsonBook.getJSONObject("details").getString("physical_format"));
       }
 
-      books.add(book);
-      if ((books != null) && !books.isEmpty()) {
-         return books;
-      }
-      return null;
+      return book;
    }
 
    public ArrayList<Book> getBooks(String searchTerm, int startIndex) {
+      ArrayList<Book> books = new ArrayList<Book>();
       if (startIndex == 0) {
          String url = OpenLibraryDataSource.OL_BOOK_SEARCH_PREFIX;
          try {
             url = url + URLEncoder.encode("{\"query\":\"" + searchTerm + "\"}", "UTF-8");
          } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.e(Constants.LOG_TAG, e.getMessage(), e);
          }
 
          url = url.replaceAll("%2B", "%20");
@@ -154,22 +145,19 @@ public class OpenLibraryDataSource implements BookDataSource {
 
          if ((response == null) || response.contains(HttpHelper.HTTP_RESPONSE_ERROR)) {
             Log.w(Constants.LOG_TAG, "HTTP request returned no data (null) - " + url);
-            return null;
+            return books;
          }
 
-         ArrayList<Book> books = null;
          try {
             books = getBookDetails(response);
          } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.e(Constants.LOG_TAG, e.getMessage(), e);
          }
-         if ((books != null) && !books.isEmpty()) {
-            return books;
-         }
-      }
-      return null;
 
+         return books;
+      }
+
+      return books;
    }
 
    private ArrayList<Book> getBookDetails(String jsonString) throws JSONException {
@@ -251,9 +239,6 @@ public class OpenLibraryDataSource implements BookDataSource {
          books.add(book);
       }
 
-      if ((books != null) && !books.isEmpty()) {
-         return books;
-      }
-      return null;
+      return books;
    }
 }
