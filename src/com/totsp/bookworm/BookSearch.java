@@ -25,7 +25,6 @@ import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.StringUtil;
@@ -297,11 +296,7 @@ public class BookSearch extends Activity {
    private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
       private final ProgressDialog dialog = new ProgressDialog(BookSearch.this);
 
-      // TODO hard coded to GoolgeBookDataSource for now
-      private final GoogleBookDataSource gbs = new GoogleBookDataSource();
-
-      public SearchTask() {
-         gbs.setDebugEnabled(application.debugEnabled);
+      public SearchTask() {        
       }
 
       @Override
@@ -318,7 +313,7 @@ public class BookSearch extends Activity {
          int startIndex = Integer.valueOf(args[1]);
          if (searchTerm != null) {
             searchTerm = URLEncoder.encode(searchTerm);
-            return gbs.getBooks(searchTerm, startIndex);
+            return application.bookDataSource.getBooks(searchTerm, startIndex);
          }
          return null;
       }

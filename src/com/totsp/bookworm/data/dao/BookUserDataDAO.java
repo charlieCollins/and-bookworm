@@ -13,6 +13,12 @@ import com.totsp.bookworm.model.BookUserData;
 
 import java.util.ArrayList;
 
+/**
+ * DAO for BookUserData entity. 
+ * 
+ * @author ccollins
+ *
+ */
 public class BookUserDataDAO implements DAO<BookUserData> {
 
    private final SQLiteStatement bookUserDataInsertStmt;
@@ -30,6 +36,42 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       bookUserDataInsertStmt = db.compileStatement(BookUserDataDAO.BOOKUSERDATA_INSERT);
    }
 
+   public static void onCreate(SQLiteDatabase db) {
+      StringBuilder sb = new StringBuilder();
+
+      // book table must exist (pre-req)
+
+      // bookuserdata table (users book data, ratings, reviews, etc)
+      sb.setLength(0);
+      sb.append("CREATE TABLE " + DataConstants.BOOKUSERDATA_TABLE + " (");
+      sb.append(DataConstants.BOOKUSERDATAID + " INTEGER PRIMARY KEY, ");
+      sb.append(DataConstants.BOOKID + " INTEGER, ");
+      sb.append(DataConstants.READSTATUS + " INTEGER, ");
+      sb.append(DataConstants.RATING + " INTEGER, ");
+      sb.append(DataConstants.BLURB + " TEXT, ");
+      sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + DataConstants.BOOK_TABLE + "("
+               + DataConstants.BOOKID + ") ");
+      sb.append(");");
+      db.execSQL(sb.toString());
+
+      // constraints         
+      db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON " + DataConstants.AUTHOR_TABLE + "(" + DataConstants.NAME
+               + " COLLATE NOCASE)");
+      db.execSQL("CREATE UNIQUE INDEX uidxBookIdForUserData ON " + DataConstants.BOOKUSERDATA_TABLE + "("
+               + DataConstants.BOOKID + " COLLATE NOCASE)");
+
+   }
+
+   public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+      db.execSQL("DROP TABLE IF EXISTS " + DataConstants.BOOKUSERDATA_TABLE);
+      BookUserDataDAO.onCreate(db);
+   }
+
+   @Override
+   public void deleteAll() {
+      db.delete(DataConstants.BOOKUSERDATA_TABLE, null, null);
+   }
+
    @Override
    public Cursor getCursor(final String orderBy, final String whereClauseLimit) {
       throw new UnsupportedOperationException("Not yet implemented");
@@ -45,8 +87,8 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       if (c.moveToFirst()) {
          b = new BookUserData();
          b.read = (c.getInt(0) == 0 ? false : true);
-         b.rating = c.getInt(1);
-         b.blurb = c.getString(2);
+         b.rating = (c.getInt(1));
+         // TODO not yet persisting user blurb
       }
       if (!c.isClosed()) {
          c.close();
@@ -63,8 +105,8 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       if (c.moveToFirst()) {
          b = new BookUserData();
          b.read = (c.getInt(0) == 0 ? false : true);
-         b.rating = c.getInt(1);
-         b.blurb = c.getString(2);
+         b.rating = (c.getInt(1));
+         // TODO not yet persisting user blurb
       }
       if (!c.isClosed()) {
          c.close();

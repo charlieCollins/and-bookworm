@@ -2,25 +2,15 @@
 <resources>
 
 	<string-array name="bookdataprovidernames">
-		<item>Google Books</item>
-	</string-array>
+        <item>All</item>
+        <item>Google Books</item>
+        <item>Open Library</item>
+    </string-array>
 
-	<string-array name="bookdataproviderkeys">
-		<item>com.totsp.bookworm.data.GoogleBookDataSource</item>
-	</string-array>
+    <string-array name="bookdataproviderkeys">
+        <item>com.totsp.bookworm.data.CompoundDataSource</item>
+        <item>com.totsp.bookworm.data.GoogleBookDataSource</item>
+        <item>com.totsp.bookworm.data.OpenLibraryDataSource</item>
+    </string-array>
 
-	<!--
-		cover images can come from sources OTHER than the main data providers
-	-->
-	<!--
-		classic example, google books requires client auth for cover image,
-		all else not - so can use gBooks with OpenLib for covers
-	-->
-	<string-array name="bookcoverimageprovidernames">		
-		<item>OpenLibrary</item>
-	</string-array>
-
-	<string-array name="bookcoverimageproviderkeys">
-		<item>2</item>
-	</string-array>
 </resources>

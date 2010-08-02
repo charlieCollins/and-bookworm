@@ -4,6 +4,12 @@ import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 
+/**
+ * Defines a single book entry in database.
+ * As well as the publisher data for the book, each entry also contains a  
+ * user-specific metadata object to hold info such as personal ratings.
+ *
+ */
 public final class Book {
 
    // NOTE - no accessors/mutators by design, Android optimization
@@ -47,63 +53,6 @@ public final class Book {
       return title;
    }
 
-   @Override
-   public boolean equals(final Object obj) {
-      if (obj == this) {
-         return true;
-      }
-      if (obj instanceof Book) {
-         Book lhs = (Book) obj;
-         if ((lhs.id == id) && (lhs.isbn10.equals(isbn10)) && (lhs.isbn13.equals(isbn13)) && (lhs.title.equals(title))
-                  && (lhs.subTitle.equals(subTitle)) && (lhs.authors.equals(authors))
-                  && (lhs.publisher.equals(publisher)) && (lhs.description.equals(description))
-                  && (lhs.format.equals(format)) && (lhs.subject.equals(subject)) && (lhs.datePubStamp == datePubStamp)
-                  && (lhs.bookUserData == bookUserData)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
-   public int hashCode() {
-      int result = 31;
-      result += id;
-      if (isbn10 != null) {
-         result += isbn10.hashCode();
-      }
-      if (isbn13 != null) {
-         result += isbn13.hashCode();
-      }
-      if (title != null) {
-         result += title.hashCode();
-      }
-      if (subTitle != null) {
-         result += subTitle.hashCode();
-      }
-      if (authors != null) {
-         result += authors.hashCode();
-      }
-      if (publisher != null) {
-         result += publisher.hashCode();
-      }
-      if (description != null) {
-         result += description.hashCode();
-      }
-      if (format != null) {
-         result += format.hashCode();
-      }
-      if (subject != null) {
-         result += subject.hashCode();
-      }
-      if (bookUserData != null) {
-         result += bookUserData.hashCode();
-      }
-      result += datePubStamp;
-
-      return result;
-   }
-
    public String toStringFull() {
       StringBuilder sb = new StringBuilder();
       sb.append("Book-");
@@ -119,5 +68,115 @@ public final class Book {
       sb.append("\n subject:" + subject);
       sb.append("\n datePubStamp:" + datePubStamp);
       return sb.toString();
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((this.authors == null) ? 0 : this.authors.hashCode());
+      result = prime * result + ((this.bookUserData == null) ? 0 : this.bookUserData.hashCode());
+      result = prime * result + (int) (this.datePubStamp ^ (this.datePubStamp >>> 32));
+      result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
+      result = prime * result + ((this.format == null) ? 0 : this.format.hashCode());
+      result = prime * result + (int) (this.id ^ (this.id >>> 32));
+      result = prime * result + ((this.isbn10 == null) ? 0 : this.isbn10.hashCode());
+      result = prime * result + ((this.isbn13 == null) ? 0 : this.isbn13.hashCode());
+      result = prime * result + ((this.publisher == null) ? 0 : this.publisher.hashCode());
+      result = prime * result + ((this.subTitle == null) ? 0 : this.subTitle.hashCode());
+      result = prime * result + ((this.subject == null) ? 0 : this.subject.hashCode());
+      result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (!(obj instanceof Book)) {
+         return false;
+      }
+      Book other = (Book) obj;
+      if (this.authors == null) {
+         if (other.authors != null) {
+            return false;
+         }
+      } else if (!this.authors.equals(other.authors)) {
+         return false;
+      }
+      if (this.bookUserData == null) {
+         if (other.bookUserData != null) {
+            return false;
+         }
+      } else if (!this.bookUserData.equals(other.bookUserData)) {
+         return false;
+      }
+      if (this.datePubStamp != other.datePubStamp) {
+         return false;
+      }
+      if (this.description == null) {
+         if (other.description != null) {
+            return false;
+         }
+      } else if (!this.description.equals(other.description)) {
+         return false;
+      }
+      if (this.format == null) {
+         if (other.format != null) {
+            return false;
+         }
+      } else if (!this.format.equals(other.format)) {
+         return false;
+      }
+      if (this.id != other.id) {
+         return false;
+      }
+      if (this.isbn10 == null) {
+         if (other.isbn10 != null) {
+            return false;
+         }
+      } else if (!this.isbn10.equals(other.isbn10)) {
+         return false;
+      }
+      if (this.isbn13 == null) {
+         if (other.isbn13 != null) {
+            return false;
+         }
+      } else if (!this.isbn13.equals(other.isbn13)) {
+         return false;
+      }
+      if (this.publisher == null) {
+         if (other.publisher != null) {
+            return false;
+         }
+      } else if (!this.publisher.equals(other.publisher)) {
+         return false;
+      }
+      if (this.subTitle == null) {
+         if (other.subTitle != null) {
+            return false;
+         }
+      } else if (!this.subTitle.equals(other.subTitle)) {
+         return false;
+      }
+      if (this.subject == null) {
+         if (other.subject != null) {
+            return false;
+         }
+      } else if (!this.subject.equals(other.subject)) {
+         return false;
+      }
+      if (this.title == null) {
+         if (other.title != null) {
+            return false;
+         }
+      } else if (!this.title.equals(other.title)) {
+         return false;
+      }
+      return true;
    }
 }

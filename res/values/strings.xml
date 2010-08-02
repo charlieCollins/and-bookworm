@@ -110,10 +110,7 @@
     <string name="prefSumDebugLog">Enable and then exit/restart app to get detailed logs.</string>    
     <string name="prefSectDataProvider">Data Provider Preferences</string>
     <string name="prefTitleBookData">Book Data Provider</string>
-    <string name="prefSumBookData">Currently only Google Books (future additions planned).</string>
-    <string name="prefTitleCoverImage">Book Cover Image Provider</string>
-    <string name="prefSumCoverImage">Currently only OpenLibrary (future additions planned).</string>
-
+    <string name="prefSumBookData">Select book data provider (default is all).</string>
 	
 	<!--  recent changes only for EN (some new, some renamed, need to be synced to other langs) -->
 	<string name="menuStats">Stats</string>

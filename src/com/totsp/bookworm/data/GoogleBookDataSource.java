@@ -3,6 +3,7 @@ package com.totsp.bookworm.data;
 import android.util.Log;
 import android.util.Xml;
 
+import com.totsp.bookworm.BookWormApplication;
 import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.NetworkUtil;
@@ -24,12 +25,15 @@ public class GoogleBookDataSource implements BookDataSource {
    // google books uses X FORWARDED FOR header to determine location and what book stuff user can "see"
    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
 
+   private final BookWormApplication application;   
    private final GoogleBooksHandler saxHandler;
    private final HttpHelper httpHelper;
 
    private boolean debugEnabled;
 
-   public GoogleBookDataSource() {
+   public GoogleBookDataSource(final BookWormApplication application) {
+      this.application = application;
+      // application is unused here - but ctor with application is required
       saxHandler = new GoogleBooksHandler();
       httpHelper = new HttpHelper();
    }

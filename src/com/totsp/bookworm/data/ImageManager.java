@@ -138,8 +138,8 @@ public class ImageManager {
          isbn = b.isbn13;
       }
 
-      // for now hard code providers (later will be pref)
-      // use OL, then AZ, then generate (in that order)
+      // for now hard code cover image providers (later will be pref)
+      // nwo it's OL, then AZ, then generate (in that order)
       if (isbn != null) {
          coverImageBitmap =
                   CoverImageUtil.getCoverImageFromNetwork(isbn, CoverImageUtil.COVER_IMAGE_PROVIDER_OPENLIBRARY);

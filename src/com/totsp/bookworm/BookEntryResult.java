@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.NetworkUtil;
@@ -178,15 +177,8 @@ public class BookEntryResult extends Activity {
       private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
 
       private Book book;
-      //private String coverImageProviderKey;
-      // NOTE - hard coded to GoogleBookDataSource for now
-      private final GoogleBookDataSource gbs;
-
-      public SetupBookResultTask() {
-         gbs = (GoogleBookDataSource) application.bookDataSource;
-         if (application.debugEnabled && (gbs != null)) {
-            gbs.setDebugEnabled(true);
-         }
+      
+      public SetupBookResultTask() {         
       }
 
       public SetupBookResultTask(final Book b) {
@@ -214,8 +206,8 @@ public class BookEntryResult extends Activity {
          else {
             if (isbns[0] != null) {
                bean.code = isbns[0];
-               if (gbs != null) {
-                  book = gbs.getBook(isbns[0]);
+               if (application.bookDataSource != null) {
+                  book = application.bookDataSource.getBook(isbns[0]);
                   bean.book = book;
                   application.selectedBook = book;
                   if (bean.book == null) {

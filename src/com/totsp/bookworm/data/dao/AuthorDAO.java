@@ -13,6 +13,12 @@ import com.totsp.bookworm.model.Author;
 
 import java.util.ArrayList;
 
+/**
+ * DAO for Author entity.
+ * 
+ * @author ccollins
+ *
+ */
 public class AuthorDAO implements DAO<Author> {
 
    private static final String QUERY_AUTHORS_BY_BOOK_ID_PREFIX =
@@ -29,6 +35,28 @@ public class AuthorDAO implements DAO<Author> {
 
       // statements
       authorInsertStmt = db.compileStatement(AuthorDAO.AUTHOR_INSERT);
+   }
+
+   public static void onCreate(SQLiteDatabase db) {
+      StringBuilder sb = new StringBuilder();
+
+      // author table
+      sb.setLength(0);
+      sb.append("CREATE TABLE " + DataConstants.AUTHOR_TABLE + " (");
+      sb.append(DataConstants.AUTHORID + " INTEGER PRIMARY KEY, ");
+      sb.append(DataConstants.NAME + " TEXT");
+      sb.append(");");
+      db.execSQL(sb.toString());
+   }
+
+   public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+      db.execSQL("DROP TABLE IF EXISTS " + DataConstants.AUTHOR_TABLE);
+      AuthorDAO.onCreate(db);
+   }
+
+   @Override
+   public void deleteAll() {
+      db.delete(DataConstants.AUTHOR_TABLE, null, null);
    }
 
    @Override

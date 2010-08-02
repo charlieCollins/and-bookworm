@@ -7,14 +7,18 @@ import android.util.Log;
 
 import com.totsp.bookworm.BookSearch.BookSearchStateBean;
 import com.totsp.bookworm.data.BookDataSource;
+import com.totsp.bookworm.data.CompoundDataSource;
 import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 public class BookWormApplication extends Application {
 
-   boolean debugEnabled;
+   public boolean debugEnabled;
 
    SharedPreferences prefs;
    BookDataSource bookDataSource;
@@ -29,7 +33,6 @@ public class BookWormApplication extends Application {
    // TODO use onRetainNonConfigurationInstance for quick config state/cache
    // for longer term cache use state bean relative to Activity referenced via application
    BookSearchStateBean bookSearchStateBean;
-   
 
    @Override
    public void onCreate() {
@@ -45,23 +48,30 @@ public class BookWormApplication extends Application {
       establishBookDataSourceFromProvider();
    }
 
-   private void establishBookDataSourceFromProvider() {
+   void establishBookDataSourceFromProvider() {
       // hard coded to one provider for now
-      String className = prefs.getString("dataproviderpref", GoogleBookDataSource.class.getCanonicalName());
+      String className = prefs.getString("dataproviderpref", CompoundDataSource.class.getCanonicalName());
       Log.i(Constants.LOG_TAG, "establishing book data provider using class name - " + className);
       try {
          Class<?> clazz = Class.forName(className);
          // NOTE - validate that clazz is of BookDataSource type?
-         bookDataSource = (BookDataSource) clazz.newInstance();
+         Constructor<?> ctor = clazz.getConstructor(new Class[] { BookWormApplication.class });
+         bookDataSource = (BookDataSource) ctor.newInstance(this);
       } catch (ClassNotFoundException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
-         throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
+         throw new RuntimeException("Error, unable to establish data provider. " + e.getMessage());
+      } catch (InvocationTargetException e) {
+         Log.e(Constants.LOG_TAG, e.getMessage(), e);
+         throw new RuntimeException("Error, unable to establish data provider. " + e.getMessage());
+      } catch (NoSuchMethodException e) {
+         Log.e(Constants.LOG_TAG, e.getMessage(), e);
+         throw new RuntimeException("Error, unable to establish data provider. " + e.getMessage());
       } catch (IllegalAccessException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
-         throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
+         throw new RuntimeException("Error, unable to establish data provider. " + e.getMessage());
       } catch (InstantiationException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
-         throw new RuntimeException("Error, umable to establish data provider. " + e.getMessage());
+         throw new RuntimeException("Error, unable to establish data provider. " + e.getMessage());
       }
    }
 
