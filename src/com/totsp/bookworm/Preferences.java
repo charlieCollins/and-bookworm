@@ -24,7 +24,7 @@ public class Preferences extends PreferenceActivity {
       // listen to see if user changes data provider pref, if so reset provider class
       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
       prefs.registerOnSharedPreferenceChangeListener(new OnSharedPreferenceChangeListener() {
-         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {           
             if (key.equals("dataproviderpref")) {               
                String value = prefs.getString("dataproviderpref", CompoundDataSource.class.getCanonicalName());
                Log.i(Constants.LOG_TAG, "Data provider preference changed - " + value);
