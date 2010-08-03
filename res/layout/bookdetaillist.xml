@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+	 
+
+	<ScrollView android:id="@+id/bookDetailsList" 
+		android:layout_width="fill_parent" android:layout_height="fill_parent">
+		
+		<RelativeLayout android:id="@+id/RelativeLayout01" 
+			android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
+			
+			<TextView android:id="@+id/bookSubject" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_marginTop="5dp"
+				android:layout_marginLeft="10dp" android:layout_marginRight="15dp" style="@style/blacksmallsmall"/>	
+				
+			<TextView android:id="@+id/bookFormat" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_marginTop="5dp"
+				android:layout_below="@id/bookSubject"
+				android:layout_marginLeft="10dp" android:layout_marginRight="15dp" style="@style/blacksmallsmall"/>		
+								
+			<TextView android:id="@+id/bookPublisher" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_marginTop="5dp"
+				android:layout_below="@id/bookFormat"
+				android:layout_marginLeft="10dp" android:layout_marginRight="15dp" style="@style/blacksmallsmall"/>		
+
+			<TextView android:id="@+id/bookPubDate" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_marginTop="5dp"
+				android:layout_below="@id/bookFormat" 	android:layout_toRightOf="@id/bookPublisher"
+				android:layout_marginLeft="10dp" android:layout_marginRight="15dp" style="@style/blacksmallsmall"/>		
+
+			<RatingBar android:id="@+id/bookrating" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" 
+				android:layout_marginTop="5dp" android:layout_marginLeft="10dp" android:layout_marginRight="15dp"
+				android:layout_marginBottom="15dp" 
+				android:layout_below="@id/bookPublisher"
+				android:numStars="5" android:stepSize="1.0"/>
+				 
+			<Button android:id="@+id/bookSelectTagsButton" 
+				android:text="@string/labelTags" style="@style/blacksmallbold"
+				android:layout_below="@id/bookrating"
+				android:paddingLeft="10dp" android:layout_marginLeft="5dp" android:gravity="center"
+				android:layout_gravity="right"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+				
+			<ImageButton android:id="@+id/bookAddTagButton" 
+				android:layout_below="@id/bookrating" android:layout_toRightOf="@id/bookSelectTagsButton"
+				android:padding="0dp" android:layout_marginLeft="5dp" android:gravity="center"
+				android:layout_gravity="right"
+				android:layout_width="wrap_content" android:layout_height="wrap_content" 
+				android:src="@android:drawable/ic_menu_add"/>			
+				
+			<TextView android:id="@+id/bookTags" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:layout_marginTop="5dp" android:layout_marginBottom="15dp"
+				android:layout_marginLeft="10dp" android:layout_marginRight="15dp"
+				android:layout_below="@id/bookSelectTagsButton" style="@style/blacksmallsmall"/>		
+
+			<Button android:id="@+id/bookEditBlurbButton" 
+				android:text="@string/labelBlurb" style="@style/blacksmallbold"
+				android:layout_below="@id/bookTags"  
+				android:paddingLeft="10dp" android:layout_marginLeft="5dp" android:gravity="center"
+				android:layout_gravity="right"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+				
+			<TextView android:id="@+id/bookBlurb" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:layout_marginTop="5dp"
+				android:layout_below="@id/bookEditBlurbButton"
+				android:layout_marginLeft="10dp" android:layout_marginRight="15dp" style="@style/blacksmallsmall"/>		
+								
+			<TextView android:id="@+id/bookDescriptionLabel"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:layout_marginTop="12dp" android:layout_marginLeft="5dp"
+				android:layout_marginRight="10dp" 
+				android:layout_below="@id/bookBlurb"
+				android:text="@string/labelDescription" style="@style/blacksmallbold"/>
+				
+			<TextView android:id="@+id/bookDescription" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:layout_marginTop="5dp"
+				android:layout_below="@id/bookDescriptionLabel"
+				android:layout_marginLeft="10dp" android:layout_marginRight="15dp" style="@style/blacksmallsmall"/>						
+		
+		</RelativeLayout>
+				
+	</ScrollView>
+</merge>

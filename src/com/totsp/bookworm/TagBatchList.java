@@ -67,7 +67,7 @@ public class TagBatchList extends Activity {
 
 	private ImageView sortTagImage;
 	private ImageView filterTagImage;
-	private ImageView addGroupImage;
+	private ImageView addTagImage;
 	private ImageView editTagImage;
 	protected long selectedBookId;
 	protected boolean onlyShowTagged;
@@ -118,8 +118,8 @@ public class TagBatchList extends Activity {
 			}
 		});
 		
-		addGroupImage = (ImageView) findViewById(R.id.tagadd);
-		addGroupImage.setOnClickListener(new OnClickListener() {		
+		addTagImage = (ImageView) findViewById(R.id.tagadd);
+		addTagImage.setOnClickListener(new OnClickListener() {		
 			public void onClick(View v) {
 				application.selectedTag = null;
 				startActivity(new Intent(TagBatchList.this, TagEditor.class));			

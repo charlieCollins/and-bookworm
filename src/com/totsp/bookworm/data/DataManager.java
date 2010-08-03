@@ -1,5 +1,6 @@
 package com.totsp.bookworm.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,7 +9,9 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
+import com.totsp.bookworm.R;
 import com.totsp.bookworm.data.dao.BookDAO;
+import com.totsp.bookworm.data.dao.BookUserDataDAO;
 import com.totsp.bookworm.data.dao.TagDAO;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
@@ -25,7 +28,8 @@ import java.util.ArrayList;
  */
 public class DataManager {
 
-   private static final int DATABASE_VERSION = 11;
+   private static final int DATABASE_VERSION = 12;
+	
 
    private SQLiteDatabase db;
 
@@ -153,7 +157,6 @@ public class DataManager {
     */
    public void setBookTagged(final long bookId, final long tagId, boolean tagged) {
 	   if (tagged) {
-		   // Insert new books at end of group by default
 		   tagDAO.insertBook(tagId, bookId);
 	   }
 	   else
@@ -316,7 +319,7 @@ public class DataManager {
                   + DataConstants.BOOKID + " COLLATE NOCASE)");
 
          TagDAO.onCreate(db);
-         
+         createBuiltInTags(db);
          
          dbCreated = true;
       }
@@ -336,7 +339,63 @@ public class DataManager {
          else
          {
 	         TagDAO.onUpgrade(db, oldVersion, newVersion);
+	         if (oldVersion < 12) {
+	        	 createBuiltInTags(db);
+	        	 convertReadStatusToTag(db);
+	         }
+				
 	     }
+      }
+
+      /**
+       * Creates built-in tags. This is done here rather than in the TagDAO, since built-in tags are specific to this 
+       * application and are not intrinsic to the tag classes themselves.
+       * 
+       * @param db  Database to be updated with built-in tags
+       */
+      private void createBuiltInTags(final SQLiteDatabase db) {
+ 		 ContentValues entry = new ContentValues();				
+ 		 
+ 		 // TODO: Handle error if failed to create tags (theoretical pathological case, maybe due to lack of resources)
+		 entry.put(DataConstants.TAGTEXT, "Owned");
+		 db.insert(DataConstants.TAG_TABLE, null, entry);
+
+		 entry.clear();				
+		 entry.put(DataConstants.TAGTEXT, "Read");
+		 db.insert(DataConstants.TAG_TABLE, null, entry);    	  
+      }
+      
+      
+      /**
+       * Converts the "Have Read?" status in the BookUserData table to the "Read" tag.
+       * Note that since this conversion runs during the database open operation, normal database accessor methods 
+       * cannot be used yet.
+       *   
+       * @param db Database containing tables to be converted
+       */
+      private void convertReadStatusToTag(final SQLiteDatabase db) {
+    	  ContentValues entry = new ContentValues();				
+    	  long readTagId;
+
+    	  Cursor c = db.query(DataConstants.TAG_TABLE, new String[] { DataConstants.TAG_ID }, DataConstants.TAGTEXT
+    			  + " = Read", null, null, null, null, "1");
+    	  if (c.moveToFirst()) {
+    		  readTagId = c.getLong(0);
+    	  } else {
+    		  // Do no conversion if the built-in tag could be found
+    		  return;
+    	  }
+    	  if (!c.isClosed()) {
+    		  c.close();
+    	  }
+
+    	  ArrayList<Long> readBooks = BookUserDataDAO.queryAllRead(db);
+    	  for (int i=0; i < readBooks.size(); i++) {
+    		  entry.clear();
+    		  entry.put(DataConstants.TAG_ID, readTagId);
+    		  entry.put(DataConstants.BOOKID, readBooks.get(i));
+    		  db.insert(DataConstants.TAG_BOOKS_TABLE, null, entry);
+    	  }
       }
 
       public boolean isDbCreated() {

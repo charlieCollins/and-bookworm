@@ -55,7 +55,7 @@ public class TagEditor extends Activity {
 				if (((name != null) && (name.getText() != null) && (!name.getText().toString().equals("")))) {
 					saveEdits();
 				} else {
-					Toast.makeText(TagEditor.this, getString(R.string.msgMinimumSave), Toast.LENGTH_LONG).show();
+					Toast.makeText(TagEditor.this, getString(R.string.msgMinmumTag), Toast.LENGTH_LONG).show();
 				}
 			}
 		});	    
@@ -161,6 +161,7 @@ public class TagEditor extends Activity {
 				Toast.makeText(TagEditor.this, getString(R.string.msgTagSaveError), Toast.LENGTH_LONG).show();
 			} else {
 				Toast.makeText(TagEditor.this, getString(R.string.msgTagSaved), Toast.LENGTH_SHORT).show();
+				TagEditor.this.finish();
 			}
 		}
 	}	

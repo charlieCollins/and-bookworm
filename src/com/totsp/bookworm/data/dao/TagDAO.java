@@ -147,7 +147,7 @@ public class TagDAO implements DAO<Tag>{
 	
 
 	/**
-	 * Queries the tags with a calculated column indicating whether each tag is applied to the specified book.
+	 * Queries the tags with a calculated column indicating whether each tag is linked to the specified book.
 	 * Used to generate a cursor that can be used to populate a multi-select tag ListView for a single book.
 	 * 
 	 * @param bookId ID of book against which tags are applied
@@ -165,7 +165,7 @@ public class TagDAO implements DAO<Tag>{
 	
 	
 	/**
-	 * Returns a string containing all of the tags which are applied against the specified book.
+	 * Returns a string containing all of the tags which are linked against the specified book.
 	 * 
 	 * @param bookId  Book to query
 	 * @return        String containing comma separated tag text
@@ -309,14 +309,9 @@ public class TagDAO implements DAO<Tag>{
 	public void delete(final long id) {
 		Tag tag = select(id);
 		if (tag != null) {
+			db.delete(DataConstants.TAG_BOOKS_TABLE, DataConstants.TAG_ID + " = ?", new String[]{ String.valueOf(id) });
 			db.delete(DataConstants.TAG_TABLE, DataConstants.TAG_ID + " = ?", new String[] { String.valueOf(id) });
 		}
 	}
 
-	public void delete(final String name) {
-		Tag tag = select(name);
-		if (tag != null) {
-			db.delete(DataConstants.TAG_TABLE, DataConstants.TAGTEXT + " = ?", new String[] { name });
-		}
-	}	
 }

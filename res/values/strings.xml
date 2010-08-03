@@ -158,7 +158,14 @@
     <string name="msgNoTagsFound">No tags found</string>
     <string name="titleTagBatchList">BookWorm - Tags</string>
     <string name="titleTagEditor">BookWorm - Tag Editor</string>
-    <string name="menuSelectTags">Select Tags</string>
 	<string name="btnFilterBy">Filter by</string>	
 	<string name="promptTagTemplate">Select template</string>	
+	
+	<string name="labelTags">User Tags:</string>
+	<string name="labelBlurb">User Blurb:</string>
+	<string name="labelDescription">Description:</string>
+	<string name="msgNoImage">No cover image found.</string>
+	<string name="msgMinmumTag">"Not saved. No tag text defined.</string>
+	<string name="titleTagSelector">Select tags</string>
+	<string name="titleBlurbEditor">Edit user blurb</string>
 </resources>

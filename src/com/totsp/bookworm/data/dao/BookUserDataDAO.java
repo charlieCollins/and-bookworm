@@ -46,7 +46,7 @@ public class BookUserDataDAO implements DAO<BookUserData> {
          b = new BookUserData();
          b.read = (c.getInt(0) == 0 ? false : true);
          b.rating = (c.getInt(1));
-         // TODO not yet persisting user blurb
+         b.blurb = c.getString(2);
       }
       if (!c.isClosed()) {
          c.close();
@@ -64,7 +64,7 @@ public class BookUserDataDAO implements DAO<BookUserData> {
          b = new BookUserData();
          b.read = (c.getInt(0) == 0 ? false : true);
          b.rating = (c.getInt(1));
-         // TODO not yet persisting user blurb
+         b.blurb = c.getString(2);
       }
       if (!c.isClosed()) {
          c.close();
@@ -72,6 +72,35 @@ public class BookUserDataDAO implements DAO<BookUserData> {
       return b;
    }
 
+   
+   /**
+    * Static query of all read books.
+    * Requires the database as an argument to allow it to be queried before DAO object is created.
+    * 
+    * @param db  Database to be queried. 
+    * 
+    * @return An ArrayList of the book ID's for books which have their read flag set to true
+    */
+   public static ArrayList<Long> queryAllRead(SQLiteDatabase db) {
+	   ArrayList<Long> results = new ArrayList<Long>();
+	   Cursor c =
+		   db.query(DataConstants.BOOKUSERDATA_TABLE, new String[] { DataConstants.BOOKID},
+				    DataConstants.READSTATUS + " = 1",null, null, null, null, null);
+	   if (c.moveToFirst()) {
+		   results.add(c.getLong(0));
+	   }
+	   while (c.moveToNext()) {
+		   results.add(c.getLong(0));
+		   
+	   }
+	   if (!c.isClosed()) {
+		   c.close();
+	   }
+	   
+	   return results;
+   }
+   
+   
    @Override
    public ArrayList<BookUserData> selectAll() {
       throw new UnsupportedOperationException("Not yet implemented.");
