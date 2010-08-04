@@ -327,8 +327,8 @@ public class BookDetail extends Activity {
 		coverZoomImage = new ImageView(this);
 		// TODO: Check to see if there is a better way to zoom the image.
 		// Set image minimum size above maximum to force image to be auto-scaled. 
-		coverZoomImage.setMinimumHeight(400);
-		coverZoomImage.setMinimumWidth(400);
+		coverZoomImage.setMinimumHeight(800);
+		coverZoomImage.setMinimumWidth(800);
 
 		zoomBuilder.setView(coverZoomImage);
 		

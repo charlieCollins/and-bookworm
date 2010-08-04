@@ -87,7 +87,8 @@ public class CSVImport extends Activity {
       });
 
       importButton.setOnClickListener(new OnClickListener() {
-         public void onClick(View v) {
+         @SuppressWarnings("unchecked")
+		public void onClick(View v) {
             if ((books != null) && !books.isEmpty()) {
                importTask.execute(books);
             }

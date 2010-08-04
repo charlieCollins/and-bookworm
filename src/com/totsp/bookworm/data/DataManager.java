@@ -32,22 +32,15 @@ public class DataManager {
 	
 
    private SQLiteDatabase db;
+   private Context context;
 
    private BookDAO bookDAO;
    private TagDAO tagDAO;
 
    public DataManager(final Context context) {
-      OpenHelper openHelper = new OpenHelper(context);
-      db = openHelper.getWritableDatabase();
-      Log.i(Constants.LOG_TAG, "DataManager created, db open status: " + db.isOpen());
-
-      // app only needs access to book & tag DAO at present (can't create authors on their own, etc.)
-      bookDAO = new BookDAO(db);
-      tagDAO = new TagDAO(db);
-
-      if (openHelper.isDbCreated()) {
-         // insert default data here if needed
-      }
+	   this.context = context; 		// Keep a reference to context so we can re-open the database on import
+	   openDb();
+	   Log.i(Constants.LOG_TAG, "DataManager created, db open status: " + db.isOpen());
    }
 
    public SQLiteDatabase getDb() {
@@ -55,12 +48,19 @@ public class DataManager {
    }
 
    public void openDb() {
-      if (!db.isOpen()) {
-         db = SQLiteDatabase.openDatabase(DataConstants.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
-         // since we pass db into DAO, have to recreate DAO if db is re-opened
-         bookDAO = new BookDAO(db);
-         tagDAO = new TagDAO(db);
-      }
+	   if ((db == null) || (!db.isOpen())) {
+		   OpenHelper openHelper = new OpenHelper(context);
+		   db = openHelper.getWritableDatabase();
+
+		   // app only needs access to book & tag DAO at present (can't create authors on their own, etc.)
+		   // since we pass db into DAO, have to recreate DAO if db is re-opened
+		   bookDAO = new BookDAO(db);
+		   tagDAO = new TagDAO(db);
+
+		   if (openHelper.isDbCreated()) {
+			   // insert default data here if needed
+		   }
+	   }
    }
 
    public void closeDb() {
@@ -92,7 +92,19 @@ public class DataManager {
    }
 
    public long insertBook(final Book b) {
-      return bookDAO.insert(b);
+	   long bookId = bookDAO.insert(b);
+	   
+	   // If the new book already has it's read flag set, convert it to a tag link (required for CSV import)
+	   if ((b.bookUserData != null) && (b.bookUserData.read)) {
+		   ContentValues entry = new ContentValues();
+		   Tag readTag = selectTag("Read");
+		   if (readTag != null) {
+			   entry.put(DataConstants.TAG_ID, readTag.id);
+			   entry.put(DataConstants.BOOKID, bookId);
+			   db.insert(DataConstants.TAG_BOOKS_TABLE, null, entry);
+		   }
+	   }
+      return bookId;
    }
 
    public void updateBook(final Book b) {
@@ -212,6 +224,9 @@ public class DataManager {
          db.endTransaction();
       }
       db.execSQL("vacuum");
+      
+      // Re-create built-in tags when done
+      createBuiltInTags(db);
    }
 
    // stats specific
@@ -241,6 +256,26 @@ public class DataManager {
       return result;
    }
 
+   /**
+    * Creates built-in tags. This is done here rather than in the TagDAO, since built-in tags are specific to this 
+    * application and are not intrinsic to the tag classes themselves.
+    * 
+    * @param db  Database to be updated with built-in tags
+    */
+   private static void createBuiltInTags(final SQLiteDatabase db) {
+		 ContentValues entry = new ContentValues();				
+		 
+		 // TODO: Handle error if failed to create tags (theoretical pathological case, maybe due to lack of resources)
+		 entry.put(DataConstants.TAGTEXT, "Owned");
+		 db.insert(DataConstants.TAG_TABLE, null, entry);
+
+		 entry.clear();				
+		 entry.put(DataConstants.TAGTEXT, "Read");
+		 db.insert(DataConstants.TAG_TABLE, null, entry);    	  
+   }
+   
+
+   
    //
    // end DB methods
    //  
@@ -347,24 +382,6 @@ public class DataManager {
 	     }
       }
 
-      /**
-       * Creates built-in tags. This is done here rather than in the TagDAO, since built-in tags are specific to this 
-       * application and are not intrinsic to the tag classes themselves.
-       * 
-       * @param db  Database to be updated with built-in tags
-       */
-      private void createBuiltInTags(final SQLiteDatabase db) {
- 		 ContentValues entry = new ContentValues();				
- 		 
- 		 // TODO: Handle error if failed to create tags (theoretical pathological case, maybe due to lack of resources)
-		 entry.put(DataConstants.TAGTEXT, "Owned");
-		 db.insert(DataConstants.TAG_TABLE, null, entry);
-
-		 entry.clear();				
-		 entry.put(DataConstants.TAGTEXT, "Read");
-		 db.insert(DataConstants.TAG_TABLE, null, entry);    	  
-      }
-      
       
       /**
        * Converts the "Have Read?" status in the BookUserData table to the "Read" tag.
@@ -378,7 +395,7 @@ public class DataManager {
     	  long readTagId;
 
     	  Cursor c = db.query(DataConstants.TAG_TABLE, new String[] { DataConstants.TAG_ID }, DataConstants.TAGTEXT
-    			  + " = Read", null, null, null, null, "1");
+    			  + " = \"Read\"", null, null, null, null, "1");
     	  if (c.moveToFirst()) {
     		  readTagId = c.getLong(0);
     	  } else {
