@@ -168,12 +168,18 @@ private void bookAdd(final Book book) {
          // (these are not unique - use a combination maybe?)
          // if book exists do not resave, or allow user to choose?
     	  
-    	 book.bookUserData.read = application.defaultReadEnabled;
-    	 
+
          long bookId = application.dataManager.insertBook(book);
          if (book.coverImage != null) {
             application.imageManager.storeBitmap(book.coverImage, book.title, bookId);
          }
+         
+         // Link default tags to new book
+    	 for (int i = 0; i < application.defaultTagIds.size(); i++) {
+    		 application.dataManager.addTagToBook(application.defaultTagIds.get(i), bookId);
+    	 }
+    	 
+         
       } else {
          Log.e(Constants.LOG_TAG, "BookEntryResult bookAdd invoked on null book.");
       }

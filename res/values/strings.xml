@@ -171,8 +171,8 @@
    	<string name="prefSumDefaultAdd">Select the default way to add books.</string>  
     <string name="prefTitleFastScan">Enable quick scanning?</string>
     <string name="prefSumFastScan">Enable to scan books without prompts.</string>  
-    <string name="prefTitleDefaultRead">\"Read\" checked by default?</string>
-    <string name="prefSumDefaultRead">Enable to automatically check \"Read\" for new books.</string>  
+    <string name="prefTitleDefaultTags">Default tags</string>
+    <string name="prefSumDefaultTags">Select default tags to be linked to new books</string>  
     <string name="prefTitleCameraButton">Use camera button?</string>
     <string name="prefSumCameraButton">Enable to use camera button to scan books.</string>  
     

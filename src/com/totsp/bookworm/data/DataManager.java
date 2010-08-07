@@ -2,8 +2,10 @@ package com.totsp.bookworm.data;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -27,6 +29,9 @@ import com.totsp.bookworm.model.Tag;
  */
 public class DataManager {
 
+   // Use an invalid book ID to store default tags in tagbooks table
+   public static final long DEFAULT_BOOK_TAGS_ID = 0;	
+   
    private static final int DATABASE_VERSION = 12;
 	
 
@@ -199,11 +204,12 @@ public class DataManager {
    /**
     * Returns a string containing all of the tags which are applied against the specified book.
     * 
-    * @param bookId  Book to query
-    * @return        String containing comma separated tag text
+    * @param bookId     Book to query
+    * @param separator  Tag delimiter text
+    * @return        String containing tag text
     */
-   public String getBookTagsString(final long bookId) {
-	   return tagDAO.getTagsString(bookId);
+   public String getBookTagsString(final long bookId, CharSequence separator) {
+	   return tagDAO.getTagsString(bookId, separator);
    }
 
 
@@ -218,6 +224,20 @@ public class DataManager {
 	   tagDAO.swapBooks(tagId, bookId1, bookId2);
    }
    
+   public TagSelectorBuilder getTagSelectorBuilder(Context context, long bookId) {
+	  return new TagSelectorBuilder(context, bookId); 
+   }
+
+	
+   /**
+    * Queries the default tags.
+    * @return
+    */
+   public ArrayList<Long> getDefaultTags() {
+	   return tagDAO.getLinkedTagIds(DataManager.DEFAULT_BOOK_TAGS_ID);
+   }
+
+	
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
       Log.i(Constants.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");
@@ -428,4 +448,37 @@ public class DataManager {
          return dbCreated;
       }
    }
+   
+   
+   /**
+    * Creates a new tag selector dialog builder for a specific book.
+    * The dialog consists of a multi-selection list of all tags with tags linked to the specified book selected. 
+    * Selecting or de-selecting books will update the DB links automatically.
+    * 
+    * Wrapper class for {@link TagDAO.SelectorDialogBuilder} to avoid requiring clients to use TagDAO directly.
+    * Delegates all calls to TagDAO.SelectorDialogBuilder.
+    * 
+    * Note that only a limited subset of {@link AlertDialog.Builder} methods are implemented.
+    */
+   public class TagSelectorBuilder {
+	   private TagDAO.SelectorDialogBuilder selector;	
+
+	   public TagSelectorBuilder(Context context, long bookId) {
+		   selector = tagDAO.getSelectorDialogBuilder(context, bookId);
+	   }
+
+	   public void show() {
+		   selector.show();
+	   }
+
+	   public void setOnClickListener(DialogInterface.OnClickListener onClickListener) {
+		   selector.setOnClickListener(onClickListener);
+	   }
+
+	   public void create() {
+		   selector.create();
+
+	   }	    	   
+   }
+   
 }

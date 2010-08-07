@@ -8,7 +8,7 @@ import java.util.List;
  * Interface to enforce DAO pattern. This is *not* intended to look
  * or feel like server side DAOs, rather it's a simple pattern 
  * for use on Android that helps separate local database operations
- * into classes for separate entities (abstractions) for consitency and 
+ * into classes for separate entities (abstractions) for consistency and 
  * maintainability, etc. 
  
  * Note, implementation references should be used directly, not the 

@@ -34,11 +34,10 @@
         	android:key="fastscanenabled" 
         	android:defaultValue="false"/>
         	
-        <CheckBoxPreference 
-        	android:title="@string/prefTitleDefaultRead" 
-        	android:summary="@string/prefSumDefaultRead"
-        	android:key="defaultreadenabled" 
-        	android:defaultValue="false"/>    
+        <Preference android:key="prefdefaulttags" 
+        	android:title="@string/prefTitleDefaultTags" 
+        	android:summary="@string/prefSumDefaultTags"
+        	android:persistent="false"/>    
     </PreferenceCategory>
 
 

@@ -623,6 +623,8 @@ public class Main extends Activity {
                                                    Log.i(Constants.LOG_TAG, "deleting database");
                                                    application.dataManager.deleteAllDataYesIAmSure();
                                                    application.dataManager.resetDb();
+                                                   // Update preferences for default tags
+                                                   application.updatePreferences();
                                                    Toast.makeText(Main.this, getString(R.string.msgDataDeleted),
                                                             Toast.LENGTH_SHORT).show();
                                                    startActivity(new Intent(Main.this, Main.class));

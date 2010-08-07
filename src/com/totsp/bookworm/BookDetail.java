@@ -27,6 +27,7 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.totsp.bookworm.data.DataManager;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.DateUtil;
 import com.totsp.bookworm.util.StringUtil;
@@ -60,7 +61,7 @@ public class BookDetail extends Activity {
 	
 	private Button selectTagsButton;			// Button to display tag selection dialog
 	private ImageButton addTagImage;			// Button to add a new tag to DB
-	private AlertDialog.Builder tagDialog;		// Pop-up dialog to select tags linked to current book
+	private DataManager.TagSelectorBuilder tagDialog;		// Pop-up dialog to select tags linked to current book
 	private Cursor tagCursor;
 	
 	private TextView bookBlurb;   				// Display user blurb
@@ -206,7 +207,7 @@ public class BookDetail extends Activity {
 
 			ratingBar.setRating(book.bookUserData.rating);
 			bookBlurb.setText(book.bookUserData.blurb);
-			bookTags.setText(application.dataManager.getBookTagsString(bookId));
+			bookTags.setText(application.dataManager.getBookTagsString(bookId, ", "));
 		}
 	}
 
@@ -276,33 +277,16 @@ public class BookDetail extends Activity {
 		AlertDialog.Builder blurbBuilder = new AlertDialog.Builder(this);
 		AlertDialog.Builder zoomBuilder = new AlertDialog.Builder(this);
 
-		// TODO: Consider extracting tag selection portion to TagDAO to encapsulate knowledge of cursor structure
-		tagCursor = application.dataManager.getTagSelectorCursor(bookId);
-		tagDialog = new AlertDialog.Builder(this);
-		tagDialog.setTitle(getString(R.string.titleTagSelector));
-		if ((tagCursor != null) && (tagCursor.getCount() > 0)) {
-			startManagingCursor(tagCursor);
+		// Must keep the reference to the builder rather than the dialog since the builder maintains the cursor which is
+		// used to populate the list.
+		tagDialog = application.dataManager.getTagSelectorBuilder(this, bookId);
+		tagDialog.setOnClickListener(new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				bookTags.setText(application.dataManager.getBookTagsString(bookId, ", "));					
+			}
+		});
 
-			tagDialog.setMultiChoiceItems(tagCursor, new String("tagged"), new String("taggedText"),
-					new OnMultiChoiceClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-					tagCursor.moveToPosition(which);
-					if (application.debugEnabled) {
-						Log.v(Constants.LOG_TAG, "Selected Tag: " + tagCursor.getString(1));
-					}
-					application.dataManager.setBookTagged(bookId, tagCursor.getLong(0), isChecked);
-					tagCursor.requery();
-
-					bookTags.setText(application.dataManager.getBookTagsString(bookId));										
-				}								
-			});		   		   
-		}
-		else
-		{
-			tagDialog.setMessage(R.string.msgNoTagsFound);
-		}
 		tagDialog.create();
 
 		blurbEditor = new EditText(this);

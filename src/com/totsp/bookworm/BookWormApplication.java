@@ -1,5 +1,7 @@
 package com.totsp.bookworm;
 
+import java.util.ArrayList;
+
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -24,6 +26,7 @@ public class BookWormApplication extends Application {
    int     defaultAddMode;
    boolean defaultReadEnabled;
    boolean scanOnCameraButton;        // Controls whether the camera button starts a scan
+   ArrayList<Long> defaultTagIds;     // List of tags to be linked to new books by default
 
    
    SharedPreferences prefs;
@@ -87,6 +90,9 @@ public class BookWormApplication extends Application {
 	   defaultReadEnabled = prefs.getBoolean("defaultreadenabled", false);
 	   defaultAddMode = Integer.parseInt(prefs.getString("addmodepref", String.valueOf(ADD_MODE_SCAN)));
 	   scanOnCameraButton = prefs.getBoolean("camerabuttonscanenabled", false);
+	   
+	   // Default tags are stored in DB to ensure they stay synced with tags table.
+	   defaultTagIds = dataManager.getDefaultTags();
    }
    
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id

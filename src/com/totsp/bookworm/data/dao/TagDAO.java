@@ -2,7 +2,12 @@ package com.totsp.bookworm.data.dao;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
@@ -11,15 +16,16 @@ import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
+import com.totsp.bookworm.R;
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.model.Tag;
 
+// TODO: Extract the tagbooks methods into an abstract tagItemsDAO and a sub-class extending it for books.
 
 /**
  *  DAO for item tag DB tables.
- *  As well as implementing the DAO methods for maintaining the tag entries
- *  this class also includes static methods to be used by the SQL open helper to 
- *  create and upgrade the tag tables.  
+ *  As well as implementing the DAO methods for maintaining the tag entries this class also includes static methods to 
+ *  be used by the SQL open helper to create and upgrade the tag tables.  
  */
 public class TagDAO implements DAO<Tag>{
 
@@ -31,6 +37,12 @@ public class TagDAO implements DAO<Tag>{
 		"select tags.ttext from tags join tagbooks on (tagbooks.tid=tags.tid)" 
 		+ " join book on (book.bid = tagbooks.bid) where book.bid=? order by tags.ttext asc";
 
+
+	private static final String QUERY_TAG_ID_BY_BOOK_ID =
+		"select tagbooks.tid from tagbooks where tagbooks.bid=?";
+
+
+	
 	private static final String QUERY_BOOK_POSITION =
 		"select tagbooks.tbid from tagbooks where (tagbooks.bid=? and tagbooks.tid=?)";
 
@@ -160,9 +172,10 @@ public class TagDAO implements DAO<Tag>{
 	 * Returns a string containing all of the tags which are linked against the specified book.
 	 * 
 	 * @param bookId  Book to query
+	 * @param separator Tag separator text
 	 * @return        String containing comma separated tag text
 	 */
-	public String getTagsString(final long bookId) {
+	public String getTagsString(final long bookId, CharSequence separator) {
 		StringBuilder sb = new StringBuilder();
 		int numRows;
 		
@@ -186,6 +199,38 @@ public class TagDAO implements DAO<Tag>{
 		
 		return sb.toString();		
 	}
+	
+	
+	/**
+	 * Queries the ID of all tags linked to the specified book.
+	 * 
+	 * @param bookId
+	 * 
+	 * @return A list of tag ID's representing tags that are linked to the specified book
+	 */
+	public ArrayList<Long> getLinkedTagIds(long bookId) {
+		ArrayList<Long> result = new ArrayList<Long>();
+		boolean moreTags;
+		
+		try {
+			Cursor c = db.rawQuery(QUERY_TAG_ID_BY_BOOK_ID, new String[] { String.valueOf(bookId) });	
+
+			moreTags = c.moveToFirst();
+			while (moreTags) {
+				result.add(c.getLong(0));
+				moreTags = c.moveToNext();
+			}
+
+			if (!c.isClosed()) {
+				c.close();
+			}
+		} catch (SQLException e) {
+			Log.d(Constants.LOG_TAG, "TagDAO", e);
+		}
+		
+		return result;		
+	}
+	
 	
 	/**
 	 * Swaps the order of two books in the tag books table.
@@ -370,4 +415,81 @@ public class TagDAO implements DAO<Tag>{
 		}
 	}
 
+	
+	/**
+	 * Factory method to create a new tag selector dialog builder.
+	 *    
+	 * @param context  Context for the new dialog
+	 * @param bookId   ID of book to which tags are linked
+	 * 
+	 * @return A new tag selector dialog builder instance
+	 */
+	public SelectorDialogBuilder getSelectorDialogBuilder(Context context, long bookId) {
+		return new SelectorDialogBuilder(context, bookId); 
+	}	
+
+	
+	/**
+	 * Tag selector dialog builder utility class.<br>
+	 * Creates a new tag selector dialog builder for a specific book.
+	 * The dialog consists of a multi-selection list of all tags with tags linked to the specified book selected. 
+	 * This class handles the management of the cursor and DB updates on selection changes.
+	 */
+	public class SelectorDialogBuilder extends AlertDialog.Builder {
+		private Cursor tagCursor;
+		private Activity activity;
+		private DialogInterface.OnClickListener clientListener;
+		private long bookId =-1;
+
+		public SelectorDialogBuilder(Context context, long bookId) {
+			super(context);
+			activity = (Activity)context;
+			this.bookId = bookId;
+		}
+
+		@Override
+		public AlertDialog create() {
+			tagCursor = getSelectorCursor(bookId);
+			setTitle(activity.getString(R.string.titleTagSelector));
+			if ((tagCursor != null) && (tagCursor.getCount() > 0)) {
+				activity.startManagingCursor(tagCursor);
+
+				setMultiChoiceItems(tagCursor, new String("tagged"), new String("taggedText"),
+						new OnMultiChoiceClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+						tagCursor.moveToPosition(which);
+
+						if (isChecked) {
+							insertBook(tagCursor.getLong(0), bookId);
+						}
+						else
+						{
+							deleteBook(tagCursor.getLong(0), bookId);
+						}
+
+						tagCursor.requery();
+
+						if (clientListener != null) {
+							clientListener.onClick(dialog, which);
+						}					
+					}								
+				});		   		   
+			}
+			else
+			{
+				setMessage(R.string.msgNoTagsFound);
+			}
+
+			return super.create();
+		}
+
+		public SelectorDialogBuilder setOnClickListener(DialogInterface.OnClickListener listener) {
+			clientListener = listener;
+			return this;
+		}
+
+	}
+	
 }
