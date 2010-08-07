@@ -108,10 +108,6 @@
     <string name="prefSumSplash">By default Splash shown once after install, enable to show at each start.</string>
     <string name="prefTitleDebugLog">Enable debug logging?</string>
     <string name="prefSumDebugLog">Enable to get detailed logs.</string>  
-    <string name="prefTitleFastScan">Enable quick scanning?</string>
-    <string name="prefSumFastScan">Enable to scan books without prompts.</string>  
-    <string name="prefTitleDefaultRead">\"Read\" checked by default?</string>
-    <string name="prefSumDefaultRead">Enable to automatically check \"Read\" for new books.</string>  
     <string name="prefSectDataProvider">Data Provider Preferences</string>
     <string name="prefTitleBookData">Book Data Provider</string>
     <string name="prefSumBookData">Currently only Google Books (future additions planned).</string>
@@ -148,15 +144,16 @@
     <string name="msgReplaceExistingCSVExport">Are you sure (this will replace any existing prior CSV export)?</string>
     <string name="msgReplaceExistingDBExport">Are you sure (this will replace any existing prior DB export)?</string>
     <string name="msgReplaceExistingDB">Are you sure (this will replace all current application data)?"</string>
-    <string name="promptTag">Select tag"</string>
-    <string name="menuGroup">Tags"</string>    
-    <string name="labelTag">"Tag name"</string>
+    <string name="promptTag">Select tag</string>
+    <string name="labelTag">Tag text</string>
+    <string name="labelSelectedTag">*Selected tag</string>
     <string name="msgSavingTagInfo">Saving tag info...</string>
     <string name="msgTagSaved">Tag saved</string>
     <string name="msgTagSaveError">Error saving tag: Duplicate tags not allowed.</string>
     <string name="msgReorderTag">Select new position in tag group.</string>
     <string name="msgNoTagsFound">No tags found</string>
-    <string name="titleTagBatchList">BookWorm - Tags</string>
+    <string name="titleTagBatchList">BookWorm - Tag Batch Editor</string>
+    <string name="titleTagReorder">BookWorm - Tag Order Editor</string>
     <string name="titleTagEditor">BookWorm - Tag Editor</string>
 	<string name="btnFilterBy">Filter by</string>	
 	<string name="promptTagTemplate">Select template</string>	
@@ -168,4 +165,17 @@
 	<string name="msgMinmumTag">"Not saved. No tag text defined.</string>
 	<string name="titleTagSelector">Select tags</string>
 	<string name="titleBlurbEditor">Edit user blurb</string>
+	
+	<string name="prefSectAdd">New Item Preferences</string>
+    <string name="prefTitleDefaultAdd">Default add mode</string>  
+   	<string name="prefSumDefaultAdd">Select the default way to add books.</string>  
+    <string name="prefTitleFastScan">Enable quick scanning?</string>
+    <string name="prefSumFastScan">Enable to scan books without prompts.</string>  
+    <string name="prefTitleDefaultRead">\"Read\" checked by default?</string>
+    <string name="prefSumDefaultRead">Enable to automatically check \"Read\" for new books.</string>  
+    <string name="prefTitleCameraButton">Use camera button?</string>
+    <string name="prefSumCameraButton">Enable to use camera button to scan books.</string>  
+    
+    <string name="titleAddMode">Select add method</string>
+	
 </resources>

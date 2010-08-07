@@ -9,24 +9,17 @@
 		android:layout_marginRight="10dp" android:background="@drawable/border1" />
 
 	<TextView android:id="@+id/list_items_item_text1"
-        android:layout_width="340dp" android:layout_height="wrap_content"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_toRightOf="@id/list_items_item_image" android:maxLines="2"
-        android:ellipsize="end" style="@style/whitemed" />
+        android:ellipsize="end" style="@style/whitesmall" />
     <TextView android:id="@+id/list_items_item_text2"
-        android:layout_width="340dp" android:layout_height="wrap_content"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_toRightOf="@id/list_items_item_image"
         android:layout_below="@id/list_items_item_text1" android:maxLines="2"
         android:ellipsize="end" style="@style/greytiny" />   
 
-	<CheckBox android:id="@+id/list_items_item_read_status"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_marginLeft="5dp" android:layout_marginRight="3dp"
-		android:layout_toRightOf="@id/list_items_item_text2"
-		android:gravity="right" android:enabled="false" android:focusable="false" />
 	<ImageView android:id="@+id/list_items_item_rating_image"
 		android:layout_width="50dp" android:layout_height="8dp"
 		android:layout_marginBottom="3dp" android:layout_marginRight="5dp"
-		android:layout_toRightOf="@id/list_items_item_text2"
-		android:layout_below="@id/list_items_item_read_status"
-		android:gravity="right" />
+		android:layout_alignParentRight="true" android:layout_alignParentBottom="true" />
 </RelativeLayout>

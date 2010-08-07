@@ -14,6 +14,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -54,6 +55,7 @@ public class BookEntryResult extends Activity {
    //Book book;
 
    boolean fromSearch;
+   boolean searchFailed; 	// Search result failed flag used to enable touch-anywhere dismiss
 
    SetupBookResultTask setupBookResultTask;
 
@@ -83,6 +85,7 @@ public class BookEntryResult extends Activity {
       });
 
       fromSearch = getIntent().getBooleanExtra(BookSearch.FROM_SEARCH, false);
+	  searchFailed = false;
 
       // several other activities can populate this one
       // *EITHER* use application.selectedBook (if from SEARCH)
@@ -146,7 +149,20 @@ public class BookEntryResult extends Activity {
       return super.onOptionsItemSelected(item);
    }
 
-   private void bookAdd(final Book book) {
+   
+   
+   @Override
+   public boolean onTouchEvent(MotionEvent event) {
+	   // Allow a touch anywhere on the screen to dismiss an error when using fast scan mode to streamline scanning
+	   // multiple books without adjusting your grip on the device
+	   if (application.fastScanEnabled && searchFailed) {
+		   finish();
+		   return true;
+	   }
+	   return super.onTouchEvent(event);
+   }
+
+private void bookAdd(final Book book) {
       if (book != null) {
          // TODO check for book exists using more than just ISBN or title 
          // (these are not unique - use a combination maybe?)
@@ -181,6 +197,7 @@ public class BookEntryResult extends Activity {
    private void setViewsForInvalidEntry(final BookMessageBean bean) {
       bookCover.setImageResource(R.drawable.book_invalid_isbn);
       bookAuthors.setText(String.format(getString(R.string.msgScanError), bean.code));
+      searchFailed = true;
    }
 
    //

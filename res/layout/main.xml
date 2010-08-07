@@ -30,35 +30,38 @@
 		<ImageView android:id="@+id/actionsort"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
-			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="7dp"
 			android:src="@android:drawable/ic_menu_sort_by_size"
 			android:layout_gravity="center" />
 
-		<ImageView android:id="@+id/actionaddscan"
+		<ImageView android:id="@+id/actionfilter"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
-			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
-			android:src="@android:drawable/ic_menu_camera"
+			android:layout_marginLeft="7dp" android:layout_marginRight="7dp"
+			android:src="@drawable/ic_menu_filter"
+			android:layout_gravity="center" />
+			
+		<ImageView android:id="@+id/actionadd"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="7dp" android:layout_marginRight="7dp"
+			android:src="@android:drawable/ic_menu_add"
 			android:layout_gravity="center" />
 
-		<ImageView android:id="@+id/actionaddsearch"
+		<ImageView android:id="@+id/actionedittags"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
-			android:layout_marginLeft="5dp" android:src="@android:drawable/ic_menu_search"
+			android:layout_marginLeft="7dp" android:layout_marginRight="7dp"
+			android:src="@drawable/ic_menu_tag"
 			android:layout_gravity="center" />
-
-		<ImageView android:id="@+id/actionaddform"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
-			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
-			android:src="@android:drawable/ic_menu_edit" android:layout_gravity="center" />
-
+			
 		<ImageView android:id="@+id/actionmanagedata"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:layout_marginTop="3dp" android:layout_marginBottom="3dp"
-			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:layout_marginLeft="7dp" android:layout_marginRight="5dp"
 			android:src="@android:drawable/ic_menu_manage"
 			android:layout_gravity="center" />
+			
 	</LinearLayout>
 
 </LinearLayout>

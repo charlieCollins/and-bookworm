@@ -12,17 +12,35 @@
         android:summary="@string/prefSumDebugLog"
         android:key="debugenabled" 
         android:defaultValue="false"/>
-        <CheckBoxPreference 
-        android:title="@string/prefTitleFastScan" 
-        android:summary="@string/prefSumFastScan"
-        android:key="fastscanenabled" 
-        android:defaultValue="false"/>
-        <CheckBoxPreference 
-        android:title="@string/prefTitleDefaultRead" 
-        android:summary="@string/prefSumDefaultRead"
-        android:key="defaultreadenabled" 
-        android:defaultValue="false"/>
+
     </PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/prefSectAdd">
+    	<ListPreference
+          	android:title="@string/prefTitleDefaultAdd"
+          	android:summary="@string/prefSumDefaultAdd"
+          	android:key="addmodepref"
+          	android:defaultValue="0"
+          	android:entries="@array/addmodenames"
+          	android:entryValues="@array/addmodekeys" />  
+        <CheckBoxPreference 
+        	android:title="@string/prefTitleCameraButton" 
+        	android:summary="@string/prefSumCameraButton"
+        	android:key="camerabuttonscanenabled" 
+        	android:defaultValue="true"/>        
+        <CheckBoxPreference 
+        	android:title="@string/prefTitleFastScan" 
+        	android:summary="@string/prefSumFastScan"
+        	android:key="fastscanenabled" 
+        	android:defaultValue="false"/>
+        	
+        <CheckBoxPreference 
+        	android:title="@string/prefTitleDefaultRead" 
+        	android:summary="@string/prefSumDefaultRead"
+        	android:key="defaultreadenabled" 
+        	android:defaultValue="false"/>    
+    </PreferenceCategory>
+
 
     <PreferenceCategory android:title="@string/prefSectDataProvider">
         <ListPreference

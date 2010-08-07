@@ -1,5 +1,9 @@
 package com.totsp.bookworm;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -8,8 +12,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnCancelListener;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -22,25 +24,24 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.totsp.bookworm.data.CsvManager;
 import com.totsp.bookworm.data.DataConstants;
@@ -49,14 +50,11 @@ import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.ExternalStorageUtil;
 import com.totsp.bookworm.util.FileUtil;
 import com.totsp.bookworm.util.NetworkUtil;
+import com.totsp.bookworm.util.PrefListDialogBuilder;
 import com.totsp.bookworm.util.StringUtil;
 import com.totsp.bookworm.util.TaskUtil;
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * BookWorm primary activity.
@@ -67,7 +65,6 @@ public class Main extends Activity {
    private static final int MENU_ABOUT = 1;
    private static final int MENU_PREFS = 2;
    private static final int MENU_STATS = 3;
-   private static final int MENU_TAGS = 4;
 
    private static final int MENU_CONTEXT_EDIT = 0;
    private static final int MENU_CONTEXT_DELETE = 1;
@@ -81,9 +78,9 @@ public class Main extends Activity {
    private Cursor cursor;
 
    private ImageView sortImage;
-   private ImageView addScanImage;
-   private ImageView addSearchImage;
-   private ImageView addFormImage;
+   private ImageView filterImage;
+   private ImageView addBookImage;
+   private ImageView tagEditorImage;
    private ImageView manageDataImage;
 
    private Bitmap coverImageMissing;
@@ -98,10 +95,14 @@ public class Main extends Activity {
    private ExportDatabaseTask exportDatabaseTask;
    private ResetAllCoverImagesTask resetAllCoverImagesTask;
 
-   private AlertDialog.Builder sortDialog;
+   private PrefListDialogBuilder sortDialog;
+   private PrefListDialogBuilder filterDialog;
    private boolean sortDialogIsShowing;
+   private boolean filterDialogIsShowing;
    private AlertDialog.Builder manageDataDialog;
    private AlertDialog.Builder statsDialog;
+   private AlertDialog selectAddModeDialog;
+   
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -137,41 +138,43 @@ public class Main extends Activity {
             }
          }
       });
-      addScanImage = (ImageView) findViewById(R.id.actionaddscan);
-      addScanImage.setOnClickListener(new OnClickListener() {
-         public void onClick(View v) {
-            if (NetworkUtil.connectionPresent(cMgr)) {
-               try {
-                  ZXingIntentIntegrator.initiateScan(Main.this, getString(R.string.labelInstallScanner),
-                           getString(R.string.msgScannerNotPresent), getString(R.string.btnYes),
-                           getString(R.string.btnNo));
-               } catch (ActivityNotFoundException e) {
-                  // this doesn't need to be i18n, should only happen on emulator (or roms without Market)
-                  Toast.makeText(Main.this, "Unable to search Market for Barcode scanner, scanning unavailable.",
-                           Toast.LENGTH_LONG).show();
-               }
-            } else {
-               Toast.makeText(Main.this, getString(R.string.msgNetworkNAError), Toast.LENGTH_LONG).show();
+      
+      filterImage = (ImageView) findViewById(R.id.actionfilter);
+      filterImage.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) { 
+            if (!filterDialogIsShowing) {
+               filterDialogIsShowing = true;
+               filterDialog.show();
             }
          }
       });
-      addSearchImage = (ImageView) findViewById(R.id.actionaddsearch);
-      addSearchImage.setOnClickListener(new OnClickListener() {
+      
+      
+      addBookImage = (ImageView) findViewById(R.id.actionadd);
+      addBookImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            if (NetworkUtil.connectionPresent(cMgr)) {
-               startActivity(new Intent(Main.this, BookSearch.class));
-            } else {
-               Toast.makeText(Main.this, getString(R.string.msgNetworkNAError), Toast.LENGTH_LONG).show();
-            }
+        	addBook(application.defaultAddMode);
+         }
+
+      });
+      
+      addBookImage.setOnLongClickListener(new View.OnLongClickListener() {
+		
+		@Override
+		public boolean onLongClick(View v) {
+			selectAddModeDialog.show();
+			return true;
+		}
+	});
+
+      tagEditorImage = (ImageView) findViewById(R.id.actionedittags);
+      tagEditorImage.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            startActivity(new Intent(Main.this, TagBatchList.class));
+
          }
       });
-      addFormImage = (ImageView) findViewById(R.id.actionaddform);
-      addFormImage.setOnClickListener(new OnClickListener() {
-         public void onClick(View v) {
-            application.selectedBook = null;
-            startActivity(new Intent(Main.this, BookForm.class));
-         }
-      });
+      
       manageDataImage = (ImageView) findViewById(R.id.actionmanagedata);
       manageDataImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
@@ -220,7 +223,6 @@ public class Main extends Activity {
       menu.add(0, Main.MENU_ABOUT, 1, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 2, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
       menu.add(0, Main.MENU_STATS, 3, getString(R.string.menuStats)).setIcon(android.R.drawable.ic_menu_info_details);
-      menu.add(0, Main.MENU_TAGS, 4, getString(R.string.menuGroup)).setIcon(R.drawable.ic_menu_tag);
       return super.onCreateOptionsMenu(menu);
    }
 
@@ -251,10 +253,6 @@ public class Main extends Activity {
             statsDialog.setMessage(sb.toString());
             statsDialog.show();
             return true;
-            
-         case MENU_TAGS:
-             startActivity(new Intent(Main.this, TagBatchList.class));
-             return true;
             
          default:
             return super.onOptionsItemSelected(item);
@@ -335,6 +333,11 @@ public class Main extends Activity {
          startActivity(intent);
          return true;
       }
+      // Use camera button to add book by scan
+      if (application.scanOnCameraButton && keyCode == KeyEvent.KEYCODE_CAMERA) {
+    	  addBook(BookWormApplication.ADD_MODE_SCAN);
+    	  return true;
+      }
       return super.onKeyDown(keyCode, event);
    }
 
@@ -401,50 +404,58 @@ public class Main extends Activity {
    }
 
    private void setupDialogs() {
-      sortDialog = new AlertDialog.Builder(this);
-      sortDialog.setTitle(getString(R.string.btnSortBy));
-      sortDialog.setItems(new CharSequence[] { getString(R.string.labelTitle), getString(R.string.labelAuthorsShort),
-               getString(R.string.labelRating), getString(R.string.labelReadstatus), getString(R.string.labelSubject),
-               getString(R.string.labelDatepub), getString(R.string.labelPublisher) },
-               new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface d, int selected) {
-                     sortDialogIsShowing = false;
-                     switch (selected) {
-                        case 0:
-                           saveSortOrder(DataConstants.ORDER_BY_TITLE_ASC);
-                           break;
-                        case 1:
-                           saveSortOrder(DataConstants.ORDER_BY_AUTHORS_ASC);
-                           break;
-                        case 2:
-                           saveSortOrder(DataConstants.ORDER_BY_RATING_DESC);
-                           break;
-                        case 3:
-                           saveSortOrder(DataConstants.ORDER_BY_READ_DESC);
-                           break;
-                        case 4:
-                           saveSortOrder(DataConstants.ORDER_BY_SUBJECT_ASC);
-                           break;
-                        case 5:
-                           saveSortOrder(DataConstants.ORDER_BY_DATE_PUB_DESC);
-                           break;
-                        case 6:
-                           saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
-                           break;
-                     }
-                     application.lastMainListPosition = 0;
-                     // adapter.notifyDataSetChanged();
-                     // TODO notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
-                     // need to research (shouldn't have to re-bind the entire adapter, but for now doing so)
-                     bindAdapter();
-                  }
-               });
-      sortDialog.setOnCancelListener(new OnCancelListener() {
-         public void onCancel(DialogInterface d) {
-            sortDialogIsShowing = false;
-         }
-      });
-      sortDialog.create();
+	  sortDialog = new PrefListDialogBuilder(this, prefs, Constants.DEFAULT_SORT_ORDER);
+	  sortDialog.setTitle(getString(R.string.btnSortBy))
+	   		.addEntry(getString(R.string.labelTitle), DataConstants.ORDER_BY_TITLE_ASC)
+	   		.addEntry(getString(R.string.labelAuthorsShort), DataConstants.ORDER_BY_AUTHORS_ASC)
+	   		.addEntry(getString(R.string.labelRating), DataConstants.ORDER_BY_RATING_DESC)
+	   		.addEntry(getString(R.string.labelSubject),DataConstants.ORDER_BY_SUBJECT_ASC)
+	   		.addEntry(getString(R.string.labelDatepub), DataConstants.ORDER_BY_DATE_PUB_DESC)
+	   		.addEntry(getString(R.string.labelPublisher), DataConstants.ORDER_BY_PUB_ASC)
+	   		.setOnClickListener(new DialogInterface.OnClickListener() {		
+	   			@Override
+	   			public void onClick(DialogInterface dialog, int which) {
+	   				sortDialogIsShowing = false;
+	   				if (Main.this.adapter != null) {
+	   					((BookCursorAdapter)Main.this.adapter).runQuery(null);
+	   					application.lastMainListPosition = 0;
+	   					// Must call changeCursor for sort since it isn't called automatically as it is for filter 
+	   					Main.this.adapter.changeCursor(cursor);
+	   				}
+	   			}
+	   		});
+      sortDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+          public void onCancel(DialogInterface d) {
+             sortDialogIsShowing = false;
+          }
+       });
+      
+	  sortDialog.create();
+
+	  filterDialog = new PrefListDialogBuilder(this, prefs, Constants.DEFAULT_FILTER);
+	  filterDialog.setTitle(getString(R.string.btnFilterBy))
+			.addEntry(getString(R.string.labelTitle), DataConstants.FILTER_BY_TITLE)
+			.addEntry(getString(R.string.labelAuthorsShort), DataConstants.FILTER_BY_AUTHOR)
+			.addEntry(getString(R.string.labelSubject),DataConstants.FILTER_BY_SUBJECT)
+			.addEntry(getString(R.string.labelPublisher), DataConstants.FILTER_BY_PUBLISHER)
+			.addEntry(getString(R.string.labelRating), DataConstants.FILTER_BY_RATING)
+			.addEntry(getString(R.string.labelTag), DataConstants.FILTER_BY_TAG)
+	   		.setOnClickListener(new DialogInterface.OnClickListener() {		
+	   			@Override
+	   			public void onClick(DialogInterface dialog, int which) {
+	   				filterDialogIsShowing = false;
+	   				if (Main.this.adapter != null) {
+	   					((BookCursorAdapter)Main.this.adapter).runQuery(null);
+	   				}
+	   			}
+	   		});
+	  filterDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+          public void onCancel(DialogInterface d) {
+             filterDialogIsShowing = false;
+          }
+       });
+
+	  filterDialog.create();
 
       manageDataDialog = new AlertDialog.Builder(this);
       manageDataDialog.setTitle(getString(R.string.labelManageData));
@@ -634,22 +645,90 @@ public class Main extends Activity {
          };
       });
       statsDialog.create();
+      
+      AlertDialog.Builder addModeDialogBuild = new AlertDialog.Builder(this);
+      addModeDialogBuild.setTitle(R.string.titleAddMode)
+      	.setItems(R.array.addmodenames, new DialogInterface.OnClickListener() {
+
+    	  @Override
+    	  public void onClick(DialogInterface dialog, int which) {
+    		  addBook(which);				
+    	  }
+      	});
+      selectAddModeDialog = addModeDialogBuild.create();
    }
 
-   private void saveSortOrder(final String order) {
-      Editor editor = prefs.edit();
-      editor.putString(Constants.DEFAULT_SORT_ORDER, order);
-      editor.commit();
+
+   /**
+    * Adds a new book using the barcode scanner.
+    */
+   private void addBookByScan() {
+	   if (NetworkUtil.connectionPresent(cMgr)) {
+		   try {
+			   ZXingIntentIntegrator.initiateScan(Main.this, getString(R.string.labelInstallScanner),
+					   getString(R.string.msgScannerNotPresent), getString(R.string.btnYes),
+					   getString(R.string.btnNo));
+		   } catch (ActivityNotFoundException e) {
+			   // this doesn't need to be i18n, should only happen on emulator (or roms without Market)
+			   Toast.makeText(Main.this, "Unable to search Market for Barcode scanner, scanning unavailable.",
+					   Toast.LENGTH_LONG).show();
+		   }
+	   } else {
+		   Toast.makeText(Main.this, getString(R.string.msgNetworkNAError), Toast.LENGTH_LONG).show();
+	   }
+   }
+   
+   /**
+    * Adds new books using a web search.
+    */
+   private void addBookBySearch() {
+	   if (NetworkUtil.connectionPresent(cMgr)) {
+		   startActivity(new Intent(Main.this, BookSearch.class));
+	   } else {
+		   Toast.makeText(Main.this, getString(R.string.msgNetworkNAError), Toast.LENGTH_LONG).show();
+	   }
    }
 
-   // static and package access as an Android optimization 
+   /**
+    * Adds a new book by entering the information manually.
+    */
+   private void addBookManually() {
+	   application.selectedBook = null;
+	   startActivity(new Intent(Main.this, BookForm.class));
+   }
+
+   /**
+    * Adds a new book to the collection.
+    * 
+    * @param mode Specifies the method to be used to add a book
+    */
+   private void addBook(int mode) {
+	   switch (mode) {
+	   case BookWormApplication.ADD_MODE_SCAN:
+		   addBookByScan();
+		   break;
+
+	   case BookWormApplication.ADD_MODE_SEARCH:
+		   addBookBySearch();
+		   break;
+
+	   case BookWormApplication.ADD_MODE_MANUAL:
+		   addBookManually();
+		   break;
+
+	   default:
+		   Toast.makeText(Main.this, getString(R.string.msgSelectBookError), Toast.LENGTH_SHORT).show();
+		   break;       	
+	   }
+   }
+
+// static and package access as an Android optimization 
    // (used in inner class)
    static class ViewHolder {
       ImageView coverImage;
       ImageView ratingImage;
       TextView text1;
       TextView text2;
-      CheckBox readStatus;
    }
 
    //
@@ -666,16 +745,17 @@ public class Main extends Activity {
 
       // FilterQueryProvider impl
       public Cursor runQuery(CharSequence constraint) {
-         Cursor c = null;
-         if ((constraint == null) || (constraint.length() == 0)) {
-            c = getCursor();
-         } else {
-            String pattern = "'%" + constraint + "%'";
-            String orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
-            c = application.dataManager.getBookCursor(orderBy, "where book.tit like " + pattern);
-         }
-         cursor = c;
-         return c;
+    	 Cursor c = null;
+    	 String orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
+    	 if ((constraint == null) || (constraint.length() == 0)) {
+    		 c = application.dataManager.getBookCursor(orderBy, null);
+    	 } else {
+    		 String filter = prefs.getString(Constants.DEFAULT_FILTER, DataConstants.FILTER_BY_TITLE);
+     		 c = application.dataManager.getBookCursor(orderBy, String.format(filter, constraint));
+    	 }
+    	 startManagingCursor(c);
+    	 cursor = c;
+    	 return c;
       }
 
       @Override
@@ -692,7 +772,6 @@ public class Main extends Activity {
          holder.ratingImage = (ImageView) v.findViewById(R.id.list_items_item_rating_image);
          holder.text1 = (TextView) v.findViewById(R.id.list_items_item_text1);
          holder.text2 = (TextView) v.findViewById(R.id.list_items_item_text2);
-         holder.readStatus = (CheckBox) v.findViewById(R.id.list_items_item_read_status);
          v.setTag(holder);
          populateView(v, c);
          return v;
@@ -716,7 +795,6 @@ public class Main extends Activity {
              */
 
             int rating = c.getInt(8);
-            int readStatus = c.getInt(7);
             String title = c.getString(1);
             String authors = c.getString(10);
 
@@ -757,11 +835,6 @@ public class Main extends Activity {
             holder.text1.setText(title);
             holder.text2.setText(StringUtil.addSpacesToCSVString(authors));
 
-            if (readStatus == 1) {
-               holder.readStatus.setChecked(true);
-            } else {
-               holder.readStatus.setChecked(false);
-            }
          }
       }
    }

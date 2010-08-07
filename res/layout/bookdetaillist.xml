@@ -5,7 +5,7 @@
 	<ScrollView android:id="@+id/bookDetailsList" 
 		android:layout_width="fill_parent" android:layout_height="fill_parent">
 		
-		<RelativeLayout android:id="@+id/RelativeLayout01" 
+		<RelativeLayout  
 			android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
 			
 			<TextView android:id="@+id/bookSubject" android:layout_width="wrap_content"

@@ -1,5 +1,7 @@
 package com.totsp.bookworm.data;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,15 +11,12 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
-import com.totsp.bookworm.R;
 import com.totsp.bookworm.data.dao.BookDAO;
 import com.totsp.bookworm.data.dao.BookUserDataDAO;
 import com.totsp.bookworm.data.dao.TagDAO;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.model.Tag;
-
-import java.util.ArrayList;
 
 /**
  * Android DataManager to encapsulate SQL and DB details.
@@ -208,6 +207,16 @@ public class DataManager {
    }
 
 
+	/**
+	 * Swaps the order of two books in the tag books table.
+	 * 
+	 * @param tagId    ID of tag collection to be updated
+	 * @param bookId1  ID of first book
+	 * @param bookId2  ID of second book
+	 */
+   public void swapBooksInTagTable(long tagId, long bookId1, long bookId2) {
+	   tagDAO.swapBooks(tagId, bookId1, bookId2);
+   }
    
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {

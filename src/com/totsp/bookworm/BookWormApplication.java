@@ -15,10 +15,16 @@ import com.totsp.bookworm.model.Tag;
 
 public class BookWormApplication extends Application {
 
+   final static int ADD_MODE_SCAN = 0;
+   final static int ADD_MODE_SEARCH = 1;
+   final static int ADD_MODE_MANUAL = 2;
+	
    boolean debugEnabled;
    boolean fastScanEnabled;
+   int     defaultAddMode;
    boolean defaultReadEnabled;
-   
+   boolean scanOnCameraButton;        // Controls whether the camera button starts a scan
+
    
    SharedPreferences prefs;
    BookDataSource bookDataSource;
@@ -27,6 +33,7 @@ public class BookWormApplication extends Application {
 
    Book selectedBook;
    Tag selectedTag;
+   boolean tagReorderingEnabled = false;       // Maintain re-ordering state for TagBatchList over orientation changes
 
    int lastMainListPosition;
 
@@ -78,6 +85,8 @@ public class BookWormApplication extends Application {
 	   debugEnabled = prefs.getBoolean("debugenabled", false);
 	   fastScanEnabled = prefs.getBoolean("fastscanenabled", false);
 	   defaultReadEnabled = prefs.getBoolean("defaultreadenabled", false);
+	   defaultAddMode = Integer.parseInt(prefs.getString("addmodepref", String.valueOf(ADD_MODE_SCAN)));
+	   scanOnCameraButton = prefs.getBoolean("camerabuttonscanenabled", false);
    }
    
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved id

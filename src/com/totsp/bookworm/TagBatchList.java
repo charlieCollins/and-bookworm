@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,8 +35,8 @@ import com.totsp.bookworm.util.StringUtil;
 
 /**
  * Tag batch mode editing activity.
- * Allows tags to be assigned or removed from multiple books simultaneously as well as providing the entry point to 
- * tag creation and editing activities.
+ * Allows tags to be assigned or removed from multiple books simultaneously, books sharing a common tag to be 
+ * re-ordered, as well as providing the entry point to tag creation and editing activities.
  * <br>
  * Displays a list of books similar to the main activity, but with a CheckBox controlling whether the currently selected
  * tag is linked to each book. The CheckBox is implemented as an actual CheckBox in the ListView adapter rather than 
@@ -67,10 +68,13 @@ public class TagBatchList extends Activity {
 
 	private ImageView sortTagImage;
 	private ImageView filterTagImage;
+	private ImageView reorderTagsImage;
 	private ImageView addTagImage;
 	private ImageView editTagImage;
 	protected long selectedBookId;
-	protected boolean onlyShowTagged;
+
+	private boolean sortDialogIsShowing;
+	private boolean filterDialogIsShowing;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -79,7 +83,6 @@ public class TagBatchList extends Activity {
 		setTitle(R.string.titleTagBatchList);
 		
 		selectedBookId = NO_BOOK_SELECTED;
-		onlyShowTagged = false;
 
 		application = (BookWormApplication) getApplication();
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -95,7 +98,20 @@ public class TagBatchList extends Activity {
 		setupActionBar();
 		bindAdapters();
 	}
+	
+	@Override
+	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+		if ((keyCode == KeyEvent.KEYCODE_BACK) && application.tagReorderingEnabled) {
+			application.tagReorderingEnabled = false;			
+			updateActionBar();
+			updateFilter();
+			
+			return true;
+		}
 
+		return super.onKeyDown(keyCode, event);
+	}
+	   
 	/**
 	 * Configures the on-screen quick-action bar and connects listeners to the 
 	 * action buttons.
@@ -105,7 +121,10 @@ public class TagBatchList extends Activity {
 		sortTagImage.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				sortDialog.show();				
+	            if (!sortDialogIsShowing) {
+	                sortDialogIsShowing = true;
+	                sortDialog.show();
+	             }
 			}
 		});
 		
@@ -113,10 +132,24 @@ public class TagBatchList extends Activity {
 		filterTagImage.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				filterDialog.show();
-				onlyShowTagged = !onlyShowTagged;				
+	            if (!filterDialogIsShowing) {
+	                filterDialogIsShowing = true;
+	                filterDialog.show();
+	            }
 			}
 		});
+
+		reorderTagsImage = (ImageView) findViewById(R.id.tagactionreorder);
+		reorderTagsImage.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				application.tagReorderingEnabled = !application.tagReorderingEnabled;	
+				
+				updateActionBar();
+				updateFilter();
+			}
+		});
+		
 		
 		addTagImage = (ImageView) findViewById(R.id.tagadd);
 		addTagImage.setOnClickListener(new OnClickListener() {		
@@ -132,8 +165,37 @@ public class TagBatchList extends Activity {
 				startActivity(new Intent(TagBatchList.this, TagEditor.class));			
 			}
 		});
+		
+		updateActionBar();
+
 	}
 
+	/**
+	 * Updates the enabled state of buttons, based on whether re-ordering mode is currently active
+	 */
+	private void updateActionBar() {
+		sortTagImage.setVisibility(application.tagReorderingEnabled ? View.INVISIBLE : View.VISIBLE);
+		filterTagImage.setVisibility(application.tagReorderingEnabled ? View.INVISIBLE : View.VISIBLE);
+		addTagImage.setVisibility(application.tagReorderingEnabled ? View.INVISIBLE : View.VISIBLE);
+		editTagImage.setVisibility(application.tagReorderingEnabled ? View.INVISIBLE : View.VISIBLE);
+		
+		setTitle(application.tagReorderingEnabled ? R.string.titleTagReorder : R.string.titleTagBatchList);
+	}
+
+	/**
+	 * Updates filter results.
+	 */
+	private void updateFilter() {
+		// Null check required due to null adapter when no books are present
+		if (booksAdapter != null) {
+			booksAdapter.runQuery(null);
+			
+			// Only needed when re-ordering is active or after it is disabled, but it's easier and more consistent to 
+			// just do it every time 
+			booksAdapter.changeCursor(booksCursor);
+		}
+	}
+    
 
 	/**
 	 * Bind cursor adapters for tag dropdown and book list views
@@ -186,8 +248,11 @@ public class TagBatchList extends Activity {
 			holder.name = (TextView) v;
 			holder.name.setLines(1);
 			holder.name.setTextColor(android.graphics.Color.BLACK);
-			holder.name.setText("Add Group");
+			holder.name.setText("Select Tag");
 			holder.name.setTextSize(20);
+			// TODO: Re-evaluate this padding: a vertical padding of 15 would be closer to the standard list view, but
+			//       makes the spinner button too large.
+			holder.name.setPadding(10, 10, 10, 10);
 			v.setTag(holder);
 			populateView(v, c);
 			return v;
@@ -198,14 +263,7 @@ public class TagBatchList extends Activity {
 			TagViewHolder holder = (TagViewHolder) v.getTag();
 
 			if ((c != null) && !c.isClosed()) {
-				long id = c.getLong(0);
-
-				String name = c.getString(1);
-				if (application.debugEnabled) {
-					Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + name);
-				}            
-
-				holder.name.setText(name);
+				holder.name.setText(c.getString(1));
 
 			}
 		}
@@ -220,6 +278,7 @@ public class TagBatchList extends Activity {
 		TextView title;
 		TextView authors;
 		CheckBox checkedTag;
+		TextView positionNum;
 	}
 
 	//
@@ -228,7 +287,6 @@ public class TagBatchList extends Activity {
 	private class BookCursorAdapter extends CursorAdapter implements FilterQueryProvider {
 
 		LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		boolean suppressClick = false;
 
 		public BookCursorAdapter(final Cursor c) {
 			super(TagBatchList.this, c, true);
@@ -238,14 +296,27 @@ public class TagBatchList extends Activity {
 		// FilterQueryProvider impl
 		public Cursor runQuery(CharSequence constraint) {
 			Cursor c = null;
-			String orderBy = prefs.getString(Constants.TAG_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
-			if ((constraint == null) || (constraint.length() == 0)) {
-				c = application.dataManager.getBookCursor(orderBy, null);
+			String whereClause = null;
+			String orderBy;
+			String filter;
+			
+			if (application.tagReorderingEnabled) {
+				orderBy = String.format(DataConstants.ORDER_BY_TAG_POSITION_ASC, application.selectedTag.id);
+				whereClause = String.format(DataConstants.FILTER_BY_CURRENT_TAG, application.selectedTag.id);
 			} else {
-				String filter = prefs.getString(Constants.TAG_FILTER, DataConstants.FILTER_BY_TITLE);
-				Log.d(Constants.LOG_TAG, "filter text = '" + String.format(filter, constraint) + "'");
-				c = application.dataManager.getBookCursor(orderBy, String.format(filter, constraint));
+				orderBy = prefs.getString(Constants.TAG_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
+				
+				if ((constraint != null) && (constraint.length() != 0)) {
+					filter = prefs.getString(Constants.TAG_FILTER, DataConstants.FILTER_BY_TITLE);
+					whereClause = String.format(filter, constraint);
+				}					
 			}
+			
+			if (application.debugEnabled) {
+				Log.d(Constants.LOG_TAG, "filter text = '" + whereClause + "'");
+			}
+			
+			c = application.dataManager.getBookCursor(orderBy, whereClause);
 			startManagingCursor(c);
 			booksCursor = c;
 			return c;
@@ -265,26 +336,26 @@ public class TagBatchList extends Activity {
 			holder.title = (TextView) v.findViewById(R.id.tag_list_items_title);
 			holder.authors = (TextView) v.findViewById(R.id.tag_list_items_authors);
 			holder.checkedTag = (CheckBox) v.findViewById(R.id.tag_list_items_tagged);
+			holder.positionNum = (TextView) v.findViewById(R.id.tag_books_position);
 			
+			// Implement pseudo drag&drop editting by using long click to select book and click to drop it
 			holder.coverImage.setOnLongClickListener(new OnLongClickListener() {
 				
 				@Override
 				public boolean onLongClick(View v) {
-					// TODO Implement drag&drop group order editing here
-					if (TagBatchList.this.onlyShowTagged && 
-							TagBatchList.this.selectedBookId == TagBatchList.NO_BOOK_SELECTED) {							
+					if (application.tagReorderingEnabled && selectedBookId == TagBatchList.NO_BOOK_SELECTED) {							
 						Toast.makeText(TagBatchList.this, getString(R.string.msgReorderTag), 
 								Toast.LENGTH_LONG).show();
-						TagBatchList.this.selectedBookId = (Long) v.getTag();
+						
+						selectedBookId = (Long) v.getTag();
+						
+						// Notify the adapter so that it can highlight the select book
 						BookCursorAdapter.this.notifyDataSetChanged();
-						// Suppress the spurious click event received on long click.
-						suppressClick = true;
 					}
 					if (application.debugEnabled) {
-						Log.d(Constants.LOG_TAG, "Selected Id: " + String.valueOf(TagBatchList.this.selectedBookId));
-						Log.d(Constants.LOG_TAG, "Filtered = " + String.valueOf(onlyShowTagged));
+						Log.d(Constants.LOG_TAG, "Selected Id: " + String.valueOf(selectedBookId));
 					}
-					return false;
+					return true;
 				}
 			});
 			
@@ -292,20 +363,20 @@ public class TagBatchList extends Activity {
 				
 				@Override
 				public void onClick(View v) {
-					// TODO Implement drag&drop group order editting here
-					if (!suppressClick && TagBatchList.this.onlyShowTagged && 
-							TagBatchList.this.selectedBookId != TagBatchList.NO_BOOK_SELECTED) {							
+					if (application.tagReorderingEnabled && selectedBookId != TagBatchList.NO_BOOK_SELECTED) {							
 
 						if (application.debugEnabled) {
-							Log.d(Constants.LOG_TAG, "Moved book: " + String.valueOf(TagBatchList.this.selectedBookId));
+							Log.d(Constants.LOG_TAG, "Moved book: " + String.valueOf(selectedBookId));
 							Log.d(Constants.LOG_TAG, "to: " + String.valueOf((Long) v.getTag()));
-							Log.d(Constants.LOG_TAG, "Filtered = " + String.valueOf(onlyShowTagged));
 						}
-						TagBatchList.this.selectedBookId = NO_BOOK_SELECTED;
+						application.dataManager.swapBooksInTagTable(application.selectedTag.id, 
+								 			selectedBookId, (Long)v.getTag());
+						
+						selectedBookId = NO_BOOK_SELECTED;
+						booksCursor.requery();
 						BookCursorAdapter.this.notifyDataSetChanged();
 					}
-					// Only ignore first click after long click since it is always for the same item 
-					suppressClick = false;
+
 				}
 			});
 			
@@ -333,7 +404,7 @@ public class TagBatchList extends Activity {
 			BookViewHolder holder = (BookViewHolder) v.getTag();
 
 			if ((c != null) && !c.isClosed()) {
-				long id = c.getLong(0);
+				long bookId = c.getLong(0);
 
 				// TODO investigate, may need to file Android/SQLite bug
 				// Log.i(Constants.LOG_TAG, "COLUMN INDEX rating - " +
@@ -345,26 +416,22 @@ public class TagBatchList extends Activity {
 				 * format = 6 rstat = 7 rat = 8 blurb = 9 authors = 10
 				 */
 
-				boolean inGroup = false;
+				boolean isTagged = false;
 				if (application.selectedTag != null) {
-					inGroup = application.dataManager.isTagged(application.selectedTag.id, id);
+					isTagged = application.dataManager.isTagged(application.selectedTag.id, bookId);
 				}
 				String title = c.getString(1);
 				String authors = c.getString(10);
 
-				if (application.debugEnabled) {
-					Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);
-				}
-
-				Bitmap coverImageBitmap = application.imageManager.retrieveBitmap(title, id, true);
+				Bitmap coverImageBitmap = application.imageManager.retrieveBitmap(title, bookId, true);
 				if (coverImageBitmap != null) {
 					holder.coverImage.setImageBitmap(coverImageBitmap);
 				} else {
 					holder.coverImage.setImageBitmap(coverImageMissing);
 				}
-				holder.coverImage.setTag(new Long(id));
-				// Hi-lite book selected for re-ordering
-				if (TagBatchList.this.selectedBookId == id) { 
+				holder.coverImage.setTag(new Long(bookId));
+				// High-light book selected for re-ordering
+				if (selectedBookId == bookId) { 
 					holder.coverImage.setBackgroundDrawable(application.getResources()
 							.getDrawable(R.drawable.selected_border));
 				}
@@ -373,15 +440,24 @@ public class TagBatchList extends Activity {
 					holder.coverImage.setBackgroundDrawable(application.getResources()
 							.getDrawable(R.drawable.border1));
 				}
-
 				
 				holder.title.setText(title);
 				holder.authors.setText(StringUtil.addSpacesToCSVString(authors));
 
-				holder.checkedTag.setChecked(inGroup);
+				holder.checkedTag.setChecked(isTagged);
 				// TODO: Consider creating view tag Long object when holder is instanciated and just assigning a value
-				//       here as a performance optimization.
-				holder.checkedTag.setTag(new Long(id));
+				//       here as a performance optimisation.
+				holder.checkedTag.setTag(new Long(bookId));
+				holder.positionNum.setText(String.valueOf(c.getPosition()+1));
+				
+				// Display either checkbox or position number based on the re-ordering enabled state
+				if (application.tagReorderingEnabled) {
+					holder.checkedTag.setVisibility(View.INVISIBLE);
+					holder.positionNum.setVisibility(View.VISIBLE);
+				} else {
+					holder.checkedTag.setVisibility(View.VISIBLE);
+					holder.positionNum.setVisibility(View.INVISIBLE);					
+				}
 			}
 		}
 	}  
@@ -389,18 +465,17 @@ public class TagBatchList extends Activity {
 	
     /**
      *  Callback listener that implements the
-     *  {@link android.widget.AdapterView.OnItemSelectedListener} interface for
-     *  the group selection spinner
+     *  {@link android.widget.AdapterView.OnItemSelectedListener} interface for the group selection spinner
      */
     public class TagOnItemSelectedListener implements OnItemSelectedListener {
 
         /**
-         * Callback triggered when the user selects an item in the group spinner.
+         * Callback triggered when the user selects an item in the tags spinner.
          *
          * @see android.widget.AdapterView.OnItemSelectedListener#onItemSelected(
          *  android.widget.AdapterView, android.view.View, int, long)
          *  
-         * @param parent  The AdapterView where the selection happened
+         * @param parent  The AdapterView where the selection occured
          * @param view    The view within the AdapterView that was clicked
          * @param pos     The position of the view in the adapter
          * @param id      The row id of the item that is selected 
@@ -410,7 +485,14 @@ public class TagBatchList extends Activity {
             Cursor cursor = (Cursor) parent.getItemAtPosition(pos);
             long tagId = cursor.getLong(0);
             application.selectedTag = application.dataManager.selectTag(tagId);
-            booksAdapter.notifyDataSetChanged();
+            
+            // Null check required due to null adapter when no books are present
+            if (booksAdapter != null) {
+            	booksAdapter.notifyDataSetChanged();
+            }
+            if (application.tagReorderingEnabled) {
+            	updateFilter();
+            }
         }
 
         // Required implementation of abstract method
@@ -424,32 +506,54 @@ public class TagBatchList extends Activity {
     		.addEntry(getString(R.string.labelTitle), DataConstants.ORDER_BY_TITLE_ASC)
     		.addEntry(getString(R.string.labelAuthorsShort), DataConstants.ORDER_BY_AUTHORS_ASC)
     		.addEntry(getString(R.string.labelRating), DataConstants.ORDER_BY_RATING_DESC)
-    		.addEntry(getString(R.string.labelReadstatus), DataConstants.ORDER_BY_READ_DESC)
     		.addEntry(getString(R.string.labelSubject),DataConstants.ORDER_BY_SUBJECT_ASC)
     		.addEntry(getString(R.string.labelDatepub), DataConstants.ORDER_BY_DATE_PUB_DESC)
     		.addEntry(getString(R.string.labelPublisher), DataConstants.ORDER_BY_PUB_ASC)
     		.setOnClickListener(new DialogInterface.OnClickListener() {		
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					TagBatchList.this.booksAdapter.runQuery(null);
+					sortDialogIsShowing = false;
+					// Null check required due to null adapter when no books are present
+					if (booksAdapter != null) {
+						booksAdapter.runQuery(null);
+						// Must call changeCursor for sort since it isn't called automatically as it is for filter 
+						booksAdapter.changeCursor(booksCursor);
+					}
 				}
 			});
+    	
+    	sortDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+    		public void onCancel(DialogInterface d) {
+    			sortDialogIsShowing = false;
+    		}
+    	});
+
     	sortDialog.create();
     	  	
     	filterDialog = new PrefListDialogBuilder(this, prefs, Constants.TAG_FILTER);
     	filterDialog.setTitle(getString(R.string.btnFilterBy))
+			.addEntry(getString(R.string.labelTag), DataConstants.FILTER_BY_TAG)
 			.addEntry(getString(R.string.labelTitle), DataConstants.FILTER_BY_TITLE)
 			.addEntry(getString(R.string.labelAuthorsShort), DataConstants.FILTER_BY_AUTHOR)
 			.addEntry(getString(R.string.labelSubject),DataConstants.FILTER_BY_SUBJECT)
 			.addEntry(getString(R.string.labelPublisher), DataConstants.FILTER_BY_PUBLISHER)
+			.addEntry(getString(R.string.labelRating), DataConstants.FILTER_BY_RATING)
 			.setOnClickListener(new DialogInterface.OnClickListener() {		
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					TagBatchList.this.booksAdapter.runQuery(null);
+					filterDialogIsShowing = false;
+					updateFilter();
 				}
 			});
-		filterDialog.create();
+    	
+    	filterDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+    		public void onCancel(DialogInterface d) {
+    			filterDialogIsShowing = false;
+    		}
+    	});
+
+    	filterDialog.create();
     }
-    
+
 	
 }

@@ -31,16 +31,8 @@ public class TagDAO implements DAO<Tag>{
 		"select tags.ttext from tags join tagbooks on (tagbooks.tid=tags.tid)" 
 		+ " join book on (book.bid = tagbooks.bid) where book.bid=? order by tags.ttext asc";
 
-	/*
-	 * Prefix for a query to return all books in the specified tags.
-	 * The tag entry in the tag table is found by tag ID, which is used to look up all entries
-	 * in the tagbooks table with a matching tag ID.
-	 */
-	private static final String QUERY_BOOKS_BY_TAG_ID_PREFIX =
-		"select book.bid as _id, book.tit, book.subtit, "
-		+ "group_concat(author.name) as authors "
-		+ "from book "
-		+ "left outer join bookauthor on bookauthor.bid = book.bid left outer join author on author.aid = bookauthor.aid";
+	private static final String QUERY_BOOK_POSITION =
+		"select tagbooks.tbid from tagbooks where (tagbooks.bid=? and tagbooks.tid=?)";
 
 	private static final String QUERY_TAG_SELECTOR_BY_BOOK_ID =
 		"select distinct tags.tid as _id, tags.ttext as taggedText, "
@@ -193,6 +185,70 @@ public class TagDAO implements DAO<Tag>{
 		}
 		
 		return sb.toString();		
+	}
+	
+	/**
+	 * Swaps the order of two books in the tag books table.
+	 * 
+	 * @param tagId    ID of tag collection to be updated
+	 * @param bookId1  ID of first book
+	 * @param bookId2  ID of second book
+	 */
+	public void swapBooks(long tagId, long bookId1, long bookId2) {
+		int position1;
+		int position2;
+		
+		position1 = getTagBookKey(tagId, bookId1);		
+		position2 = getTagBookKey(tagId, bookId2);
+		
+		if ((position1 > 0) && (position2 > 0)) {
+
+			// use transaction
+			db.beginTransaction();
+			try {
+				// Swap books by updating each entry with the ID of the other book
+				final ContentValues values = new ContentValues();
+				
+				values.put(DataConstants.TAG_ID, tagId);
+				values.put(DataConstants.BOOKID, bookId1);
+				db.update(DataConstants.TAG_BOOKS_TABLE, values, DataConstants.TAG_BOOK_ID + " = ?", 
+						new String[] { String.valueOf(position2) });
+				values.clear();
+				values.put(DataConstants.TAG_ID, tagId);
+				values.put(DataConstants.BOOKID, bookId2);
+				db.update(DataConstants.TAG_BOOKS_TABLE, values, DataConstants.TAG_BOOK_ID + " = ?", 
+						new String[] { String.valueOf(position1) });
+				
+				db.setTransactionSuccessful();
+			} catch (SQLException e) {
+				Log.e(Constants.LOG_TAG, "Error updating TAG_BOOKS_TABLE.", e);
+			} finally {
+				db.endTransaction();
+			}
+		} else {
+			throw new IllegalArgumentException("One or both books are not linked to tag");
+		}
+	}
+
+	
+	/**
+	 * Returns the tagbooks table key for the specified tag and book
+	 * 
+	 * @param tagId
+	 * @param bookId
+	 */
+	private int getTagBookKey(long tagId, long bookId) {
+		int position = -1;
+		Cursor c;
+		
+		c = db.rawQuery(QUERY_BOOK_POSITION, new String[] { String.valueOf(bookId),  String.valueOf(tagId) });	
+		if (c.moveToFirst()) {
+			position = c.getInt(0);
+		}
+		if (!c.isClosed()) {
+			c.close();
+		}
+		return position;
 	}
 	
 	@Override

@@ -21,14 +21,13 @@ public class DataConstants {
    public static final String ORDER_BY_SUBJECT_DESC = "book.subject desc, book.tit asc";
    public static final String ORDER_BY_RATING_ASC = "bookuserdata.rat asc, book.tit asc";
    public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc, book.tit asc";
-   public static final String ORDER_BY_READ_ASC = "bookuserdata.rstat asc, book.tit asc";
-   public static final String ORDER_BY_READ_DESC = "bookuserdata.rstat desc, book.tit asc";
    public static final String ORDER_BY_PUB_ASC = "book.pub asc, book.tit asc";
    public static final String ORDER_BY_PUB_DESC = "book.pub desc, book.tit asc";
    public static final String ORDER_BY_DATE_PUB_ASC = "book.datepub asc, book.tit asc";
    public static final String ORDER_BY_DATE_PUB_DESC = "book.datepub desc, book.tit asc";
    public static final String ORDER_BY_TAG_TEXT_ASC = "tags.ttext asc";
-   public static final String ORDER_BY_TAG_POSITION_ASC = "tagbooks.tbid asc";
+   public static final String ORDER_BY_TAG_POSITION_ASC = "(select tagbooks.tbid from tagbooks "
+	   													+ "where (tagbooks.tid=%d and tagbooks.bid=book.bid)) asc";
    
    // Filters are designed to work with String.format to allow complex filter criteria (eg authors)
    public static final String FILTER_BY_AUTHOR = "where book.bid in (select bookauthor.bid from bookauthor " 
@@ -37,8 +36,12 @@ public class DataConstants {
    public static final String FILTER_BY_TITLE = "where book.tit glob '*%s*'";
    public static final String FILTER_BY_SUBJECT = "where book.subject glob '*%s*'";
    public static final String FILTER_BY_PUBLISHER = "where book.pub glob '*%s*'";
-   public static final String FILTER_BY_TAG = "where tag.ttext glob '*%s*'";
-   public static final String FILTER_BY_CURRENT_TAG = "where tagbooks.tid=%s";
+   public static final String FILTER_BY_TAG = "where book.bid in (select tagbooks.bid from tagbooks " 
+	   												+ "join tags on (tags.tid=tagbooks.tid) " 
+	   												+ "where tags.ttext glob '*%s*')";
+   public static final String FILTER_BY_CURRENT_TAG = "where book.bid in (select tagbooks.bid from tagbooks " 
+															+ "where tagbooks.tid=%d)";
+   public static final String FILTER_BY_RATING = "where bookuserdata.rat=%s";
 
    public static final String BOOK_TABLE = "book";
    public static final String BOOKUSERDATA_TABLE = "bookuserdata";
