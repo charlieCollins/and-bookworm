@@ -46,7 +46,7 @@ use android:configChanges="keyboardHidden|orientation" to react
 use onSaveInstanceState/onRestoreInstanceState to restore in memory state from you app ANY TIME it is KILLED/RESTARTED
 this includes orientation changes, onRetainConfigurationInstance can also be used, but it ONLY works for orientation change
 
-@+id/foo is the namespace of current application 
+@+id/foo is the namespace of current application and + means create new id
 @android:id/foo is the android namespace
 a? refers back to same config file, rather than another already defined resource
 
