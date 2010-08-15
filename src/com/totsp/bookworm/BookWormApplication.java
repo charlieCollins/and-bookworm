@@ -27,6 +27,7 @@ public class BookWormApplication extends Application {
    boolean defaultReadEnabled;
    boolean scanOnCameraButton;        // Controls whether the camera button starts a scan
    ArrayList<Long> defaultTagIds;     // List of tags to be linked to new books by default
+   boolean caseSensitiveFilters;      // Controls whether text filters are case-sensitive 
 
    
    SharedPreferences prefs;
@@ -39,6 +40,9 @@ public class BookWormApplication extends Application {
    boolean tagReorderingEnabled = false;       // Maintain re-ordering state for TagBatchList over orientation changes
 
    int lastMainListPosition;
+   
+   String lastMainFilter;                      // Maintains filter text for main activity over activity switches
+   String lastTagEditorFilter;
 
    //ArrayList<Book> bookCacheList;
    // TODO use onRetainNonConfigurationInstance for quick config state/cache
@@ -56,6 +60,8 @@ public class BookWormApplication extends Application {
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
       dataManager = new DataManager(this);
       imageManager = new ImageManager(this);
+      lastMainFilter = null;                     
+      lastTagEditorFilter = null;
 
       establishBookDataSourceFromProvider();
    }
@@ -90,6 +96,9 @@ public class BookWormApplication extends Application {
 	   defaultReadEnabled = prefs.getBoolean("defaultreadenabled", false);
 	   defaultAddMode = Integer.parseInt(prefs.getString("addmodepref", String.valueOf(ADD_MODE_SCAN)));
 	   scanOnCameraButton = prefs.getBoolean("camerabuttonscanenabled", false);
+	   
+	   caseSensitiveFilters = prefs.getBoolean("casesensitivefilters", false);
+	   dataManager.setCaseSensitive(caseSensitiveFilters);
 	   
 	   // Default tags are stored in DB to ensure they stay synced with tags table.
 	   defaultTagIds = dataManager.getDefaultTags();

@@ -5,9 +5,7 @@ import java.util.Date;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -62,7 +60,6 @@ public class BookDetail extends Activity {
 	private Button selectTagsButton;			// Button to display tag selection dialog
 	private ImageButton addTagImage;			// Button to add a new tag to DB
 	private DataManager.TagSelectorBuilder tagDialog;		// Pop-up dialog to select tags linked to current book
-	private Cursor tagCursor;
 	
 	private TextView bookBlurb;   				// Display user blurb
 	private Button bookBlurbButton;  			// Edit user blurb button
@@ -74,6 +71,22 @@ public class BookDetail extends Activity {
 	boolean coverZoomEnabled;            		// Flag to suppress cover image zoom when no image is available
 
 	private long bookId;
+
+	@Override
+	protected void onPause() {
+		if (coverDialog.isShowing()) {
+			coverDialog.dismiss();
+		}
+		if (blurbDialog.isShowing()) {
+			blurbDialog.dismiss();
+		}
+		if (tagDialog.isShowing()) {
+			tagDialog.dismiss();
+		}
+		
+		super.onPause();
+	}
+
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {

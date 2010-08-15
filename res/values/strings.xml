@@ -150,7 +150,6 @@
     <string name="msgSavingTagInfo">Saving tag info...</string>
     <string name="msgTagSaved">Tag saved</string>
     <string name="msgTagSaveError">Error saving tag: Duplicate tags not allowed.</string>
-    <string name="msgReorderTag">Select new position in tag group.</string>
     <string name="msgNoTagsFound">No tags found</string>
     <string name="titleTagBatchList">BookWorm - Tag Batch Editor</string>
     <string name="titleTagReorder">BookWorm - Tag Order Editor</string>
@@ -174,7 +173,9 @@
     <string name="prefTitleDefaultTags">Default tags</string>
     <string name="prefSumDefaultTags">Select default tags to be linked to new books</string>  
     <string name="prefTitleCameraButton">Use camera button?</string>
-    <string name="prefSumCameraButton">Enable to use camera button to scan books.</string>  
+    <string name="prefSumCameraButton">Enable to use camera button to scan books.</string>
+    <string name="prefTitleCaseSensitiveFilters">Case sensitive filters?</string>
+    <string name="prefSumCaseSensitiveFilters">Enable to use case sensitive filters</string>  
     
     <string name="titleAddMode">Select add method</string>
 	

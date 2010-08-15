@@ -13,32 +13,33 @@ public class DataConstants {
    public static final String EXTERNAL_DATA_PATH =
             Environment.getExternalStorageDirectory() + "/" + DataConstants.EXTERNAL_DATA_DIR_NAME;
 
-   public static final String ORDER_BY_AUTHORS_ASC = "authors asc, book.tit asc";
-   public static final String ORDER_BY_AUTHORS_DESC = "authors desc, book.tit asc";
-   public static final String ORDER_BY_TITLE_ASC = "book.tit asc";
-   public static final String ORDER_BY_TITLE_DESC = "book.tit desc";
-   public static final String ORDER_BY_SUBJECT_ASC = "book.subject asc, book.tit asc";
-   public static final String ORDER_BY_SUBJECT_DESC = "book.subject desc, book.tit asc";
-   public static final String ORDER_BY_RATING_ASC = "bookuserdata.rat asc, book.tit asc";
-   public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc, book.tit asc";
-   public static final String ORDER_BY_PUB_ASC = "book.pub asc, book.tit asc";
-   public static final String ORDER_BY_PUB_DESC = "book.pub desc, book.tit asc";
-   public static final String ORDER_BY_DATE_PUB_ASC = "book.datepub asc, book.tit asc";
-   public static final String ORDER_BY_DATE_PUB_DESC = "book.datepub desc, book.tit asc";
-   public static final String ORDER_BY_TAG_TEXT_ASC = "tags.ttext asc";
+   public static final String ORDER_BY_AUTHORS_ASC = "authors collate nocase asc, book.tit collate nocase asc";
+   public static final String ORDER_BY_AUTHORS_DESC = "authors collate nocase desc, book.tit collate nocase asc";
+   public static final String ORDER_BY_TITLE_ASC = "book.tit collate nocase asc";
+   public static final String ORDER_BY_TITLE_DESC = "book.tit collate nocase desc";
+   public static final String ORDER_BY_SUBJECT_ASC = "book.subject collate nocase asc, book.tit collate nocase asc";
+   public static final String ORDER_BY_SUBJECT_DESC = "book.subject collate nocase desc, book.tit collate nocase asc";
+   public static final String ORDER_BY_RATING_ASC = "bookuserdata.rat asc, book.tit collate nocase asc";
+   public static final String ORDER_BY_RATING_DESC = "bookuserdata.rat desc, book.tit collate nocase asc";
+   public static final String ORDER_BY_PUB_ASC = "book.pub collate nocase asc, book.tit collate nocase asc";
+   public static final String ORDER_BY_PUB_DESC = "book.pub collate nocase desc, book.tit collate nocase asc";
+   public static final String ORDER_BY_DATE_PUB_ASC = "book.datepub asc, book.tit collate nocase asc";
+   public static final String ORDER_BY_DATE_PUB_DESC = "book.datepub desc, book.tit collate nocase asc";
+   public static final String ORDER_BY_TAG_TEXT_ASC = "tags.ttext collate nocase asc";
    public static final String ORDER_BY_TAG_POSITION_ASC = "(select tagbooks.tbid from tagbooks "
 	   													+ "where (tagbooks.tid=%d and tagbooks.bid=book.bid)) asc";
    
    // Filters are designed to work with String.format to allow complex filter criteria (eg authors)
+   // SQLite "like" operator is used instead of "glob" to allow configurable control of case-sensitive searches
    public static final String FILTER_BY_AUTHOR = "where book.bid in (select bookauthor.bid from bookauthor " 
 	                                                           + "join author on (bookauthor.aid=author.aid) " 
-	                                                           + "where author.name glob '*%s*')";
-   public static final String FILTER_BY_TITLE = "where book.tit glob '*%s*'";
-   public static final String FILTER_BY_SUBJECT = "where book.subject glob '*%s*'";
-   public static final String FILTER_BY_PUBLISHER = "where book.pub glob '*%s*'";
+	                                                           + "where author.name like '%%%s%%')";
+   public static final String FILTER_BY_TITLE = "where book.tit like '%%%s%%'";
+   public static final String FILTER_BY_SUBJECT = "where book.subject like '%%%s%%'";
+   public static final String FILTER_BY_PUBLISHER = "where book.pub like '%%%s%%'";
    public static final String FILTER_BY_TAG = "where book.bid in (select tagbooks.bid from tagbooks " 
 	   												+ "join tags on (tags.tid=tagbooks.tid) " 
-	   												+ "where tags.ttext glob '*%s*')";
+	   												+ "where tags.ttext like '%%%s%%')";
    public static final String FILTER_BY_CURRENT_TAG = "where book.bid in (select tagbooks.bid from tagbooks " 
 															+ "where tagbooks.tid=%d)";
    public static final String FILTER_BY_RATING = "where bookuserdata.rat=%s";

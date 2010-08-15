@@ -12,6 +12,13 @@
         android:summary="@string/prefSumDebugLog"
         android:key="debugenabled" 
         android:defaultValue="false"/>
+        <CheckBoxPreference 
+        android:title="@string/prefTitleCaseSensitiveFilters" 
+        android:summary="@string/prefSumCaseSensitiveFilters"
+        android:key="casesensitivefilters" 
+        android:defaultValue="false"/>
+        
+        
 
     </PreferenceCategory>
 

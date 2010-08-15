@@ -135,6 +135,12 @@ public class TagEditor extends Activity {
 		}
 
 		@Override
+		protected void onCancelled() {
+			TaskUtil.dismissDialog(dialog);
+			super.onCancelled();
+		}
+
+		@Override
 		protected Boolean doInBackground(final Tag... args) {
 			Tag tag = args[0];
 			
@@ -154,9 +160,7 @@ public class TagEditor extends Activity {
 
 		@Override
 		protected void onPostExecute(final Boolean b) {
-			if (dialog.isShowing()) {
-				dialog.dismiss();
-			}
+			TaskUtil.dismissDialog(dialog);
 			if (!b) {
 				Toast.makeText(TagEditor.this, getString(R.string.msgTagSaveError), Toast.LENGTH_LONG).show();
 			} else {

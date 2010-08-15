@@ -1,13 +1,12 @@
 package com.totsp.bookworm;
 
-import com.totsp.bookworm.data.DataManager;
-import com.totsp.bookworm.data.DataManager.TagSelectorBuilder;
-
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+
+import com.totsp.bookworm.data.DataManager;
+import com.totsp.bookworm.data.DataManager.TagSelectorBuilder;
 
 public class Preferences extends PreferenceActivity {
 
@@ -16,6 +15,14 @@ public class Preferences extends PreferenceActivity {
    
 	
    @Override
+   protected void onPause() {
+		if (tagDialog.isShowing()) {
+			tagDialog.dismiss();
+		}
+	   super.onPause();
+   }
+
+@Override
    public void onCreate(final Bundle savedInstanceState) {
 	   BookWormApplication application = (BookWormApplication)getApplication();
 

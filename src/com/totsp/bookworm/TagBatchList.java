@@ -17,16 +17,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.util.PrefListDialogBuilder;
@@ -71,8 +72,15 @@ public class TagBatchList extends Activity {
 	private ImageView reorderTagsImage;
 	private ImageView addTagImage;
 	private ImageView editTagImage;
+	private ImageView moveUpImage;
+	private ImageView moveDownImage;
+	private LinearLayout defaultActionBar;
+	private LinearLayout reorderActionBar;
+	
 	protected long selectedBookId;
-
+	private int selectedBookPosition;
+	
+	
 	private boolean sortDialogIsShowing;
 	private boolean filterDialogIsShowing;
 
@@ -93,10 +101,59 @@ public class TagBatchList extends Activity {
 		bookListView = (ListView) findViewById(R.id.bookfilterview);
 	    bookListView.setEmptyView(findViewById(R.id.empty));
 		bookListView.setTextFilterEnabled(true);
+
+		// TODO: Enable bookDetail display here once issues with "back" button have been worked out.
+//		bookListView.setOnItemClickListener(new OnItemClickListener() {
+//			public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
+//				booksCursor.moveToPosition(index);
+//				// NOTE - this is tricky, table doesn't have _id, but CursorAdapter requires it
+//				// in the query we used "book.bid as _id" so here we have to use _id too
+//				int bookId = booksCursor.getInt(booksCursor.getColumnIndex("_id"));
+//				Book book = application.dataManager.selectBook(bookId);
+//				if (book != null) {
+//					if (application.debugEnabled) {
+//						Log.d(Constants.LOG_TAG, "book selected - " + book.title);
+//					}
+//					application.lastMainListPosition = index;
+//					application.selectedBook = book;
+//					startActivity(new Intent(TagBatchList.this, BookDetail.class));
+//				} else {
+//					Toast.makeText(TagBatchList.this, getString(R.string.msgSelectBookError), Toast.LENGTH_SHORT).show();
+//				}
+//			}
+//		});
+		
+		defaultActionBar = (LinearLayout) findViewById(R.id.tagactionbar);
+		reorderActionBar = (LinearLayout) findViewById(R.id.tagreorderactionbar);
 		
 		setupDialogs();
 		setupActionBar();
 		bindAdapters();
+	}
+
+	@Override
+	protected void onPause() {
+		CharSequence filterText; 
+
+		// Preserve filter text
+		filterText = bookListView.getTextFilter();
+		if (filterText == null)
+		{
+			application.lastTagEditorFilter = null;   	  
+		} else {
+			application.lastTagEditorFilter = String.valueOf(filterText);
+		}
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		// Reapply previous filter
+		if (application.lastTagEditorFilter != null) {
+			bookListView.setFilterText(application.lastTagEditorFilter);
+		}
+
+		super.onResume();
 	}
 	
 	@Override
@@ -106,6 +163,13 @@ public class TagBatchList extends Activity {
 			updateActionBar();
 			updateFilter();
 			
+			return true;
+		}
+		
+		// Use search key to toggle on-screen keyboard for filtering
+		if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+			InputMethodManager  imeMgr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+			imeMgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 			return true;
 		}
 
@@ -166,6 +230,44 @@ public class TagBatchList extends Activity {
 			}
 		});
 		
+		// TODO: Make books list scroll to the selected book on move to keep it visible.
+		moveUpImage = (ImageView) findViewById(R.id.tagactionmoveup);
+		moveUpImage.setOnClickListener(new OnClickListener() {		
+			public void onClick(View v) {
+				if (application.tagReorderingEnabled && (selectedBookId != TagBatchList.NO_BOOK_SELECTED) &&
+						(selectedBookPosition > 0)){
+					int newSelectionPosition = selectedBookPosition - 1;
+					Long newSelectedBookId = (Long) booksAdapter.getItemId(newSelectionPosition);;
+
+					application.dataManager.swapBooksInTagTable(application.selectedTag.id, 
+							selectedBookId, newSelectedBookId);
+
+					selectedBookPosition = newSelectionPosition;
+					booksCursor.requery();
+					booksAdapter.notifyDataSetChanged();
+				}
+			}		
+		});
+		
+		moveDownImage = (ImageView) findViewById(R.id.tagactionmovedown);
+		moveDownImage.setOnClickListener(new OnClickListener() {		
+			public void onClick(View v) {
+				if (application.tagReorderingEnabled && (selectedBookId != TagBatchList.NO_BOOK_SELECTED) &&
+						(selectedBookPosition < booksAdapter.getCount()-1)){
+					int newSelectionPosition = selectedBookPosition + 1;
+					Long newSelectedBookId = (Long) booksAdapter.getItemId(newSelectionPosition);;
+
+					application.dataManager.swapBooksInTagTable(application.selectedTag.id, 
+							selectedBookId, newSelectedBookId);
+
+					selectedBookPosition = newSelectionPosition;
+					booksCursor.requery();
+					booksAdapter.notifyDataSetChanged();
+
+				}
+			}
+		});
+		
 		updateActionBar();
 
 	}
@@ -174,10 +276,8 @@ public class TagBatchList extends Activity {
 	 * Updates the enabled state of buttons, based on whether re-ordering mode is currently active
 	 */
 	private void updateActionBar() {
-		sortTagImage.setVisibility(application.tagReorderingEnabled ? View.INVISIBLE : View.VISIBLE);
-		filterTagImage.setVisibility(application.tagReorderingEnabled ? View.INVISIBLE : View.VISIBLE);
-		addTagImage.setVisibility(application.tagReorderingEnabled ? View.INVISIBLE : View.VISIBLE);
-		editTagImage.setVisibility(application.tagReorderingEnabled ? View.INVISIBLE : View.VISIBLE);
+		defaultActionBar.setVisibility(application.tagReorderingEnabled ? View.GONE : View.VISIBLE);
+		reorderActionBar.setVisibility(application.tagReorderingEnabled ? View.VISIBLE : View.GONE);
 		
 		setTitle(application.tagReorderingEnabled ? R.string.titleTagReorder : R.string.titleTagBatchList);
 	}
@@ -338,23 +438,29 @@ public class TagBatchList extends Activity {
 			holder.checkedTag = (CheckBox) v.findViewById(R.id.tag_list_items_tagged);
 			holder.positionNum = (TextView) v.findViewById(R.id.tag_books_position);
 			
-			// Implement pseudo drag&drop editting by using long click to select book and click to drop it
+			// Implement pseudo drag&drop editting by using click to select book and long click to drop it
 			holder.coverImage.setOnLongClickListener(new OnLongClickListener() {
+				// TODO: Instanciate listeners once for adapter and reuse them for each items as an optimisation
 				
 				@Override
-				public boolean onLongClick(View v) {
-					if (application.tagReorderingEnabled && selectedBookId == TagBatchList.NO_BOOK_SELECTED) {							
-						Toast.makeText(TagBatchList.this, getString(R.string.msgReorderTag), 
-								Toast.LENGTH_LONG).show();
+				public boolean onLongClick(View v) {					
+					Long newSelectedBookId;
+					int newSelectionPosition;
+					if (application.tagReorderingEnabled && selectedBookId != TagBatchList.NO_BOOK_SELECTED) {							
+						newSelectionPosition = (Integer) v.getTag();
+						newSelectedBookId = (Long) BookCursorAdapter.this.getItemId(newSelectionPosition);
+						if (application.debugEnabled) {
+							Log.d(Constants.LOG_TAG, "Moved book: " + String.valueOf(selectedBookId));
+							Log.d(Constants.LOG_TAG, "to: " + String.valueOf(newSelectedBookId));
+						}
+						application.dataManager.swapBooksInTagTable(application.selectedTag.id, 
+								 			selectedBookId, newSelectedBookId);
 						
-						selectedBookId = (Long) v.getTag();
-						
-						// Notify the adapter so that it can highlight the select book
+						selectedBookId = NO_BOOK_SELECTED;
+						booksCursor.requery();
 						BookCursorAdapter.this.notifyDataSetChanged();
 					}
-					if (application.debugEnabled) {
-						Log.d(Constants.LOG_TAG, "Selected Id: " + String.valueOf(selectedBookId));
-					}
+					
 					return true;
 				}
 			});
@@ -363,20 +469,23 @@ public class TagBatchList extends Activity {
 				
 				@Override
 				public void onClick(View v) {
-					if (application.tagReorderingEnabled && selectedBookId != TagBatchList.NO_BOOK_SELECTED) {							
-
-						if (application.debugEnabled) {
-							Log.d(Constants.LOG_TAG, "Moved book: " + String.valueOf(selectedBookId));
-							Log.d(Constants.LOG_TAG, "to: " + String.valueOf((Long) v.getTag()));
+					Long newSelectedBookId;
+					if (application.tagReorderingEnabled) {	
+						selectedBookPosition = (Integer) v.getTag();
+						newSelectedBookId = (Long) BookCursorAdapter.this.getItemId(selectedBookPosition);
+						if (selectedBookId == newSelectedBookId) {
+							selectedBookId = NO_BOOK_SELECTED;
+						} else {
+						  selectedBookId = newSelectedBookId;							
 						}
-						application.dataManager.swapBooksInTagTable(application.selectedTag.id, 
-								 			selectedBookId, (Long)v.getTag());
 						
-						selectedBookId = NO_BOOK_SELECTED;
-						booksCursor.requery();
+						// Notify the adapter so that it can highlight the select book
 						BookCursorAdapter.this.notifyDataSetChanged();
 					}
-
+					if (application.debugEnabled) {
+						Log.d(Constants.LOG_TAG, "Selected Id: " + String.valueOf(selectedBookId));
+						Log.d(Constants.LOG_TAG, "Selected item id " + String.valueOf(BookCursorAdapter.this.getItemId((Integer) v.getTag()) ));
+					}
 				}
 			});
 			
@@ -429,7 +538,7 @@ public class TagBatchList extends Activity {
 				} else {
 					holder.coverImage.setImageBitmap(coverImageMissing);
 				}
-				holder.coverImage.setTag(new Long(bookId));
+				holder.coverImage.setTag(new Integer(c.getPosition()));
 				// High-light book selected for re-ordering
 				if (selectedBookId == bookId) { 
 					holder.coverImage.setBackgroundDrawable(application.getResources()

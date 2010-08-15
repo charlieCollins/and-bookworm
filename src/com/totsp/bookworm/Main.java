@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -219,6 +220,15 @@ public class Main extends Activity {
    }
 
    @Override
+   protected void onResume() {
+	   // Reapply previous filter
+	   if (application.lastMainFilter != null) {
+		   bookListView.setFilterText(application.lastMainFilter); 
+	   }
+	   super.onResume();
+   }
+
+@Override
    public boolean onCreateOptionsMenu(final Menu menu) {
       menu.add(0, Main.MENU_ABOUT, 1, getString(R.string.menuAbout)).setIcon(android.R.drawable.ic_menu_help);
       menu.add(0, Main.MENU_PREFS, 2, getString(R.string.menuPrefs)).setIcon(android.R.drawable.ic_menu_preferences);
@@ -298,6 +308,8 @@ public class Main extends Activity {
 
    @Override
    public void onPause() {
+	  CharSequence filterText; 
+	   
       if (resetAllCoverImagesTask != null) {
          TaskUtil.dismissDialog(resetAllCoverImagesTask.dialog);
       }
@@ -313,7 +325,16 @@ public class Main extends Activity {
       
       // cleanup any other activity long term state from application
       application.bookSearchStateBean = null;
-
+      
+      // Preserve filter text
+      filterText = bookListView.getTextFilter();
+      if (filterText == null)
+      {
+    	  application.lastMainFilter = null;   	  
+      } else {
+    	  application.lastMainFilter = String.valueOf(filterText);
+      }
+      
       // /Debug.stopMethodTracing();		
       super.onPause();
    }
@@ -334,10 +355,18 @@ public class Main extends Activity {
          return true;
       }
       // Use camera button to add book by scan
-      if (application.scanOnCameraButton && keyCode == KeyEvent.KEYCODE_CAMERA) {
+      if (application.scanOnCameraButton && (keyCode == KeyEvent.KEYCODE_CAMERA)) {
     	  addBook(BookWormApplication.ADD_MODE_SCAN);
     	  return true;
       }
+      
+      // Use search key to toggle on-screen keyboard for filtering
+      if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+    	  InputMethodManager  imeMgr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+    	  imeMgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    	  return true;
+      }
+      
       return super.onKeyDown(keyCode, event);
    }
 
@@ -801,7 +830,7 @@ public class Main extends Activity {
             String authors = c.getString(10);
 
             if (application.debugEnabled) {
-               Log.d(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);
+               Log.v(Constants.LOG_TAG, "book (id|title) from cursor - " + id + "|" + title);
             }
 
             ImageView coverImage = holder.coverImage;

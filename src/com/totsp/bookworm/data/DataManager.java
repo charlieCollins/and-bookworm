@@ -272,6 +272,12 @@ public class DataManager {
       return stats;
    }
 
+   
+   public void setCaseSensitive(final boolean enabled) {
+	   db.execSQL("pragma case_sensitive_like=" + String.valueOf(enabled));
+   }
+   
+   
   // Changed to protected scope to allow method to be exposed for automated testing 
    protected int getCountFromTable(final String table, final String whereClause) {
       int result = 0;
@@ -461,14 +467,15 @@ public class DataManager {
     * Note that only a limited subset of {@link AlertDialog.Builder} methods are implemented.
     */
    public class TagSelectorBuilder {
-	   private TagDAO.SelectorDialogBuilder selector;	
+	   private TagDAO.SelectorDialogBuilder selector;
+	   private AlertDialog dialog;
 
 	   public TagSelectorBuilder(Context context, long bookId) {
 		   selector = tagDAO.getSelectorDialogBuilder(context, bookId);
 	   }
 
 	   public void show() {
-		   selector.show();
+		   dialog = selector.show();
 	   }
 
 	   public void setOnClickListener(DialogInterface.OnClickListener onClickListener) {
@@ -478,7 +485,21 @@ public class DataManager {
 	   public void create() {
 		   selector.create();
 
-	   }	    	   
+	   }	
+	   
+	   public boolean isShowing() {
+		   if (dialog != null) {
+			   return dialog.isShowing();
+		   } else {
+			   return false;
+		   }
+	   }
+	   
+	   public void dismiss() {
+		   if (dialog != null) {
+			   dialog.dismiss();
+		   }
+	   }
    }
    
 }
