@@ -181,16 +181,6 @@ public class BookSearch extends Activity {
       return createStateBean();
    }
 
-   // go back to Main on back from here
-   @Override
-   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-      if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
-         startActivity(new Intent(BookSearch.this, Main.class));
-         return true;
-      }
-      return super.onKeyDown(keyCode, event);
-   }
-
    // use application object as quick/dirty cache for state
    // onRetainNonConfigurationInstance uses this to quickly save state on config changes
    // onPause uses this to save state longer term, when user "adds" book and then comes BACK to search   

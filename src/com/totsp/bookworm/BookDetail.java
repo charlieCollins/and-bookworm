@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +40,9 @@ public class BookDetail extends Activity {
 	private static final int MENU_EDIT = 0;
 	private static final int MENU_WEB_GOOGLE = 1;
 	private static final int MENU_WEB_AMAZON = 2;
+	
+	private static final int REQUEST_EDIT = 1;
+	private static final int REQUEST_NEW_TAG = 2;
 
 	private BookWormApplication application;
 
@@ -141,8 +143,7 @@ public class BookDetail extends Activity {
 		addTagImage.setOnClickListener(new OnClickListener() {		
 			public void onClick(View v) {
 				application.selectedTag = null;
-				// TODO: Handle activity result to link new tag since this is presumably the reason it was created.
-				startActivity(new Intent(BookDetail.this, TagEditor.class));			
+				startActivityForResult(new Intent(BookDetail.this, TagEditor.class), BookDetail.REQUEST_NEW_TAG);			
 			}
 		});
 
@@ -164,17 +165,36 @@ public class BookDetail extends Activity {
 		setViewData();
 	}
 
-	
-	// go back to Main on back from here
 	@Override
-	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-		if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
-			startActivity(new Intent(BookDetail.this, Main.class));
-			return true;
+	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+			case BookDetail.REQUEST_EDIT:						// Refresh data to pick up edits
+				if ((resultCode == Activity.RESULT_OK) && (data != null)){					
+					long bookId = data.getLongExtra(BookForm.RESULT_BOOK_ID, 0);
+					if (bookId > 0) {
+						application.establishSelectedBook(bookId);
+						setViewData();                        						
+					}
+				}
+				break;
+
+			case BookDetail.REQUEST_NEW_TAG:					// Add new tag to current book
+				if ((resultCode == Activity.RESULT_OK) && (data != null)){					
+					long tagId = data.getLongExtra(TagEditor.RETURN_DATA_TAG_ID, 0);
+					if ((tagId > 0) && (application.selectedBook != null)) {
+						application.dataManager.addTagToBook(tagId, application.selectedBook.id);
+						setViewData();
+					}
+				}
+				break;
+
+			default:
+				break;
 		}
-		return super.onKeyDown(keyCode, event);
 	}
 
+	   
 	private void saveRatingEdit() {
 		Book book = application.selectedBook;
 		if (book != null) {
@@ -203,7 +223,9 @@ public class BookDetail extends Activity {
 			bookTitle.setText(book.title);
 			bookSubTitle.setText(book.subTitle);        	 
 			if (book.subTitle.trim().contentEquals("")) {
-				bookSubTitle.setHeight(0); 
+				bookSubTitle.setVisibility(View.GONE); 
+			} else {
+				bookSubTitle.setVisibility(View.VISIBLE); 
 			}
 
 			bookAuthors.setText(StringUtil.contractAuthors(book.authors));
@@ -234,10 +256,10 @@ public class BookDetail extends Activity {
 				if (application.selectedBook != null) {
 					setViewData();
 				} else {
-					startActivity(new Intent(this, Main.class));
+					finish();
 				}
 			} else {
-				startActivity(new Intent(this, Main.class));
+				finish();
 			}
 		}
 	}
@@ -264,7 +286,7 @@ public class BookDetail extends Activity {
 		Uri uri = null;
 		switch (item.getItemId()) {
 		case MENU_EDIT:
-			startActivity(new Intent(this, BookForm.class));
+			startActivityForResult(new Intent(this, BookForm.class), BookDetail.REQUEST_EDIT);
 			return true;
 		case MENU_WEB_GOOGLE:
 			// TODO other Locales for GOOG URL?

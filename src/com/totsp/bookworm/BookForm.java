@@ -40,6 +40,7 @@ import java.util.Calendar;
  *
  */
 public class BookForm extends TabActivity {
+   public static final String RESULT_BOOK_ID = "BOOK_ID";
 
    private static final int SELECT_IMAGE = 0;
 
@@ -217,8 +218,7 @@ public class BookForm extends TabActivity {
             }
 
             Toast.makeText(BookForm.this, getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(BookForm.this, BookDetail.class);
-            startActivity(intent);
+            setResult(Activity.RESULT_OK);
          }
       }
    }
@@ -313,7 +313,8 @@ public class BookForm extends TabActivity {
    //
    private class SaveBookTask extends AsyncTask<Book, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
-
+      private long bookId;
+      
       private boolean newBook;
 
       @Override
@@ -326,12 +327,13 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
+        	bookId = book.id;
             application.dataManager.updateBook(book);
             application.establishSelectedBook(book.id);
             return true;
          } else if ((book != null) && (book.id == 0)) {
             newBook = true;
-            long bookId = application.dataManager.insertBook(book);
+            bookId = application.dataManager.insertBook(book);
             if (bookId > 0) {
                application.establishSelectedBook(bookId);
                // also auto store generated cover with new form based book insert
@@ -353,9 +355,10 @@ public class BookForm extends TabActivity {
          } else {
             Toast.makeText(BookForm.this, getString(R.string.msgBookSaved), Toast.LENGTH_SHORT).show();
             if (!newBook) {
-               Intent intent = new Intent(BookForm.this, BookDetail.class);
-               intent.putExtra("RELOAD_AFTER_EDIT", true);
-               startActivity(intent);
+               Intent intent = BookForm.this.getIntent();
+               intent.putExtra(RESULT_BOOK_ID, bookId);
+               setResult(Activity.RESULT_OK, intent);
+               finish();
             } else {
                setExistingViewData();
             }
@@ -365,6 +368,7 @@ public class BookForm extends TabActivity {
 
    private class RetrieveCoverImageTask extends AsyncTask<Book, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
+      private long bookId;
 
       @Override
       protected void onPreExecute() {
@@ -376,6 +380,7 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
+         	bookId = book.id;
             application.imageManager.resetCoverImage(book);
             return true;
          }
@@ -391,14 +396,17 @@ public class BookForm extends TabActivity {
             Toast.makeText(BookForm.this, getString(R.string.msgRetrieveCoverImageError), Toast.LENGTH_LONG).show();
          } else {
             Toast.makeText(BookForm.this, getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(BookForm.this, BookDetail.class);
-            startActivity(intent);
+            Intent intent = BookForm.this.getIntent();
+            intent.putExtra(RESULT_BOOK_ID, bookId);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
          }
       }
    }
 
    private class GenerateCoverImageTask extends AsyncTask<Book, Void, Boolean> {
       private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
+      private long bookId;
 
       @Override
       protected void onPreExecute() {
@@ -410,6 +418,7 @@ public class BookForm extends TabActivity {
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          if ((book != null) && (book.id > 0)) {
+        	bookId = book.id;
             Bitmap generatedCover = application.imageManager.createCoverImage(book.title);
             application.imageManager.storeBitmap(generatedCover, book.title, book.id);
             return true;
@@ -426,8 +435,10 @@ public class BookForm extends TabActivity {
             Toast.makeText(BookForm.this, getString(R.string.msgGenerateCoverImageError), Toast.LENGTH_LONG).show();
          } else {
             Toast.makeText(BookForm.this, getString(R.string.msgBookUpdated), Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(BookForm.this, BookDetail.class);
-            startActivity(intent);
+            Intent intent = BookForm.this.getIntent();
+            intent.putExtra(RESULT_BOOK_ID, bookId);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
          }
       }
    }

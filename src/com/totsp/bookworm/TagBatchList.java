@@ -19,6 +19,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
@@ -28,8 +29,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.totsp.bookworm.data.DataConstants;
+import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.PrefListDialogBuilder;
 import com.totsp.bookworm.util.StringUtil;
 
@@ -102,26 +105,25 @@ public class TagBatchList extends Activity {
 	    bookListView.setEmptyView(findViewById(R.id.empty));
 		bookListView.setTextFilterEnabled(true);
 
-		// TODO: Enable bookDetail display here once issues with "back" button have been worked out.
-//		bookListView.setOnItemClickListener(new OnItemClickListener() {
-//			public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-//				booksCursor.moveToPosition(index);
-//				// NOTE - this is tricky, table doesn't have _id, but CursorAdapter requires it
-//				// in the query we used "book.bid as _id" so here we have to use _id too
-//				int bookId = booksCursor.getInt(booksCursor.getColumnIndex("_id"));
-//				Book book = application.dataManager.selectBook(bookId);
-//				if (book != null) {
-//					if (application.debugEnabled) {
-//						Log.d(Constants.LOG_TAG, "book selected - " + book.title);
-//					}
-//					application.lastMainListPosition = index;
-//					application.selectedBook = book;
-//					startActivity(new Intent(TagBatchList.this, BookDetail.class));
-//				} else {
-//					Toast.makeText(TagBatchList.this, getString(R.string.msgSelectBookError), Toast.LENGTH_SHORT).show();
-//				}
-//			}
-//		});
+		bookListView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
+				booksCursor.moveToPosition(index);
+				// NOTE - this is tricky, table doesn't have _id, but CursorAdapter requires it
+				// in the query we used "book.bid as _id" so here we have to use _id too
+				int bookId = booksCursor.getInt(booksCursor.getColumnIndex("_id"));
+				Book book = application.dataManager.selectBook(bookId);
+				if (book != null) {
+					if (application.debugEnabled) {
+						Log.d(Constants.LOG_TAG, "book selected - " + book.title);
+					}
+					application.lastMainListPosition = index;
+					application.selectedBook = book;
+					startActivity(new Intent(TagBatchList.this, BookDetail.class));
+				} else {
+					Toast.makeText(TagBatchList.this, getString(R.string.msgSelectBookError), Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
 		
 		defaultActionBar = (LinearLayout) findViewById(R.id.tagactionbar);
 		reorderActionBar = (LinearLayout) findViewById(R.id.tagreorderactionbar);

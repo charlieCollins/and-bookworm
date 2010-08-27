@@ -2,6 +2,7 @@ package com.totsp.bookworm;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.totsp.bookworm.util.TaskUtil;
  * Tag editing and display activity.
  */
 public class TagEditor extends Activity {
+	public final static String RETURN_DATA_TAG_ID = "TAG_ID";
 	private Spinner template;
 	private EditText name;
 	private Button saveButton;
@@ -127,6 +129,7 @@ public class TagEditor extends Activity {
 	 */
 	private class SaveTagTask extends AsyncTask<Tag, Void, Boolean> {
 		private final ProgressDialog dialog = new ProgressDialog(TagEditor.this);
+		private long tagId;
 
 		@Override
 		protected void onPreExecute() {
@@ -145,11 +148,12 @@ public class TagEditor extends Activity {
 			Tag tag = args[0];
 			
 			if ((tag != null) && (tag.id > 0)) {
+				tagId = tag.id;
 				application.dataManager.updateTag(tag);
 				application.establishSelectedTag(tag.id);
 				return true;
 			} else if ((tag != null) && (tag.id == 0)) {
-				long tagId = application.dataManager.insertTag(tag);
+				tagId = application.dataManager.insertTag(tag);
 				if (tagId > 0) {
 					application.establishSelectedTag(tagId);
 					return true;
@@ -165,6 +169,9 @@ public class TagEditor extends Activity {
 				Toast.makeText(TagEditor.this, getString(R.string.msgTagSaveError), Toast.LENGTH_LONG).show();
 			} else {
 				Toast.makeText(TagEditor.this, getString(R.string.msgTagSaved), Toast.LENGTH_SHORT).show();
+				Intent intent = TagEditor.this.getIntent();
+				intent.putExtra(RETURN_DATA_TAG_ID, tagId);
+				TagEditor.this.setResult(Activity.RESULT_OK, intent);
 				TagEditor.this.finish();
 			}
 		}

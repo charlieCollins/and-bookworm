@@ -190,11 +190,13 @@ public class Main extends Activity {
       bookListView.setTextFilterEnabled(true);
       bookListView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-            cursor.moveToPosition(index);
-            // NOTE - this is tricky, table doesn't have _id, but CursorAdapter requires it
-            // in the query we used "book.bid as _id" so here we have to use _id too
-            int bookId = cursor.getInt(cursor.getColumnIndex("_id"));
-            Book book = application.dataManager.selectBook(bookId);
+        	Book book = null;
+            if (cursor.moveToPosition(index) && (cursor.getColumnIndex("_id") >= 0)) {
+	            // NOTE - this is tricky, table doesn't have _id, but CursorAdapter requires it
+	            // in the query we used "book.bid as _id" so here we have to use _id too
+	            int bookId = cursor.getInt(cursor.getColumnIndex("_id"));
+	            book = application.dataManager.selectBook(bookId);
+            }
             if (book != null) {
                if (application.debugEnabled) {
                   Log.d(Constants.LOG_TAG, "book selected - " + book.title);
@@ -294,7 +296,9 @@ public class Main extends Activity {
                         public void onClick(final DialogInterface d, final int i) {
                            application.imageManager.deleteBitmapSourceFile(b.title, b.id);
                            application.dataManager.deleteBook(b.id);
-                           startActivity(getIntent());
+                           if (adapter != null) {
+                         	  adapter.notifyDataSetChanged();
+                            }                        
                         }
                      }).setNegativeButton(getString(R.string.btnNo), new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface d, final int i) {
@@ -348,12 +352,6 @@ public class Main extends Activity {
    // (avoid loop with BookEntrySearch which comes here)
    @Override
    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-      if ((keyCode == KeyEvent.KEYCODE_BACK) && (event.getRepeatCount() == 0)) {
-         Intent intent = new Intent(Intent.ACTION_MAIN);
-         intent.addCategory(Intent.CATEGORY_HOME);
-         startActivity(intent);
-         return true;
-      }
       // Use camera button to add book by scan
       if (application.scanOnCameraButton && (keyCode == KeyEvent.KEYCODE_CAMERA)) {
     	  addBook(BookWormApplication.ADD_MODE_SCAN);
@@ -432,6 +430,20 @@ public class Main extends Activity {
       }
    }
 
+   
+   /**
+    * Re-queries the book cursor to update the list.
+    */
+   private void refreshList() {
+	   if (adapter != null) {
+		   ((BookCursorAdapter)adapter).runQuery(null);
+		   application.lastMainListPosition = 0;
+		   adapter.changeCursor(cursor);
+	   } else {
+		   bindAdapter();
+	   }
+   }
+   
    private void setupDialogs() {
 	  sortDialog = new PrefListDialogBuilder(this, prefs, Constants.DEFAULT_SORT_ORDER);
 	  sortDialog.setTitle(getString(R.string.btnSortBy))
@@ -445,12 +457,7 @@ public class Main extends Activity {
 	   			@Override
 	   			public void onClick(DialogInterface dialog, int which) {
 	   				sortDialogIsShowing = false;
-	   				if (Main.this.adapter != null) {
-	   					((BookCursorAdapter)Main.this.adapter).runQuery(null);
-	   					application.lastMainListPosition = 0;
-	   					// Must call changeCursor for sort since it isn't called automatically as it is for filter 
-	   					Main.this.adapter.changeCursor(cursor);
-	   				}
+	   				Main.this.refreshList();
 	   			}
 	   		});
       sortDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -535,7 +542,6 @@ public class Main extends Activity {
                                                                         "exporting database to external storage");
                                                       exportDatabaseTask = new ExportDatabaseTask();
                                                       exportDatabaseTask.execute();
-                                                      startActivity(new Intent(Main.this, Main.class));
                                                    } else {
                                                       Toast.makeText(Main.this,
                                                                getString(R.string.msgExternalStorageNAError),
@@ -563,7 +569,7 @@ public class Main extends Activity {
                                                                DataConstants.EXTERNAL_DATA_PATH);
                                                       // reset the db (else Main shows no data)
                                                       application.dataManager.resetDb();
-                                                      startActivity(new Intent(Main.this, Main.class));
+                                                      refreshList();
                                                    } else {
                                                       Toast.makeText(Main.this,
                                                                getString(R.string.msgExternalStorageNAError),
@@ -656,7 +662,7 @@ public class Main extends Activity {
                                                    application.updatePreferences();
                                                    Toast.makeText(Main.this, getString(R.string.msgDataDeleted),
                                                             Toast.LENGTH_SHORT).show();
-                                                   startActivity(new Intent(Main.this, Main.class));
+                                                   refreshList();
                                                 }
                                              }).setNegativeButton(getString(R.string.btnNo),
                                              new DialogInterface.OnClickListener() {

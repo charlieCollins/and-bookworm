@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -92,7 +91,7 @@ public class BookEntryResult extends Activity {
       // or ISBN must be present as intent extra to proceed (in which case request will be made to get data)
       if (fromSearch && (application.selectedBook != null)) {
          setupBookResultTask = new SetupBookResultTask(application.selectedBook);
-         setupBookResultTask.execute(null);
+         setupBookResultTask.execute();
       } else {
          String isbn = getIntent().getStringExtra(Constants.ISBN);
          if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
@@ -184,15 +183,7 @@ private void bookAdd(final Book book) {
          Log.e(Constants.LOG_TAG, "BookEntryResult bookAdd invoked on null book.");
       }
       
-      // where to next (back to Search, or to Main)
-      if (fromSearch) {
-         // if from search results, return to search
-         Intent intent = new Intent(BookEntryResult.this, BookSearch.class);
-         intent.putExtra(BookEntryResult.FROM_RESULT, true);
-         startActivity(intent);
-      } else {
-         startActivity(new Intent(BookEntryResult.this, Main.class));
-      }
+      finish();
    }
 
    /**

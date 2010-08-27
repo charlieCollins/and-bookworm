@@ -41,13 +41,15 @@ public class Splash extends Activity {
       boolean showSplash = prefs.getBoolean("showsplash", false);
       if (!showSplash && splashSeenOnce) {
          startActivity(new Intent(Splash.this, Main.class));
+         finish();
       }
    }
 
    @Override
    public boolean onTouchEvent(final MotionEvent e) {
       if (e.getAction() == MotionEvent.ACTION_DOWN) {
-         startActivity(new Intent(Splash.this, Main.class));
+    	  startActivity(new Intent(Splash.this, Main.class));
+    	  finish();
       }
       return true;
    }
