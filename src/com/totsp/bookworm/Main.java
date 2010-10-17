@@ -223,9 +223,6 @@ public class Main extends Activity {
       // cleanup any other activity long term state from application
       application.bookSearchStateBean = null;
       
-      System.out.println("ON PAUSE ******************");
-      
-
       // /Debug.stopMethodTracing();      
       super.onPause();
    }
