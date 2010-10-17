@@ -9,7 +9,6 @@ import com.totsp.bookworm.BookSearch.BookSearchStateBean;
 import com.totsp.bookworm.data.BookDataSource;
 import com.totsp.bookworm.data.CompoundDataSource;
 import com.totsp.bookworm.data.DataManager;
-import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
 

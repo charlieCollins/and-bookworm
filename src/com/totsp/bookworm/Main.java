@@ -47,15 +47,12 @@ import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
 import com.totsp.bookworm.util.ExternalStorageUtil;
-import com.totsp.bookworm.util.FileUtil;
 import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.util.StringUtil;
-import com.totsp.bookworm.util.TaskUtil;
 import com.totsp.bookworm.zxing.ZXingIntentIntegrator;
 import com.totsp.bookworm.zxing.ZXingIntentResult;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main extends Activity {
@@ -89,14 +86,10 @@ public class Main extends Activity {
    private Bitmap star4;
    private Bitmap star5;
 
-   private ImportDatabaseTask importDatabaseTask;
-   private ExportDatabaseTask exportDatabaseTask;
-   private ResetAllCoverImagesTask resetAllCoverImagesTask;
-
-   private AlertDialog.Builder sortDialog;
-   private boolean sortDialogIsShowing;
-   private AlertDialog.Builder manageDataDialog;
-   private AlertDialog.Builder statsDialog;
+   private ProgressDialog progressDialog;
+   private AlertDialog sortDialog;
+   private AlertDialog manageDataDialog;
+   private AlertDialog statsDialog;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -107,12 +100,9 @@ public class Main extends Activity {
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
       cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-      // AsyncTasks are great, and really annoying at the same time
-      // hard to prevent FCs when you need an instance handle to clean up in onPause, but you can execute only ONCE
-      // (should be idempotent and execute as many times as you want, once instance handle)
-      resetAllCoverImagesTask = null;
-      importDatabaseTask = null;
-      exportDatabaseTask = null;
+      progressDialog = new ProgressDialog(this);
+      progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+      progressDialog.setCancelable(false);
 
       coverImageMissing = BitmapFactory.decodeResource(getResources(), R.drawable.book_cover_missing);
       star0 = BitmapFactory.decodeResource(getResources(), R.drawable.star0);
@@ -125,9 +115,8 @@ public class Main extends Activity {
       // action bar images
       sortImage = (ImageView) findViewById(R.id.actionsort);
       sortImage.setOnClickListener(new OnClickListener() {
-         public void onClick(View v) { 
-            if (!sortDialogIsShowing) {
-               sortDialogIsShowing = true;
+         public void onClick(View v) {
+            if (!sortDialog.isShowing()) {
                sortDialog.show();
             }
          }
@@ -170,7 +159,6 @@ public class Main extends Activity {
       manageDataImage = (ImageView) findViewById(R.id.actionmanagedata);
       manageDataImage.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
-            //startActivity(new Intent(Main.this, ManageData.class));
             manageDataDialog.show();
          }
       });
@@ -206,8 +194,45 @@ public class Main extends Activity {
    }
 
    @Override
-   public void onStart() {      
+   public void onStart() {
       super.onStart();
+   }
+
+   @Override
+   public void onResume() {
+      super.onResume();
+      resetAdapter();
+   }
+
+   @Override
+   public void onPause() {
+      if (sortDialog.isShowing()) {
+         sortDialog.dismiss();
+      }
+      if (manageDataDialog.isShowing()) {
+         manageDataDialog.dismiss();
+      }
+      if (statsDialog.isShowing()) {
+         statsDialog.dismiss();
+      }
+
+      if (progressDialog.isShowing()) {
+         progressDialog.dismiss();
+      }
+
+      // cleanup any other activity long term state from application
+      application.bookSearchStateBean = null;
+      
+      System.out.println("ON PAUSE ******************");
+      
+
+      // /Debug.stopMethodTracing();      
+      super.onPause();
+   }
+
+   @Override
+   public void onDestroy() {
+      super.onDestroy();
    }
 
    @Override
@@ -287,33 +312,6 @@ public class Main extends Activity {
       }
    }
 
-   @Override
-   public void onPause() {
-      if (resetAllCoverImagesTask != null) {
-         TaskUtil.dismissDialog(resetAllCoverImagesTask.dialog);
-      }
-      if (exportDatabaseTask != null) {
-         TaskUtil.dismissDialog(exportDatabaseTask.dialog);
-      }
-      if (importDatabaseTask != null) {
-         TaskUtil.dismissDialog(importDatabaseTask.dialog);
-      }
-      TaskUtil.pauseTask(resetAllCoverImagesTask);
-      TaskUtil.pauseTask(exportDatabaseTask);
-      TaskUtil.pauseTask(importDatabaseTask);
-      
-      // cleanup any other activity long term state from application
-      application.bookSearchStateBean = null;
-
-      // /Debug.stopMethodTracing();		
-      super.onPause();
-   }
-
-   @Override
-   public void onDestroy() {
-      super.onDestroy();
-   }
-
    // go to home on back from Main 
    // (avoid loop with BookEntrySearch which comes here)
    @Override
@@ -373,7 +371,7 @@ public class Main extends Activity {
       // bind bookListView and adapter
       String orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
       cursor = application.dataManager.getBookCursor(orderBy, null);
-      if ((cursor != null) && (cursor.getCount() > 0)) {
+      if (cursor != null) {
          startManagingCursor(cursor);
          adapter = new BookCursorAdapter(cursor);
          bookListView.setAdapter(adapter);
@@ -383,58 +381,59 @@ public class Main extends Activity {
          }
       }
    }
+   
+   private void resetAdapter() {
+      application.lastMainListPosition = 0;
+      // adapter.notifyDataSetChanged();
+      // TODO notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
+      // need to research (shouldn't have to re-bind the entire adapter, but for now doing so)
+      bindAdapter();
+   }
 
    private void setupDialogs() {
-      sortDialog = new AlertDialog.Builder(this);
-      sortDialog.setTitle(getString(R.string.btnSortBy));
-      sortDialog.setItems(new CharSequence[] { getString(R.string.labelTitle), getString(R.string.labelAuthorsShort),
-               getString(R.string.labelRating), getString(R.string.labelReadstatus), getString(R.string.labelSubject),
-               getString(R.string.labelDatepub), getString(R.string.labelPublisher) },
-               new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface d, int selected) {
-                     sortDialogIsShowing = false;
-                     switch (selected) {
-                        case 0:
-                           saveSortOrder(DataConstants.ORDER_BY_TITLE_ASC);
-                           break;
-                        case 1:
-                           saveSortOrder(DataConstants.ORDER_BY_AUTHORS_ASC);
-                           break;
-                        case 2:
-                           saveSortOrder(DataConstants.ORDER_BY_RATING_DESC);
-                           break;
-                        case 3:
-                           saveSortOrder(DataConstants.ORDER_BY_READ_DESC);
-                           break;
-                        case 4:
-                           saveSortOrder(DataConstants.ORDER_BY_SUBJECT_ASC);
-                           break;
-                        case 5:
-                           saveSortOrder(DataConstants.ORDER_BY_DATE_PUB_DESC);
-                           break;
-                        case 6:
-                           saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
-                           break;
-                     }
-                     application.lastMainListPosition = 0;
-                     // adapter.notifyDataSetChanged();
-                     // TODO notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
-                     // need to research (shouldn't have to re-bind the entire adapter, but for now doing so)
-                     bindAdapter();
-                  }
-               });
-      sortDialog.setOnCancelListener(new OnCancelListener() {
-         public void onCancel(DialogInterface d) {
-            sortDialogIsShowing = false;
+      AlertDialog.Builder sortDialogBuilder = new AlertDialog.Builder(this);
+      sortDialogBuilder.setTitle(getString(R.string.btnSortBy));
+      sortDialogBuilder.setItems(new CharSequence[] { getString(R.string.labelTitle),
+               getString(R.string.labelAuthorsShort), getString(R.string.labelRating),
+               getString(R.string.labelReadstatus), getString(R.string.labelSubject), getString(R.string.labelDatepub),
+               getString(R.string.labelPublisher) }, new DialogInterface.OnClickListener() {
+         public void onClick(DialogInterface d, int selected) {
+            switch (selected) {
+               case 0:
+                  saveSortOrder(DataConstants.ORDER_BY_TITLE_ASC);
+                  break;
+               case 1:
+                  saveSortOrder(DataConstants.ORDER_BY_AUTHORS_ASC);
+                  break;
+               case 2:
+                  saveSortOrder(DataConstants.ORDER_BY_RATING_DESC);
+                  break;
+               case 3:
+                  saveSortOrder(DataConstants.ORDER_BY_READ_DESC);
+                  break;
+               case 4:
+                  saveSortOrder(DataConstants.ORDER_BY_SUBJECT_ASC);
+                  break;
+               case 5:
+                  saveSortOrder(DataConstants.ORDER_BY_DATE_PUB_DESC);
+                  break;
+               case 6:
+                  saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
+                  break;
+            }           
          }
       });
-      sortDialog.create();
+      sortDialogBuilder.setOnCancelListener(new OnCancelListener() {
+         public void onCancel(DialogInterface d) {
+            sortDialog.dismiss();
+         }
+      });
+      sortDialog = sortDialogBuilder.create();
 
-      manageDataDialog = new AlertDialog.Builder(this);
-      manageDataDialog.setTitle(getString(R.string.labelManageData));
-      manageDataDialog.setItems(new CharSequence[] { getString(R.string.btnExportCSV),
-               getString(R.string.btnImportCSV), getString(R.string.btnExportDB), getString(R.string.btnImportDB),
-               getString(R.string.btnEmailCSV), getString(R.string.btnEmailDB),
+      AlertDialog.Builder manageDataDialogBuilder = new AlertDialog.Builder(this);
+      manageDataDialogBuilder.setTitle(getString(R.string.labelManageData));
+      manageDataDialogBuilder.setItems(new CharSequence[] { getString(R.string.btnExportCSV),
+               getString(R.string.btnImportCSV), getString(R.string.btnEmailCSV),
                getString(R.string.btnResetCoverImages), getString(R.string.btnDeleteData) },
                new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface d, int selected) {
@@ -447,8 +446,8 @@ public class Main extends Activity {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
                                                    if (ExternalStorageUtil.isExternalStorageAvail()) {
                                                       // TODO AsyncTask here?
-                                                      CsvManager exporter = new CsvManager();
-                                                      exporter.export(application.dataManager.selectAllBooks());
+                                                      CsvManager csvManager = new CsvManager(null);
+                                                      csvManager.export(application.dataManager.selectAllBooks());
                                                       Toast.makeText(Main.this, getString(R.string.msgExportSuccess),
                                                                Toast.LENGTH_SHORT).show();
                                                    } else {
@@ -466,61 +465,8 @@ public class Main extends Activity {
                         case 1:
                            // IMPORT CSV
                            startActivity(new Intent(Main.this, CSVImport.class));
-                           break;
+                           break;                        
                         case 2:
-                           // EXPORT DB
-                           new AlertDialog.Builder(Main.this)
-                                    .setMessage(getString(R.string.msgReplaceExistingDBExport)).setPositiveButton(
-                                             getString(R.string.btnYes), new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface arg0, final int arg1) {
-                                                   if (ExternalStorageUtil.isExternalStorageAvail()) {
-                                                      Log
-                                                               .i(Constants.LOG_TAG,
-                                                                        "exporting database to external storage");
-                                                      exportDatabaseTask = new ExportDatabaseTask();
-                                                      exportDatabaseTask.execute();
-                                                      startActivity(new Intent(Main.this, Main.class));
-                                                   } else {
-                                                      Toast.makeText(Main.this,
-                                                               getString(R.string.msgExternalStorageNAError),
-                                                               Toast.LENGTH_SHORT).show();
-                                                   }
-                                                }
-                                             }).setNegativeButton(getString(R.string.btnNo),
-                                             new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface arg0, final int arg1) {
-                                                }
-                                             }).show();
-                           break;
-                        case 3:
-                           // IMPORT DB
-                           new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgReplaceExistingDB))
-                                    .setPositiveButton(getString(R.string.btnYes),
-                                             new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface arg0, final int arg1) {
-                                                   if (ExternalStorageUtil.isExternalStorageAvail()) {
-                                                      Log.i(Constants.LOG_TAG,
-                                                               "importing database from external storage");
-                                                      // TODO check prev task state
-                                                      importDatabaseTask = new ImportDatabaseTask();
-                                                      importDatabaseTask.execute(DataConstants.DATABASE_NAME,
-                                                               DataConstants.EXTERNAL_DATA_PATH);
-                                                      // reset the db (else Main shows no data)
-                                                      application.dataManager.resetDb();
-                                                      startActivity(new Intent(Main.this, Main.class));
-                                                   } else {
-                                                      Toast.makeText(Main.this,
-                                                               getString(R.string.msgExternalStorageNAError),
-                                                               Toast.LENGTH_SHORT).show();
-                                                   }
-                                                }
-                                             }).setNegativeButton(getString(R.string.btnNo),
-                                             new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface arg0, final int arg1) {
-                                                }
-                                             }).show();
-                           break;
-                        case 4:
                            // EMAIL CSV
                            if (ExternalStorageUtil.isExternalStorageAvail()) {
                               File f =
@@ -543,32 +489,8 @@ public class Main extends Activity {
                               Toast.makeText(Main.this, getString(R.string.msgExternalStorageNAError),
                                        Toast.LENGTH_SHORT).show();
                            }
-                           break;
-                        case 5:
-                           // EMAIL DB
-                           if (ExternalStorageUtil.isExternalStorageAvail()) {
-                              File f =
-                                       new File(DataConstants.EXTERNAL_DATA_PATH + File.separator
-                                                + DataConstants.DATABASE_NAME);
-                              if (f.exists() && f.canRead()) {
-                                 Intent sendDBIntent = new Intent(Intent.ACTION_SEND);
-                                 sendDBIntent.setType("text/csv");
-                                 sendDBIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"
-                                          + DataConstants.EXTERNAL_DATA_PATH + File.separator
-                                          + DataConstants.DATABASE_NAME));
-                                 sendDBIntent.putExtra(Intent.EXTRA_SUBJECT, "BookWorm DB Export");
-                                 sendDBIntent.putExtra(Intent.EXTRA_TEXT, "DB export attached.");
-                                 startActivity(Intent.createChooser(sendDBIntent, "Email:"));
-                              } else {
-                                 Toast.makeText(Main.this, getString(R.string.msgExportBeforeEmail), Toast.LENGTH_LONG)
-                                          .show();
-                              }
-                           } else {
-                              Toast.makeText(Main.this, getString(R.string.msgExternalStorageNAError),
-                                       Toast.LENGTH_SHORT).show();
-                           }
-                           break;
-                        case 6:
+                           break;                        
+                        case 3:
                            // RESET ALL COVER IMAGES
                            if (adapter != null && adapter.getCount() > 0) {
                               new AlertDialog.Builder(Main.this).setTitle(getString(R.string.msgResetAllCoverImages))
@@ -576,9 +498,7 @@ public class Main extends Activity {
                                        .setPositiveButton(getString(R.string.btnYes),
                                                 new DialogInterface.OnClickListener() {
                                                    public void onClick(final DialogInterface d, final int i) {
-                                                      // TODO check prev task state
-                                                      resetAllCoverImagesTask = new ResetAllCoverImagesTask();
-                                                      resetAllCoverImagesTask.execute();
+                                                      new ResetAllCoverImagesTask().execute();
                                                    }
                                                 }).setNegativeButton(getString(R.string.btnNo),
                                                 new DialogInterface.OnClickListener() {
@@ -587,7 +507,7 @@ public class Main extends Activity {
                                                 }).show();
                            }
                            break;
-                        case 7:
+                        case 4:
                            // DELETE ALL DATA
                            new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgDeleteAllData))
                                     .setPositiveButton(getString(R.string.btnYes),
@@ -609,15 +529,15 @@ public class Main extends Activity {
                      }
                   }
                });
-      manageDataDialog.create();
+      manageDataDialog = manageDataDialogBuilder.create();
 
-      statsDialog = new AlertDialog.Builder(this);
-      statsDialog.setTitle(getString(R.string.msgBookListStats));
-      statsDialog.setNeutralButton(getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
+      AlertDialog.Builder statsDialogBuilder = new AlertDialog.Builder(this);
+      statsDialogBuilder.setTitle(getString(R.string.msgBookListStats));
+      statsDialogBuilder.setNeutralButton(getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
          public void onClick(DialogInterface d, int i) {
          };
       });
-      statsDialog.create();
+      statsDialog = statsDialogBuilder.create();
    }
 
    private void saveSortOrder(final String order) {
@@ -750,128 +670,50 @@ public class Main extends Activity {
       }
    }
 
+   //
    // AsyncTasks
-
-   // TODO don't need param types on these, don't use the params?
-   // could pass in the param strings for data dirs though
-   private class ExportDatabaseTask extends AsyncTask<String, Void, Boolean> {
-      private final ProgressDialog dialog = new ProgressDialog(Main.this);
-
-      @Override
-      protected void onPreExecute() {
-         dialog.setMessage(getString(R.string.msgExportingData));
-         dialog.show();
-      }
-
-      @Override
-      protected Boolean doInBackground(final String... args) {
-
-         File dbFile = new File(DataConstants.DATABASE_PATH);
-
-         File exportDir = new File(DataConstants.EXTERNAL_DATA_PATH);
-         if (!exportDir.exists()) {
-            exportDir.mkdirs();
-         }
-         File file = new File(exportDir, dbFile.getName());
-
-         try {
-            file.createNewFile();
-            FileUtil.copyFile(dbFile, file);
-            return true;
-         } catch (IOException e) {
-            Log.e(Constants.LOG_TAG, e.getMessage(), e);
-            return false;
-         }
-      }
-
-      @Override
-      protected void onPostExecute(final Boolean success) {
-         if (dialog.isShowing()) {
-            dialog.dismiss();
-         }
-         if (success) {
-            Toast.makeText(Main.this, getString(R.string.msgExportSuccess), Toast.LENGTH_SHORT).show();
-         } else {
-            Toast.makeText(Main.this, getString(R.string.msgExportError), Toast.LENGTH_SHORT).show();
-         }
-      }
-   }
-
-   private class ImportDatabaseTask extends AsyncTask<String, Void, String> {
-      private final ProgressDialog dialog = new ProgressDialog(Main.this);
-
-      @Override
-      protected void onPreExecute() {
-         dialog.setMessage(getString(R.string.msgImportingData));
-         dialog.show();
-      }
-
-      @Override
-      protected String doInBackground(final String... args) {
-
-         File dbBackupFile = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + DataConstants.DATABASE_NAME);
-         if (!dbBackupFile.exists()) {
-            return getString(R.string.msgImportFileMissingError);
-         } else if (!dbBackupFile.canRead()) {
-            return getString(R.string.msgImportFileNonReadableError);
-         }
-
-         File dbFile = new File(DataConstants.DATABASE_PATH);
-         if (dbFile.exists()) {
-            dbFile.delete();
-         }
-
-         try {
-            dbFile.createNewFile();
-            FileUtil.copyFile(dbBackupFile, dbFile);
-            return null;
-         } catch (IOException e) {
-            Log.e(Constants.LOG_TAG, e.getMessage(), e);
-            return e.getMessage();
-         }
-      }
-
-      @Override
-      protected void onPostExecute(final String errMsg) {
-         if (dialog.isShowing()) {
-            dialog.dismiss();
-         }
-         if (errMsg == null) {
-            Toast.makeText(Main.this, getString(R.string.msgImportSuccess), Toast.LENGTH_SHORT).show();
-         } else {
-            Toast.makeText(Main.this, getString(R.string.msgImportError) + ": " + errMsg, Toast.LENGTH_SHORT).show();
-         }
-      }
-   }
-
+   //
    private class ResetAllCoverImagesTask extends AsyncTask<Void, String, Void> {
-      private final ProgressDialog dialog = new ProgressDialog(Main.this);
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(getString(R.string.msgResetCoverImagesWarnTime));
-         dialog.show();
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
          // keep screen on, and prevent orientation change, during potentially long running task
          getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
          setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
       }
 
       @Override
-      protected void onProgressUpdate(final String... args) {
-         dialog.setMessage(args[0]);
-      }
-
-      @Override
       protected Void doInBackground(final Void... args) {
          application.imageManager.clearAllBitmapSourceFiles();
          ArrayList<Book> books = application.dataManager.selectAllBooks();
+         String[] progress = new String[3];
+         progress[2] = Integer.toString(books.size());
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
-            publishProgress(String.format(getString(R.string.msgProcessingBookX, b.title)));
+            progress[0] = String.format(getString(R.string.msgProcessingBookX, b.title));
+            progress[1] = Integer.toString(i);
+            publishProgress(progress);
             application.imageManager.resetCoverImage(b);
-            SystemClock.sleep(100); // sleep a little, too many requests too quickly with large data sets is bad mojo
+            // sleep a little, too many requests too quickly with large data sets is bad mojo
+            SystemClock.sleep(100);
          }
          return null;
+      }
+
+      @Override
+      protected void onProgressUpdate(String... progress) {
+         progressDialog.setMessage(progress[0]);
+         if ((progress[1].equals("1")) && !progressDialog.isShowing()) {
+            //Toast.makeText(Main.this, R.string.msgResetCoverImagesWarnTime, Toast.LENGTH_SHORT).show();
+            progressDialog.setMax(Integer.valueOf(progress[2]));
+            progressDialog.show();
+         } else if (progress[1].equals(progress[2]) && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+         progressDialog.setProgress(Integer.valueOf(progress[1]));
       }
 
       @Override
@@ -879,8 +721,8 @@ public class Main extends Activity {
          if (adapter != null) {
             adapter.notifyDataSetChanged();
          }
-         if (dialog.isShowing()) {
-            dialog.dismiss();
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
          }
          // reset screen and orientation params
          getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

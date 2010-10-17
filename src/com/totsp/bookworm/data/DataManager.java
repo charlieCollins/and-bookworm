@@ -106,7 +106,7 @@ public class DataManager {
    public Cursor getBookCursor(final String orderBy, final String whereClauseLimit) {
       return bookDAO.getCursor(orderBy, whereClauseLimit);
    }
-
+ 
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
       Log.i(Constants.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");

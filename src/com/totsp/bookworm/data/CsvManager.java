@@ -18,13 +18,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-// the file handling stuff here certainly isn't the best
-// but files are small and this is rarely used, so not a bottleneck anyway
 public class CsvManager {
 
    public static final String EXPORT_FILENAME = "bookworm.csv";
 
-   public CsvManager() {
+   private BookDataSource bookDataSource;
+
+   public CsvManager(final BookDataSource bookDataSource) {
+      this.bookDataSource = bookDataSource;
    }
 
    public void export(final ArrayList<Book> books) {
@@ -64,8 +65,8 @@ public class CsvManager {
 
    private String getCSVString(final ArrayList<Book> books) {
       StringBuilder sb = new StringBuilder();
-      sb
-               .append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status, User Note [optional]\n");
+      sb.append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,");
+      sb.append("Format,Subject,Publisher,Published Date,User Rating,User Read Status, User Note [optional]\n");
       if ((books != null) && !books.isEmpty()) {
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
@@ -93,7 +94,7 @@ public class CsvManager {
             sb.append(DateUtil.format(new Date(b.datePubStamp)) + ",");
             if (b.bookUserData != null) {
                sb.append(b.bookUserData.rating + ",");
-               sb.append(b.bookUserData.read + ",");               
+               sb.append(b.bookUserData.read + ",");
                sb.append(b.bookUserData.blurb != null ? b.bookUserData.blurb : "");
             } else {
                sb.append(" , ,");
@@ -102,6 +103,12 @@ public class CsvManager {
          }
       }
       return sb.toString();
+   }
+
+   public ArrayList<Book> parseCSVFile_ISBNOnly(File f) {
+      ArrayList<Book> books = new ArrayList<Book>();
+
+      return books;
    }
 
    // this is VERY brittle and primitive, but small -- only supports specific BookWorm format files
@@ -119,8 +126,13 @@ public class CsvManager {
             while (scanner.hasNextLine()) {
                count++;
                String line = scanner.nextLine();
+               
+               Log.i(Constants.LOG_TAG, "Processing line for import:" + line);
+               
                if ((line != null) && (count > 1)) {
                   String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+                  // FULL type CSV file for import
                   if ((parts != null) && ((parts.length == 12) || (parts.length == 13))) {
                      Book b = new Book();
                      b.title = parts[0];
@@ -153,7 +165,7 @@ public class CsvManager {
                      if (parts[11] != null) {
                         readStatus = Boolean.valueOf(parts[11]) ? 1 : 0;
                      }
-                     
+
                      String note = null;
                      if (parts.length > 12) {
                         note = parts[12];
@@ -164,10 +176,21 @@ public class CsvManager {
                      if (b.title != null) {
                         books.add(b);
                      }
+                  } else if ((parts != null) && (parts.length == 1)) {
+                     // ISBN ONLY type, 1 element per file line 
+                     if (bookDataSource != null) {                        
+                        ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0);
+                        if (searchBooks != null && !searchBooks.isEmpty()) {
+                           books.add(searchBooks.get(0));
+                        }                        
+                     } else {
+                        Log.w(Constants.LOG_TAG,
+                                 "BookDataSource null, not importing book from CSV based on ISBN alone.");
+                     }
                   } else {
                      Log.w(Constants.LOG_TAG, "Warning, not including line " + count
-                              + " from import file because it does not parse into 12 or 13 parts (parsed as "
-                              + parts.length + ").");
+                              + " from import file because it does not parse into correct number of parts,"
+                              + " 1 (ISBN only), or 13 (full BookWorm format). (Parsed as " + parts.length + ").");
                   }
                }
             }
@@ -182,5 +205,4 @@ public class CsvManager {
       Log.i(Constants.LOG_TAG, "Parsed " + books.size() + " books from CSV file.");
       return books;
    }
-
 }
