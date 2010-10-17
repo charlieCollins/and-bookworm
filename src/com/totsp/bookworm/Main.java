@@ -46,6 +46,7 @@ import com.totsp.bookworm.data.CsvManager;
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
+import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.ExternalStorageUtil;
 import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.util.StringUtil;
@@ -62,7 +63,7 @@ public class Main extends Activity {
    private static final int MENU_STATS = 3;
 
    private static final int MENU_CONTEXT_EDIT = 0;
-   private static final int MENU_CONTEXT_DELETE = 1;   
+   private static final int MENU_CONTEXT_DELETE = 1;
 
    BookWormApplication application;
    SharedPreferences prefs;
@@ -90,11 +91,8 @@ public class Main extends Activity {
    private AlertDialog sortDialog;
    private AlertDialog manageDataDialog;
    private AlertDialog statsDialog;
-   
-   // TODO if INTERNAL CSV BACKUP file is found, and DB is empty (new install, etc)
-   // prompt user to restore from backup CSV 
-   // (this way we don't have to maintain complicated manual BackupAgent, we just use file, and manage at CSV level)
-   
+   private AlertDialog restoreDialog;
+
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -103,7 +101,7 @@ public class Main extends Activity {
       application = (BookWormApplication) getApplication();
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
       cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-      
+
       progressDialog = new ProgressDialog(this);
       progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
       progressDialog.setCancelable(false);
@@ -195,6 +193,9 @@ public class Main extends Activity {
       // addtl
       setupDialogs();
       bindAdapter();
+
+      // check backup restore
+      checkForRestore();
    }
 
    @Override
@@ -205,7 +206,7 @@ public class Main extends Activity {
    @Override
    public void onResume() {
       super.onResume();
-      resetAdapter();      
+      resetAdapter();
    }
 
    @Override
@@ -226,7 +227,7 @@ public class Main extends Activity {
 
       // cleanup any other activity long term state from application
       application.bookSearchStateBean = null;
-      
+
       // /Debug.stopMethodTracing();      
       super.onPause();
    }
@@ -382,13 +383,25 @@ public class Main extends Activity {
          }
       }
    }
-   
+
    private void resetAdapter() {
       application.lastMainListPosition = 0;
       // adapter.notifyDataSetChanged();
       // TODO notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
       // need to research (shouldn't have to re-bind the entire adapter, but for now doing so)
       bindAdapter();
+   }
+
+   private void checkForRestore() {
+      // if the current database is EMPTY, and yet the internal CSV backup file is present
+      // prompt user if they want to restore this data
+      // (this file is maintained as users add/remove data, and backed up with BackupAgent)
+      if (adapter != null && adapter.getCount() == 0) {
+         File csvFile = new File(getFilesDir() + File.separator + DataConstants.EXPORT_FILENAME);
+         if (csvFile.exists() && csvFile.canRead()) {
+            restoreDialog.show();
+         }
+      }
    }
 
    private void setupDialogs() {
@@ -421,7 +434,7 @@ public class Main extends Activity {
                case 6:
                   saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
                   break;
-            }           
+            }
          }
       });
       sortDialogBuilder.setOnCancelListener(new OnCancelListener() {
@@ -446,8 +459,9 @@ public class Main extends Activity {
                                              new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
                                                    if (ExternalStorageUtil.isExternalStorageAvail()) {
-                                                      // TODO AsyncTask for CSV export? (very fast, may not be necc?)                                                      
-                                                      CsvManager.exportExternal(Main.this, application.dataManager.selectAllBooks());
+                                                      // NOTE -- possible AsyncTask for CSV export? (very fast, not necc?)                                                      
+                                                      CsvManager.exportExternal(Main.this, application.dataManager
+                                                               .selectAllBooks());
                                                       Toast.makeText(Main.this, getString(R.string.msgExportSuccess),
                                                                Toast.LENGTH_SHORT).show();
                                                    } else {
@@ -465,7 +479,7 @@ public class Main extends Activity {
                         case 1:
                            // IMPORT CSV
                            startActivity(new Intent(Main.this, CSVImport.class));
-                           break;                        
+                           break;
                         case 2:
                            // EMAIL CSV
                            if (ExternalStorageUtil.isExternalStorageAvail()) {
@@ -475,7 +489,8 @@ public class Main extends Activity {
                               if (f.exists() && f.canRead()) {
                                  Intent sendCSVIntent = new Intent(Intent.ACTION_SEND);
                                  sendCSVIntent.setType("text/csv");
-                                 sendCSVIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + f.getAbsolutePath()));
+                                 sendCSVIntent
+                                          .putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + f.getAbsolutePath()));
                                  sendCSVIntent.putExtra(Intent.EXTRA_SUBJECT, "BookWorm CSV Export");
                                  sendCSVIntent.putExtra(Intent.EXTRA_TEXT, "CSV export attached.");
                                  startActivity(Intent.createChooser(sendCSVIntent, "Email:"));
@@ -487,7 +502,7 @@ public class Main extends Activity {
                               Toast.makeText(Main.this, getString(R.string.msgExternalStorageNAError),
                                        Toast.LENGTH_SHORT).show();
                            }
-                           break;                        
+                           break;
                         case 3:
                            // RESET ALL COVER IMAGES
                            if (adapter != null && adapter.getCount() > 0) {
@@ -530,13 +545,27 @@ public class Main extends Activity {
                });
       manageDataDialog = manageDataDialogBuilder.create();
 
-      AlertDialog.Builder statsDialogBuilder = new AlertDialog.Builder(this);
-      statsDialogBuilder.setTitle(getString(R.string.msgBookListStats));
-      statsDialogBuilder.setNeutralButton(getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
-         public void onClick(DialogInterface d, int i) {
-         };
-      });
+      AlertDialog.Builder statsDialogBuilder =
+               new AlertDialog.Builder(this).setTitle(getString(R.string.msgBookListStats)).setNeutralButton(
+                        getString(R.string.btnDismiss), new DialogInterface.OnClickListener() {
+                           public void onClick(DialogInterface d, int i) {
+                           };
+                        });
       statsDialog = statsDialogBuilder.create();
+
+      // TODO i18n these strings
+      AlertDialog.Builder restoreDialogBuilder =
+               new AlertDialog.Builder(this).setTitle("Restore Data?").setMessage(
+                        "Backup data file found, would you like to restore data?").setPositiveButton(
+                        getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                           public void onClick(final DialogInterface d, final int i) {
+                              new RestoreTask().execute();
+                           }
+                        }).setNegativeButton(getString(R.string.btnNo), new DialogInterface.OnClickListener() {
+                  public void onClick(final DialogInterface d, final int i) {
+                  }
+               });
+      restoreDialog = restoreDialogBuilder.create();
    }
 
    private void saveSortOrder(final String order) {
@@ -726,6 +755,68 @@ public class Main extends Activity {
          // reset screen and orientation params
          getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
          setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+      }
+   }
+
+   private class RestoreTask extends AsyncTask<Void, String, Void> {
+
+      public RestoreTask() {
+      }
+
+      @Override
+      protected void onPreExecute() {
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+         // keep screen on, and prevent orientation change, during potentially long running task
+         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+      }
+
+      @Override
+      protected Void doInBackground(final Void... args) {
+         File csvFile = new File(getFilesDir() + File.separator + DataConstants.EXPORT_FILENAME);
+         if (csvFile.exists() && csvFile.canRead()) {
+            ArrayList<Book> restoreBooks = CsvManager.parseCSVFile(null, csvFile);
+            String[] progress = new String[3];
+            progress[2] = Integer.toString(restoreBooks.size());
+            for (int i = 0; i < restoreBooks.size(); i++) {
+               Book b = restoreBooks.get(i);
+               Log.i(Constants.LOG_TAG, "Importing book: " + b.title);
+               progress[0] = String.format(getString(R.string.msgCsvImportingBook, b.title));
+               progress[1] = Integer.toString(i);
+               publishProgress(progress);
+               // sleep because loop is too fast to see messages
+               SystemClock.sleep(500);
+               b.id = application.dataManager.insertBook(b);
+               application.imageManager.resetCoverImage(b);
+            }
+         }
+         return null;
+      }
+
+      @Override
+      protected void onProgressUpdate(String... progress) {
+         progressDialog.setMessage(progress[0]);
+         if ((progress[1].equals("1")) && !progressDialog.isShowing()) {
+            progressDialog.setMax(Integer.valueOf(progress[2]));
+            progressDialog.show();
+         } else if (progress[1].equals(progress[2]) && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+         progressDialog.setProgress(Integer.valueOf(progress[1]));
+      }
+
+      @Override
+      protected void onPostExecute(final Void arg) {
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+         // reset screen and orientation params
+         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
+         resetAdapter();
       }
    }
 }

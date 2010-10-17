@@ -105,22 +105,23 @@ public class DataManager {
 
    public long insertBook(final Book b) {
       long id = bookDAO.insert(b);
-      this.dataChanged();
+      this.dataChanged(id);
       return id;
    }
 
    public void updateBook(final Book b) {
       bookDAO.update(b);
-      ///this.dataChanged();
+      this.dataChanged(b.id);
    }  
 
    public void deleteBook(final long id) {
       bookDAO.delete(id);
-      this.dataChanged();
+      this.dataChanged(id);
    }   
    
-   private void dataChanged() {
+   private void dataChanged(final long bookId) {
       // TODO export will be very expensive with large data sets, we need to do this periodically, not every time
+      // TODO just APPEND a line to the file, don't rewrite the entire thing
       CsvManager.exportInternal(context, selectAllBooks());      
       backupManager.dataChanged();
    }
