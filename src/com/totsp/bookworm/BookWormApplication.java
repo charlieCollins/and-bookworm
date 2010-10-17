@@ -81,7 +81,8 @@ public class BookWormApplication extends Application {
 
    @Override
    public void onTerminate() {
-      // not guaranteed to be called
+      // not guaranteed to be called     
+      
       dataManager.closeDb();
       selectedBook = null;
       super.onTerminate();

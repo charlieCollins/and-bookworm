@@ -75,9 +75,8 @@ public class CSVImport extends Activity {
             if ((f == null) || !f.exists() || !f.canRead()) {
                Toast.makeText(CSVImport.this, getString(R.string.msgCsvFileNotFound), Toast.LENGTH_LONG).show();
             }
-            // potentially AsyncTask this too? (could be an FC here with perfect timing, though this is very quick)
-            CsvManager csvManager = new CsvManager(application.bookDataSource);
-            ArrayList<Book> parsedBooks =  csvManager.parseCSVFile(f);
+            // potentially AsyncTask this too? (could be an FC here with perfect timing, though this is very quick)           
+            ArrayList<Book> parsedBooks =  CsvManager.parseCSVFile(application.bookDataSource, f);
             if (parsedBooks == null || parsedBooks.isEmpty()) {
                Toast.makeText(CSVImport.this, getString(R.string.msgCsvUnableToParse), Toast.LENGTH_LONG).show();
             } else {

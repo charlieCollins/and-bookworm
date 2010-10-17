@@ -12,6 +12,8 @@ public class DataConstants {
                      + DataConstants.DATABASE_NAME;
    public static final String EXTERNAL_DATA_PATH =
             Environment.getExternalStorageDirectory() + "/" + DataConstants.EXTERNAL_DATA_DIR_NAME;
+   
+   public static final String EXPORT_FILENAME = "bookworm.csv";
 
    public static final String ORDER_BY_AUTHORS_ASC = "authors COLLATE NOCASE asc, book.tit COLLATE NOCASE asc";
    public static final String ORDER_BY_AUTHORS_DESC = "authors COLLATE NOCASE desc, book.tit COLLATE NOCASE asc";

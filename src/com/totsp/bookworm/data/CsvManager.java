@@ -1,6 +1,8 @@
 package com.totsp.bookworm.data;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.model.Author;
@@ -20,41 +22,51 @@ import java.util.Scanner;
 
 public class CsvManager {
 
-   public static final String EXPORT_FILENAME = "bookworm.csv";
+   // Object for intrinsic lock (per docs 0 length array "lighter" than a normal Object
+   public static final Object[] DATA_LOCK = new Object[0];
 
-   private BookDataSource bookDataSource;
-
-   public CsvManager(final BookDataSource bookDataSource) {
-      this.bookDataSource = bookDataSource;
+   public static void exportExternal(final Context context, final ArrayList<Book> books) {
+      String csv = getCSVString(books);
+      if (ExternalStorageUtil.isExternalStorageAvail()) {
+         if (saveCSVStringAsFile(new File(DataConstants.EXTERNAL_DATA_PATH), csv)) {
+            return;
+         } else {
+            throw new RuntimeException("Error, unable to save data contents as CSV file.");
+         }
+      } else {
+         Toast.makeText(context, "External storage not available, TODO i18n.", Toast.LENGTH_LONG).show();
+      }
    }
 
-   public void export(final ArrayList<Book> books) {
-      String csv = this.getCSVString(books);
-      if (saveCSVStringAsFile(csv)) {
+   public static void exportInternal(final Context context, final ArrayList<Book> books) {
+      String csv = getCSVString(books);
+      if (saveCSVStringAsFile(context.getFilesDir(), csv)) {
          return;
       } else {
          throw new RuntimeException("Error, unable to save data contents as CSV file.");
       }
    }
 
-   private boolean saveCSVStringAsFile(final String csv) {
-      if (ExternalStorageUtil.isExternalStorageAvail()) {
-         try {
-            File file = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + CsvManager.EXPORT_FILENAME);
-            file.createNewFile(); // ok if returns false, overwrite         
-            FileWriter out = new FileWriter(file);
-            out.write(csv);
-            out.close();
-         } catch (IOException e) {
-            throw new RuntimeException(e);
+   private static boolean saveCSVStringAsFile(final File directory, final String csv) {
+      boolean result = false;
+      File file = new File(directory + File.separator + DataConstants.EXPORT_FILENAME);
+      try {
+         synchronized (DATA_LOCK) {
+            if (file != null) {
+               file.createNewFile(); // ok if returns false, overwrite
+               FileWriter out = new FileWriter(file);
+               out.write(csv);
+               out.close();
+               result = true;
+            }
          }
-         return true;
-      } else {
-         return false;
+      } catch (IOException e) {
+         Log.e(Constants.LOG_TAG, "Error writing CSV backup file", e);
       }
+      return result;
    }
 
-   private String cleanString(String in) {
+   private static String cleanString(String in) {
       String result = in;
       in = in.replaceAll("\"", "");
       if (in.contains(",") || in.contains("\n")) {
@@ -63,7 +75,7 @@ public class CsvManager {
       return result;
    }
 
-   private String getCSVString(final ArrayList<Book> books) {
+   private static String getCSVString(final ArrayList<Book> books) {
       StringBuilder sb = new StringBuilder();
       sb.append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,");
       sb.append("Format,Subject,Publisher,Published Date,User Rating,User Read Status, User Note [optional]\n");
@@ -105,14 +117,8 @@ public class CsvManager {
       return sb.toString();
    }
 
-   public ArrayList<Book> parseCSVFile_ISBNOnly(File f) {
-      ArrayList<Book> books = new ArrayList<Book>();
-
-      return books;
-   }
-
    // this is VERY brittle and primitive, but small -- only supports specific BookWorm format files
-   public ArrayList<Book> parseCSVFile(File f) {
+   public static ArrayList<Book> parseCSVFile(final BookDataSource bookDataSource, final File f) {
       // TODO protect against SQL injection attacks? risk very minor, it's your own DB, but still
       ArrayList<Book> books = new ArrayList<Book>();
       if (f.exists() && f.canRead()) {
@@ -126,9 +132,9 @@ public class CsvManager {
             while (scanner.hasNextLine()) {
                count++;
                String line = scanner.nextLine();
-               
+
                Log.i(Constants.LOG_TAG, "Processing line for import:" + line);
-               
+
                if ((line != null) && (count > 1)) {
                   String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
@@ -178,11 +184,11 @@ public class CsvManager {
                      }
                   } else if ((parts != null) && (parts.length == 1)) {
                      // ISBN ONLY type, 1 element per file line 
-                     if (bookDataSource != null) {                        
+                     if (bookDataSource != null) {
                         ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0);
                         if (searchBooks != null && !searchBooks.isEmpty()) {
                            books.add(searchBooks.get(0));
-                        }                        
+                        }
                      } else {
                         Log.w(Constants.LOG_TAG,
                                  "BookDataSource null, not importing book from CSV based on ISBN alone.");

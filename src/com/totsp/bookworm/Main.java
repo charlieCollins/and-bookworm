@@ -62,7 +62,7 @@ public class Main extends Activity {
    private static final int MENU_STATS = 3;
 
    private static final int MENU_CONTEXT_EDIT = 0;
-   private static final int MENU_CONTEXT_DELETE = 1;
+   private static final int MENU_CONTEXT_DELETE = 1;   
 
    BookWormApplication application;
    SharedPreferences prefs;
@@ -90,7 +90,11 @@ public class Main extends Activity {
    private AlertDialog sortDialog;
    private AlertDialog manageDataDialog;
    private AlertDialog statsDialog;
-
+   
+   // TODO if INTERNAL CSV BACKUP file is found, and DB is empty (new install, etc)
+   // prompt user to restore from backup CSV 
+   // (this way we don't have to maintain complicated manual BackupAgent, we just use file, and manage at CSV level)
+   
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -99,7 +103,7 @@ public class Main extends Activity {
       application = (BookWormApplication) getApplication();
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
       cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
+      
       progressDialog = new ProgressDialog(this);
       progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
       progressDialog.setCancelable(false);
@@ -201,7 +205,7 @@ public class Main extends Activity {
    @Override
    public void onResume() {
       super.onResume();
-      resetAdapter();
+      resetAdapter();      
    }
 
    @Override
@@ -442,9 +446,8 @@ public class Main extends Activity {
                                              new DialogInterface.OnClickListener() {
                                                 public void onClick(final DialogInterface arg0, final int arg1) {
                                                    if (ExternalStorageUtil.isExternalStorageAvail()) {
-                                                      // TODO AsyncTask here?
-                                                      CsvManager csvManager = new CsvManager(null);
-                                                      csvManager.export(application.dataManager.selectAllBooks());
+                                                      // TODO AsyncTask for CSV export? (very fast, may not be necc?)                                                      
+                                                      CsvManager.exportExternal(Main.this, application.dataManager.selectAllBooks());
                                                       Toast.makeText(Main.this, getString(R.string.msgExportSuccess),
                                                                Toast.LENGTH_SHORT).show();
                                                    } else {
@@ -467,14 +470,12 @@ public class Main extends Activity {
                            // EMAIL CSV
                            if (ExternalStorageUtil.isExternalStorageAvail()) {
                               File f =
-                                       new File(DataConstants.EXTERNAL_DATA_PATH + File.separator
-                                                + CsvManager.EXPORT_FILENAME);
+                                       new File(Main.this.getFilesDir() + File.separator
+                                                + DataConstants.EXPORT_FILENAME);
                               if (f.exists() && f.canRead()) {
                                  Intent sendCSVIntent = new Intent(Intent.ACTION_SEND);
                                  sendCSVIntent.setType("text/csv");
-                                 sendCSVIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"
-                                          + DataConstants.EXTERNAL_DATA_PATH + File.separator
-                                          + CsvManager.EXPORT_FILENAME));
+                                 sendCSVIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + f.getAbsolutePath()));
                                  sendCSVIntent.putExtra(Intent.EXTRA_SUBJECT, "BookWorm CSV Export");
                                  sendCSVIntent.putExtra(Intent.EXTRA_TEXT, "CSV export attached.");
                                  startActivity(Intent.createChooser(sendCSVIntent, "Email:"));

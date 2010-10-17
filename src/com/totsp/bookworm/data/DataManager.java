@@ -1,5 +1,6 @@
 package com.totsp.bookworm.data;
 
+import android.app.backup.BackupManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,14 +28,25 @@ import java.util.ArrayList;
 public class DataManager {
 
    private static final int DATABASE_VERSION = 10;
-
+   
+   private Context context;
+ 
+   // TODO tell app when to backup
+   // TODO make sure backup agent code is all backward compatibilized   
+   private BackupManager backupManager;
+   
    private SQLiteDatabase db;
 
    private AuthorDAO authorDAO;
    private BookDAO bookDAO;
 
    public DataManager(final Context context) {
-      OpenHelper openHelper = new OpenHelper(context);
+      
+      this.context = context;
+      
+      backupManager = new BackupManager(this.context);      
+      
+      OpenHelper openHelper = new OpenHelper(this.context);
       db = openHelper.getWritableDatabase();
       Log.i(Constants.LOG_TAG, "DataManager created, db open status: " + db.isOpen());
 
@@ -92,15 +104,25 @@ public class DataManager {
    }
 
    public long insertBook(final Book b) {
-      return bookDAO.insert(b);
+      long id = bookDAO.insert(b);
+      this.dataChanged();
+      return id;
    }
 
    public void updateBook(final Book b) {
       bookDAO.update(b);
-   }
+      ///this.dataChanged();
+   }  
 
    public void deleteBook(final long id) {
       bookDAO.delete(id);
+      this.dataChanged();
+   }   
+   
+   private void dataChanged() {
+      // TODO export will be very expensive with large data sets, we need to do this periodically, not every time
+      CsvManager.exportInternal(context, selectAllBooks());      
+      backupManager.dataChanged();
    }
 
    public Cursor getBookCursor(final String orderBy, final String whereClauseLimit) {
