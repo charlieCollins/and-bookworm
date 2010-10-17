@@ -204,7 +204,8 @@ public class CSVImport extends Activity {
                publishProgress(progress);
                // sleep because loop is too fast to see messages
                SystemClock.sleep(500);
-               application.dataManager.insertBook(b);               
+               b.id = application.dataManager.insertBook(b);
+               application.imageManager.resetCoverImage(b);
             }
          }
          return null;

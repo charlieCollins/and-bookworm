@@ -157,6 +157,7 @@ public class ImageManager {
    }
 
    public void resetCoverImage(final Book b) {
+      this.deleteBitmapSourceFile(b.title, b.id);
       Bitmap coverImageBitmap = getOrCreateCoverImage(b);
       if (coverImageBitmap != null) {
          storeBitmap(coverImageBitmap, b.title, b.id);

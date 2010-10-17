@@ -516,6 +516,7 @@ public class Main extends Activity {
                                                    Log.i(Constants.LOG_TAG, "deleting database");
                                                    application.dataManager.deleteAllDataYesIAmSure();
                                                    application.dataManager.resetDb();
+                                                   application.imageManager.clearAllBitmapSourceFiles();
                                                    Toast.makeText(Main.this, getString(R.string.msgDataDeleted),
                                                             Toast.LENGTH_SHORT).show();
                                                    startActivity(new Intent(Main.this, Main.class));
