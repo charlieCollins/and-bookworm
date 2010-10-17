@@ -93,7 +93,6 @@ public class CSVImport extends Activity {
             if ((books != null) && !books.isEmpty()) {
                new ImportTask().execute(books);
             }
-            Toast.makeText(CSVImport.this, getString(R.string.msgImportSuccess), Toast.LENGTH_LONG).show();
             reset();
          }
       });
