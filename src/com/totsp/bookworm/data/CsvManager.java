@@ -10,21 +10,19 @@ import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookUserData;
 import com.totsp.bookworm.util.DateUtil;
 import com.totsp.bookworm.util.ExternalStorageUtil;
+import com.totsp.bookworm.util.FileUtil;
 import com.totsp.bookworm.util.StringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-public class CsvManager {
+public class CsvManager {  
 
-   // Object for intrinsic lock (per docs 0 length array "lighter" than a normal Object
-   public static final Object[] DATA_LOCK = new Object[0];
-
+   // TODO i18n
+   
    public static void exportExternal(final Context context, final ArrayList<Book> books) {
       String csv = getCSVString(books);
       if (ExternalStorageUtil.isExternalStorageAvail()) {
@@ -34,7 +32,7 @@ public class CsvManager {
             throw new RuntimeException("Error, unable to save data contents as CSV file.");
          }
       } else {
-         Toast.makeText(context, "External storage not available, TODO i18n.", Toast.LENGTH_LONG).show();
+         Toast.makeText(context, "External storage not available.", Toast.LENGTH_LONG).show();
       }
    }
 
@@ -48,22 +46,8 @@ public class CsvManager {
    }
 
    private static boolean saveCSVStringAsFile(final File directory, final String csv) {
-      boolean result = false;
       File file = new File(directory + File.separator + DataConstants.EXPORT_FILENAME);
-      try {
-         synchronized (DATA_LOCK) {
-            if (file != null) {
-               file.createNewFile(); // ok if returns false, overwrite
-               FileWriter out = new FileWriter(file);
-               out.write(csv);
-               out.close();
-               result = true;
-            }
-         }
-      } catch (IOException e) {
-         Log.e(Constants.LOG_TAG, "Error writing CSV backup file", e);
-      }
-      return result;
+      return FileUtil.writeStringToFile(csv, file);
    }
 
    private static String cleanString(String in) {

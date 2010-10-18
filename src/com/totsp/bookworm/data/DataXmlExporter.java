@@ -102,18 +102,6 @@ public class DataXmlExporter {
             channel.close();
          }
       }
-
-      /*
-      FileWriter fw = new FileWriter(file);
-      if (fw != null) {
-         try {
-            fw.write(xmlString);
-            fw.flush();
-         } finally {
-            fw.close();
-         }
-      }
-      */
    }
 
    /**
