@@ -115,12 +115,14 @@ public class DataManager {
 
    public void updateBook(final Book b) {
       bookDAO.update(b);
-      this.dataChanged(FileChangeMode.REPLACE, b);
+      // for now don't worry about updating backup on an update (it will happen at next insert, should be enough)
+      ///this.dataChanged(FileChangeMode.REPLACE, b);
    }
 
    public void deleteBook(final long id) {
       bookDAO.delete(id);
-      this.dataChanged(FileChangeMode.REPLACE, null);
+      // for now don't worry about updating backup on a delete (it will happen at next insert, should be enough)
+      ///this.dataChanged(FileChangeMode.REPLACE, null);
    }  
 
    private void dataChanged(final FileChangeMode mode, final Book book) {
