@@ -1,0 +1,143 @@
+ private class ExportDatabaseTask extends AsyncTask<String, Void, Boolean> {
+      private final ProgressDialog dialog = new ProgressDialog(Main.this);
+
+      @Override
+      protected void onPreExecute() {
+         dialog.setMessage(getString(R.string.msgExportingData));
+         dialog.show();
+      }
+
+      @Override
+      protected Boolean doInBackground(final String... args) {
+
+         File dbFile = new File(DataConstants.DATABASE_PATH);
+
+         File exportDir = new File(DataConstants.EXTERNAL_DATA_PATH);
+         if (!exportDir.exists()) {
+            exportDir.mkdirs();
+         }
+         File file = new File(exportDir, dbFile.getName());
+
+         try {
+            file.createNewFile();
+            FileUtil.copyFile(dbFile, file);
+            return true;
+         } catch (IOException e) {
+            Log.e(Constants.LOG_TAG, e.getMessage(), e);
+            return false;
+         }
+      }
+
+      @Override
+      protected void onPostExecute(final Boolean success) {
+         if (dialog.isShowing()) {
+            dialog.dismiss();
+         }
+         if (success) {
+            Toast.makeText(Main.this, getString(R.string.msgExportSuccess), Toast.LENGTH_SHORT).show();
+         } else {
+            Toast.makeText(Main.this, getString(R.string.msgExportError), Toast.LENGTH_SHORT).show();
+         }
+      }
+   }
+
+   private class ImportDatabaseTask extends AsyncTask<String, Void, String> {
+      private final ProgressDialog dialog = new ProgressDialog(Main.this);
+
+      @Override
+      protected void onPreExecute() {
+         dialog.setMessage(getString(R.string.msgImportingData));
+         dialog.show();
+      }
+
+      @Override
+      protected String doInBackground(final String... args) {
+
+         File dbBackupFile = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + DataConstants.DATABASE_NAME);
+         if (!dbBackupFile.exists()) {
+            return getString(R.string.msgImportFileMissingError);
+         } else if (!dbBackupFile.canRead()) {
+            return getString(R.string.msgImportFileNonReadableError);
+         }
+
+         File dbFile = new File(DataConstants.DATABASE_PATH);
+         if (dbFile.exists()) {
+            dbFile.delete();
+         }
+
+         try {
+            dbFile.createNewFile();
+            FileUtil.copyFile(dbBackupFile, dbFile);
+            return null;
+         } catch (IOException e) {
+            Log.e(Constants.LOG_TAG, e.getMessage(), e);
+            return e.getMessage();
+         }
+      }
+
+      @Override
+      protected void onPostExecute(final String errMsg) {
+         if (dialog.isShowing()) {
+            dialog.dismiss();
+         }
+         if (errMsg == null) {
+            Toast.makeText(Main.this, getString(R.string.msgImportSuccess), Toast.LENGTH_SHORT).show();
+         } else {
+            Toast.makeText(Main.this, getString(R.string.msgImportError) + ": " + errMsg, Toast.LENGTH_SHORT).show();
+         }
+      }
+   }
+ 
+ 
+ // EXPORT DB
+                           new AlertDialog.Builder(Main.this)
+                                    .setMessage(getString(R.string.msgReplaceExistingDBExport)).setPositiveButton(
+                                             getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                                                public void onClick(final DialogInterface arg0, final int arg1) {
+                                                   if (ExternalStorageUtil.isExternalStorageAvail()) {
+                                                      Log
+                                                               .i(Constants.LOG_TAG,
+                                                                        "exporting database to external storage");
+                                                      exportDatabaseTask = new ExportDatabaseTask();
+                                                      exportDatabaseTask.execute();
+                                                      startActivity(new Intent(Main.this, Main.class));
+                                                   } else {
+                                                      Toast.makeText(Main.this,
+                                                               getString(R.string.msgExternalStorageNAError),
+                                                               Toast.LENGTH_SHORT).show();
+                                                   }
+                                                }
+                                             }).setNegativeButton(getString(R.string.btnNo),
+                                             new DialogInterface.OnClickListener() {
+                                                public void onClick(final DialogInterface arg0, final int arg1) {
+                                                }
+                                             }).show();
+                           break;
+                        case 3:
+                           // IMPORT DB
+                           new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgReplaceExistingDB))
+                                    .setPositiveButton(getString(R.string.btnYes),
+                                             new DialogInterface.OnClickListener() {
+                                                public void onClick(final DialogInterface arg0, final int arg1) {
+                                                   if (ExternalStorageUtil.isExternalStorageAvail()) {
+                                                      Log.i(Constants.LOG_TAG,
+                                                               "importing database from external storage");
+                                                      // TODO check prev task state
+                                                      importDatabaseTask = new ImportDatabaseTask();
+                                                      importDatabaseTask.execute(DataConstants.DATABASE_NAME,
+                                                               DataConstants.EXTERNAL_DATA_PATH);
+                                                      // reset the db (else Main shows no data)
+                                                      application.dataManager.resetDb();
+                                                      startActivity(new Intent(Main.this, Main.class));
+                                                   } else {
+                                                      Toast.makeText(Main.this,
+                                                               getString(R.string.msgExternalStorageNAError),
+                                                               Toast.LENGTH_SHORT).show();
+                                                   }
+                                                }
+                                             }).setNegativeButton(getString(R.string.btnNo),
+                                             new DialogInterface.OnClickListener() {
+                                                public void onClick(final DialogInterface arg0, final int arg1) {
+                                                }
+                                             }).show();
+                           break;

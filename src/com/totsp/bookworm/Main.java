@@ -391,6 +391,8 @@ public class Main extends Activity {
       bindAdapter();
    }
 
+   // TODO don't do this, rather just make it an OPTION to restore from the internal file at the dialogs?
+   // OR just auto-replace user's data with internal backup when it's found (don't ask?)
    private void checkForRestore() {
       // if the current database is EMPTY, and yet the internal CSV backup file is present
       // prompt user if they want to restore this data
