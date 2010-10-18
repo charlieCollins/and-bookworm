@@ -125,6 +125,7 @@ public class DataManager {
       ///this.dataChanged(FileChangeMode.REPLACE, null);
    }  
 
+   // write changed data to INTERNAL backup file, and also tell BackupManager that data changed
    private void dataChanged(final FileChangeMode mode, final Book book) {
       // replacing the entire backup file, especially if large, is expensive
       // allow user to specify if operation should APPEND or REPLACE 

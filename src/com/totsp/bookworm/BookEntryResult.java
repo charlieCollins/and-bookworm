@@ -189,10 +189,7 @@ public class BookEntryResult extends Activity {
       @Override
       protected void onPreExecute() {
          dialog.setMessage(getString(R.string.msgRetrievingBookData));
-         dialog.show();
-         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(BookEntryResult.this);
-         // default to OpenLibrary(2) for cover image provider - for now (doesn't require login)
-         //coverImageProviderKey = prefs.getString("coverimagelistpref", "2");
+         dialog.show();         
       }
 
       @Override

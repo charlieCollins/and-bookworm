@@ -1,5 +1,6 @@
 package com.totsp.bookworm;
 
+import android.app.backup.BackupManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -12,12 +13,14 @@ import com.totsp.bookworm.data.CompoundDataSource;
 public class Preferences extends PreferenceActivity {
 
    private BookWormApplication application;
+   private BackupManager backupManager;
    
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       
-      application = (BookWormApplication) getApplication();
+      application = (BookWormApplication) getApplication();      
+      backupManager = new BackupManager(this);
       
       addPreferencesFromResource(R.layout.preferences);
 
@@ -35,5 +38,10 @@ public class Preferences extends PreferenceActivity {
          }
       });
    }
-
+   
+   @Override
+   public void onPause() {
+      backupManager.dataChanged();
+      super.onPause();
+   }
 }
