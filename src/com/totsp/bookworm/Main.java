@@ -46,7 +46,6 @@ import com.totsp.bookworm.data.CsvManager;
 import com.totsp.bookworm.data.DataConstants;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookListStats;
-import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.ExternalStorageUtil;
 import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.util.StringUtil;
