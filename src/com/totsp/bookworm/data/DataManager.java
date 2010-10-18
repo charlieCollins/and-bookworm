@@ -28,24 +28,28 @@ import java.util.ArrayList;
 public class DataManager {
 
    private static final int DATABASE_VERSION = 10;
-   
+
    private Context context;
- 
+
    // TODO tell app when to backup
    // TODO make sure backup agent code is all backward compatibilized   
    private BackupManager backupManager;
-   
+
    private SQLiteDatabase db;
 
    private AuthorDAO authorDAO;
    private BookDAO bookDAO;
 
+   private enum FileChangeMode {
+      APPEND, REPLACE;
+   }
+   
    public DataManager(final Context context) {
-      
+
       this.context = context;
-      
-      backupManager = new BackupManager(this.context);      
-      
+
+      backupManager = new BackupManager(this.context);
+
       OpenHelper openHelper = new OpenHelper(this.context);
       db = openHelper.getWritableDatabase();
       Log.i(Constants.LOG_TAG, "DataManager created, db open status: " + db.isOpen());
@@ -105,31 +109,39 @@ public class DataManager {
 
    public long insertBook(final Book b) {
       long id = bookDAO.insert(b);
-      this.dataChanged(id);
+      this.dataChanged(FileChangeMode.APPEND, b);
       return id;
    }
 
    public void updateBook(final Book b) {
       bookDAO.update(b);
-      this.dataChanged(b.id);
-   }  
+      this.dataChanged(FileChangeMode.REPLACE, b);
+   }
 
    public void deleteBook(final long id) {
       bookDAO.delete(id);
-      this.dataChanged(id);
-   }   
-   
-   private void dataChanged(final long bookId) {
-      // TODO export will be very expensive with large data sets, we need to do this periodically, not every time
-      // TODO just APPEND a line to the file, don't rewrite the entire thing
-      CsvManager.exportInternal(context, selectAllBooks());      
+      this.dataChanged(FileChangeMode.REPLACE, null);
+   }  
+
+   private void dataChanged(final FileChangeMode mode, final Book book) {
+      // replacing the entire backup file, especially if large, is expensive
+      // allow user to specify if operation should APPEND or REPLACE 
+      // (because Files are difficult to update [and doing so basically as ineffient as replace anyway]
+      // on update or delete if data we will replace the entire file, unless becomes a performance issue)
+      if (mode.equals(FileChangeMode.REPLACE)) {
+         CsvManager.exportInternal(context, selectAllBooks());
+      } else if (mode.equals(FileChangeMode.APPEND)) {
+         ArrayList<Book> list = new ArrayList<Book>(1);
+         list.add(book);
+         CsvManager.appendInternal(context, list);
+      }
       backupManager.dataChanged();
    }
 
    public Cursor getBookCursor(final String orderBy, final String whereClauseLimit) {
       return bookDAO.getCursor(orderBy, whereClauseLimit);
    }
- 
+
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
       Log.i(Constants.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");

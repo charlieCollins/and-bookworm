@@ -5,6 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * DateUtils.
+ * 
+ * @author ccollins
+ *
+ */
 public final class DateUtil {
 
    // NOTE - be careful with this, probably not thread safe

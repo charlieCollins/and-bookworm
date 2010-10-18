@@ -13,6 +13,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.channels.FileChannel;
 
+/**
+ * FileUtils. 
+ * 
+ * @author ccollins
+ *
+ */
 public final class FileUtil {
 
    // Object for intrinsic lock (per docs 0 length array "lighter" than a normal Object
@@ -21,6 +27,13 @@ public final class FileUtil {
    private FileUtil() {
    }
 
+   /**
+    * Copy file.
+    * 
+    * @param src
+    * @param dst
+    * @throws IOException
+    */
    public static void copyFile(final File src, final File dst) throws IOException {
       FileChannel inChannel = new FileInputStream(src).getChannel();
       FileChannel outChannel = new FileOutputStream(dst).getChannel();
@@ -36,7 +49,14 @@ public final class FileUtil {
       }
    }
    
-   public static boolean writeStringToFile(final String fileContents, final File file) {
+   /**
+    * Replace entire File with contents of String.
+    * 
+    * @param fileContents
+    * @param file
+    * @return
+    */
+   public static boolean writeStringAsFile(final String fileContents, final File file) {
       boolean result = false;
       try {
          synchronized (DATA_LOCK) {
@@ -50,6 +70,31 @@ public final class FileUtil {
          }
       } catch (IOException e) {
          Log.e(Constants.LOG_TAG, "Error writing string data to file " + e.getMessage(), e);
+      }
+      return result;
+   }
+   
+   /**
+    * Append String to end of File.
+    * 
+    * @param fileContents
+    * @param file
+    * @return
+    */
+   public static boolean appendStringToFile(final String fileContents, final File file) {
+      boolean result = false;
+      try {
+         synchronized (DATA_LOCK) {
+            if (file != null && file.canWrite()) {
+               file.createNewFile(); // ok if returns false, overwrite
+               Writer out = new BufferedWriter(new FileWriter(file, true));
+               out.write(fileContents);
+               out.close();   
+               result = true;
+            }
+         }
+      } catch (IOException e) {
+         Log.e(Constants.LOG_TAG, "Error appending string data to file " + e.getMessage(), e);
       }
       return result;
    }

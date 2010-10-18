@@ -12,6 +12,12 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+/**
+ * NetworkUtils.
+ * 
+ * @author ccollins
+ *
+ */
 public final class NetworkUtil {
 
    private NetworkUtil() {

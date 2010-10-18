@@ -19,10 +19,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-public class CsvManager {  
+/**
+ * Utils for CSV import/export/parse.
+ * 
+ * @author ccollins
+ *
+ */
+public class CsvManager {
 
    // TODO i18n
-   
+
+   /**
+    * Export data as File to EXTERNAL export location (on removable storage).
+    * 
+    */
    public static void exportExternal(final Context context, final ArrayList<Book> books) {
       String csv = getCSVString(books);
       if (ExternalStorageUtil.isExternalStorageAvail()) {
@@ -36,6 +46,12 @@ public class CsvManager {
       }
    }
 
+   /**
+    * Export data as File to INTERNAL export location (/data/data/package/files).
+    * 
+    * @param context
+    * @param books
+    */
    public static void exportInternal(final Context context, final ArrayList<Book> books) {
       String csv = getCSVString(books);
       if (saveCSVStringAsFile(context.getFilesDir(), csv)) {
@@ -45,63 +61,30 @@ public class CsvManager {
       }
    }
 
-   private static boolean saveCSVStringAsFile(final File directory, final String csv) {
-      File file = new File(directory + File.separator + DataConstants.EXPORT_FILENAME);
-      return FileUtil.writeStringToFile(csv, file);
-   }
-
-   private static String cleanString(String in) {
-      String result = in;
-      in = in.replaceAll("\"", "");
-      if (in.contains(",") || in.contains("\n")) {
-         result = "\"" + in + "\"";
+   /**
+    * Append data to INTERNAL export location File (/data/data/package/files).
+    * 
+    * @param context
+    * @param books
+    */
+   public static void appendInternal(final Context context, final ArrayList<Book> books) {
+      String csv = getCSVString(books);
+      if (appendCSVStringToFile(context.getFilesDir(), csv)) {
+         return;
+      } else {
+         throw new RuntimeException("Error, unable to save data contents as CSV file.");
       }
-      return result;
    }
 
-   private static String getCSVString(final ArrayList<Book> books) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,");
-      sb.append("Format,Subject,Publisher,Published Date,User Rating,User Read Status, User Note [optional]\n");
-      if ((books != null) && !books.isEmpty()) {
-         for (int i = 0; i < books.size(); i++) {
-            Book b = books.get(i);
-            sb.append(cleanString(b.title) + ",");
-            sb.append(b.subTitle != null ? cleanString(b.subTitle) + "," : ",");
-            if ((b.authors != null) && !b.authors.isEmpty()) {
-               for (int j = 0; j < b.authors.size(); j++) {
-                  Author a = b.authors.get(j);
-                  if (j == 0) {
-                     sb.append(cleanString(a.name));
-                  } else {
-                     sb.append("|" + cleanString(a.name));
-                  }
-               }
-               sb.append(",");
-            } else {
-               sb.append(",");
-            }
-            sb.append(b.isbn10 != null ? cleanString(b.isbn10) + "," : ",");
-            sb.append(b.isbn13 != null ? cleanString(b.isbn13) + "," : ",");
-            sb.append(b.description != null ? cleanString(b.description) + "," : ",");
-            sb.append(b.format != null ? cleanString(b.format) + "," : ",");
-            sb.append(b.subject != null ? cleanString(b.subject) + "," : ",");
-            sb.append(b.publisher != null ? cleanString(b.publisher) + "," : ",");
-            sb.append(DateUtil.format(new Date(b.datePubStamp)) + ",");
-            if (b.bookUserData != null) {
-               sb.append(b.bookUserData.rating + ",");
-               sb.append(b.bookUserData.read + ",");
-               sb.append(b.bookUserData.blurb != null ? b.bookUserData.blurb : "");
-            } else {
-               sb.append(" , ,");
-            }
-            sb.append("\n");
-         }
-      }
-      return sb.toString();
-   }
-
-   // this is VERY brittle and primitive, but small -- only supports specific BookWorm format files
+   /**
+    * Parse BookWorm backup file specific format into List<Book>.
+    * 
+    * NOTE: This is brittle and primitive, but small and effective if file is in correct format.
+    * 
+    * @param bookDataSource
+    * @param f
+    * @return
+    */
    public static ArrayList<Book> parseCSVFile(final BookDataSource bookDataSource, final File f) {
       // TODO protect against SQL injection attacks? risk very minor, it's your own DB, but still
       ArrayList<Book> books = new ArrayList<Book>();
@@ -195,4 +178,66 @@ public class CsvManager {
       Log.i(Constants.LOG_TAG, "Parsed " + books.size() + " books from CSV file.");
       return books;
    }
+
+   private static boolean saveCSVStringAsFile(final File directory, final String csv) {
+      File file = new File(directory + File.separator + DataConstants.EXPORT_FILENAME);
+      return FileUtil.writeStringAsFile(csv, file);
+   }
+
+   private static boolean appendCSVStringToFile(final File directory, final String csv) {
+      File file = new File(directory + File.separator + DataConstants.EXPORT_FILENAME);
+      return FileUtil.appendStringToFile(csv, file);
+   }
+
+   private static String cleanString(String in) {
+      String result = in;
+      in = in.replaceAll("\"", "");
+      if (in.contains(",") || in.contains("\n")) {
+         result = "\"" + in + "\"";
+      }
+      return result;
+   }
+
+   private static String getCSVString(final ArrayList<Book> books) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,");
+      sb.append("Format,Subject,Publisher,Published Date,User Rating,User Read Status, User Note [optional]\n");
+      if ((books != null) && !books.isEmpty()) {
+         for (int i = 0; i < books.size(); i++) {
+            Book b = books.get(i);
+            sb.append(cleanString(b.title) + ",");
+            sb.append(b.subTitle != null ? cleanString(b.subTitle) + "," : ",");
+            if ((b.authors != null) && !b.authors.isEmpty()) {
+               for (int j = 0; j < b.authors.size(); j++) {
+                  Author a = b.authors.get(j);
+                  if (j == 0) {
+                     sb.append(cleanString(a.name));
+                  } else {
+                     sb.append("|" + cleanString(a.name));
+                  }
+               }
+               sb.append(",");
+            } else {
+               sb.append(",");
+            }
+            sb.append(b.isbn10 != null ? cleanString(b.isbn10) + "," : ",");
+            sb.append(b.isbn13 != null ? cleanString(b.isbn13) + "," : ",");
+            sb.append(b.description != null ? cleanString(b.description) + "," : ",");
+            sb.append(b.format != null ? cleanString(b.format) + "," : ",");
+            sb.append(b.subject != null ? cleanString(b.subject) + "," : ",");
+            sb.append(b.publisher != null ? cleanString(b.publisher) + "," : ",");
+            sb.append(DateUtil.format(new Date(b.datePubStamp)) + ",");
+            if (b.bookUserData != null) {
+               sb.append(b.bookUserData.rating + ",");
+               sb.append(b.bookUserData.read + ",");
+               sb.append(b.bookUserData.blurb != null ? b.bookUserData.blurb : "");
+            } else {
+               sb.append(" , ,");
+            }
+            sb.append("\n");
+         }
+      }
+      return sb.toString();
+   }
+
 }

@@ -4,6 +4,12 @@ import com.totsp.bookworm.model.Author;
 
 import java.util.ArrayList;
 
+/**
+ * StringUtils.
+ * 
+ * @author ccollins
+ *
+ */
 public final class StringUtil {
 
    private StringUtil() {
@@ -63,5 +69,4 @@ public final class StringUtil {
       }
       return sb.toString();
    }
-
 }
