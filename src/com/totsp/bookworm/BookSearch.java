@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +29,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.StringUtil;
-import com.totsp.bookworm.util.TaskUtil;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -51,9 +51,10 @@ public class BookSearch extends Activity {
 
    BookSearchAdapter adapter;
 
-   private SearchTask searchTask;
    boolean allowSearchContinue;
    boolean prevSearchResultCount;
+   
+   private ProgressDialog progressDialog;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -61,8 +62,10 @@ public class BookSearch extends Activity {
 
       setContentView(R.layout.booksearch);
       application = (BookWormApplication) getApplication();
-
-      searchTask = null;
+      
+      progressDialog = new ProgressDialog(this);
+      progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+      progressDialog.setCancelable(false);
 
       adapter = new BookSearchAdapter(new ArrayList<Book>());
 
@@ -112,11 +115,10 @@ public class BookSearch extends Activity {
                      && (searchTerm != null && !searchTerm.equals("")) && allowSearchContinue) {
                allowSearchContinue = false;
                selectorPosition = totalItemCount - 5;
-               searchTask = new SearchTask();
                if (application.debugEnabled) {
                   Log.d(Constants.LOG_TAG, "search for term " + searchTerm + " starting at position " + searchPosition);
                }
-               searchTask.execute(searchTerm, String.valueOf(searchPosition));
+               new SearchTask().execute(searchTerm, String.valueOf(searchPosition));
             }
          }
 
@@ -142,11 +144,10 @@ public class BookSearch extends Activity {
       prevSearchTerm = "";
       adapter.clear();
       adapter.notifyDataSetChanged();
-      searchTask = new SearchTask();
       if (application.debugEnabled) {
          Log.i(Constants.LOG_TAG, "new search for term " + searchTerm + " starting at pos 0");
       }
-      searchTask.execute(searchTerm, "0");
+      new SearchTask().execute(searchTerm, "0");
    }
 
    @Override
@@ -156,10 +157,9 @@ public class BookSearch extends Activity {
 
    @Override
    public void onPause() {
-      if (searchTask != null) {
-         TaskUtil.dismissDialog(searchTask.dialog);
+      if (progressDialog.isShowing()) {
+         progressDialog.dismiss();
       }
-      TaskUtil.pauseTask(searchTask);
       application.bookSearchStateBean = createStateBean();
       super.onPause();
    }
@@ -293,21 +293,22 @@ public class BookSearch extends Activity {
    //
    // AsyncTasks
    //
-   private class SearchTask extends AsyncTask<String, Void, ArrayList<Book>> {
-      private final ProgressDialog dialog = new ProgressDialog(BookSearch.this);
-
-      public SearchTask() {        
-      }
+   private class SearchTask extends AsyncTask<String, String, ArrayList<Book>> {
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(getString(R.string.msgSearching));
-         dialog.show();
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+         // keep screen on, and prevent orientation change, during potentially long running task
+         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
       }
 
       @Override
-      protected ArrayList<Book> doInBackground(final String... args) {
+      protected ArrayList<Book> doInBackground(final String... args) {         
          String searchTerm = args[0];
+         publishProgress(new String[] { searchTerm });
          prevSearchTerm = currSearchTerm;
          currSearchTerm = searchTerm;
          int startIndex = Integer.valueOf(args[1]);
@@ -317,13 +318,17 @@ public class BookSearch extends Activity {
          }
          return null;
       }
+      
+      @Override
+      protected void onProgressUpdate(String... progress) {
+         progressDialog.setMessage(getString(R.string.msgSearching) + " " + progress[0]);
+         if (!progressDialog.isShowing()) {
+            progressDialog.show();
+         }
+      }
 
       @Override
       protected void onPostExecute(final ArrayList<Book> searchBooks) {
-         if (dialog.isShowing()) {
-            dialog.dismiss();
-         }
-
          if (!prevSearchTerm.equals(currSearchTerm)) {
             adapter.clear();
          }
@@ -372,6 +377,13 @@ public class BookSearch extends Activity {
             Toast.makeText(BookSearch.this, "No more results found for this term, please try another search term.",
                      Toast.LENGTH_LONG).show();
          }
+         
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+         // reset screen and orientation params
+         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
       }
    }
 
