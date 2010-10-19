@@ -148,7 +148,8 @@ public class CsvImport extends Activity {
 
 
    private void reset() {
-      books = null;
+      books.clear();
+      adapter.clear();
       parseButton.setEnabled(true);
       importButton.setEnabled(false);      
    }
