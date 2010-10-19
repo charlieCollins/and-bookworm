@@ -153,7 +153,7 @@ public class CsvManager {
                   } else if ((parts != null) && (parts.length == 1)) {
                      // ISBN ONLY type, 1 element per file line 
                      if (bookDataSource != null) {
-                        ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0);
+                        ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0, 3);
                         if (searchBooks != null && !searchBooks.isEmpty()) {
                            books.add(searchBooks.get(0));
                         }

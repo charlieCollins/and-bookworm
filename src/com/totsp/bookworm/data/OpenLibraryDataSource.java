@@ -60,13 +60,17 @@ public class OpenLibraryDataSource implements BookDataSource {
       return book;
    }   
 
-   public ArrayList<Book> getBooks(String searchTerm, int startIndex) {
+   public ArrayList<Book> getBooks(String searchTerm, int startIndex, int numResults) {
       ArrayList<Book> books = new ArrayList<Book>();
       if (startIndex < 1) {
          // don't allow zero or neg, just set to 1
          startIndex = 1;
       }
-      String url = OpenLibraryDataSource.OL_BOOK_SEARCH_PREFIX + searchTerm + "&limit=10&offset=" + startIndex;
+      if (numResults < 1) {
+         numResults = 1;
+      }
+      
+      String url = OpenLibraryDataSource.OL_BOOK_SEARCH_PREFIX + searchTerm + "&offset=" + startIndex + "&limit=" + numResults;
 
       String response = httpHelper.performGet(url, null, null, null);
 

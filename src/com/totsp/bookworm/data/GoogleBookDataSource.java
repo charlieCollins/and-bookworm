@@ -20,7 +20,7 @@ public class GoogleBookDataSource implements BookDataSource {
    // web search term url
    private static final String GDATA_BOOK_SEARCH_PREFIX = "http://books.google.com/books/feeds/volumes?q=%22";
    private static final String GDATA_BOOK_SEARCH_SUFFIX_PRE = "%22&start-index=";
-   private static final String GDATA_BOOK_SEARCH_SUFFIX_POST = "&max-results=10";
+   private static final String GDATA_BOOK_SEARCH_SUFFIX_POST = "&max-results=";
 
    // google books uses X FORWARDED FOR header to determine location and what book stuff user can "see"
    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
@@ -46,12 +46,15 @@ public class GoogleBookDataSource implements BookDataSource {
       return getSingleBook(isbn);
    }
 
-   public ArrayList<Book> getBooks(final String searchTerm, int startIndex) {
+   public ArrayList<Book> getBooks(final String searchTerm, int startIndex, int numResults) {
       if (startIndex < 1) {
          // don't allow zero or neg, just set to 1
          startIndex = 1;
       }
-      return getBooksFromSearch(searchTerm, startIndex);
+      if (numResults < 1) {
+         numResults = 1;
+      }
+      return getBooksFromSearch(searchTerm, startIndex, numResults);
    }
 
    private Book getSingleBook(final String isbn) {
@@ -75,11 +78,11 @@ public class GoogleBookDataSource implements BookDataSource {
       return null;
    }
 
-   private ArrayList<Book> getBooksFromSearch(final String searchTerm, final int startIndex) {
+   private ArrayList<Book> getBooksFromSearch(final String searchTerm, final int startIndex, final int numResults) {
       String url =
                GoogleBookDataSource.GDATA_BOOK_SEARCH_PREFIX + searchTerm
                         + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_PRE + startIndex
-                        + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_POST;
+                        + GoogleBookDataSource.GDATA_BOOK_SEARCH_SUFFIX_POST + numResults;
       if (debugEnabled) {
          Log.d(Constants.LOG_TAG, "book search URL - " + url);
       }

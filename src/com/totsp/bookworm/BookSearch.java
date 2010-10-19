@@ -270,7 +270,7 @@ public class BookSearch extends Activity {
          int startIndex = Integer.valueOf(args[1]);
          if (searchTerm != null) {
             searchTerm = URLEncoder.encode(searchTerm);
-            return application.bookDataSource.getBooks(searchTerm, startIndex);
+            return application.bookDataSource.getBooks(searchTerm, startIndex, 10);
          }
          return null;
       }

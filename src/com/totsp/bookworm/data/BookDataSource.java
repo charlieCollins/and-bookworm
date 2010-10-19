@@ -8,5 +8,5 @@ public interface BookDataSource {
 
    Book getBook(String identifier);
 
-   ArrayList<Book> getBooks(String searchTerm, int startIndex);  
+   ArrayList<Book> getBooks(String searchTerm, int startIndex, int numResults);  
 }
