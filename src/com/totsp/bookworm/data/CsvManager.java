@@ -113,7 +113,6 @@ public class CsvManager {
                      b.subTitle = parts[1];
                      if (parts[2] != null) {
                         String authors = parts[2].replace('|', ',');
-                        System.out.println("Authors before expanded - " + authors);
                         b.authors = StringUtil.expandAuthors(authors);
                      }
                      b.isbn10 = parts[3];

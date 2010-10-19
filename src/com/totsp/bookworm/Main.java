@@ -747,10 +747,7 @@ public class Main extends Activity {
    }
 
    private class RestoreTask extends AsyncTask<Void, String, Void> {
-
-      public RestoreTask() {
-      }
-
+      
       @Override
       protected void onPreExecute() {
          if (progressDialog.isShowing()) {
