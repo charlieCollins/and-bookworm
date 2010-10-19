@@ -777,7 +777,7 @@ public class Main extends Activity {
                progress[1] = Integer.toString(i);
                publishProgress(progress);
                // sleep because loop is too fast to see messages
-               SystemClock.sleep(500);
+               SystemClock.sleep(300);
                b.id = application.dataManager.insertBook(b);
                application.imageManager.resetCoverImage(b);
             }
