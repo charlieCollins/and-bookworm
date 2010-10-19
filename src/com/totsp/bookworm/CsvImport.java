@@ -194,14 +194,12 @@ public class CsvImport extends Activity {
                progress[1] = Integer.toString(i);
                publishProgress(progress);
                // sleep because loop is too fast to see messages
-               SystemClock.sleep(250);
+               SystemClock.sleep(500);
             } else {
                Log.i(Constants.LOG_TAG, "Importing book: " + b.title);
                progress[0] = String.format(getString(R.string.msgCsvImportingBook, b.title));
                progress[1] = Integer.toString(i);
                publishProgress(progress);
-               // sleep because loop is too fast to see messages
-               SystemClock.sleep(250);
                b.id = application.dataManager.insertBook(b);
                application.imageManager.resetCoverImage(b);
             }

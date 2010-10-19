@@ -195,7 +195,7 @@ public class Main extends Activity {
       // check backup restore
       if (!this.getIntent().getBooleanExtra("fromDeleteAll", false)) {
          checkForRestore();
-      }      
+      }
    }
 
    @Override
@@ -395,9 +395,9 @@ public class Main extends Activity {
    private void checkForRestore() {
       // if the current database is EMPTY, and yet the internal CSV backup file is present restore the data
       // (this file is maintained as users add/remove data, and backed up with BackupAgent)
-      if (adapter != null && adapter.getCount() == 0) {
+      if (application.dataManager.selectAllBooks().size() == 0 && adapter != null && adapter.getCount() == 0) {
          File csvFile = new File(getFilesDir() + File.separator + DataConstants.EXPORT_FILENAME);
-         if (csvFile.exists() && csvFile.canRead()) {            
+         if (csvFile.exists() && csvFile.canRead()) {
             Toast.makeText(this, getString(R.string.msgRestoreFromInternalBackup), Toast.LENGTH_LONG).show();
             new RestoreTask().execute();
          }
@@ -448,103 +448,107 @@ public class Main extends Activity {
       manageDataDialogBuilder.setTitle(getString(R.string.labelManageData));
       manageDataDialogBuilder.setItems(new CharSequence[] { getString(R.string.btnExportCSV),
                getString(R.string.btnImportCSV), getString(R.string.btnEmailCSV),
-               getString(R.string.btnResetCoverImages), getString(R.string.btnDeleteData) },
-               new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface d, int selected) {
-                     switch (selected) {
-                        case 0:
-                           // EXPORT CSV
-                           new AlertDialog.Builder(Main.this).setMessage(R.string.msgReplaceExistingCSVExport)
-                                    .setPositiveButton(getString(R.string.btnYes),
-                                             new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface arg0, final int arg1) {
-                                                   if (ExternalStorageUtil.isExternalStorageAvail()) {
-                                                      // NOTE -- possible AsyncTask for CSV export? (very fast, not necc?)                                                      
-                                                      CsvManager.exportExternal(Main.this, application.dataManager
-                                                               .selectAllBooks());
-                                                      Toast.makeText(Main.this, getString(R.string.msgExportSuccess),
-                                                               Toast.LENGTH_SHORT).show();
-                                                   } else {
-                                                      Toast.makeText(Main.this,
-                                                               getString(R.string.msgExternalStorageNAError),
-                                                               Toast.LENGTH_SHORT).show();
-                                                   }
-                                                }
-                                             }).setNegativeButton(getString(R.string.btnNo),
-                                             new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface arg0, final int arg1) {
-                                                }
-                                             }).show();
-                           break;
-                        case 1:
-                           // IMPORT CSV
-                           startActivity(new Intent(Main.this, CsvImport.class));
-                           break;
-                        case 2:
-                           // EMAIL CSV
-                           if (ExternalStorageUtil.isExternalStorageAvail()) {
-                              File f =
-                                       new File(Main.this.getFilesDir() + File.separator
-                                                + DataConstants.EXPORT_FILENAME);
-                              if (f.exists() && f.canRead()) {
-                                 Intent sendCSVIntent = new Intent(Intent.ACTION_SEND);
-                                 sendCSVIntent.setType("text/csv");
-                                 sendCSVIntent
-                                          .putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + f.getAbsolutePath()));
-                                 sendCSVIntent.putExtra(Intent.EXTRA_SUBJECT, "BookWorm CSV Export");
-                                 sendCSVIntent.putExtra(Intent.EXTRA_TEXT, "CSV export attached.");
-                                 startActivity(Intent.createChooser(sendCSVIntent, "Email:"));
-                              } else {
-                                 Toast.makeText(Main.this, getString(R.string.msgExportBeforeEmail), Toast.LENGTH_LONG)
-                                          .show();
+               getString(R.string.btnResetCoverImages), getString(R.string.btnDeleteData),
+               getString(R.string.btnDeleteInternalBackup) }, new DialogInterface.OnClickListener() {
+         public void onClick(DialogInterface d, int selected) {
+            switch (selected) {
+               case 0:
+                  // EXPORT CSV
+                  new AlertDialog.Builder(Main.this).setMessage(R.string.msgReplaceExistingCSVExport)
+                           .setPositiveButton(getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                              public void onClick(final DialogInterface arg0, final int arg1) {
+                                 if (ExternalStorageUtil.isExternalStorageAvail()) {
+                                    // NOTE -- possible AsyncTask for CSV export? (very fast, not necc?)                                                      
+                                    CsvManager.exportExternal(Main.this, application.dataManager.selectAllBooks());
+                                    Toast.makeText(Main.this, getString(R.string.msgExportSuccess), Toast.LENGTH_SHORT)
+                                             .show();
+                                 } else {
+                                    Toast.makeText(Main.this, getString(R.string.msgExternalStorageNAError),
+                                             Toast.LENGTH_SHORT).show();
+                                 }
                               }
-                           } else {
-                              Toast.makeText(Main.this, getString(R.string.msgExternalStorageNAError),
-                                       Toast.LENGTH_SHORT).show();
-                           }
-                           break;
-                        case 3:
-                           // RESET ALL COVER IMAGES
-                           if (adapter != null && adapter.getCount() > 0) {
-                              new AlertDialog.Builder(Main.this).setTitle(getString(R.string.msgResetAllCoverImages))
-                                       .setMessage(getString(R.string.msgResetAllCoverImagesExplain))
-                                       .setPositiveButton(getString(R.string.btnYes),
-                                                new DialogInterface.OnClickListener() {
-                                                   public void onClick(final DialogInterface d, final int i) {
-                                                      new ResetAllCoverImagesTask().execute();
-                                                   }
-                                                }).setNegativeButton(getString(R.string.btnNo),
-                                                new DialogInterface.OnClickListener() {
-                                                   public void onClick(final DialogInterface d, final int i) {
-                                                   }
-                                                }).show();
-                           }
-                           break;
-                        case 4:
-                           // DELETE ALL DATA
-                           new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgDeleteAllData))
-                                    .setPositiveButton(getString(R.string.btnYes),
-                                             new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface arg0, final int arg1) {
-                                                   Log.i(Constants.LOG_TAG, "deleting database");
-                                                   application.dataManager.deleteAllDataYesIAmSure();
-                                                   application.dataManager.resetDb();
-                                                   application.imageManager.clearAllBitmapSourceFiles();
-                                                   Toast.makeText(Main.this, getString(R.string.msgDataDeleted),
-                                                            Toast.LENGTH_SHORT).show();
-                                                   Intent intent = new Intent(Main.this, Main.class);
-                                                   intent.putExtra("fromDeleteAll", true);
-                                                   startActivity(intent);
-                                                }
-                                             }).setNegativeButton(getString(R.string.btnNo),
-                                             new DialogInterface.OnClickListener() {
-                                                public void onClick(final DialogInterface arg0, final int arg1) {
-                                                }
-                                             }).show();
-                           break;
+                           }).setNegativeButton(getString(R.string.btnNo), new DialogInterface.OnClickListener() {
+                              public void onClick(final DialogInterface arg0, final int arg1) {
+                              }
+                           }).show();
+                  break;
+               case 1:
+                  // IMPORT CSV
+                  startActivity(new Intent(Main.this, CsvImport.class));
+                  break;
+               case 2:
+                  // EMAIL CSV
+                  if (ExternalStorageUtil.isExternalStorageAvail()) {
+                     File f = new File(Main.this.getFilesDir() + File.separator + DataConstants.EXPORT_FILENAME);
+                     if (f.exists() && f.canRead()) {
+                        Intent sendCSVIntent = new Intent(Intent.ACTION_SEND);
+                        sendCSVIntent.setType("text/csv");
+                        sendCSVIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + f.getAbsolutePath()));
+                        sendCSVIntent.putExtra(Intent.EXTRA_SUBJECT, "BookWorm CSV Export");
+                        sendCSVIntent.putExtra(Intent.EXTRA_TEXT, "CSV export attached.");
+                        startActivity(Intent.createChooser(sendCSVIntent, "Email:"));
+                     } else {
+                        Toast.makeText(Main.this, getString(R.string.msgExportBeforeEmail), Toast.LENGTH_LONG).show();
                      }
+                  } else {
+                     Toast.makeText(Main.this, getString(R.string.msgExternalStorageNAError), Toast.LENGTH_SHORT)
+                              .show();
                   }
-               });
+                  break;
+               case 3:
+                  // RESET ALL COVER IMAGES
+                  if (adapter != null && adapter.getCount() > 0) {
+                     new AlertDialog.Builder(Main.this).setTitle(getString(R.string.msgResetAllCoverImages))
+                              .setMessage(getString(R.string.msgResetAllCoverImagesExplain)).setPositiveButton(
+                                       getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                                          public void onClick(final DialogInterface d, final int i) {
+                                             new ResetAllCoverImagesTask().execute();
+                                          }
+                                       }).setNegativeButton(getString(R.string.btnNo),
+                                       new DialogInterface.OnClickListener() {
+                                          public void onClick(final DialogInterface d, final int i) {
+                                          }
+                                       }).show();
+                  }
+                  break;
+               case 4:
+                  // DELETE ALL DATA
+                  new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgDeleteData))
+                           .setPositiveButton(getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                              public void onClick(final DialogInterface arg0, final int arg1) {
+                                 Log.i(Constants.LOG_TAG, "deleting database and image data");
+                                 new DeleteDataTask().execute();                                
+                              }
+                           }).setNegativeButton(getString(R.string.btnNo), new DialogInterface.OnClickListener() {
+                              public void onClick(final DialogInterface arg0, final int arg1) {
+                              }
+                           }).show();
+                  break;
+               case 5:
+                  // DELETE INTERNAL BACKUP DATA
+                  new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgDeleteInternalBackupData))
+                           .setPositiveButton(getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                              public void onClick(final DialogInterface arg0, final int arg1) {
+                                 Log.i(Constants.LOG_TAG, "deleting internal backup file");
+                                 File csvFile =
+                                          new File(getFilesDir() + File.separator + DataConstants.EXPORT_FILENAME);
+                                 if (csvFile.exists() && csvFile.canRead()) {
+                                    csvFile.delete();
+                                 }
+                                 Toast.makeText(Main.this, getString(R.string.msgDataDeleted), Toast.LENGTH_SHORT)
+                                          .show();
+                                 Intent intent = new Intent(Main.this, Main.class);
+                                 intent.putExtra("fromDeleteAll", true);
+                                 startActivity(intent);
+                              }
+                           }).setNegativeButton(getString(R.string.btnNo), new DialogInterface.OnClickListener() {
+                              public void onClick(final DialogInterface arg0, final int arg1) {
+                              }
+                           }).show();
+                  break;
+            }
+         }
+      });
       manageDataDialog = manageDataDialogBuilder.create();
 
       AlertDialog.Builder statsDialogBuilder =
@@ -745,9 +749,59 @@ public class Main extends Activity {
          setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
       }
    }
+   
+   private class DeleteDataTask extends AsyncTask<Void, Integer, Void> {
+
+      @Override
+      protected void onPreExecute() {
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+         // keep screen on, and prevent orientation change, during potentially long running task
+         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+      }
+
+      @Override
+      protected Void doInBackground(final Void... args) {
+         publishProgress(1);
+         application.dataManager.deleteAllDataYesIAmSure();
+         application.dataManager.resetDb();
+         publishProgress(2);         
+         application.imageManager.clearAllBitmapSourceFiles();
+         publishProgress(3);
+         return null;
+      }
+
+      @Override
+      protected void onProgressUpdate(Integer... progress) {         
+         if (!progressDialog.isShowing()) {
+            progressDialog.show();
+         }
+         if (progress[0] == 1) {
+            progressDialog.setMax(3);
+         }
+         progressDialog.setProgress(progress[0]);
+         progressDialog.setMessage(Main.this.getString(R.string.msgDeletingData));         
+      }
+
+      @Override
+      protected void onPostExecute(final Void arg) {
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+         // reset screen and orientation params
+         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
+         Intent intent = new Intent(Main.this, Main.class);
+         intent.putExtra("fromDeleteAll", true);
+         startActivity(intent);
+      }
+   }
 
    private class RestoreTask extends AsyncTask<Void, String, Void> {
-      
+
       @Override
       protected void onPreExecute() {
          if (progressDialog.isShowing()) {
@@ -770,9 +824,7 @@ public class Main extends Activity {
                Log.i(Constants.LOG_TAG, "Importing book: " + b.title);
                progress[0] = String.format(getString(R.string.msgCsvImportingBook, b.title));
                progress[1] = Integer.toString(i);
-               publishProgress(progress);
-               // sleep because loop is too fast to see messages
-               SystemClock.sleep(300);
+               publishProgress(progress);               
                b.id = application.dataManager.insertBook(b);
                application.imageManager.resetCoverImage(b);
             }

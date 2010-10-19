@@ -77,18 +77,18 @@ public final class FileUtil {
    /**
     * Append String to end of File.
     * 
-    * @param fileContents
+    * @param appendContents
     * @param file
     * @return
     */
-   public static boolean appendStringToFile(final String fileContents, final File file) {
+   public static boolean appendStringToFile(final String appendContents, final File file) {
       boolean result = false;
       try {
          synchronized (DATA_LOCK) {
             if (file != null && file.canWrite()) {
                file.createNewFile(); // ok if returns false, overwrite
                Writer out = new BufferedWriter(new FileWriter(file, true), 1024);
-               out.write(fileContents);
+               out.write(appendContents);
                out.close();   
                result = true;
             }

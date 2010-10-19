@@ -34,7 +34,7 @@ public class CsvManager {
     * 
     */
    public static void exportExternal(final Context context, final ArrayList<Book> books) {
-      String csv = getCSVString(books);
+      String csv = getCSVString(true, books);
       if (ExternalStorageUtil.isExternalStorageAvail()) {
          if (saveCSVStringAsFile(new File(DataConstants.EXTERNAL_DATA_PATH), csv)) {
             return;
@@ -54,7 +54,7 @@ public class CsvManager {
     * @param books
     */
    public static void exportInternal(final Context context, final ArrayList<Book> books) {
-      String csv = getCSVString(books);
+      String csv = getCSVString(true, books);
       if (saveCSVStringAsFile(context.getFilesDir(), csv)) {
          return;
       } else {
@@ -69,7 +69,7 @@ public class CsvManager {
     * @param books
     */
    public static void appendInternal(final Context context, final ArrayList<Book> books) {
-      String csv = getCSVString(books);
+      String csv = getCSVString(false, books);
       if (appendCSVStringToFile(context.getFilesDir(), csv)) {
          return;
       } else {
@@ -152,7 +152,7 @@ public class CsvManager {
                   } else if ((parts != null) && (parts.length == 1)) {
                      // ISBN ONLY type, 1 element per file line 
                      if (bookDataSource != null) {
-                        ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0, 3);
+                        ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0, 1);
                         if (searchBooks != null && !searchBooks.isEmpty()) {
                            books.add(searchBooks.get(0));
                         }
@@ -206,10 +206,12 @@ public class CsvManager {
       return result;
    }
 
-   private static String getCSVString(final ArrayList<Book> books) {
+   private static String getCSVString(final boolean includeHeader, final ArrayList<Book> books) {
       StringBuilder sb = new StringBuilder();
-      sb.append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,");
-      sb.append("Format,Subject,Publisher,Published Date,User Rating,User Read Status, User Note [optional]\n");
+      if (includeHeader) {
+         sb.append("Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,");
+         sb.append("Format,Subject,Publisher,Published Date,User Rating,User Read Status, User Note [optional]\n");
+      }
       if ((books != null) && !books.isEmpty()) {
          for (int i = 0; i < books.size(); i++) {
             Book b = books.get(i);
