@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 
-public class HTMLScreen extends Activity {
+public class HtmlScreen extends Activity {
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {

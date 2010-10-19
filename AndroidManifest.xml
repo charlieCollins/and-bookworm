@@ -23,8 +23,8 @@
 		<activity android:name="BookDetail" />
 		<activity android:name="BookSearch" />
 		<activity android:name="BookEntryResult" />
-		<activity android:name="CSVImport" />
-		<activity android:name="HTMLScreen" />
+		<activity android:name="CsvImport" />
+		<activity android:name="HtmlScreen" />
 		<activity android:name="Preferences" />
 	</application>
 </manifest> 

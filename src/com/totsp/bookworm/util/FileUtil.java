@@ -62,7 +62,7 @@ public final class FileUtil {
          synchronized (DATA_LOCK) {
             if (file != null) {
                file.createNewFile(); // ok if returns false, overwrite
-               Writer out = new BufferedWriter(new FileWriter(file));
+               Writer out = new BufferedWriter(new FileWriter(file), 1024);
                out.write(fileContents);
                out.close();   
                result = true;
@@ -87,7 +87,7 @@ public final class FileUtil {
          synchronized (DATA_LOCK) {
             if (file != null && file.canWrite()) {
                file.createNewFile(); // ok if returns false, overwrite
-               Writer out = new BufferedWriter(new FileWriter(file, true));
+               Writer out = new BufferedWriter(new FileWriter(file, true), 1024);
                out.write(fileContents);
                out.close();   
                result = true;

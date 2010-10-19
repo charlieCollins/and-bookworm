@@ -15,6 +15,7 @@ import com.totsp.bookworm.util.StringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -186,6 +187,14 @@ public class CsvManager {
 
    private static boolean appendCSVStringToFile(final File directory, final String csv) {
       File file = new File(directory + File.separator + DataConstants.EXPORT_FILENAME);
+      if (!file.exists()) {
+         try {
+            file.createNewFile(); // ok if returns false, overwrite
+         } catch (IOException e) {
+            Log.e(Constants.LOG_TAG, "Unable to create CSV File for backup.", e);
+            return false;
+         }
+      }
       return FileUtil.appendStringToFile(csv, file);
    }
 

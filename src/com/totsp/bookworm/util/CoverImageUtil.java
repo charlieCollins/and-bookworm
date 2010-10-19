@@ -47,7 +47,6 @@ public final class CoverImageUtil {
             if ((coverImageBitmap != null) && (coverImageBitmap.getWidth() < 10)) {
                coverImageBitmap = null;
             }
-            Log.d(Constants.LOG_TAG, " FINISHED");
          } catch (IOException e) {
             if (e instanceof SocketTimeoutException) {
                Log.i(Constants.LOG_TAG, "SocketTimeoutException retrieving cover image for URL:" + imageUrl);

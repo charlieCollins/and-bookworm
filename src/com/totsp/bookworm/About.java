@@ -29,7 +29,7 @@ public class About extends Activity {
       aboutDetails.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("file:///android_asset/release_notes.html"),
-                     About.this, HTMLScreen.class));
+                     About.this, HtmlScreen.class));
          }
       });
    }

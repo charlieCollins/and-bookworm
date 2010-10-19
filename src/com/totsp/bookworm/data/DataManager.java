@@ -1,6 +1,5 @@
 package com.totsp.bookworm.data;
 
-import android.app.backup.BackupManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.totsp.bookworm.BackupManagerWrapper;
 import com.totsp.bookworm.Constants;
 import com.totsp.bookworm.data.dao.AuthorDAO;
 import com.totsp.bookworm.data.dao.BookDAO;
@@ -31,9 +31,8 @@ public class DataManager {
 
    private Context context;
 
-   // TODO tell app when to backup
-   // TODO make sure backup agent code is all backward compatibilized   
-   private BackupManager backupManager;
+   // Use a wrapper BackupManager, because it's only available on API level 8 and above
+   private BackupManagerWrapper backupManager;
 
    private SQLiteDatabase db;
 
@@ -48,7 +47,12 @@ public class DataManager {
 
       this.context = context;
 
-      backupManager = new BackupManager(this.context);
+      try { 
+         BackupManagerWrapper.isAvailable();
+         backupManager = new BackupManagerWrapper(this.context);
+      } catch (Throwable t) {
+         Log.i(Constants.LOG_TAG, "BackupManager not available (older Android version). BackupManager will not be used.");
+      }      
 
       OpenHelper openHelper = new OpenHelper(this.context);
       db = openHelper.getWritableDatabase();
@@ -138,7 +142,9 @@ public class DataManager {
          list.add(book);
          CsvManager.appendInternal(context, list);
       }
-      backupManager.dataChanged();
+      if (backupManager != null) {
+         backupManager.dataChanged();
+      }
    }
 
    public Cursor getBookCursor(final String orderBy, final String whereClauseLimit) {

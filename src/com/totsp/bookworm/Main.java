@@ -90,7 +90,6 @@ public class Main extends Activity {
    private AlertDialog sortDialog;
    private AlertDialog manageDataDialog;
    private AlertDialog statsDialog;
-   private AlertDialog restoreDialog;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -194,7 +193,9 @@ public class Main extends Activity {
       bindAdapter();
 
       // check backup restore
-      checkForRestore();
+      if (!this.getIntent().getBooleanExtra("fromDeleteAll", false)) {
+         checkForRestore();
+      }      
    }
 
    @Override
@@ -391,16 +392,16 @@ public class Main extends Activity {
       bindAdapter();
    }
 
-   // TODO don't do this, rather just make it an OPTION to restore from the internal file at the dialogs?
-   // OR just auto-replace user's data with internal backup when it's found (don't ask?)
    private void checkForRestore() {
       // if the current database is EMPTY, and yet the internal CSV backup file is present
-      // prompt user if they want to restore this data
+      // restore the data
       // (this file is maintained as users add/remove data, and backed up with BackupAgent)
       if (adapter != null && adapter.getCount() == 0) {
          File csvFile = new File(getFilesDir() + File.separator + DataConstants.EXPORT_FILENAME);
-         if (csvFile.exists() && csvFile.canRead()) {
-            restoreDialog.show();
+         if (csvFile.exists() && csvFile.canRead()) {            
+            // TODO i18n
+            Toast.makeText(this, "Backup data found, restoring from backup.", Toast.LENGTH_LONG).show();
+            new RestoreTask().execute();
          }
       }
    }
@@ -479,7 +480,7 @@ public class Main extends Activity {
                            break;
                         case 1:
                            // IMPORT CSV
-                           startActivity(new Intent(Main.this, CSVImport.class));
+                           startActivity(new Intent(Main.this, CsvImport.class));
                            break;
                         case 2:
                            // EMAIL CSV
@@ -533,7 +534,9 @@ public class Main extends Activity {
                                                    application.imageManager.clearAllBitmapSourceFiles();
                                                    Toast.makeText(Main.this, getString(R.string.msgDataDeleted),
                                                             Toast.LENGTH_SHORT).show();
-                                                   startActivity(new Intent(Main.this, Main.class));
+                                                   Intent intent = new Intent(Main.this, Main.class);
+                                                   intent.putExtra("fromDeleteAll", true);
+                                                   startActivity(intent);
                                                 }
                                              }).setNegativeButton(getString(R.string.btnNo),
                                              new DialogInterface.OnClickListener() {
@@ -553,20 +556,6 @@ public class Main extends Activity {
                            };
                         });
       statsDialog = statsDialogBuilder.create();
-
-      // TODO i18n these strings
-      AlertDialog.Builder restoreDialogBuilder =
-               new AlertDialog.Builder(this).setTitle("Restore Data?").setMessage(
-                        "Backup data file found, would you like to restore data?").setPositiveButton(
-                        getString(R.string.btnYes), new DialogInterface.OnClickListener() {
-                           public void onClick(final DialogInterface d, final int i) {
-                              new RestoreTask().execute();
-                           }
-                        }).setNegativeButton(getString(R.string.btnNo), new DialogInterface.OnClickListener() {
-                  public void onClick(final DialogInterface d, final int i) {
-                  }
-               });
-      restoreDialog = restoreDialogBuilder.create();
    }
 
    private void saveSortOrder(final String order) {
