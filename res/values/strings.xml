@@ -110,7 +110,7 @@
     <string name="prefSumDebugLog">Enable and then exit/restart app to get detailed logs.</string>    
     <string name="prefSectDataProvider">Data Provider Preferences</string>
     <string name="prefTitleBookData">Book Data Provider</string>
-    <string name="prefSumBookData">Select book data provider (default is Google Books).</string>
+    <string name="prefSumBookData">Select specific book data provider (default uses all providers).</string>
 	
 	<!--  recent changes only for EN (some new, some renamed, need to be synced to other langs) -->
 	<string name="menuStats">Stats</string>	

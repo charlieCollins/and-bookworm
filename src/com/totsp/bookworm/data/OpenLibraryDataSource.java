@@ -22,8 +22,6 @@ import java.util.Date;
  */
 public class OpenLibraryDataSource implements BookDataSource {
 
-   // TODO debug this, doesn't seem like the index/start position works (keeps repeating results)? 
-   
    private static final String OL_ISBN_SEARCH_PREFIX =
             "http://openlibrary.org/api/books?callback=processOLBooks&details=true&bibkeys=ISBN:";
    private static final String OL_BOOK_SEARCH_PREFIX = "http://openlibrary.org/search.json?title=";

@@ -19,7 +19,7 @@
            android:title="@string/prefTitleBookData"
            android:summary="@string/prefSumBookData"
            android:key="dataproviderpref"
-           android:defaultValue="com.totsp.bookworm.data.GoogleBookDataSource"
+           android:defaultValue="com.totsp.bookworm.data.CompoundDataSource"
            android:entries="@array/bookdataprovidernames"
            android:entryValues="@array/bookdataproviderkeys" />                  
     </PreferenceCategory>
