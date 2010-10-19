@@ -802,6 +802,9 @@ public class Main extends Activity {
 
    private class RestoreTask extends AsyncTask<Void, String, Void> {
 
+      // we shouldn't need to check for dupes here, only used if DB is empty
+      // and backup file should never wind up with dupes in it
+      
       @Override
       protected void onPreExecute() {
          if (progressDialog.isShowing()) {

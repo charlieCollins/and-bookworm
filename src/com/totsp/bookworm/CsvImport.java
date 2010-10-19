@@ -78,6 +78,7 @@ public class CsvImport extends Activity {
 
       parseButton.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
+            parseButton.setEnabled(false);
             File f = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + "bookworm.csv");
             if ((f == null) || !f.exists() || !f.canRead()) {
                Toast.makeText(CsvImport.this, getString(R.string.msgCsvFileNotFound), Toast.LENGTH_LONG).show();
@@ -86,10 +87,9 @@ public class CsvImport extends Activity {
             ArrayList<Book> parsedBooks = CsvManager.parseCSVFile(application.bookDataSource, f);
             if (parsedBooks == null || parsedBooks.isEmpty()) {
                Toast.makeText(CsvImport.this, getString(R.string.msgCsvUnableToParse), Toast.LENGTH_LONG).show();
-            } else {
-               parseButton.setEnabled(false);
+               reset();
+            } else {               
                importButton.setEnabled(true);
-
                // TODO notifyDataSetChanged doesn't work here, again, something must be up with way I am using ListView
                //adapter.notifyDataSetChanged();
                adapter.clear();
@@ -104,8 +104,13 @@ public class CsvImport extends Activity {
       importButton.setOnClickListener(new OnClickListener() {
          @SuppressWarnings("unchecked")
          public void onClick(View v) {
+            importButton.setEnabled(false);
             if ((books != null) && !books.isEmpty()) {
                new ImportTask().execute(books);
+            } else {
+               // should never get to this image, importButton should not be enabled unless parsed books are present, just in case
+               Toast.makeText(CsvImport.this, "No data parsed, nothing to import.", Toast.LENGTH_LONG).show();
+               reset();
             }
          }
       });
@@ -155,9 +160,6 @@ public class CsvImport extends Activity {
    // AsyncTasks
    //
    private class ImportTask extends AsyncTask<ArrayList<Book>, String, Void> {
-
-      public ImportTask() {
-      }
 
       @Override
       protected void onPreExecute() {
