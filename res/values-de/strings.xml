@@ -1,4 +1,7 @@
 <resources>
+
+<!-- This file is VERY outdated now, hasn't been updated. Need to get native speaker to start over from EN version and translate. -->
+
 	<string name="app_name">
 		BookWorm
   </string>

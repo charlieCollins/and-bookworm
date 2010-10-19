@@ -2,26 +2,21 @@ package com.totsp.bookworm;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
@@ -49,7 +44,7 @@ public class BookSearch extends Activity {
    String currSearchTerm = "";
    String prevSearchTerm = "";
 
-   BookSearchAdapter adapter;
+   BookListAdapter adapter;
 
    boolean allowSearchContinue;
    boolean prevSearchResultCount;
@@ -67,7 +62,7 @@ public class BookSearch extends Activity {
       progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
       progressDialog.setCancelable(false);
 
-      adapter = new BookSearchAdapter(new ArrayList<Book>());
+      adapter = new BookListAdapter(this, new ArrayList<Book>());
 
       searchInput = (EditText) findViewById(R.id.bookentrysearchinput);
       // if user hits "enter" on keyboard, go ahead and submit, no need for newlines in the search box
@@ -249,46 +244,7 @@ public class BookSearch extends Activity {
       }
       bean.books = cacheList;
       return bean;
-   }
-
-   // static and package access as an Android optimization (used in inner class)
-   static class ViewHolder {
-      TextView text1;
-      TextView text2;
-   }
-
-   // BookSearchAdapter
-   private class BookSearchAdapter extends ArrayAdapter<Book> {
-      private ArrayList<Book> books;
-
-      LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-      BookSearchAdapter(ArrayList<Book> bks) {
-         super(BookSearch.this, R.layout.search_list_item, bks);
-         books = bks;
-      }
-
-      @Override
-      public View getView(int position, View convertView, ViewGroup parent) {
-
-         View item = convertView;
-         ViewHolder holder = null;
-
-         if (item == null) {
-            item = vi.inflate(R.layout.search_list_item, parent, false);
-            // use ViewHolder pattern to avoid extra trips to findViewById         
-            holder = new ViewHolder();
-            holder.text1 = (TextView) item.findViewById(R.id.search_item_text_1);
-            holder.text2 = (TextView) item.findViewById(R.id.search_item_text_2);
-            item.setTag(holder);
-         }
-
-         holder = (ViewHolder) item.getTag();
-         holder.text1.setText(books.get(position).title);
-         holder.text2.setText(StringUtil.contractAuthors(books.get(position).authors));
-         return item;
-      }
-   }
+   }  
 
    //
    // AsyncTasks

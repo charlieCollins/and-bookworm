@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.totsp.bookworm.Constants;
+import com.totsp.bookworm.R;
 
 /**
  * <p>A utility class which helps ease integration with Barcode Scanner via {@link Intent}s. This is a simple
@@ -76,14 +77,6 @@ public final class ZXingIntentIntegrator {
 
    public static final int REQUEST_CODE = 0x0ba7c0de; // get it?
 
-   // TODO i18n this Activity!
-
-   private static final String DEFAULT_TITLE = "Install Barcode Scanner?";
-   private static final String DEFAULT_MESSAGE =
-            "This application requires Barcode Scanner. Would you like to install it?";
-   private static final String DEFAULT_YES = "Yes";
-   private static final String DEFAULT_NO = "No";
-
    private ZXingIntentIntegrator() {
    }
 
@@ -92,9 +85,9 @@ public final class ZXingIntentIntegrator {
     * same, but uses default English labels.
     */
    public static void initiateScan(final Activity activity) {
-      ZXingIntentIntegrator.initiateScan(activity, ZXingIntentIntegrator.DEFAULT_TITLE,
-               ZXingIntentIntegrator.DEFAULT_MESSAGE, ZXingIntentIntegrator.DEFAULT_YES,
-               ZXingIntentIntegrator.DEFAULT_NO);
+      ZXingIntentIntegrator.initiateScan(activity, activity.getString(R.string.labelInstallScanner),
+               activity.getString(R.string.msgScannerNotPresent), activity.getString(R.string.btnYes),
+               activity.getString(R.string.btnNo));
    }
 
    /**
@@ -180,9 +173,9 @@ public final class ZXingIntentIntegrator {
     * same, but uses default English labels.
     */
    public static void shareText(final Activity activity, final String text) {
-      ZXingIntentIntegrator.shareText(activity, text, ZXingIntentIntegrator.DEFAULT_TITLE,
-               ZXingIntentIntegrator.DEFAULT_MESSAGE, ZXingIntentIntegrator.DEFAULT_YES,
-               ZXingIntentIntegrator.DEFAULT_NO);
+      ZXingIntentIntegrator.shareText(activity, text, activity.getString(R.string.labelInstallScanner),
+               activity.getString(R.string.msgScannerNotPresent), activity.getString(R.string.btnYes),
+               activity.getString(R.string.btnNo));
    }
 
    /**

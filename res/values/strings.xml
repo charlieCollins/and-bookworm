@@ -101,7 +101,7 @@
     <string name="msgResetCoverImagesWarnTime">Resetting cover images, this could take a few minutes...</string>
     <string name="msgProcessingBookX">Processing book: %s.</string>   
     <string name="msgWarnDupe">Warning, your list already contains a book with the same title and ISBN as this one.</string>
-    <string name="msgTapToBegin">Tap to begin</string> 
+    <string name="msgTapToBegin">Tap to begin</string>    
     
     <string name="prefSectApp">Application Preferences</string>
     <string name="prefTitleSplash">Enable splash screen?</string>
@@ -113,34 +113,36 @@
     <string name="prefSumBookData">Select book data provider (default is Google Books).</string>
 	
 	<!--  recent changes only for EN (some new, some renamed, need to be synced to other langs) -->
-	<string name="menuStats">Stats</string>
+	<string name="menuStats">Stats</string>	
 	<string name="btnEmailCSV">Email CSV backup</string>
     <string name="btnEmailDB">Email DB backup</string>
 	<string name="btnExportCSV">Export CSV to SD card</string>
     <string name="btnImportCSV">Import CSV from SD card</string>
     <string name="btnExportDB">Export DB to SD card</string>    
     <string name="btnImportDB">Import DB from SD card</string>
-	<string name="labelImportCSV">Import CSV File</string>
-	<string name="msgImportCSVInstructions">Place a file named <i>bookworm.csv</i> in the <i>sdcard/bookwormdata</i> directory. Then press Parse when you are ready to proceed. See Menu->CSV Help for more information.</string>
 	<string name="btnParse">Parse</string>   
-	<string name="btnImport">Import</string>   
-	<string name="btnDeleteData">Delete all data</string>
-	<string name="btnEdit">Edit</string>   
+    <string name="btnImport">Import</string>   
+    <string name="btnDeleteData">Delete all data</string>
+    <string name="btnEdit">Edit</string>
+    <string name="btnResetCoverImages">Reset All Cover Images</string>	
+	<string name="labelImportCSV">Import CSV File</string>
 	<string name="labelManageData">Manage Data</string>
+	<string name="labelInstallScanner">Install Barcode Scanner</string>
+	<string name="labelNotes">Notes</string>	
     <string name="msgScannerNotPresent">Barcode scanner may not be present, would like to check the Market and try to install it?</string>
-    <string name="labelInstallScanner">Install Barcode Scanner</string>
-    <string name="msgCsvMetaData">Parsed %s books from import file. Click import (below list) to continue and import to database.</string>
+    <string name="msgImportCSVInstructions">Place a file named <i>bookworm.csv</i> in the <i>sdcard/bookwormdata</i> directory. Then Parse/Import. See Menu->CSV Help for more information.</string>
+    <string name="msgCsvMeta">Parsed %s books from import file.</string>
     <string name="msgCsvUnableToParse">Unable to parse any data from CSV file for import.</string>
     <string name="msgCsvFileNotFound">File <i>/sdcard/bookwormdata/bookworm.csv</i> not found, cannot import.</string>
     <string name="msgCsvSkippingBook">Skipping book (appears to be a duplicate):\n%s</string>
     <string name="msgCsvImportingBook">Importing book:\n%s</string>
     <string name="msgNetworkNAError">No network connection right now, cannot complete the requested action. Please try again once the network is available.</string>
     <string name="menuCsvHelp">CSV Help</string>
-    <string name="msgCsvHelp">*BooKWorm supports 2 CSV formats TODO. The required file location is "/sdcard/bookwormdata/bookworm.csv". The required format is 12 or 13 fields (comma separated, fields with commas within them must be quoted or escaped): Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status[,User Note]. &lt;br /&gt;&lt;br /&gt; *The CSV import process will skip the first line of the import file (this is usually the header), and any duplicate entries (books with the same title and ISBN, or title and authors if the ISBN is not present, as content in your database). &lt;br /&gt;&lt;br /&gt; *The easiest way to see an example of the format is to use the export as CSV feature. The export feature will place a CSV export file of your current database at the correct location (/sdcard/bookwormdata/bookworm.csv). &lt;br /&gt;&lt;br /&gt; *You can export XLS files as CSV, or rename TXT files to .csv, as long as they are in the correct format, and you place them in the correct location, BookWorm will import them.</string>
-    <string name="btnResetCoverImages">Reset All Cover Images</string>
+    <string name="msgCsvHelp">*BooKWorm supports 2 CSV file formats. ISBN only (1 field), or specific 13 fields (comma separated, fields with commas within them must be quoted or escaped): Title,Subtitle,Authors(pipe|separated),ISBN10,ISBN13,Description,Format,Subject,Publisher,Published Date,User Rating,User Read Status[,User Note]. &lt;br /&gt;&lt;br /&gt; *The required file location is "/sdcard/bookwormdata/bookworm.csv". &lt;br /&gt;&lt;br /&gt; *The CSV import process will skip the first line of the import file (this is usually the header), and any duplicate entries. &lt;br /&gt;&lt;br /&gt; *The easiest way to see an example of the custom format is to use the export as CSV feature. The export feature will place a CSV export file of your current database at the correct location (/sdcard/bookwormdata/bookworm.csv). &lt;br /&gt;&lt;br /&gt; *You can export XLS files as CSV, or rename TXT files to .csv, as long as they are in the correct format, and you place them in the correct location, BookWorm will import them.</string>    
     <string name="msgExportBeforeEmail">Export backup file not found. Please use the export feature before trying to email.</string>
     <string name="msgReplaceExistingCSVExport">Are you sure (this will replace any existing prior CSV export)?</string>
     <string name="msgReplaceExistingDBExport">Are you sure (this will replace any existing prior DB export)?</string>
     <string name="msgReplaceExistingDB">Are you sure (this will replace all current application data)?"</string>
-    <string name="labelNotes">Notes</string>	
+    <string name="msgRestoreFromInternalBackup">Backup data found, restoring from backup.</string>
+    
 </resources>

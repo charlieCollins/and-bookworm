@@ -5,15 +5,15 @@
 
 	<!--  android:layout_height="?android:attr/listPreferredItemHeight" -->
 
-	<TextView android:id="@+id/search_item_text_1"
+	<TextView android:id="@+id/book_item_text_1"
 		android:layout_marginTop="3dp" android:layout_marginBottom="1dp"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		style="@style/blackmedbold" />
 
-	<TextView android:id="@+id/search_item_text_2"
+	<TextView android:id="@+id/book_item_text_2"
 		android:layout_marginTop="1dp" android:layout_marginBottom="5dp"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_below="@id/search_item_text_1"
+		android:layout_below="@id/book_item_text_1"
 		style="@style/blacksmall" />
 
 </RelativeLayout>

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.totsp.bookworm.Constants;
+import com.totsp.bookworm.R;
 import com.totsp.bookworm.model.Author;
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.model.BookUserData;
@@ -28,8 +29,6 @@ import java.util.Scanner;
  */
 public class CsvManager {
 
-   // TODO i18n
-
    /**
     * Export data as File to EXTERNAL export location (on removable storage).
     * 
@@ -43,7 +42,8 @@ public class CsvManager {
             throw new RuntimeException("Error, unable to save data contents as CSV file.");
          }
       } else {
-         Toast.makeText(context, "External storage not available.", Toast.LENGTH_LONG).show();
+         Toast.makeText(context, context.getResources().getString(R.string.msgExternalStorageNAError),
+                  Toast.LENGTH_LONG).show();
       }
    }
 
@@ -248,5 +248,4 @@ public class CsvManager {
       }
       return sb.toString();
    }
-
 }

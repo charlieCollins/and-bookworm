@@ -3,7 +3,6 @@ package com.totsp.bookworm;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -12,14 +11,11 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.Html;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,10 +32,6 @@ import java.util.ArrayList;
 
 public class CsvImport extends Activity {
 
-   // TODO look still ugly (ListView colors)
-   // show header view with number of parsed items, etc.
-   // make sure buttons reset/enable correctly
-   
    private static final int MENU_CSV_HELP = 1;
 
    private BookWormApplication application;
@@ -47,11 +39,13 @@ public class CsvImport extends Activity {
    private ArrayList<Book> books;
    private ListView listView;
    private BookListAdapter adapter;
-   
+
    private Button parseButton;
    private Button importButton;
 
-   private ProgressDialog progressDialog;   
+   private TextView importMeta;
+
+   private ProgressDialog progressDialog;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -62,18 +56,20 @@ public class CsvImport extends Activity {
 
       progressDialog = new ProgressDialog(this);
       progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-      progressDialog.setCancelable(false);      
+      progressDialog.setCancelable(false);
 
-      parseButton = (Button) findViewById(R.id.bookimportparsebutton);      
+      parseButton = (Button) findViewById(R.id.bookimportparsebutton);
       importButton = (Button) findViewById(R.id.bookimportimportbutton);
       importButton.setEnabled(false);
-      
+
+      importMeta = (TextView) findViewById(R.id.bookimportmeta);
+
       books = new ArrayList<Book>();
-      
+
       listView = (ListView) findViewById(R.id.bookimportlistview);
       //listView.setEmptyView(findViewById(R.id.bookimportlistviewempty));
-      adapter = new BookListAdapter(this, android.R.layout.simple_list_item_2, books);
-      listView.setAdapter(adapter);      
+      adapter = new BookListAdapter(this, books);
+      listView.setAdapter(adapter);
 
       if (!ExternalStorageUtil.isExternalStorageAvail()) {
          Toast.makeText(this, getString(R.string.msgExternalStorageNAError), Toast.LENGTH_LONG).show();
@@ -87,19 +83,20 @@ public class CsvImport extends Activity {
                Toast.makeText(CsvImport.this, getString(R.string.msgCsvFileNotFound), Toast.LENGTH_LONG).show();
             }
             // potentially AsyncTask this too? (could be an FC here with perfect timing, though this is very quick)           
-            ArrayList<Book> parsedBooks =  CsvManager.parseCSVFile(application.bookDataSource, f);
+            ArrayList<Book> parsedBooks = CsvManager.parseCSVFile(application.bookDataSource, f);
             if (parsedBooks == null || parsedBooks.isEmpty()) {
                Toast.makeText(CsvImport.this, getString(R.string.msgCsvUnableToParse), Toast.LENGTH_LONG).show();
             } else {
                parseButton.setEnabled(false);
-               importButton.setEnabled(true);               
-               
+               importButton.setEnabled(true);
+
                // TODO notifyDataSetChanged doesn't work here, again, something must be up with way I am using ListView
                //adapter.notifyDataSetChanged();
                adapter.clear();
                for (Book b : parsedBooks) {
                   adapter.add(b);
-               }               
+               }
+               importMeta.setText(String.format(getString(R.string.msgCsvMeta), new Object[] { parsedBooks.size() }));
             }
          }
       });
@@ -146,18 +143,18 @@ public class CsvImport extends Activity {
       }
    }
 
-
    private void reset() {
       books.clear();
       adapter.clear();
       parseButton.setEnabled(true);
-      importButton.setEnabled(false);      
+      importButton.setEnabled(false);
+      importMeta.setText("");
    }
- 
+
    //
    // AsyncTasks
    //
-   private class ImportTask extends AsyncTask<ArrayList<Book>, String, Void> {      
+   private class ImportTask extends AsyncTask<ArrayList<Book>, String, Void> {
 
       public ImportTask() {
       }
@@ -211,7 +208,7 @@ public class CsvImport extends Activity {
          }
          return null;
       }
-      
+
       @Override
       protected void onProgressUpdate(String... progress) {
          progressDialog.setMessage(progress[0]);
@@ -239,47 +236,5 @@ public class CsvImport extends Activity {
 
          startActivity(new Intent(CsvImport.this, Main.class));
       }
-   }
-   
-      
-   // Use ViewHolder and getTag/setTag to cut down on trips to findViewById in adapters/ListViews
-   private class ViewHolder {
-      private TextView text1;
-      private TextView text2;
-   }
-
-   // Use a custom Adapter to control the layout and views
-   private class BookListAdapter extends ArrayAdapter<Book> {     
-      
-      public BookListAdapter(final Context context, final int resourceId, final ArrayList<Book> books) {
-         super(context, resourceId, books);
-      }
-      
-      @Override
-      public View getView(final int position, View convertView, ViewGroup parent) {
-
-         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(android.R.layout.simple_list_item_2, parent, false);
-            ViewHolder holder = new ViewHolder();
-            holder.text1 = (TextView) convertView.findViewById(android.R.id.text1);
-            holder.text2 = (TextView) convertView.findViewById(android.R.id.text2);
-            convertView.setTag(holder);
-         }
-
-         // TODO make own list item layout with better colors, or set theme
-         ViewHolder holder = (ViewHolder) convertView.getTag();
-         final TextView text1 = holder.text1;
-         final TextView text2 = holder.text2;
-
-         final Book book = getItem(position);
-
-         if (book != null) {
-            text1.setText(book.title);
-            text2.setText(book.subTitle);            
-         }
-
-         return convertView;
-      }     
    }
 }

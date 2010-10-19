@@ -14,7 +14,7 @@
 	<TextView android:id="@+id/bookimportexplain"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="5dp" android:layout_marginLeft="5dp"
-		android:layout_marginRight="5dp" style="@style/blacksmall"
+		android:layout_marginRight="5dp" style="@style/blacksmallsmall"
 		android:gravity="center_horizontal" android:text="@string/msgImportCSVInstructions" />
 
 	<LinearLayout android:orientation="horizontal"
@@ -32,6 +32,12 @@
 			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
 			android:layout_gravity="center" style="@style/black" android:text="@string/btnImport" />
 	</LinearLayout>
+	
+	<TextView android:id="@+id/bookimportmeta"
+        android:layout_width="fill_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="5dp" android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" style="@style/blacksmallsmall"
+        android:gravity="center_horizontal" />
 
 	<ListView android:id="@+id/bookimportlistview"
 		android:layout_width="fill_parent" android:layout_height="0dp"

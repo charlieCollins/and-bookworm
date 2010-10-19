@@ -387,20 +387,18 @@ public class Main extends Activity {
    private void resetAdapter() {
       application.lastMainListPosition = 0;
       // adapter.notifyDataSetChanged();
-      // TODO notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
+      // NOTE notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
       // need to research (shouldn't have to re-bind the entire adapter, but for now doing so)
       bindAdapter();
    }
 
    private void checkForRestore() {
-      // if the current database is EMPTY, and yet the internal CSV backup file is present
-      // restore the data
+      // if the current database is EMPTY, and yet the internal CSV backup file is present restore the data
       // (this file is maintained as users add/remove data, and backed up with BackupAgent)
       if (adapter != null && adapter.getCount() == 0) {
          File csvFile = new File(getFilesDir() + File.separator + DataConstants.EXPORT_FILENAME);
          if (csvFile.exists() && csvFile.canRead()) {            
-            // TODO i18n
-            Toast.makeText(this, "Backup data found, restoring from backup.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.msgRestoreFromInternalBackup), Toast.LENGTH_LONG).show();
             new RestoreTask().execute();
          }
       }
