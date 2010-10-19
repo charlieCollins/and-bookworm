@@ -14,13 +14,13 @@ import java.util.Date;
 /**
  * SAX DefaultHandler impl for Google Books feed.
  * 
- * TODO - compare with XMLPullParser impl - though direct SAX may still be faster?
- * http://www.developer.com/xml/article.php/3824221/Android-XML-Parser-Performance.htm 
- *
  * @author ccollins
  */
 public class GoogleBooksHandler extends DefaultHandler {
 
+   // NOTE compare with XMLPullParser impl - though direct SAX may still be faster?
+   // http://www.developer.com/xml/article.php/3824221/Android-XML-Parser-Performance.htm 
+   
    private static final String ENTRY = "entry";
 
    private ArrayList<Book> books;

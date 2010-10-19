@@ -224,7 +224,7 @@ public class ImageManager {
       return key;
    }
 
-   // TODO clean this up, make it more robust, this is fugly
+   // TODO clean up title line break util, make it more robust, this is fugly
    private String parseLine(final int wordStart, final int maxLineLength, final String[] words) {
       String line = "";
       try {

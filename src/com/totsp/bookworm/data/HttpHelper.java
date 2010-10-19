@@ -50,16 +50,16 @@ import java.util.zip.GZIPInputStream;
  * to develop and test. Use calls to this class inside Android AsyncTask implementations
  * (or manual Thread-Handlers) to make HTTP requests asynchronous and not block the UI Thread.
  * 
- * TODO cookies 
- * TODO multi-part binary data
- * TODO follow 302s?
- * TODO shutdown connection mgr? - client.getConnectionManager().shutdown();
- * 
  * @author ccollins
  *
  */
 public class HttpHelper {
 
+   // TODO add cookie support
+   // TODO multi-part binary data
+   // TODO follow 302s?
+   // TODO shutdown connection mgr? - client.getConnectionManager().shutdown();
+   
    private static final String CONTENT_TYPE = "Content-Type";
    private static final int POST_TYPE = 1;
    private static final int GET_TYPE = 2;

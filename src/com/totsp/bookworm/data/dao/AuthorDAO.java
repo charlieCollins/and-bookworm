@@ -23,6 +23,9 @@ public class AuthorDAO implements DAO<Author> {
 
    private static final String QUERY_AUTHORS_BY_BOOK_ID_PREFIX =
             "select author.name from author join bookauthor on bookauthor.aid = author.aid join book on bookauthor.bid = book.bid";
+   
+   private static final String SELECT_BOOK_BY_ID_STRING =
+      AuthorDAO.QUERY_AUTHORS_BY_BOOK_ID_PREFIX + " where book.bid = %d order by author.name asc";
 
    private final SQLiteStatement authorInsertStmt;
    private static final String AUTHOR_INSERT =
@@ -113,16 +116,11 @@ public class AuthorDAO implements DAO<Author> {
          c.close();
       }
       return set;
-   }
+   }   
 
    public ArrayList<Author> selectByBookId(final long bookId) {
       ArrayList<Author> authors = new ArrayList<Author>();
-      // TODO string.format this with final String, faster?
-      StringBuilder sb = new StringBuilder();
-      sb.append(AuthorDAO.QUERY_AUTHORS_BY_BOOK_ID_PREFIX);
-      sb.append(" where book.bid = " + bookId);
-      sb.append(" order by author.name asc");
-      Cursor c = db.rawQuery(sb.toString(), null);
+      Cursor c = db.rawQuery(String.format(SELECT_BOOK_BY_ID_STRING, new Object[] { bookId }), null);
 
       if (c.moveToFirst()) {
          do {

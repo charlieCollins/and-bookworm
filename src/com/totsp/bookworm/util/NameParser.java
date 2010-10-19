@@ -63,7 +63,7 @@ public class NameParser {
     * @return String[5] containing title, first, middle and last names, suffix
     */
    public String[] parseName(String name) {
-      //TODO: Add lookahead for Suffixes to support 
+      // NOTE Add lookahead for Suffixes to support 
       // "Winthrop Wolfcasts, the 31st Duke of Winchester"
       String[] result = new String[5];
 

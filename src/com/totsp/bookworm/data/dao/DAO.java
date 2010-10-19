@@ -65,7 +65,6 @@ public interface DAO<T> {
 
    /**
     * Select all entities.
-    * TODO prefer array over collections (for Android only)
     * 
     * @return
     */

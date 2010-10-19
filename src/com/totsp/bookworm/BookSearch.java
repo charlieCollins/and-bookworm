@@ -193,7 +193,7 @@ public class BookSearch extends Activity {
    // use application object as quick/dirty cache for state
    // onRetainNonConfigurationInstance uses this to quickly save state on config changes
    // onPause uses this to save state longer term, when user "adds" book and then comes BACK to search   
-   // TODO document this pattern 
+   // NOTE document this pattern 
    // onRetainNonConfigurationInstance, onSaveInstanceState/onRestoreInstanceState, createStateBean/restoreFromStateBean
 
    // restore from state bean (called from onRestoreInstanceState (using lastNonConfigurationInstance) and from onCreate (using application))

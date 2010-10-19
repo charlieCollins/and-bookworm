@@ -86,9 +86,9 @@ public class BookUserDataDAO implements DAO<BookUserData> {
                         new String[] { String.valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new BookUserData();
-         b.read = (c.getInt(0) == 0 ? false : true);
-         b.rating = (c.getInt(1));
-         // TODO not yet persisting user blurb
+         b.read = c.getInt(0) == 0 ? false : true;
+         b.rating = c.getInt(1);
+         b.blurb = c.getString(2);         
       }
       if (!c.isClosed()) {
          c.close();
@@ -104,9 +104,9 @@ public class BookUserDataDAO implements DAO<BookUserData> {
                         new String[] { String.valueOf(bookId) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new BookUserData();
-         b.read = (c.getInt(0) == 0 ? false : true);
-         b.rating = (c.getInt(1));
-         // TODO not yet persisting user blurb
+         b.read = c.getInt(0) == 0 ? false : true;
+         b.rating = c.getInt(1);
+         b.blurb = c.getString(2);
       }
       if (!c.isClosed()) {
          c.close();
