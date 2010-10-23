@@ -190,7 +190,7 @@ public class Main extends Activity {
 
       // addtl
       setupDialogs();
-      bindAdapter();
+      bindAdapter(false);
 
       // check backup restore
       if (!this.getIntent().getBooleanExtra("fromDeleteAll", false)) {
@@ -206,7 +206,7 @@ public class Main extends Activity {
    @Override
    public void onResume() {
       super.onResume();
-      resetAdapter();
+      bindAdapter(false);
    }
 
    @Override
@@ -369,7 +369,13 @@ public class Main extends Activity {
       }
    }
 
-   private void bindAdapter() {
+   private void bindAdapter(final boolean resetListPosition) {
+      if (resetListPosition) {
+         application.lastMainListPosition = 0;
+      }
+      // adapter.notifyDataSetChanged();
+      // NOTE notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
+      // need to research (shouldn't have to re-bind the entire adapter, but for now doing so)
       // bind bookListView and adapter
       String orderBy = prefs.getString(Constants.DEFAULT_SORT_ORDER, DataConstants.ORDER_BY_TITLE_ASC);
       cursor = application.dataManager.getBookCursor(orderBy, null);
@@ -378,18 +384,10 @@ public class Main extends Activity {
          adapter = new BookCursorAdapter(cursor);
          bookListView.setAdapter(adapter);
          int lastMainPos = application.lastMainListPosition;
-         if ((lastMainPos - 1) < adapter.getCount()) {
-            bookListView.setSelection(application.lastMainListPosition - 1);
+         if (lastMainPos < adapter.getCount()) {
+            bookListView.setSelection(lastMainPos);
          }
       }
-   }
-
-   private void resetAdapter() {
-      application.lastMainListPosition = 0;
-      // adapter.notifyDataSetChanged();
-      // NOTE notifyDataSetChanged doesn't cut it, sorts underlying collection but doesn't update view
-      // need to research (shouldn't have to re-bind the entire adapter, but for now doing so)
-      bindAdapter();
    }
 
    private void checkForRestore() {
@@ -435,6 +433,7 @@ public class Main extends Activity {
                   saveSortOrder(DataConstants.ORDER_BY_PUB_ASC);
                   break;
             }
+            bindAdapter(true);
          }
       });
       sortDialogBuilder.setOnCancelListener(new OnCancelListener() {
@@ -513,16 +512,16 @@ public class Main extends Activity {
                   break;
                case 4:
                   // DELETE ALL DATA
-                  new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgDeleteData))
-                           .setPositiveButton(getString(R.string.btnYes), new DialogInterface.OnClickListener() {
+                  new AlertDialog.Builder(Main.this).setMessage(getString(R.string.msgDeleteData)).setPositiveButton(
+                           getString(R.string.btnYes), new DialogInterface.OnClickListener() {
                               public void onClick(final DialogInterface arg0, final int arg1) {
                                  Log.i(Constants.LOG_TAG, "deleting database and image data");
-                                 new DeleteDataTask().execute();                                
+                                 new DeleteDataTask().execute();
                               }
                            }).setNegativeButton(getString(R.string.btnNo), new DialogInterface.OnClickListener() {
-                              public void onClick(final DialogInterface arg0, final int arg1) {
-                              }
-                           }).show();
+                     public void onClick(final DialogInterface arg0, final int arg1) {
+                     }
+                  }).show();
                   break;
                case 5:
                   // DELETE INTERNAL BACKUP DATA
@@ -749,7 +748,7 @@ public class Main extends Activity {
          setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
       }
    }
-   
+
    private class DeleteDataTask extends AsyncTask<Void, Integer, Void> {
 
       @Override
@@ -767,14 +766,14 @@ public class Main extends Activity {
          publishProgress(1);
          application.dataManager.deleteAllDataYesIAmSure();
          application.dataManager.resetDb();
-         publishProgress(2);         
+         publishProgress(2);
          application.imageManager.clearAllBitmapSourceFiles();
          publishProgress(3);
          return null;
       }
 
       @Override
-      protected void onProgressUpdate(Integer... progress) {         
+      protected void onProgressUpdate(Integer... progress) {
          if (!progressDialog.isShowing()) {
             progressDialog.show();
          }
@@ -782,7 +781,7 @@ public class Main extends Activity {
             progressDialog.setMax(3);
          }
          progressDialog.setProgress(progress[0]);
-         progressDialog.setMessage(Main.this.getString(R.string.msgDeletingData));         
+         progressDialog.setMessage(Main.this.getString(R.string.msgDeletingData));
       }
 
       @Override
@@ -804,7 +803,7 @@ public class Main extends Activity {
 
       // we shouldn't need to check for dupes here, only used if DB is empty
       // and backup file should never wind up with dupes in it
-      
+
       @Override
       protected void onPreExecute() {
          if (progressDialog.isShowing()) {
@@ -827,7 +826,7 @@ public class Main extends Activity {
                Log.i(Constants.LOG_TAG, "Importing book: " + b.title);
                progress[0] = String.format(getString(R.string.msgCsvImportingBook, b.title));
                progress[1] = Integer.toString(i);
-               publishProgress(progress);               
+               publishProgress(progress);
                b.id = application.dataManager.insertBook(b);
                application.imageManager.resetCoverImage(b);
             }
@@ -856,7 +855,7 @@ public class Main extends Activity {
          getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
          setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
-         resetAdapter();
+         bindAdapter(true);
       }
    }
 }
