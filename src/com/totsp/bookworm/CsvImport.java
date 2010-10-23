@@ -55,7 +55,6 @@ public class CsvImport extends Activity {
       application = (BookWormApplication) getApplication();
 
       progressDialog = new ProgressDialog(this);
-      progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
       progressDialog.setCancelable(false);
 
       parseButton = (Button) findViewById(R.id.bookimportparsebutton);
@@ -83,21 +82,7 @@ public class CsvImport extends Activity {
             if ((f == null) || !f.exists() || !f.canRead()) {
                Toast.makeText(CsvImport.this, getString(R.string.msgCsvFileNotFound), Toast.LENGTH_LONG).show();
             }
-            // potentially AsyncTask this too? (could be an FC here with perfect timing, though this is very quick)           
-            ArrayList<Book> parsedBooks = CsvManager.parseCSVFile(application.bookDataSource, f);
-            if (parsedBooks == null || parsedBooks.isEmpty()) {
-               Toast.makeText(CsvImport.this, getString(R.string.msgCsvUnableToParse), Toast.LENGTH_LONG).show();
-               reset();
-            } else {               
-               importButton.setEnabled(true);
-               // TODO notifyDataSetChanged doesn't work here, again, something must be up with way I am using ListView
-               //adapter.notifyDataSetChanged();
-               adapter.clear();
-               for (Book b : parsedBooks) {
-                  adapter.add(b);
-               }
-               importMeta.setText(String.format(getString(R.string.msgCsvMeta), new Object[] { parsedBooks.size() }));
-            }
+            new ParseTask().execute(f);
          }
       });
 
@@ -159,6 +144,54 @@ public class CsvImport extends Activity {
    //
    // AsyncTasks
    //
+   private class ParseTask extends AsyncTask<File, Void, ArrayList<Book>> {
+
+      @Override
+      protected void onPreExecute() {
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+         // keep screen on, and prevent orientation change, during potentially long running task
+         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+      }
+
+      @Override
+      protected ArrayList<Book> doInBackground(final File... args) {
+         publishProgress(new Void[] {});
+         return CsvManager.parseCSVFile(application.bookDataSource, args[0]);
+      }
+
+      @Override
+      protected void onProgressUpdate(Void... progress) {
+         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+         progressDialog.setMax(1);
+         // TODO i18n
+         progressDialog.setMessage("Parsing CSV file ...");
+      }
+
+      @Override
+      protected void onPostExecute(final ArrayList<Book> books) {
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }
+
+         if (books == null || books.isEmpty()) {
+            Toast.makeText(CsvImport.this, getString(R.string.msgCsvUnableToParse), Toast.LENGTH_LONG).show();
+            reset();
+         } else {
+            importButton.setEnabled(true);
+            // TODO notifyDataSetChanged doesn't work here, again, something must be up with way I am using ListView
+            //adapter.notifyDataSetChanged();
+            adapter.clear();
+            for (Book b : books) {
+               adapter.add(b);
+            }
+            importMeta.setText(String.format(getString(R.string.msgCsvMeta), new Object[] { books.size() }));
+         }
+      }
+   }
+
    private class ImportTask extends AsyncTask<ArrayList<Book>, String, Void> {
 
       @Override
@@ -213,7 +246,7 @@ public class CsvImport extends Activity {
       protected void onProgressUpdate(String... progress) {
          progressDialog.setMessage(progress[0]);
          if ((progress[1].equals("1")) && !progressDialog.isShowing()) {
-            //Toast.makeText(Main.this, R.string.msgResetCoverImagesWarnTime, Toast.LENGTH_SHORT).show();
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setMax(Integer.valueOf(progress[2]));
             progressDialog.show();
          } else if (progress[1].equals(progress[2]) && progressDialog.isShowing()) {
