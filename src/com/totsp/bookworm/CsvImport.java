@@ -165,7 +165,7 @@ public class CsvImport extends Activity {
       @Override
       protected void onProgressUpdate(Void... progress) {
          // TODO i18n
-         progressDialog.setMessage("Parsing CSV file ...");
+         progressDialog.setMessage("Parsing CSV file...");
          progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
          progressDialog.setMax(1);         
          progressDialog.show();
