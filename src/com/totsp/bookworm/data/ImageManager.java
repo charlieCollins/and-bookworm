@@ -28,15 +28,14 @@ import java.io.IOException;
  */
 public class ImageManager {
 
-   private static final String IMAGES_LOCATION = "bookwormdata/images/";
+   private static final String IMAGES_LOCATION = "bookwormdata/images/";   
    
    public static BitmapFactory.Options options = new BitmapFactory.Options();
-   static {
-      options.inJustDecodeBounds = true;
+   static {      
       options.inInputShareable = true;
       options.inPurgeable = true;
       //options.inSampleSize = 16;
-   }
+   }   
 
    public ImageManager(final Context context) {
    }
@@ -55,7 +54,7 @@ public class ImageManager {
       }
 
       if (file != null) {
-         bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+         bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), ImageManager.options);
       }
 
       return bitmap;
