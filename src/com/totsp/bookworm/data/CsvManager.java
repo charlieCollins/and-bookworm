@@ -150,7 +150,7 @@ public class CsvManager {
                         books.add(b);
                      }
                   } else if ((parts != null) && (parts.length == 1)) {
-                     // ISBN ONLY type, 1 element per file line 
+                     // SINGLE ELEMENT type, 1 element per file line, use it as search term (ISBN or title works here)
                      if (bookDataSource != null) {
                         ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0, 1);
                         if (searchBooks != null && !searchBooks.isEmpty()) {
