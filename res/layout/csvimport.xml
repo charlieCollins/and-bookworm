@@ -22,20 +22,20 @@
 		android:paddingTop="3dp" android:paddingBottom="3dp" android:gravity="center_horizontal">
 		<Button android:id="@+id/bookimportparsebutton"
 			android:layout_width="100dp" android:layout_height="wrap_content"
-			android:layout_marginTop="1dp" android:layout_marginBottom="5dp"
-			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:layout_marginTop="2dp" android:layout_marginBottom="5dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="2dp"
 			android:layout_gravity="center" style="@style/black" android:text="@string/btnParse" />
 
 		<Button android:id="@+id/bookimportimportbutton"
 			android:layout_width="100dp" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginBottom="5dp"
-			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:layout_marginTop="2dp" android:layout_marginBottom="5dp"
+			android:layout_marginLeft="2dp" android:layout_marginRight="2dp"
 			android:layout_gravity="center" style="@style/black" android:text="@string/btnImport" />
 
 		<Button android:id="@+id/bookimporthelpbutton"
 			android:layout_width="100dp" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginBottom="3dp"
-			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:layout_marginTop="2dp" android:layout_marginBottom="5dp"
+			android:layout_marginLeft="2dp" android:layout_marginRight="5dp"
 			android:layout_gravity="center" style="@style/black" android:text="Help" />
 	</LinearLayout>
 
