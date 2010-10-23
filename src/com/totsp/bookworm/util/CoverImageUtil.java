@@ -7,7 +7,10 @@ import android.util.Log;
 import com.totsp.bookworm.Constants;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -39,11 +42,7 @@ public final class CoverImageUtil {
             conn.setReadTimeout(6000);
             conn.connect();
             bis = new BufferedInputStream(conn.getInputStream(), 8192);
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            //options.inSampleSize = 2; // reduces memory, but cuts image quality a lot too
-            options.inInputShareable = true;
-            options.inPurgeable = true;
-            coverImageBitmap = BitmapFactory.decodeStream(bis, null, options);
+            coverImageBitmap = CoverImageUtil.decodeStream(bis);
             if ((coverImageBitmap != null) && (coverImageBitmap.getWidth() < 10)) {
                coverImageBitmap = null;
             }
@@ -63,7 +62,6 @@ public final class CoverImageUtil {
             }
          }
       }
-
       return coverImageBitmap;
    }
 
@@ -87,5 +85,53 @@ public final class CoverImageUtil {
       STROKE_PAINT.setAntiAlias(true);
       */
       return decored;
+   }
+
+   // modified from http://stackoverflow.com/questions/477572/android-strange-out-of-memory-issue
+   //decodes image and scales it to reduce memory consumption
+   public static Bitmap decodeStream(InputStream is) {
+
+      //Decode image size
+      BitmapFactory.Options o = new BitmapFactory.Options();
+      o.inJustDecodeBounds = true;
+      o.inInputShareable = true;
+      o.inPurgeable = true;
+      BitmapFactory.decodeStream(is, null, o);
+
+      //The new size we want to scale to
+      final int REQUIRED_SIZE = 70;
+
+      //Find the correct scale value. It should be the power of 2.
+      int width_tmp = o.outWidth, height_tmp = o.outHeight;
+      int scale = 1;
+      while (true) {
+         if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
+            break;
+         width_tmp /= 2;
+         height_tmp /= 2;
+         scale++;
+      }
+
+      //Decode with inSampleSize
+      BitmapFactory.Options o2 = new BitmapFactory.Options();
+      o2.inSampleSize = scale;
+      return BitmapFactory.decodeStream(is, null, o2);
+   }
+
+   public static Bitmap decodeFile(File f) {
+      FileInputStream fis = null;
+      Bitmap bitmap = null;
+      try {
+         fis = new FileInputStream(f);
+         bitmap = CoverImageUtil.decodeStream(fis);
+      } catch (IOException e) {
+
+      } finally {
+         try {
+            fis.close();
+         } catch (IOException e) {            
+         }
+      }
+      return bitmap;
    }
 }

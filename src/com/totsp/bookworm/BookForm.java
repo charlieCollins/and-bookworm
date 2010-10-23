@@ -6,7 +6,6 @@ import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
 import com.totsp.bookworm.model.Book;
+import com.totsp.bookworm.util.CoverImageUtil;
 import com.totsp.bookworm.util.StringUtil;
 
 import java.io.FileNotFoundException;
@@ -178,7 +178,7 @@ public class BookForm extends TabActivity {
             InputStream is = null;
             try {
                is = getContentResolver().openInputStream(selectedImageUri);
-               Bitmap bitmap = BitmapFactory.decodeStream(is);
+               Bitmap bitmap = CoverImageUtil.decodeStream(is);
                Book book = application.selectedBook;
                if ((bitmap != null) && (book != null)) {
                   application.imageManager.storeBitmap(bitmap, book.title, book.id);
@@ -241,9 +241,15 @@ public class BookForm extends TabActivity {
          bookSubject.setText(book.subject);
          bookPublisher.setText(book.publisher);
 
-         Calendar cal = Calendar.getInstance();
-         cal.setTimeInMillis(book.datePubStamp);
-         bookDatePub.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+         if (book.datePubStamp > 0) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(book.datePubStamp);
+            try {
+               bookDatePub.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+            } catch (IllegalArgumentException e) {
+               Log.w(Constants.LOG_TAG, "Invalid book date, can't set it, try to update/edit with a valid date.", e);
+            }
+         }
       }
    }
 
@@ -296,14 +302,14 @@ public class BookForm extends TabActivity {
       protected void onPreExecute() {
          if (progressDialog.isShowing()) {
             progressDialog.dismiss();
-         }         
+         }
       }
 
       @Override
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
          publishProgress(new String[] { book.title });
-         if (book.id > 0) {            
+         if (book.id > 0) {
             application.dataManager.updateBook(book);
             application.establishSelectedBook(book.id);
             return true;
@@ -320,7 +326,7 @@ public class BookForm extends TabActivity {
          }
          return false;
       }
-      
+
       @Override
       protected void onProgressUpdate(String... progress) {
          progressDialog.setMessage(getString(R.string.msgSavingBookInfo) + " " + progress[0]);
@@ -330,7 +336,7 @@ public class BookForm extends TabActivity {
       }
 
       @Override
-      protected void onPostExecute(final Boolean b) { 
+      protected void onPostExecute(final Boolean b) {
          if (progressDialog.isShowing()) {
             progressDialog.dismiss();
          }
@@ -354,7 +360,7 @@ public class BookForm extends TabActivity {
       protected void onPreExecute() {
          if (progressDialog.isShowing()) {
             progressDialog.dismiss();
-         }  
+         }
       }
 
       @Override
@@ -367,7 +373,7 @@ public class BookForm extends TabActivity {
          }
          return false;
       }
-      
+
       @Override
       protected void onProgressUpdate(String... progress) {
          progressDialog.setMessage("Retrieving cover image" + " " + progress[0]);
@@ -396,7 +402,7 @@ public class BookForm extends TabActivity {
       protected void onPreExecute() {
          if (progressDialog.isShowing()) {
             progressDialog.dismiss();
-         }  
+         }
       }
 
       @Override
@@ -410,7 +416,7 @@ public class BookForm extends TabActivity {
          }
          return false;
       }
-      
+
       @Override
       protected void onProgressUpdate(String... progress) {
          progressDialog.setMessage("Generating cover image" + " " + progress[0]);
