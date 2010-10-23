@@ -52,7 +52,7 @@ public final class Book {
       // this is the default display in a ListView, also used by Filter, etc, so make it significant/short/sweet
       return title;
    }
-
+   
    public String toStringFull() {
       StringBuilder sb = new StringBuilder();
       sb.append("Book-");

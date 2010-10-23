@@ -96,12 +96,13 @@ public class CsvManager {
          Scanner scanner = null;
          int count = 0;
          try {
-            scanner = new Scanner(f);
+            scanner = new Scanner(f);            
             while (scanner.hasNextLine()) {
                count++;
                String line = scanner.nextLine();
 
-               Log.i(Constants.LOG_TAG, "Processing line for import:" + line);
+               String message = "Processing line for import:" + line;
+               Log.i(Constants.LOG_TAG, message);    
 
                if ((line != null) && (count > 1)) {
                   String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
@@ -110,6 +111,9 @@ public class CsvManager {
                   if ((parts != null) && ((parts.length == 12) || (parts.length == 13))) {
                      Book b = new Book();
                      b.title = parts[0];
+                     if (b.title != null) {
+                        b.title.trim();
+                     }
                      b.subTitle = parts[1];
                      if (parts[2] != null) {
                         String authors = parts[2].replace('|', ',');
@@ -139,19 +143,19 @@ public class CsvManager {
                         readStatus = Boolean.valueOf(parts[11]) ? 1 : 0;
                      }
 
-                     String note = null;
+                     String blurb = null;
                      if (parts.length > 12) {
-                        note = parts[12];
+                        blurb = parts[12];
                      }
 
-                     BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, note);
+                     BookUserData bud = new BookUserData(0L, rating, readStatus == 1 ? true : false, blurb);
                      b.bookUserData = bud;
                      if (b.title != null) {
                         books.add(b);
                      }
                   } else if ((parts != null) && (parts.length == 1)) {
                      if (parts[0] != null && !parts[0].equals("")) {
-                        // SINGLE ELEMENT type, 1 element per file line, use it as search term (ISBN or title works here)
+                        // SINGLE ELEMENT type, 1 element per file line, use it as search term (ISBN or title works here)                        
                         if (bookDataSource != null) {
                            ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0, 1);
                            if (searchBooks != null && !searchBooks.isEmpty()) {

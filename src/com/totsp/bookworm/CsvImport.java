@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.Html;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -32,8 +30,6 @@ import java.util.ArrayList;
 
 public class CsvImport extends Activity {
 
-   private static final int MENU_CSV_HELP = 1;
-
    private BookWormApplication application;
 
    private ArrayList<Book> books;
@@ -42,10 +38,12 @@ public class CsvImport extends Activity {
 
    private Button parseButton;
    private Button importButton;
+   private Button helpButton;
 
    private TextView importMeta;
 
-   private ProgressDialog progressDialog;
+   private ProgressDialog progressDialogHorizontal;
+   private ProgressDialog progressDialogSpinner;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -54,12 +52,19 @@ public class CsvImport extends Activity {
       setContentView(R.layout.csvimport);
       application = (BookWormApplication) getApplication();
 
-      progressDialog = new ProgressDialog(this);
-      progressDialog.setCancelable(false);
+      progressDialogHorizontal = new ProgressDialog(this);
+      progressDialogHorizontal.setCancelable(false);
+      progressDialogHorizontal.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+      
+      progressDialogSpinner = new ProgressDialog(this);
+      progressDialogSpinner.setCancelable(false);
+      progressDialogSpinner.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
       parseButton = (Button) findViewById(R.id.bookimportparsebutton);
       importButton = (Button) findViewById(R.id.bookimportimportbutton);
       importButton.setEnabled(false);
+
+      helpButton = (Button) findViewById(R.id.bookimporthelpbutton);
 
       importMeta = (TextView) findViewById(R.id.bookimportmeta);
 
@@ -100,37 +105,28 @@ public class CsvImport extends Activity {
          }
       });
 
-   }
-
-   @Override
-   public void onPause() {
-      if (progressDialog.isShowing()) {
-         progressDialog.dismiss();
-      }
-      super.onPause();
-   }
-
-   @Override
-   public boolean onCreateOptionsMenu(final Menu menu) {
-      menu.add(0, CsvImport.MENU_CSV_HELP, 1, getString(R.string.menuCsvHelp)).setIcon(
-               android.R.drawable.ic_menu_info_details);
-      return super.onCreateOptionsMenu(menu);
-   }
-
-   @Override
-   public boolean onOptionsItemSelected(final MenuItem item) {
-      switch (item.getItemId()) {
-         case MENU_CSV_HELP:
+      helpButton.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
             new AlertDialog.Builder(CsvImport.this).setTitle(getString(R.string.menuCsvHelp)).setMessage(
                      Html.fromHtml(getString(R.string.msgCsvHelp))).setNeutralButton(getString(R.string.btnDismiss),
                      new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface d, final int i) {
                         }
                      }).show();
-            return true;
-         default:
-            return super.onOptionsItemSelected(item);
+         }
+      });
+
+   }
+
+   @Override
+   public void onPause() {
+      if (progressDialogHorizontal.isShowing()) {
+         progressDialogHorizontal.dismiss();
       }
+      if (progressDialogSpinner.isShowing()) {
+         progressDialogSpinner.dismiss();
+      }
+      super.onPause();
    }
 
    private void reset() {
@@ -145,11 +141,10 @@ public class CsvImport extends Activity {
    // AsyncTasks
    //
    private class ParseTask extends AsyncTask<File, Void, ArrayList<Book>> {
-
       @Override
       protected void onPreExecute() {
-         if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
+         if (progressDialogSpinner.isShowing()) {
+            progressDialogSpinner.dismiss();
          }
          // keep screen on, and prevent orientation change, during potentially long running task
          getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -164,17 +159,15 @@ public class CsvImport extends Activity {
 
       @Override
       protected void onProgressUpdate(Void... progress) {
-         // TODO i18n
-         progressDialog.setMessage("Parsing CSV file...");
-         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-         progressDialog.setMax(1);         
-         progressDialog.show();
+         progressDialogSpinner.setMessage("Parsing CSV file...");
+         progressDialogSpinner.setMax(1);
+         progressDialogSpinner.show();
       }
 
       @Override
       protected void onPostExecute(final ArrayList<Book> books) {
-         if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
+         if (progressDialogSpinner.isShowing()) {
+            progressDialogSpinner.dismiss();
          }
 
          if (books == null || books.isEmpty()) {
@@ -194,11 +187,10 @@ public class CsvImport extends Activity {
    }
 
    private class ImportTask extends AsyncTask<ArrayList<Book>, String, Void> {
-
       @Override
       protected void onPreExecute() {
-         if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
+         if (progressDialogHorizontal.isShowing()) {
+            progressDialogHorizontal.dismiss();
          }
          // keep screen on, and prevent orientation change, during potentially long running task
          getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -210,6 +202,7 @@ public class CsvImport extends Activity {
          ArrayList<Book> taskBooks = args[0];
          String[] progress = new String[3];
          progress[2] = Integer.toString(taskBooks.size());
+                  
          for (int i = 0; i < taskBooks.size(); i++) {
             Book b = taskBooks.get(i);
             boolean dupe = false;
@@ -245,21 +238,20 @@ public class CsvImport extends Activity {
 
       @Override
       protected void onProgressUpdate(String... progress) {
-         progressDialog.setMessage(progress[0]);
-         if ((progress[1].equals("1")) && !progressDialog.isShowing()) {
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setMax(Integer.valueOf(progress[2]));
-            progressDialog.show();
-         } else if (progress[1].equals(progress[2]) && progressDialog.isShowing()) {
-            progressDialog.dismiss();
+         progressDialogHorizontal.setMessage(progress[0]);
+         if ((progress[1].equals("1")) && !progressDialogHorizontal.isShowing()) {            
+            progressDialogHorizontal.setMax(Integer.valueOf(progress[2]));
+            progressDialogHorizontal.show();
+         } else if (progress[1].equals(progress[2]) && progressDialogHorizontal.isShowing()) {
+            progressDialogHorizontal.dismiss();
          }
-         progressDialog.setProgress(Integer.valueOf(progress[1]));
+         progressDialogHorizontal.setProgress(Integer.valueOf(progress[1]));
       }
 
       @Override
       protected void onPostExecute(final Void arg) {
-         if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
+         if (progressDialogHorizontal.isShowing()) {
+            progressDialogHorizontal.dismiss();
          }
 
          reset();

@@ -21,34 +21,40 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:paddingTop="3dp" android:paddingBottom="3dp" android:gravity="center_horizontal">
 		<Button android:id="@+id/bookimportparsebutton"
-			android:layout_width="120dp" android:layout_height="wrap_content"
-			android:layout_marginTop="5dp" android:layout_marginBottom="5dp"
+			android:layout_width="100dp" android:layout_height="wrap_content"
+			android:layout_marginTop="1dp" android:layout_marginBottom="5dp"
 			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
 			android:layout_gravity="center" style="@style/black" android:text="@string/btnParse" />
 
 		<Button android:id="@+id/bookimportimportbutton"
-			android:layout_width="120dp" android:layout_height="wrap_content"
+			android:layout_width="100dp" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginBottom="5dp"
 			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
 			android:layout_gravity="center" style="@style/black" android:text="@string/btnImport" />
+
+		<Button android:id="@+id/bookimporthelpbutton"
+			android:layout_width="100dp" android:layout_height="wrap_content"
+			android:layout_marginTop="5dp" android:layout_marginBottom="3dp"
+			android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+			android:layout_gravity="center" style="@style/black" android:text="Help" />
 	</LinearLayout>
-	
+
 	<TextView android:id="@+id/bookimportmeta"
-        android:layout_width="fill_parent" android:layout_height="wrap_content"
-        android:layout_marginTop="5dp" android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" style="@style/blacksmallsmall"
-        android:gravity="center_horizontal" />
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_marginTop="5dp" android:layout_marginLeft="5dp"
+		android:layout_marginRight="5dp" style="@style/blacksmallsmall"
+		android:gravity="center_horizontal" />
 
 	<ListView android:id="@+id/bookimportlistview"
 		android:layout_width="fill_parent" android:layout_height="0dp"
-		android:layout_weight="1" android:cacheColorHint="#00000000"/>
-    <!-- 
-	<TextView android:id="@+id/bookimportlistviewempty"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_marginTop="10dp" android:layout_marginLeft="5dp"
-		android:layout_marginRight="5dp" style="@style/blackmed"
-		android:gravity="center_horizontal" />
-		-->
+		android:layout_weight="1" android:cacheColorHint="#00000000" />
+	<!--
+		<TextView android:id="@+id/bookimportlistviewempty"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="10dp"
+		android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+		style="@style/blackmed" android:gravity="center_horizontal" />
+	-->
 
 </LinearLayout>
 
