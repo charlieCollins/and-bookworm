@@ -150,20 +150,23 @@ public class CsvManager {
                         books.add(b);
                      }
                   } else if ((parts != null) && (parts.length == 1)) {
-                     // SINGLE ELEMENT type, 1 element per file line, use it as search term (ISBN or title works here)
-                     if (bookDataSource != null) {
-                        ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0, 1);
-                        if (searchBooks != null && !searchBooks.isEmpty()) {
-                           books.add(searchBooks.get(0));
+                     if (parts[0] != null && !parts[0].equals("")) {
+                        // SINGLE ELEMENT type, 1 element per file line, use it as search term (ISBN or title works here)
+                        if (bookDataSource != null) {
+                           ArrayList<Book> searchBooks = bookDataSource.getBooks(parts[0], 0, 1);
+                           if (searchBooks != null && !searchBooks.isEmpty()) {
+                              books.add(searchBooks.get(0));
+                           }
+                        } else {
+                           Log.w(Constants.LOG_TAG,
+                                    "BookDataSource null, not importing book from CSV based on ISBN alone.");
                         }
-                     } else {
-                        Log.w(Constants.LOG_TAG,
-                                 "BookDataSource null, not importing book from CSV based on ISBN alone.");
                      }
                   } else {
                      Log.w(Constants.LOG_TAG, "Warning, not including line " + count
                               + " from import file because it does not parse into correct number of parts,"
-                              + " 1 (ISBN only), or 13 (full BookWorm format). (Parsed as " + parts.length + ").");
+                              + " 1 (search term only), or 13 (full BookWorm format). (Parsed as " + parts.length
+                              + ").");
                   }
                }
             }
