@@ -25,7 +25,6 @@ import android.widget.TabHost.OnTabChangeListener;
 
 import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.StringUtil;
-import com.totsp.bookworm.util.TaskUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -57,10 +56,7 @@ public class BookForm extends TabActivity {
    private Button retrieveCoverButton;
    private Button generateCoverButton;
 
-   // keep handle to AsyncTasks so cleanup in onPause can be done
-   private RetrieveCoverImageTask retrieveCoverImageTask;
-   private GenerateCoverImageTask generateCoverImageTask;
-   private SaveBookTask saveBookTask;
+   private ProgressDialog progressDialog;
 
    @Override
    public void onCreate(final Bundle savedInstanceState) {
@@ -68,9 +64,10 @@ public class BookForm extends TabActivity {
       setContentView(R.layout.bookform);
       application = (BookWormApplication) getApplication();
 
-      retrieveCoverImageTask = null;
-      generateCoverImageTask = null;
-      saveBookTask = null;
+      progressDialog = new ProgressDialog(this);
+      progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+      progressDialog.setCancelable(false);
+      //progressDialog.setMax(1);
 
       tabHost = getTabHost();
       tabHost.addTab(tabHost.newTabSpec("tab1").setIndicator(getString(R.string.menuEditBookDetails),
@@ -132,16 +129,14 @@ public class BookForm extends TabActivity {
       retrieveCoverButton = (Button) findViewById(R.id.bookformretrievecoverbutton);
       retrieveCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            retrieveCoverImageTask = new RetrieveCoverImageTask();
-            retrieveCoverImageTask.execute(application.selectedBook);
+            new RetrieveCoverImageTask().execute(application.selectedBook);
          }
       });
 
       generateCoverButton = (Button) findViewById(R.id.bookformgeneratecoverbutton);
       generateCoverButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
-            generateCoverImageTask = new GenerateCoverImageTask();
-            generateCoverImageTask.execute(application.selectedBook);
+            new GenerateCoverImageTask().execute(application.selectedBook);
          }
       });
 
@@ -167,18 +162,9 @@ public class BookForm extends TabActivity {
    @Override
    public void onPause() {
       bookTitleFormTab = null;
-      if (generateCoverImageTask != null) {
-         TaskUtil.dismissDialog(generateCoverImageTask.dialog);
+      if (progressDialog.isShowing()) {
+         progressDialog.dismiss();
       }
-      if (retrieveCoverImageTask != null) {
-         TaskUtil.dismissDialog(retrieveCoverImageTask.dialog);
-      }
-      if (saveBookTask != null) {
-         TaskUtil.dismissDialog(saveBookTask.dialog);
-      }
-      TaskUtil.pauseTask(generateCoverImageTask);
-      TaskUtil.pauseTask(retrieveCoverImageTask);
-      TaskUtil.pauseTask(saveBookTask);
       super.onPause();
    }
 
@@ -297,32 +283,31 @@ public class BookForm extends TabActivity {
          }
       }
 
-      saveBookTask = new SaveBookTask();
-      saveBookTask.execute(newBook);
+      new SaveBookTask().execute(newBook);
    }
 
    //
    // AsyncTasks
    //
-   private class SaveBookTask extends AsyncTask<Book, Void, Boolean> {
-      private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
-
+   private class SaveBookTask extends AsyncTask<Book, String, Boolean> {
       private boolean newBook;
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(getString(R.string.msgSavingBookInfo));
-         dialog.show();
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }         
       }
 
       @Override
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
-         if ((book != null) && (book.id > 0)) {
+         publishProgress(new String[] { book.title });
+         if (book.id > 0) {            
             application.dataManager.updateBook(book);
             application.establishSelectedBook(book.id);
             return true;
-         } else if ((book != null) && (book.id == 0)) {
+         } else {
             newBook = true;
             long bookId = application.dataManager.insertBook(book);
             if (bookId > 0) {
@@ -335,11 +320,19 @@ public class BookForm extends TabActivity {
          }
          return false;
       }
+      
+      @Override
+      protected void onProgressUpdate(String... progress) {
+         progressDialog.setMessage(getString(R.string.msgSavingBookInfo) + " " + progress[0]);
+         if (!progressDialog.isShowing()) {
+            progressDialog.show();
+         }
+      }
 
       @Override
-      protected void onPostExecute(final Boolean b) {
-         if (dialog.isShowing()) {
-            dialog.dismiss();
+      protected void onPostExecute(final Boolean b) { 
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
          }
          if (!b) {
             Toast.makeText(BookForm.this, getString(R.string.msgBookSaveError), Toast.LENGTH_LONG).show();
@@ -356,29 +349,37 @@ public class BookForm extends TabActivity {
       }
    }
 
-   private class RetrieveCoverImageTask extends AsyncTask<Book, Void, Boolean> {
-      private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
-
+   private class RetrieveCoverImageTask extends AsyncTask<Book, String, Boolean> {
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(getString(R.string.msgRetrieveCoverImage));
-         dialog.show();
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }  
       }
 
       @Override
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
-         if ((book != null) && (book.id > 0)) {
+         publishProgress(new String[] { book.title });
+         if (book.id > 0) {
             application.imageManager.resetCoverImage(book);
             return true;
          }
          return false;
       }
+      
+      @Override
+      protected void onProgressUpdate(String... progress) {
+         progressDialog.setMessage("Retrieving cover image" + " " + progress[0]);
+         if (!progressDialog.isShowing()) {
+            progressDialog.show();
+         }
+      }
 
       @Override
       protected void onPostExecute(final Boolean b) {
-         if (dialog.isShowing()) {
-            dialog.dismiss();
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
          }
          if (!b) {
             Toast.makeText(BookForm.this, getString(R.string.msgRetrieveCoverImageError), Toast.LENGTH_LONG).show();
@@ -390,30 +391,38 @@ public class BookForm extends TabActivity {
       }
    }
 
-   private class GenerateCoverImageTask extends AsyncTask<Book, Void, Boolean> {
-      private final ProgressDialog dialog = new ProgressDialog(BookForm.this);
-
+   private class GenerateCoverImageTask extends AsyncTask<Book, String, Boolean> {
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(getString(R.string.msgGenerateCoverImage));
-         dialog.show();
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }  
       }
 
       @Override
       protected Boolean doInBackground(final Book... args) {
          Book book = args[0];
-         if ((book != null) && (book.id > 0)) {
+         publishProgress(new String[] { book.title });
+         if (book.id > 0) {
             Bitmap generatedCover = application.imageManager.createCoverImage(book.title);
             application.imageManager.storeBitmap(generatedCover, book.title, book.id);
             return true;
          }
          return false;
       }
+      
+      @Override
+      protected void onProgressUpdate(String... progress) {
+         progressDialog.setMessage("Generating cover image" + " " + progress[0]);
+         if (!progressDialog.isShowing()) {
+            progressDialog.show();
+         }
+      }
 
       @Override
       protected void onPostExecute(final Boolean b) {
-         if (dialog.isShowing()) {
-            dialog.dismiss();
+         if (!progressDialog.isShowing()) {
+            progressDialog.show();
          }
          if (!b) {
             Toast.makeText(BookForm.this, getString(R.string.msgGenerateCoverImageError), Toast.LENGTH_LONG).show();

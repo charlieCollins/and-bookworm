@@ -24,7 +24,6 @@ import com.totsp.bookworm.model.Book;
 import com.totsp.bookworm.util.BookUtil;
 import com.totsp.bookworm.util.NetworkUtil;
 import com.totsp.bookworm.util.StringUtil;
-import com.totsp.bookworm.util.TaskUtil;
 
 import java.util.ArrayList;
 
@@ -49,7 +48,7 @@ public class BookEntryResult extends Activity {
 
    boolean fromSearch;
 
-   SetupBookResultTask setupBookResultTask;
+   private ProgressDialog progressDialog;
 
    ConnectivityManager cMgr;
 
@@ -61,7 +60,11 @@ public class BookEntryResult extends Activity {
 
       cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-      setupBookResultTask = null;
+      progressDialog = new ProgressDialog(this);
+      progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+      progressDialog.setCancelable(false);
+      progressDialog.setMessage(getString(R.string.msgRetrievingBookData));
+      //progressDialog.setMax(1);
 
       bookTitle = (TextView) findViewById(R.id.bookentrytitle);
       bookCover = (ImageView) findViewById(R.id.bookentrycover);
@@ -82,8 +85,7 @@ public class BookEntryResult extends Activity {
       // *EITHER* use application.selectedBook (if from SEARCH)
       // or ISBN must be present as intent extra to proceed (in which case request will be made to get data)
       if (fromSearch && (application.selectedBook != null)) {
-         setupBookResultTask = new SetupBookResultTask(application.selectedBook);
-         setupBookResultTask.execute(null);
+         new SetupBookResultTask(application.selectedBook).execute(null);
       } else {
          String isbn = getIntent().getStringExtra(Constants.ISBN);
          if ((isbn == null) || (isbn.length() < 10) || (isbn.length() > 13)) {
@@ -93,18 +95,16 @@ public class BookEntryResult extends Activity {
             bean.code = isbn;
             setViewsForInvalidEntry(bean);
          } else {
-            setupBookResultTask = new SetupBookResultTask();
-            setupBookResultTask.execute(isbn);
+            new SetupBookResultTask().execute(isbn);
          }
       }
    }
 
    @Override
    public void onPause() {      
-      if (setupBookResultTask != null) {
-         TaskUtil.dismissDialog(setupBookResultTask.dialog);
+      if (progressDialog.isShowing()) {
+         progressDialog.dismiss();
       }
-      TaskUtil.pauseTask(setupBookResultTask);
       super.onPause();
    }
 
@@ -174,8 +174,6 @@ public class BookEntryResult extends Activity {
    //
    // TODO cleanup SetupBookTask so that it doesn't work two ways (ISBN or Book), if necc make two tasks
    private class SetupBookResultTask extends AsyncTask<String, Void, BookMessageBean> {
-      private final ProgressDialog dialog = new ProgressDialog(BookEntryResult.this);
-
       private Book book;
       
       public SetupBookResultTask() {         
@@ -188,16 +186,19 @@ public class BookEntryResult extends Activity {
 
       @Override
       protected void onPreExecute() {
-         dialog.setMessage(getString(R.string.msgRetrievingBookData));
-         dialog.show();         
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+         }         
       }
 
       @Override
       protected BookMessageBean doInBackground(final String... isbns) {
+         publishProgress(new Void[] { });
          BookMessageBean bean = new BookMessageBean();
          // if we have the book (it was passed in to ctor), use it
          if (book != null) {
             bean.book = book;
+            
          }
          // else, use the isbn to retrieve the data and create the book
          else {
@@ -232,11 +233,18 @@ public class BookEntryResult extends Activity {
          }
          return bean;
       }
+      
+      @Override
+      protected void onProgressUpdate(Void... progress) {
+         if (!progressDialog.isShowing()) {
+            progressDialog.show();
+         }
+      }
 
       @Override
       protected void onPostExecute(final BookMessageBean bean) {
-         if (dialog.isShowing()) {
-            dialog.dismiss();
+         if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
          }
 
          if (bean.book != null) {
