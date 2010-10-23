@@ -124,7 +124,7 @@
 	<string name="btnParse">Parse</string>   
     <string name="btnImport">Import</string>   
     <string name="btnDeleteData">Delete Database and image data</string>
-    <string name="btnDeleteInternalBackup">Delete internal backup bata</string>
+    <string name="btnDeleteInternalBackup">Delete internal backup data</string>
     <string name="btnEdit">Edit</string>
     <string name="btnResetCoverImages">Reset all cover Images</string>	
 	<string name="labelImportCSV">Import CSV File</string>
