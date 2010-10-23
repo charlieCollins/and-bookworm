@@ -2,6 +2,7 @@ package com.totsp.bookworm.data;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -28,6 +29,14 @@ import java.io.IOException;
 public class ImageManager {
 
    private static final String IMAGES_LOCATION = "bookwormdata/images/";
+   
+   public static BitmapFactory.Options options = new BitmapFactory.Options();
+   static {
+      options.inJustDecodeBounds = true;
+      options.inInputShareable = true;
+      options.inPurgeable = true;
+      //options.inSampleSize = 16;
+   }
 
    public ImageManager(final Context context) {
    }
@@ -46,7 +55,7 @@ public class ImageManager {
       }
 
       if (file != null) {
-         bitmap = CoverImageUtil.decodeFile(file); 
+         bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
       }
 
       return bitmap;

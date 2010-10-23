@@ -6,6 +6,7 @@ import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,8 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
+import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
-import com.totsp.bookworm.util.CoverImageUtil;
 import com.totsp.bookworm.util.StringUtil;
 
 import java.io.FileNotFoundException;
@@ -178,7 +179,7 @@ public class BookForm extends TabActivity {
             InputStream is = null;
             try {
                is = getContentResolver().openInputStream(selectedImageUri);
-               Bitmap bitmap = CoverImageUtil.decodeStream(is);
+               Bitmap bitmap = BitmapFactory.decodeStream(is, null, ImageManager.options);
                Book book = application.selectedBook;
                if ((bitmap != null) && (book != null)) {
                   application.imageManager.storeBitmap(bitmap, book.title, book.id);
