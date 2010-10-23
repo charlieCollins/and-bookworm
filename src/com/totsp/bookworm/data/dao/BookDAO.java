@@ -262,7 +262,8 @@ public class BookDAO implements DAO<Book> {
                insertBookAuthorData(bookId, authorIds);
 
                // insert bookuserdata
-               bookUserDataDAO.insert(new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read, null));
+               BookUserData newBookUserData = new BookUserData(bookId, b.bookUserData.rating, b.bookUserData.read, b.bookUserData.blurb);
+               bookUserDataDAO.insert(newBookUserData);
 
                db.setTransactionSuccessful();
             } else {
@@ -313,7 +314,8 @@ public class BookDAO implements DAO<Book> {
 
             // update/insert book user data
             bookUserDataDAO.delete(b.id);
-            bookUserDataDAO.insert(new BookUserData(b.id, b.bookUserData.rating, b.bookUserData.read, null));
+            BookUserData newBookUserData = new BookUserData(b.id, b.bookUserData.rating, b.bookUserData.read, b.bookUserData.blurb);
+            bookUserDataDAO.insert(newBookUserData);
 
             // update book
             final ContentValues values = new ContentValues();
@@ -386,8 +388,9 @@ public class BookDAO implements DAO<Book> {
          b.bookUserData.bookId = b.id;
          BookUserData userData = bookUserDataDAO.selectByBookId(b.id);
          if (userData != null) {
-            b.bookUserData.read = (userData.read);
-            b.bookUserData.rating = (userData.rating);
+            b.bookUserData.read = userData.read;
+            b.bookUserData.rating = userData.rating;
+            b.bookUserData.blurb = userData.blurb;
          }
       }
       return b;
