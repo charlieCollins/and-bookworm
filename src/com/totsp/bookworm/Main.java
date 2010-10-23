@@ -478,7 +478,7 @@ public class Main extends Activity {
                case 2:
                   // EMAIL CSV
                   if (ExternalStorageUtil.isExternalStorageAvail()) {
-                     File f = new File(Main.this.getFilesDir() + File.separator + DataConstants.EXPORT_FILENAME);
+                     File f = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + DataConstants.EXPORT_FILENAME);
                      if (f.exists() && f.canRead()) {
                         Intent sendCSVIntent = new Intent(Intent.ACTION_SEND);
                         sendCSVIntent.setType("text/csv");
