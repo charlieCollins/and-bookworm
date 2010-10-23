@@ -4,7 +4,7 @@
 	android:layout_height="fill_parent" android:background="@drawable/book_bgrnd_noheader_textarea">
 
 	<!--
-		redo this and align things without margings, also need landscape rev
+		redo this and align things without margins, also need landscape rev
 	-->
 	<!--
 		remove stuff that's not there, don't let if affect layout?
