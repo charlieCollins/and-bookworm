@@ -83,7 +83,7 @@ public class CsvImport extends Activity {
       parseButton.setOnClickListener(new OnClickListener() {
          public void onClick(View v) {
             parseButton.setEnabled(false);
-            File f = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + "bookworm.csv");
+            File f = new File(DataConstants.EXTERNAL_DATA_PATH + File.separator + DataConstants.EXPORT_FILENAME);
             if ((f == null) || !f.exists() || !f.canRead()) {
                Toast.makeText(CsvImport.this, getString(R.string.msgCsvFileNotFound), Toast.LENGTH_LONG).show();
             }
@@ -98,7 +98,7 @@ public class CsvImport extends Activity {
             if ((books != null) && !books.isEmpty()) {
                new ImportTask().execute(books);
             } else {
-               // should never get to this image, importButton should not be enabled unless parsed books are present, just in case
+               // should never get to this message, importButton should not be enabled unless parsed books are present, just in case
                Toast.makeText(CsvImport.this, "No data parsed, nothing to import.", Toast.LENGTH_LONG).show();
                reset();
             }
@@ -159,7 +159,7 @@ public class CsvImport extends Activity {
 
       @Override
       protected void onProgressUpdate(Void... progress) {
-         progressDialogSpinner.setMessage("Parsing CSV file...");
+         progressDialogSpinner.setMessage(getString(R.string.msgParsingCSVFile));
          progressDialogSpinner.setMax(1);
          progressDialogSpinner.show();
       }
@@ -204,7 +204,7 @@ public class CsvImport extends Activity {
          progress[2] = Integer.toString(taskBooks.size());
                   
          for (int i = 0; i < taskBooks.size(); i++) {
-            Book b = taskBooks.get(i);
+            Book b = taskBooks.get(i);            
             boolean dupe = false;
             ArrayList<Book> potentialDupes = application.dataManager.selectAllBooksByTitle(b.title);
             if (potentialDupes != null) {
