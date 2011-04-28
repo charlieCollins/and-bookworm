@@ -19,11 +19,11 @@
 			android:layout_marginLeft="8dp" android:layout_marginRight="1dp"
 			android:autoText="true" android:freezesText="true" />
 		<Button android:id="@+id/bookentrysearchbutton"
-			android:layout_width="120dp" android:layout_height="wrap_content"
+			android:layout_width="100dp" android:layout_height="wrap_content"
 			android:layout_marginTop="5dp" android:layout_marginBottom="5dp"
-			android:layout_marginLeft="1dp" android:layout_marginRight="8dp"
-			android:layout_gravity="center" style="@style/black"
-			android:text="@string/btnSearch" />
+			android:layout_marginLeft="3dp" android:layout_marginRight="8dp"
+			android:layout_gravity="center" android:text="@string/btnSearch"
+			android:background="@drawable/button_gray" style="@style/button" />
 	</LinearLayout>
 
 	<ListView android:id="@+id/bookentrysearchresultlist"

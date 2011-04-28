@@ -19,21 +19,22 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="20dp" android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/bookentrytitle"
-		android:layout_toRightOf="@id/bookentrycover" style="@style/blackmed" />
+		android:layout_toRightOf="@id/bookentrycover" android:background="@drawable/button_gray"
+		style="@style/button" />
 
 	<Button android:id="@+id/bookentryaddbutton"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_marginTop="15dp" android:layout_marginLeft="10dp" android:layout_below="@id/bookentryauthors"
-		android:layout_toRightOf="@id/bookentrycover" android:text="@string/btnAddBook"
-		style="@style/black" />
+		android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
+		android:layout_below="@id/bookentryauthors" android:layout_toRightOf="@id/bookentrycover"
+		android:text="@string/btnAddBook" android:background="@drawable/button_gray"
+		style="@style/button" />
 
 	<TextView android:id="@+id/bookentrywarndupe"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_marginTop="15dp" android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp" android:layout_below="@id/bookentryaddbutton"
 		android:layout_toRightOf="@id/bookentrycover" style="@style/blacksmall"
-		android:visibility="invisible"
-		android:text="@string/msgWarnDupe" />
+		android:visibility="invisible" android:text="@string/msgWarnDupe" />
 
 </RelativeLayout>
 

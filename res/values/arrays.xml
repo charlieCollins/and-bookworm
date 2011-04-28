@@ -2,7 +2,7 @@
 <resources>
 
 	<string-array name="bookdataprovidernames">
-        <item>All</item>
+        <item>Combine All</item>
         <item>Google Books</item>
         <item>Open Library</item>
     </string-array>

@@ -24,19 +24,22 @@
 			android:layout_width="100dp" android:layout_height="wrap_content"
 			android:layout_marginTop="2dp" android:layout_marginBottom="5dp"
 			android:layout_marginLeft="5dp" android:layout_marginRight="2dp"
-			android:layout_gravity="center" style="@style/black" android:text="@string/btnParse" />
+			android:layout_gravity="center" android:background="@drawable/button_gray"
+			style="@style/button" android:text="@string/btnParse" />
 
 		<Button android:id="@+id/bookimportimportbutton"
 			android:layout_width="100dp" android:layout_height="wrap_content"
 			android:layout_marginTop="2dp" android:layout_marginBottom="5dp"
 			android:layout_marginLeft="2dp" android:layout_marginRight="2dp"
-			android:layout_gravity="center" style="@style/black" android:text="@string/btnImport" />
+			android:layout_gravity="center" android:background="@drawable/button_gray"
+			style="@style/button" android:text="@string/btnImport" />
 
 		<Button android:id="@+id/bookimporthelpbutton"
 			android:layout_width="100dp" android:layout_height="wrap_content"
 			android:layout_marginTop="2dp" android:layout_marginBottom="5dp"
 			android:layout_marginLeft="2dp" android:layout_marginRight="5dp"
-			android:layout_gravity="center" style="@style/black" android:text="Help" />
+			android:layout_gravity="center" android:background="@drawable/button_gray"
+			style="@style/button" android:text="Help" />
 	</LinearLayout>
 
 	<TextView android:id="@+id/bookimportmeta"
@@ -48,13 +51,10 @@
 	<ListView android:id="@+id/bookimportlistview"
 		android:layout_width="fill_parent" android:layout_height="0dp"
 		android:layout_weight="1" android:cacheColorHint="#00000000" />
-	<!--
-		<TextView android:id="@+id/bookimportlistviewempty"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_marginTop="10dp"
-		android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
-		style="@style/blackmed" android:gravity="center_horizontal" />
-	-->
+	<!-- <TextView android:id="@+id/bookimportlistviewempty" android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" android:layout_marginTop="10dp" android:layout_marginLeft="5dp" 
+		android:layout_marginRight="5dp" style="@style/blackmed" android:gravity="center_horizontal" 
+		/> -->
 
 </LinearLayout>
 

@@ -126,7 +126,7 @@
     <string name="btnDeleteData">Clear database</string>
     <string name="btnDeleteInternalBackup">Delete internal backup</string>
     <string name="btnEdit">Edit</string>
-    <string name="btnResetCoverImages">Reset all cover Images</string>	
+    <string name="btnResetCoverImages">Reset all cover images</string>	
 	<string name="labelImportCSV">Import CSV File</string>
 	<string name="labelManageData">Manage Data</string>
 	<string name="labelInstallScanner">Install Barcode Scanner</string>
