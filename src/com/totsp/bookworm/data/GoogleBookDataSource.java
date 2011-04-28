@@ -54,7 +54,13 @@ public class GoogleBookDataSource implements BookDataSource {
       if (numResults < 1) {
          numResults = 1;
       }
-      return getBooksFromSearch(searchTerm, startIndex, numResults);
+      
+      // remove any added quotes from search term
+      // TODO create util inside HttpHelper that cleans up any "string" url passed in
+      // (because HttpClient, which should do this, doesn't)
+      // uri = new URI("http", null, "www.google.com", 80, "/path/path and path/", URLEncoder.encode("query crap here", "UTF-8"), null);
+      String polishedTerm = searchTerm.replace('"', ' ');      
+      return getBooksFromSearch(polishedTerm, startIndex, numResults);
    }
 
    private Book getSingleBook(final String isbn) {

@@ -7,8 +7,8 @@ import android.util.Log;
 
 import com.totsp.bookworm.BookSearch.BookSearchStateBean;
 import com.totsp.bookworm.data.BookDataSource;
-import com.totsp.bookworm.data.CompoundDataSource;
 import com.totsp.bookworm.data.DataManager;
+import com.totsp.bookworm.data.GoogleBookDataSource;
 import com.totsp.bookworm.data.ImageManager;
 import com.totsp.bookworm.model.Book;
 
@@ -48,8 +48,8 @@ public class BookWormApplication extends Application {
    }
 
    void establishBookDataSourceFromProvider() {
-      // hard coded to one provider for now
-      String className = prefs.getString("dataproviderpref", CompoundDataSource.class.getCanonicalName());
+      // hard coded default provider (can change via prefs)
+      String className = prefs.getString("dataproviderpref", GoogleBookDataSource.class.getCanonicalName());
       Log.i(Constants.LOG_TAG, "Establishing book data provider using class name - " + className);
       try {
          Class<?> clazz = Class.forName(className);

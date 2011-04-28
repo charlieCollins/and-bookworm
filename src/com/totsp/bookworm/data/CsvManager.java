@@ -33,17 +33,21 @@ public class CsvManager {
     * Export data as File to EXTERNAL export location (on removable storage).
     * 
     */
-   public static void exportExternal(final Context context, final ArrayList<Book> books) {
+   public static boolean exportExternal(final Context context, final ArrayList<Book> books) {
       String csv = getCSVString(true, books);
       if (ExternalStorageUtil.isExternalStorageAvail()) {
          if (saveCSVStringAsFile(new File(DataConstants.EXTERNAL_DATA_PATH), csv)) {
-            return;
+            return true;
          } else {
-            throw new RuntimeException("Error, unable to save data contents as CSV file.");
+            Log.w(Constants.LOG_TAG, "Error, unable to save data contents as CSV file to external storage.");
+            Toast.makeText(context, "Error, unable to save data contents as CSV file to external storage.",
+                     Toast.LENGTH_LONG).show();
+            return false;
          }
       } else {
          Toast.makeText(context, context.getResources().getString(R.string.msgExternalStorageNAError),
                   Toast.LENGTH_LONG).show();
+         return false;
       }
    }
 
@@ -53,12 +57,15 @@ public class CsvManager {
     * @param context
     * @param books
     */
-   public static void exportInternal(final Context context, final ArrayList<Book> books) {
+   public static boolean exportInternal(final Context context, final ArrayList<Book> books) {
       String csv = getCSVString(true, books);
       if (saveCSVStringAsFile(context.getFilesDir(), csv)) {
-         return;
+         return true;
       } else {
-         throw new RuntimeException("Error, unable to save data contents as CSV file.");
+         Log.w(Constants.LOG_TAG, "Error, unable to save data contents as CSV file to internal storage.");
+         Toast.makeText(context, "Error, unable to save data contents as CSV file to internal storage.",
+                  Toast.LENGTH_LONG).show();
+         return false;
       }
    }
 
@@ -96,13 +103,13 @@ public class CsvManager {
          Scanner scanner = null;
          int count = 0;
          try {
-            scanner = new Scanner(f);            
+            scanner = new Scanner(f);
             while (scanner.hasNextLine()) {
                count++;
                String line = scanner.nextLine();
 
                String message = "Processing line for import:" + line;
-               Log.i(Constants.LOG_TAG, message);    
+               Log.i(Constants.LOG_TAG, message);
 
                if ((line != null) && (count > 1)) {
                   String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);

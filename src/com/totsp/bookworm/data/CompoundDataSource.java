@@ -100,7 +100,7 @@ public class CompoundDataSource implements BookDataSource {
       // get the largest size of list from any provider, use that as starting point
       int size = 0;
       for (Map.Entry<String, ArrayList<Book>> entry : resultsMap.entrySet()) {
-         if (entry.getValue().size() > size) {
+         if (entry.getValue() != null && entry.getValue().size() > size) {
             size = entry.getValue().size();
          }
       }      
@@ -109,7 +109,7 @@ public class CompoundDataSource implements BookDataSource {
       // and not a bottleneck)
       for (int i = 0; i < size; i++) {
          for (Map.Entry<String, ArrayList<Book>> entry : resultsMap.entrySet()) {
-            if (entry.getValue().size() >= size) {
+            if (entry.getValue() != null && entry.getValue().size() >= size) {
                books.add(entry.getValue().get(i));
             }
          }
